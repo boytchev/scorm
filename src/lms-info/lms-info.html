@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>LMS Info</title>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap" rel="stylesheet">
+	<link rel="shortcut icon" type="image/png" href="logo.png"/>
+	
+	<script src="suica.min.js"></script>
+	<style>
+		body {
+			font-family: 'Roboto', sans-serif;
+		}
+
+		h1 {
+			font-size: 1.5em;
+			margin-bottom: 0.25em;
+		}
+
+		em {
+			font-style: normal;
+			font-weight: bold;
+			color: crimson;
+		}
+	</style>
+</head>
+
+<body>
+
+	<h1>LMS Info</h1>
+
+	<suica id="a1"></suica>
+
+	<p>General information: <a href="https://scorm.com/scorm-explained/technical-scorm/run-time/">SCORM Run-Time Environment</a> and <a href="https://scorm.com/scorm-explained/technical-scorm/run-time/run-time-reference/#section-2">SCORM Run-Time Reference</a>.</p>
+	
+	<h2>Setting LMS data</h2>
+	<table>
+		<tr><td>cmi.core.lesson_location</td><td><input type="text" id="location"></td></tr>
+		<tr><td>cmi.core.lesson_status</td><td><select id="status">
+			<option value="passed">passed</option>
+			<option value="completed">completed</option>
+			<option value="failed">failed</option>
+			<option value="incomplete">incomplete</option>
+			<option value="browsed">browsed</option>
+			<option value="not attempted">not attempted</option>
+		  </select></td></tr>
+		<tr><td>cmi.core.score.raw</td><td><input type="number" id="score" min="0" max="100"></td></tr>
+		<tr><td>cmi.core.score.max</td><td><input type="number" id="max" min="0" max="100"></td></tr>
+		<tr><td>cmi.core.score.min</td><td><input type="number" id="min" min="0" max="100"></td></tr>
+		<tr><td>cmi.core.exit</td><td><select id="exit">
+			<option value=""></option>
+			<option value="time-out">time-out</option>
+			<option value="suspend">suspend</option>
+			<option value="logout">logout</option>
+		  </select></td></tr>
+		<tr><td>cmi.core.session_time</td><td><input type="text" id="time"></td></tr>
+		<tr><td>cmi.suspend_data</td><td><input type="text" id="data"></td></tr>
+		<tr><td>cmi.comments</td><td><input type="text" id="comments"></td></tr>
+	</table>
+	
+	<h2>Getting LMS data</h2>
+
+	<script>
+		element('a1').style.display = 'none';
+		
+		var api = scorm.api;
+
+		function log( str )
+		{
+			var elem = document.createElement( 'div' );
+				elem.innerHTML = str;
+				
+			document.body.appendChild( elem );
+		}
+
+		function scan( str )
+		{
+			log( str+' = <em>'+api.LMSGetValue( str )+'</em>' );
+
+			var children = api.LMSGetValue( str+'._children' ).split(',');
+
+			for( var child of children )
+				if( child )
+					scan( str+'.'+child );
+		}
+		
+		if( scorm.api && scorm.api.LMSInitialize("") )
+		{
+			scan( 'cmi' );
+			scorm.api.LMSFinish("");
+		}
+		else
+		{
+			log( 'SCORM data are <em>not available</em>' );
+		}
+	</script>
+	
+</body>
+</html>
