@@ -1,0 +1,48 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+.main-content {
+  padding: 0 4rem 2rem 4rem;
+}
+
+header.page-header {
+	padding: 1em 0;
+	margin-bottom: 0;
+}
+
+code {
+	font-size: 105% !important;
+}
+
+h1, h2, h3 {
+	color: MediumSeaGreen;
+	font-weight: bold;
+	border-bottom: 1px dotted green;
+}
+
+/* command */
+h4 {
+	font-size: 115% !important;
+	font-weight: bold;
+	border-bottom: 1px dotted gray;
+	font-family: Consolas, monospace;
+	background: var(--color-bg-tertiary);
+	padding-left: 0.5em;
+	border-left: solid 0.25em MediumSeaGreen;
+}
+
+h1.project-name,
+h2.project-tagline {
+	color: white;
+}
+
+/* breadcrumbs */
+h5 {
+	text-align: center;
+	margin: 0 0 1em 0;
+	padding: 0.2em 0.5em;
+	background: var(--color-bg-tertiary);
+	border-bottom: 1px dotted gray;
+}
