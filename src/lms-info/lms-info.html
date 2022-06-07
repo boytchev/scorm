@@ -40,7 +40,7 @@
 	<p>General information: <a href="https://scorm.com/scorm-explained/technical-scorm/run-time/">SCORM Run-Time Environment</a> and <a href="https://scorm.com/scorm-explained/technical-scorm/run-time/run-time-reference/#section-2">SCORM Run-Time Reference</a>.</p>
 	
 	<h2>Setting LMS data</h2>
-	<table>
+	<table id="table">
 		<tr><td>cmi.core.lesson_location</td><td><input type="text" id="location"></td></tr>
 		<tr><td>cmi.core.lesson_status</td><td><select id="status">
 			<option value="passed">passed</option>
@@ -62,15 +62,51 @@
 		<tr><td>cmi.core.session_time</td><td><input type="text" id="time"></td></tr>
 		<tr><td>cmi.suspend_data</td><td><input type="text" id="data"></td></tr>
 		<tr><td>cmi.comments</td><td><input type="text" id="comments"></td></tr>
+		<tr><td><button onclick="send()">Send to LMS</td><td></tr></tr>
 	</table>
+	<p id="noform" style="display:none;">SCORM data are <em>not available</em></p>
+	
+	
+	
 	
 	<h2>Getting LMS data</h2>
 
 	<script>
-		element('a1').style.display = 'none';
+		element( 'a1' ).style.display = 'none';
 		
 		var api = scorm.api;
 
+		if( api )
+		{		
+			element( 'location' ).value = scorm.getValue( 'cmi.core.lesson_location' );
+			element( 'status' ).value = scorm.getValue( 'cmi.core.lesson_status' );
+			element( 'score' ).value = scorm.getValue( 'cmi.core.score.raw' );
+			element( 'max' ).value = scorm.getValue( 'cmi.core.score.max' );
+			element( 'min' ).value = scorm.getValue( 'cmi.core.score.min' );
+			element( 'exit' ).value = scorm.getValue( 'cmi.core.exit' );
+			element( 'time' ).value = scorm.getValue( 'cmi.core.session_time' );
+			element( 'data' ).value = scorm.getValue( 'cmi.suspend_data' );
+			element( 'comments' ).value = scorm.getValue( 'cmi.comments' );
+		}
+		else
+		{
+			element( 'table' ).style.display = 'none';
+			element( 'noform' ).style.display = 'block';
+		}
+	
+		function send()
+		{
+			scorm.setValue( 'cmi.core.lesson_location', element( 'location' ).value );
+			scorm.setValue( 'cmi.core.lesson_status', element( 'status' ).value );
+			scorm.setValue( 'cmi.core.score.raw', element( 'score' ).value );
+			scorm.setValue( 'cmi.core.score.max', element( 'max' ).value );
+			scorm.setValue( 'cmi.core.score.min', element( 'min' ).value );
+			scorm.setValue( 'cmi.core.exit', element( 'exit' ).value );
+			scorm.setValue( 'cmi.core.session_time', element( 'time' ).value );
+			scorm.setValue( 'cmi.suspend_data', element( 'data' ).value );
+			scorm.setValue( 'cmi.comments', element( 'comments' ).value );
+		}
+		
 		function log( str )
 		{
 			var elem = document.createElement( 'div' );
