@@ -13,8 +13,7 @@ EXIT /B
 ECHO Rebuilding SCORM "%~1"
 
 rem inside: GitHub\scorm\src\
-copy ..\misc\js\three.min.js "%~1"
-copy ..\misc\js\suica.min.js "%~1"
+copy ..\misc\js\suica.js "%~1"
 
 del "..\bin\%~1.zip"
 
