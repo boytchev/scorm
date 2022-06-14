@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>HSL Plates</title>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap" rel="stylesheet">
+	<link rel="shortcut icon" type="image/png" href="logo.png"/>
+	
+	<script src="suica.js"></script>
+	<style>
+		body {
+			font-family: 'Roboto', sans-serif;
+		}
+
+		h1 {
+			font-size: 1.5em;
+			margin-bottom: 0.25em;
+		}
+	</style>
+</head>
+
+<body>
+	<suica fullwindow ontime="spin">
+		<demo>
+	</suica>
+
+	<script>
+		var x, z, pnt = [],
+			r = 10;
+			h = 1;
+		
+		for( var i=0; i<360; i+=60 )
+		for( var j=-4; j<=4; j+=4 )
+		{
+			x = r * Math.cos( radians(i+j) ),
+			z = r * Math.sin( radians(i+j) );
+			pnt.push( [x,-h,z], [x,h,z] );
+			x *= 0.95;
+			z *= 0.95;
+			pnt.push( [x,-1.5*h,z], [x,1.5*h,z] );
+		}
+		
+		
+		var plate = convex( pnt );
+		its.color = 'white';
+		its.image = "Metal_plate_256x256.jpg";
+//		its.spinV = 90;
+		
+		for( var i=0; i<360; i+=60 )
+		{
+			plate.clone;
+			its.x = 19 * Math.cos( radians(i+30) ),
+			its.z = 19 * Math.sin( radians(i+30) );
+		}
+		
+		its.images = 1/10;
+		
+		function spin( t )
+		{
+			var objs = allObjects();
+			for( var i = 1; i< objs.length; i++ )
+			{
+				objs[i].spinV = 200*t;
+				objs[i].spinH = 120-60*i;
+//				objs[i].spinT = 60*i;
+			}
+		}
+	</script>
+	
+</body>
+</html>
