@@ -13,6 +13,7 @@
 	<link rel="shortcut icon" type="image/png" href="logo.png"/>
 	
 	<script src="suica.js"></script>
+	<script src="plate.js"></script>
 	<style>
 		body {
 			font-family: 'Roboto', sans-serif;
@@ -26,49 +27,24 @@
 </head>
 
 <body>
-	<suica fullwindow ontime="spin">
-		<demo>
+	<suica fullwindow ontime="spin" background="linen">
 	</suica>
 
 	<script>
-		var x, z, pnt = [],
-			r = 10;
-			h = 1;
+		lookAt( [0,100,0], [0,0,0], [0,0,1] );
 		
-		for( var i=0; i<360; i+=60 )
-		for( var j=-4; j<=4; j+=4 )
+		var plates = [];
+		
+		for( var i=0; i<7; i++ )
 		{
-			x = r * Math.cos( radians(i+j) ),
-			z = r * Math.sin( radians(i+j) );
-			pnt.push( [x,-h,z], [x,h,z] );
-			x *= 0.95;
-			z *= 0.95;
-			pnt.push( [x,-1.5*h,z], [x,1.5*h,z] );
+			plates.push( new Plate(i) );
 		}
-		
-		
-		var plate = convex( pnt );
-		its.color = 'white';
-		its.image = "Metal_plate_256x256.jpg";
-//		its.spinV = 90;
-		
-		for( var i=0; i<360; i+=60 )
-		{
-			plate.clone;
-			its.x = 19 * Math.cos( radians(i+30) ),
-			its.z = 19 * Math.sin( radians(i+30) );
-		}
-		
-		its.images = 1/10;
 		
 		function spin( t )
 		{
-			var objs = allObjects();
-			for( var i = 1; i< objs.length; i++ )
+			for( var plate of plates )
 			{
-				objs[i].spinV = 200*t;
-				objs[i].spinH = 120-60*i;
-//				objs[i].spinT = 60*i;
+				plate.rotate( 100*t + plate.index*90 );
 			}
 		}
 	</script>
