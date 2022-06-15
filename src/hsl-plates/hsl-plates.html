@@ -14,6 +14,7 @@
 	
 	<script src="suica.js"></script>
 	<script src="plate.js"></script>
+	<script src="tween.umd.js"></script>
 	<style>
 		body {
 			font-family: 'Roboto', sans-serif;
@@ -27,7 +28,7 @@
 </head>
 
 <body>
-	<suica fullwindow ontime="spin" background="linen">
+	<suica fullwindow background="linen" ontime="update">
 	</suica>
 
 	<script>
@@ -40,13 +41,56 @@
 			plates.push( new Plate(i) );
 		}
 		
-		function spin( t )
+		function update( t )
 		{
-			for( var plate of plates )
-			{
-				plate.rotate( 100*t + plate.index*90 );
-			}
+			TWEEN.update( 1000*t );
 		}
+		
+		new TWEEN.Tween( {angle:0} )
+				.to({angle: 180}, 1000)
+				.easing(TWEEN.Easing.Sinusoidal.InOut)
+				.onUpdate((ang) => {
+					for( var plate of plates )
+					{
+						plate.angle = ang.angle;
+					}
+				})
+				.delay( 1000 )
+				.start( );
+
+		new TWEEN.Tween( {angle:180} )
+				.to({angle: 0}, 1000)
+				.easing(TWEEN.Easing.Sinusoidal.InOut)
+				.onUpdate((ang) => {
+					for( var plate of plates ) if( plate.index%2!=0 )
+					{
+						plate.angle = ang.angle;
+					}
+				})
+				.delay( 3000 )
+				.start( );
+
+		new TWEEN.Tween( {angle:180} )
+				.to({angle: 0}, 1000)
+				.easing(TWEEN.Easing.Sinusoidal.InOut)
+				.onUpdate((ang) => {
+					for( var plate of plates ) if( plate.index%2==0 )
+					{
+						plate.angle = ang.angle;
+					}
+				})
+				.delay( 4000 )
+				.start( );
+
+		new TWEEN.Tween( {angle:0, plate:plates[2]} )
+				.to({angle: 180}, 1000)
+				.easing(TWEEN.Easing.Sinusoidal.InOut)
+				.onUpdate((ang) => {
+					ang.plate.angle = ang.angle;
+				})
+				.delay( 5500 )
+				.start( );
+
 	</script>
 	
 </body>

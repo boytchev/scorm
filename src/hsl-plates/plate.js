@@ -32,6 +32,8 @@ class Plate extends Group
 		this.add( frame );
 		this.add( plate );
 		
+		this.spinH = 120-60*index;
+		
 	} // Plate.constructor
 
 
@@ -78,10 +80,16 @@ class Plate extends Group
 	}
 
 	
-	rotate( angle )
+	get angle( )
+	{
+		if( this.index > 0 ) return this.spinV;
+		return 0;
+	}
+	
+	
+	set angle( angle )
 	{
 		if( this.index > 0 ) this.spinV = angle;
-		this.spinH = 120-60*this.index;
 	}
 	
 } // class Plate
