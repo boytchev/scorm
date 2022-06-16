@@ -14,6 +14,7 @@
 	
 	<script src="suica.js"></script>
 	<script src="plate.js"></script>
+	<script src="playground.js"></script>
 	<script src="tween.umd.js"></script>
 	<style>
 		body {
@@ -28,69 +29,18 @@
 </head>
 
 <body>
-	<suica fullscreen background="linen" ontime="update">
+	<suica fullwindow background="linen" ontime="update">
 	</suica>
 
 	<script>
 		lookAt( [0,100,0], [0,0,0], [0,0,1] );
 		
-		var plates = [];
-		
-		for( var i=0; i<7; i++ )
-		{
-			plates.push( new Plate(i) );
-		}
+		var playground = new Playground;
 		
 		function update( t )
 		{
 			TWEEN.update( 1000*t );
 		}
-		
-		new TWEEN.Tween( {angle:0} )
-				.to({angle: 180}, 1000)
-				.easing(TWEEN.Easing.Sinusoidal.InOut)
-				.onUpdate((ang) => {
-					for( var plate of plates )
-					{
-						plate.angle = ang.angle;
-					}
-				})
-				.delay( 1000 )
-				.start( );
-
-		new TWEEN.Tween( {angle:180} )
-				.to({angle: 0}, 1000)
-				.easing(TWEEN.Easing.Sinusoidal.InOut)
-				.onUpdate((ang) => {
-					for( var plate of plates ) if( plate.index%2!=0 )
-					{
-						plate.angle = ang.angle;
-					}
-				})
-				.delay( 3000 )
-				.start( );
-
-		new TWEEN.Tween( {angle:180} )
-				.to({angle: 0}, 1000)
-				.easing(TWEEN.Easing.Sinusoidal.InOut)
-				.onUpdate((ang) => {
-					for( var plate of plates ) if( plate.index%2==0 )
-					{
-						plate.angle = ang.angle;
-					}
-				})
-				.delay( 4000 )
-				.start( );
-
-		new TWEEN.Tween( {angle:0, plate:plates[2]} )
-				.to({angle: 180}, 1000)
-				.easing(TWEEN.Easing.Sinusoidal.InOut)
-				.onUpdate((ang) => {
-					ang.plate.angle = ang.angle;
-				})
-				.delay( 5500 )
-				.start( );
-
 	</script>
 	
 </body>

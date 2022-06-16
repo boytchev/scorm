@@ -5,91 +5,108 @@
 
 class Plate extends Group
 {
+	static FLIP_SPEED = 700; // in ms
 	
-	constructor( index = 0 )
+	constructor( center, spin )
 	{
 		super( suica );
 
-		this.index = index;
+		this.center = center;
+		this.spinH = spin;
 		
-		if( index > 0 )
-		{
-			this.x = 19 * Math.cos( radians(60*index-30) );
-			this.z = 19 * Math.sin( radians(60*index-30) );
-		}
-		
-		var frame = convex( this.geometry() );
-			frame.threejs.material = this.material();
+		var basePlate = convex( this.hexagonalGeometry, [10,1] );
+			its.threejs.material = this.frameMaterial;
 	
-		var plate = convex( this.geometry() );
-			plate.image = 'hexagon.png';
-			plate.images = [0.3,0.5];
-			plate.size = [0.7,1,0.7];
-			plate.y = 0.2;
-			//plate.color = random( ['orange','navy','lightsalmon'] );
-			plate.color = hsl( random(0,359), 100, 50 );
+		var colorPlate = convex( this.hexagonalGeometry, [7,0.9] );
+			its.image = 'hexagon.png';
+			its.images = [3,5];
+			its.y = 0.3;
+			its.color = hsl( random(0,359), 100, 50 );
 	
-		this.add( frame );
-		this.add( plate );
-		
-		this.spinH = 120-60*index;
+		this.add( basePlate, colorPlate );
+		this.angle = 180;
 		
 	} // Plate.constructor
 
 
-	geometry( )
+	get hexagonalGeometry( )
 	{
-		var geo = [],
-			x, z,
-			r = 10,
-			h = 1;
+		var geometry = [],
+			x, z;
 				
 		for( var i=0; i<360; i+=60 )
 		for( var j=-4; j<=4; j+=4 )
 		{
-			x = r * Math.cos( radians(i+j) ),
-			z = r * Math.sin( radians(i+j) );
-			geo.push( [x,-h,z], [x,h,z] );
+			x = Math.cos( radians(i+j) ),
+			z = Math.sin( radians(i+j) );
+			geometry.push( [x,-0.5,z], [x,0.5,z] );
 			x *= 0.975;
 			z *= 0.975;
-			geo.push( [x,-1.25*h,z], [x,1.25*h,z] );
+			geometry.push( [x,-0.6,z], [x,0.6,z] );
 		}
 		
-		return geo;
-	}
+		return geometry;
+		
+	} // Plate.hexagonalGeometry
 
 	
-	material( )
+	get frameMaterial( )
 	{
-		const SCALE = 1/5,
-			  OFFSET = 0/2;
+		const SCALE = 1.5;
 		
-		var mat = new THREE.MeshPhongMaterial({
+		var material = new THREE.MeshPhongMaterial({
 				color: 'linen',
+				shininess: 150,
 				map: image( 'metal_plate.jpg' ),
 				normalMap: image( 'metal_plate_normal.jpg' ),
-				shininess: 150,
+				normalScale: new THREE.Vector2( 0.2, 0.2 ),
 			});
-		mat.map.repeat.set( SCALE, SCALE );
-		mat.map.offset.set( OFFSET, OFFSET );
-		mat.normalMap.repeat.set( SCALE, SCALE );
-		mat.normalMap.offset.set( OFFSET, OFFSET );
-		mat.normalScale.set( 0.2, 0.2 );
+			
+		material.map.repeat.set( SCALE, SCALE );
+		material.map.offset.set( 0.5, 0.5 );
 		
-		return mat;
-	}
+		material.normalMap.repeat.set( SCALE, SCALE );
+		material.normalMap.offset.set( 0.5, 0.5 );
+		
+		return material;
+	} // Plate.frameMaterial
 
 	
 	get angle( )
 	{
-		if( this.index > 0 ) return this.spinV;
-		return 0;
+		return this.spinV;
 	}
 	
 	
 	set angle( angle )
 	{
-		if( this.index > 0 ) this.spinV = angle;
+		this.spinV = angle;
+	}
+	
+	
+	flipOut( delay, flips=1  )
+	{
+		new TWEEN.Tween( {angle:this.angle, plate:this} )
+				.to( {angle:this.angle+180*flips}, Plate.FLIP_SPEED*flips )
+				.easing( TWEEN.Easing.Sinusoidal.InOut )
+				.onUpdate( (state) => {
+					state.plate.angle = state.angle % 360;
+				})
+				.delay( 1000*delay )
+				.start( );
+	}
+	
+	
+	flipIn( delay, flips=1 )
+	{
+		new TWEEN.Tween( {angle:this.angle, plate:this} )
+				.to( {angle:this.angle-180*flips}, Plate.FLIP_SPEED*flips )
+				.easing( TWEEN.Easing.Sinusoidal.InOut )
+				.onUpdate( (state) => {
+					state.plate.angle = (state.angle+360) % 360;
+				})
+				.delay( 1000*delay )
+				.start( );
 	}
 	
 } // class Plate
