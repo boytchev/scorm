@@ -6,6 +6,7 @@
 class Plate extends Group
 {
 	static FLIP_SPEED = 700; // in ms
+	static TOGGLE_SPEED = 150; // in ms
 	
 	constructor( center, spin )
 	{
@@ -14,18 +15,18 @@ class Plate extends Group
 		this.center = center;
 		this.spinH = spin;
 		
-		var basePlate = convex( this.hexagonalGeometry, [10,1] );
+		this.basePlate = convex( this.hexagonalGeometry, [10,1] );
+			its.y = 0.5;
 			its.threejs.material = this.frameMaterial;
 	
-		var colorPlate = convex( this.hexagonalGeometry, [7,0.9] );
+		this.colorPlate = convex( this.hexagonalGeometry, [7,0.9] );
 			its.image = 'hexagon.png';
 			its.images = [3,5];
-			its.y = 0.3;
-			its.color = hsl( random(0,359), 100, 50 );
+			its.y = 0.8;
 	
-		this.add( basePlate, colorPlate );
+		this.add( this.basePlate, this.colorPlate );
 		this.angle = 180;
-		
+		this._hue = 0;
 	} // Plate.constructor
 
 
@@ -60,6 +61,8 @@ class Plate extends Group
 				map: image( 'metal_plate.jpg' ),
 				normalMap: image( 'metal_plate_normal.jpg' ),
 				normalScale: new THREE.Vector2( 0.2, 0.2 ),
+				emissive: 'orange',
+				emissiveIntensity: 0,
 			});
 			
 		material.map.repeat.set( SCALE, SCALE );
@@ -81,6 +84,19 @@ class Plate extends Group
 	set angle( angle )
 	{
 		this.spinV = angle;
+	}
+	
+	
+	get hue( )
+	{
+		return this._hue;
+	}
+	
+	
+	set hue( hue )
+	{
+		this._hue = hue;
+		this.colorPlate.color = hsl( hue, 200, 50 );
 	}
 	
 	
@@ -106,6 +122,21 @@ class Plate extends Group
 					state.plate.angle = (state.angle+360) % 360;
 				})
 				.delay( 1000*delay )
+				.start( );
+	}
+	
+		
+	toggle( )
+	{
+		var material = this.basePlate.threejs.material,
+			ei = material.emissiveIntensity;
+
+		new TWEEN.Tween( {ei:ei, plate:this} )
+				.to( {ei:0.5-ei}, Plate.TOGGLE_SPEED )
+				.easing( TWEEN.Easing.Sinusoidal.InOut )
+				.onUpdate( (state) => {
+					material.emissiveIntensity = state.ei;
+				})
 				.start( );
 	}
 	
