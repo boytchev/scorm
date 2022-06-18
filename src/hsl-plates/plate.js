@@ -6,7 +6,9 @@
 class Plate extends Group
 {
 	static FLIP_SPEED = 700; // in ms
-	static TOGGLE_SPEED = 150; // in ms
+	static TOGGLE_SPEED = 300; // in ms
+	
+	static blockInteraction = 0;
 	
 	constructor( playground, center, spin )
 	{
@@ -15,6 +17,7 @@ class Plate extends Group
 		this.playground = playground;
 		this.center = center;
 		this.spinH = spin;
+		this.index = 0;
 		
 		this.basePlate = convex( this.hexagonalGeometry, [10,1] );
 			its.y = 0.5;
@@ -25,10 +28,13 @@ class Plate extends Group
 			its.images = [3,5];
 			its.y = 0.8;
 	
+		this.addEventListener( 'click', this.onClick );
+		
 		this.add( this.basePlate, this.colorPlate );
 		this.angle = 180;
 		this._hue = 0;
 		this.selected = false;
+		this.isMasterPlate = false;
 	} // Plate.constructor
 
 
@@ -104,52 +110,97 @@ class Plate extends Group
 	}
 	
 	
-	flipOut( delay, flips=1  )
+	flipOut( delay=0, flips=1  )
 	{
+		Plate.blockInteraction++;
+		
 		new TWEEN.Tween( {angle:this.angle, plate:this} )
 				.to( {angle:this.angle+180*flips}, Plate.FLIP_SPEED*flips )
 				.easing( TWEEN.Easing.Sinusoidal.InOut )
 				.onUpdate( (state) => {
 					state.plate.angle = state.angle % 360;
 				})
+				.onComplete( () => {Plate.blockInteraction--} )
 				.delay( 1000*delay )
 				.start( );
 	}
 	
 	
-	flipIn( delay, flips=1 )
+	flipIn( delay=0, flips=1 )
 	{
+		Plate.blockInteraction++;
+
 		new TWEEN.Tween( {angle:this.angle, plate:this} )
 				.to( {angle:this.angle-180*flips}, Plate.FLIP_SPEED*flips )
 				.easing( TWEEN.Easing.Sinusoidal.InOut )
 				.onUpdate( (state) => {
 					state.plate.angle = (state.angle+360) % 360;
 				})
+				.onComplete( () => {Plate.blockInteraction--} )
 				.delay( 1000*delay )
 				.start( );
 	}
 	
 		
 	toggle( )
-	{
-		if( !this.playground.gameStarted )
-		{
-			this.playground.toggleGame( );
-			return;
-		}
-		
+	{		
 		var plate = this;
 
 		plate.selected = !plate.selected;
+
+		Plate.blockInteraction++;
 		
 		new TWEEN.Tween( {h:plate.selected?1:18} )
 				.to( {h:plate.selected?18:1}, Plate.TOGGLE_SPEED )
-				.easing( TWEEN.Easing.Sinusoidal.InOut )
+				.easing( TWEEN.Easing.Cubic.InOut )
 				.onUpdate( (state) => {
 					plate.height = state.h;
-					plate.angle = -state.h*0.5;
+					if( !plate.isMasterPlate )
+					{
+						plate.angle = -(state.h-1)*0.5;
+					}
 				})
+				.onComplete( () => {Plate.blockInteraction--} )
 				.start( );
 	}
+	
+		
+	retract( )
+	{		
+		var plate = this;
+
+		plate.selected = false;
+
+		Plate.blockInteraction++;
+
+		new TWEEN.Tween( {a:plate.angle,h:plate.height} )
+				.to( {a: 180,h:1}, Plate.FLIP_SPEED )
+				.easing( TWEEN.Easing.Cubic.InOut )
+				.onUpdate( (state) => {
+					plate.height = state.h;
+					plate.angle = (state.a+360) % 360;
+				})
+				.onComplete( () => {Plate.blockInteraction--} )
+				.start( );
+	}
+	
+	
+	onClick( )
+	{
+		if( Plate.blockInteraction > 0 ) return;
+		
+		// if game is not started, click on any plate will start it
+		if( this.playground.gameStarted )
+		{
+			if( this.isMasterPlate )
+				this.playground.endGame( );
+			else
+				this.toggle( );
+		}
+		else
+		{
+			this.playground.newGame( 0 );
+		}
+	} // Plate.onClick
 	
 } // class Plate
