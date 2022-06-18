@@ -8,10 +8,11 @@ class Plate extends Group
 	static FLIP_SPEED = 700; // in ms
 	static TOGGLE_SPEED = 150; // in ms
 	
-	constructor( center, spin )
+	constructor( playground, center, spin )
 	{
 		super( suica );
 
+		this.playground = playground;
 		this.center = center;
 		this.spinH = spin;
 		
@@ -27,6 +28,7 @@ class Plate extends Group
 		this.add( this.basePlate, this.colorPlate );
 		this.angle = 180;
 		this._hue = 0;
+		this.selected = false;
 	} // Plate.constructor
 
 
@@ -61,8 +63,6 @@ class Plate extends Group
 				map: image( 'metal_plate.jpg' ),
 				normalMap: image( 'metal_plate_normal.jpg' ),
 				normalScale: new THREE.Vector2( 0.2, 0.2 ),
-				emissive: 'orange',
-				emissiveIntensity: 0,
 			});
 			
 		material.map.repeat.set( SCALE, SCALE );
@@ -96,7 +96,11 @@ class Plate extends Group
 	set hue( hue )
 	{
 		this._hue = hue;
-		this.colorPlate.color = hsl( hue, 200, 50 );
+		
+		// correct hue
+		hue = hue + 7*Math.sin(radians(3*hue))
+		
+		this.colorPlate.color = hsl( hue, 100, 50 );
 	}
 	
 	
@@ -128,14 +132,22 @@ class Plate extends Group
 		
 	toggle( )
 	{
-		var material = this.basePlate.threejs.material,
-			ei = material.emissiveIntensity;
+		if( !this.playground.gameStarted )
+		{
+			this.playground.toggleGame( );
+			return;
+		}
+		
+		var plate = this;
 
-		new TWEEN.Tween( {ei:ei, plate:this} )
-				.to( {ei:0.5-ei}, Plate.TOGGLE_SPEED )
+		plate.selected = !plate.selected;
+		
+		new TWEEN.Tween( {h:plate.selected?1:18} )
+				.to( {h:plate.selected?18:1}, Plate.TOGGLE_SPEED )
 				.easing( TWEEN.Easing.Sinusoidal.InOut )
 				.onUpdate( (state) => {
-					material.emissiveIntensity = state.ei;
+					plate.height = state.h;
+					plate.angle = -state.h*0.5;
 				})
 				.start( );
 	}
