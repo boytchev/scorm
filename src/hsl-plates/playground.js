@@ -33,6 +33,7 @@ class Playground
 		this.gameStarted = false;
 		
 		this.totalScore = 0;
+		this.totalTime = 0;
 		
 	} // Playground.constructor
 	
@@ -80,6 +81,10 @@ class Playground
 		
 		this.totalScore = Playground.TEMPORAL_AVERAGE_OLD*this.totalScore + Playground.TEMPORAL_AVERAGE_NEW*score;
 
+		var sc = this.totalScore.toFixed(1);
+		element('score').innerHTML = sc;
+		element('score').style.right = 1+0.065*(sc.length-1)+'em';
+		
 		console.log( 'end game',score,this.totalScore );
 
 		
