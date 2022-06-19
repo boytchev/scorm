@@ -44,7 +44,7 @@ class Plate extends Group
 			x, z;
 				
 		for( var i=0; i<360; i+=60 )
-		for( var j=-4; j<=4; j+=4 )
+		for( var j=-2; j<=2; j+=4 )
 		{
 			x = Math.cos( radians(i+j) ),
 			z = Math.sin( radians(i+j) );
@@ -157,7 +157,7 @@ class Plate extends Group
 					plate.height = state.h;
 					if( !plate.isMasterPlate )
 					{
-						plate.angle = -(state.h-1)*0.5;
+						plate.angle = -(state.h-1)*0.55;
 					}
 				})
 				.onComplete( () => {Plate.blockInteraction--} )

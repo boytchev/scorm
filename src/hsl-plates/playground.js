@@ -22,7 +22,7 @@ class Playground
 		{
 			var x = 19 * Math.cos( radians(spin) ),
 				z = 19 * Math.sin( radians(spin) );
-				
+		
 			var plate = new Plate( this, [x,0,z], 90-spin );
 			
 			this.plates.push( plate );
@@ -36,7 +36,6 @@ class Playground
 		this.totalTime = 0;
 		
 		this.scoreHistory = [];
-		//for( var i=0; i<55; i++ ) this.scoreHistory.push( 50 + 30*Math.sin(i/10) );
 		
 		this.redrawPerformanceGraph( );
 	} // Playground.constructor
@@ -95,14 +94,13 @@ class Playground
 		}
 		ctx.stroke( );
 
-//		ctx.fillRect( 0, 0, W, H );
-
-		ctx.fillStyle = 'black';
 
 		for( var i in this.scoreHistory )
 		{
+			ctx.fillStyle = 'black';
 			ctx.fillRect( 10*i+2, Math.min(H-1,H-H*this.scoreHistory[i]/100), 7, H );
 		}
+		
 	} // Playground.redrawPerformanceGraph
 	
 	
@@ -116,17 +114,22 @@ class Playground
 			this.difficulty -= 0.05;
 		this.difficulty = THREE.MathUtils.clamp( this.difficulty, 0, 1 );
 		
+		var oldScore = this.totalScore;
 		this.totalScore = Playground.TEMPORAL_AVERAGE_OLD*this.totalScore + Playground.TEMPORAL_AVERAGE_NEW*score;
+		
+		if( this.totalScore > oldScore && this.totalScore < oldScore+1 )
+			this.totalScore = THREE.MathUtils.clamp( oldScore+1, 0, 100 );
 
 		this.scoreHistory.push( this.totalScore );
-		if( this.scoreHistory.length > 24 ) this.scoreHistory.shift();
+		if( this.scoreHistory.length > 24 )
+		{
+			this.scoreHistory.shift();
+		}
 
 		var sc = this.totalScore.toFixed(1);
 		element('score').innerHTML = sc;
 		element('score').style.right = 1+0.065*(sc.length-1)+'em';
 		
-		console.log( 'end game',score,this.totalScore );
-
 		
 		playground.masterPlate.flipOut( 0 );
 		for( var plate of this.plates )
@@ -143,8 +146,6 @@ class Playground
 	
 	newGame( )
 	{
-		console.log( 'new game' );
-		
 		// prepare master plate
 		
 		this.masterPlate.index = random([0.5, 1.5, 2.5, 3.5, 4.5]);
@@ -155,30 +156,34 @@ class Playground
 		this.masterPlate.hue = masterHue + this.masterPlate.index*hueStep;
 		this.masterPlate.flipIn( 0 );
 		
+
+		// timeline:
+		//
+		// 0123456789
+		//
+		//      2
+		//    1   3
+		//    0   4
+		//      5
 		
 		// prepare other plates
+		var patterns = [ '000000', '040404', '404040', '630369', '369630', '450123', '210543', '004004', '440440' ]; 
+		var delays = random( patterns );
+		
 		
 		var j = random([0,1,2,3,4,5]);
+		
 		for( var i=0; i<6; i++ )
 		{
 			var plate = this.plates[ (i+j)%6 ];
 			plate.hue = masterHue + i*hueStep;
 			plate.index = i;
 			
-			if( i%2 ) plate.flipIn( 0 ); else plate.flipOut( 0 );
+			plate.flipIn( 0.1+parseInt(delays[ (i+j)%6 ])/30 );
 		}
 
 		this.gameStarted = true;
-/*		
-console.log( Math.round(this.masterPlate.hue));
-for( var plate of this.plates )
-{
-	var diff=plate.hue-this.masterPlate.hue;
-	if(diff>=180) diff-=360;
-	if(diff<=-180) diff+=360;
-console.log( Math.round(plate.hue), `Δ = ${Math.round(100*diff/180)}%`,'idx='+plate.index, 'pts=',Math.abs(plate.index-this.masterPlate.index)-0.5);
-}
-*/
+
 	} // Playground.newGame
 	
 } // class Playground
