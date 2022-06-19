@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Color Wheel</title>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap" rel="stylesheet">
+	<link rel="shortcut icon" type="image/png" href="logo.png"/>
+	
+	<script src="suica.js"></script>
+	<style>
+		body {
+			font-family: 'Roboto', sans-serif;
+		}
+
+		h1 {
+			font-size: 1.5em;
+			margin-bottom: 0.25em;
+		}
+	</style>
+</head>
+
+<body>
+	<suica fullwindow background="linen">
+		<circle id="s" size="60" color="white">
+	</suica>
+
+	<script>
+		s.image = drawing( 200, 200, 'white' );
+		for( var i=0; i<360; i+=0.1 )
+		{
+			moveTo( 100, 100 );
+			lineTo( 100+110*Math.cos(radians(i)), 100+110*Math.sin(radians(i)) );
+			stroke( hsl(i + 10*Math.sin(radians(3*i)),100,50) );
+		}
+	</script>
+	
+</body>
+</html>

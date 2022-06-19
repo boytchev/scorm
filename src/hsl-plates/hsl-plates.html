@@ -12,43 +12,35 @@
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap" rel="stylesheet">
 	<link rel="shortcut icon" type="image/png" href="logo.png"/>
 	
+	<link rel="stylesheet" href="styles.css">
+
 	<script src="suica.js"></script>
 	<script src="plate.js"></script>
 	<script src="playground.js"></script>
 	<script src="tween.umd.js"></script>
-	<style>
-		body {
-			font-family: 'Roboto', sans-serif;
-		}
-
-		h1 {
-			font-size: 1.5em;
-			margin-bottom: 0.25em;
-		}
-		
-		.corner {
-			width: 4cm;
-			height: 4cm;
-			position: absolute;
-			z-index: 1000;
-			border: dotted black 1px;
-		}
-	</style>
 </head>
 
 <body>
 	<suica fullwindow background="linen" ontime="update">
-		<div class="corner" style="left:1em; top:1em; border-style: dotted none none dotted;"></div>
-		<div class="corner" style="right:1em; top:1em; border-style: dotted dotted none none;"></div>
-		<div class="corner" style="left:1em; bottom:1em; border-style: none none dotted dotted;"></div>
-		<div class="corner" style="right:1em; bottom:1em; border-style: none dotted dotted none;"></div>
+		<div class="hud corner top left"></div>
+		<div class="hud corner top right"></div>
+		<div class="hud corner bottom left"></div>
+		<div class="hud corner bottom right"></div>
 
-		<div class="corner" style="right:1em; top:1em; border-style: none; width: auto; padding: 0.4em; font-size: 4mm; color: dimgray">TIME</div>
-		<div id="timer" class="corner" style="right:1.5em; top:1.7em; border-style: none; width: auto; text-shadow: 0 0 0.2em gray; font-size: 6mm; transform: scale(1.3, 1); no-font-family: Consolas, Courier New, Monospace;">00:00:00</div>
-
-		<div class="corner" style="right:1em; bottom:1em; border-style: none; width: auto; padding: 0.4em; font-size: 4mm; color: dimgray; height: 1em;">SCORE</div>
+		<div class="hud top right" style="border: none;">
+			<div class="label right">TIME</div>
+			<div id="timer" class="value">00:00:00</div>
+		</div>
 		
-		<div id="score" class="corner" style="right:1em; bottom:1.7em; border-style: none; width: auto; text-shadow: 0 0 0.2em gray; font-size: 6mm; transform: scale(1.3, 1); height:1em;">0</div>
+		<div class="hud bottom right" style="border: none;">
+			<div id="score" class="value">0.0</div>
+			<div class="label right">SCORE</div>
+		</div>
+		
+		<div class="hud bottom left" style="border: none;">
+			<canvas id="performance" class="label left perf" width="241" height="81"></canvas>
+			<div class="label right">PERFORMANCE</div>
+		</div>
 	</suica>
 
 	

@@ -35,6 +35,10 @@ class Playground
 		this.totalScore = 0;
 		this.totalTime = 0;
 		
+		this.scoreHistory = [];
+		//for( var i=0; i<55; i++ ) this.scoreHistory.push( 50 + 30*Math.sin(i/10) );
+		
+		this.redrawPerformanceGraph( );
 	} // Playground.constructor
 	
 
@@ -69,6 +73,39 @@ class Playground
 	} // Playground.evaluate
 	
 	
+	redrawPerformanceGraph( )
+	{
+		var canvas = element( 'performance' ),
+			W = canvas.width,
+			H = canvas.height;
+	
+		var ctx = element( 'performance' ).getContext( '2d' );
+		ctx.clearRect( 0, 0, W, H );
+
+		ctx.strokeStyle = 'lightgray';
+		for( var y=0; y<H; y+=20 )
+		{
+			ctx.moveTo( 0, y+0.5 );
+			ctx.lineTo( W, y+0.5 );
+		}
+		for( var x=0; x<W; x+=20 )
+		{
+			ctx.moveTo( x+0.5, 0 );
+			ctx.lineTo( x+0.5, H );
+		}
+		ctx.stroke( );
+
+//		ctx.fillRect( 0, 0, W, H );
+
+		ctx.fillStyle = 'black';
+
+		for( var i in this.scoreHistory )
+		{
+			ctx.fillRect( 10*i+2, Math.min(H-1,H-H*this.scoreHistory[i]/100), 7, H );
+		}
+	} // Playground.redrawPerformanceGraph
+	
+	
 	endGame( )
 	{
 		var score = this.evaluate( );
@@ -80,6 +117,9 @@ class Playground
 		this.difficulty = THREE.MathUtils.clamp( this.difficulty, 0, 1 );
 		
 		this.totalScore = Playground.TEMPORAL_AVERAGE_OLD*this.totalScore + Playground.TEMPORAL_AVERAGE_NEW*score;
+
+		this.scoreHistory.push( this.totalScore );
+		if( this.scoreHistory.length > 24 ) this.scoreHistory.shift();
 
 		var sc = this.totalScore.toFixed(1);
 		element('score').innerHTML = sc;
@@ -94,7 +134,9 @@ class Playground
 			plate.retract( );
 		}
 
-
+		this.redrawPerformanceGraph( );
+		
+		
 		this.gameStarted = false;
 	} // Playground.endGame
 	
