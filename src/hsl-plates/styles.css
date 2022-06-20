@@ -45,6 +45,7 @@ h1 {
 	margin: 2mm;
 	border: none;
 	user-select: none;
+	text-transform: uppercase;
 }
 
 .value {

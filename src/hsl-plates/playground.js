@@ -41,9 +41,34 @@ class Playground
 		
 		this.redrawPerformanceGraph( );
 		this.resize( );
+		this.translate( );
 	} // Playground.constructor
 	
 
+	translate( )
+	{
+		var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone,
+			language = timeZone=='Europe/Sofia' ? 'bg' : 'en';
+		
+		var dictionary = [
+			{id:'txt-time', en:'Time2', bg:'Време'},
+			{id:'txt-score', en:'Score2', bg:'Резултат'},
+			{id:'txt-performance', en:'Performance2', bg:'Изпълнение'},
+			{id:'txt-caption', en:'Hue honeycomb2', bg:'Цветна пчелна пита'},
+			{id:'txt-description', en:'Find the two colours closest to the centre by hue.2', bg:'Намерете двата най-близки цвята до централния цвят.'},
+		];
+		
+		for( var string of dictionary )
+		{
+			if( string[language] )
+			{
+				var elem = element( string.id );
+				if( elem ) elem.innerHTML = string[language];
+			}
+		}
+	} // Playground.translate
+	
+	
 	evaluate( )
 	{
 		var answers = [];
