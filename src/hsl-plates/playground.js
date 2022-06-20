@@ -12,6 +12,8 @@ class Playground
 	static TEMPORAL_AVERAGE_OLD = 0.7;
 	static TEMPORAL_AVERAGE_NEW = 1-Playground.TEMPORAL_AVERAGE_OLD;
 	
+	static POINTS_SPEED = 2000;
+	
 	constructor( )
 	{
 		this.masterPlate = new Plate( this, [0,0,0], 0 );
@@ -107,7 +109,7 @@ class Playground
 	endGame( )
 	{
 		var score = this.evaluate( );
-		
+
 		if( score > this.totalScore )
 			this.difficulty += 0.05;
 		if( score < this.totalScore )
@@ -125,11 +127,29 @@ class Playground
 		{
 			this.scoreHistory.shift();
 		}
-
-		var sc = this.totalScore.toFixed(1);
-		element('score').innerHTML = sc;
-		element('score').style.right = 1+0.065*(sc.length-1)+'em';
-		
+	
+		var scoreElem = element('score');
+		var pointsElem = element( 'points' ),
+			pointsValue = Math.round(10*(this.totalScore-oldScore))/10;
+			pointsElem.innerHTML = (pointsValue>0?'+':'')+pointsValue;
+			
+			new TWEEN.Tween( {opacity:0, scale:4, x:suica.width/2, y:suica.height/2} )
+				.to( {opacity:1, scale:1, x:scoreElem.offsetLeft+30, y:scoreElem.offsetTop}, Playground.POINTS_SPEED )
+				.easing( TWEEN.Easing.Cubic.InOut )
+				.onUpdate( (state) => {
+					pointsElem.style.opacity = 0.5-0.5*Math.cos(2*Math.PI*state.opacity);
+					pointsElem.style.transform = `scale(${1.3*state.scale},${state.scale})`;
+					pointsElem.style.right = Math.round(state.x)+'px';
+					pointsElem.style.bottom = Math.round(state.y)+'px';
+				})
+				.onComplete( ()=> {
+					var sc = this.totalScore.toFixed(1);
+					scoreElem.innerHTML = sc;
+					scoreElem.style.right = 1+0.065*(sc.length-1)+'em';
+					
+					this.redrawPerformanceGraph( );
+				})
+				.start();
 		
 		playground.masterPlate.flipOut( 0 );
 		for( var plate of this.plates )
@@ -137,7 +157,6 @@ class Playground
 			plate.retract( );
 		}
 
-		this.redrawPerformanceGraph( );
 		
 		
 		this.gameStarted = false;
