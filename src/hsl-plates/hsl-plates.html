@@ -52,10 +52,10 @@
 
 	
 	<script>
-		lookAt( [0,100,0], [0,0,0], [0,0,1] );
-		
 		var playground = new Playground;
 
+		window.addEventListener( 'resize', playground.resize );
+		
 		
 		function update( t, dT )
 		{

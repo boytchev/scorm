@@ -40,6 +40,7 @@ class Playground
 		this.scoreHistory = [];
 		
 		this.redrawPerformanceGraph( );
+		this.resize( );
 	} // Playground.constructor
 	
 
@@ -162,6 +163,13 @@ class Playground
 		this.gameStarted = false;
 	} // Playground.endGame
 	
+	
+	resize( )
+	{
+		var distance = 90*THREE.MathUtils.clamp(suica.height/suica.width,1,3);
+		lookAt( [0,distance,0], [0,0,0], [0,0,1] );
+
+	}
 	
 	newGame( )
 	{
