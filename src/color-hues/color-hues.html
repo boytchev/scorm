@@ -21,7 +21,7 @@
 </head>
 
 <body>
-	<suica fullwindow background="linen" ontime="update" onmousemove="onMouseMove">
+	<suica fullwindow fullscreen background="linen" ontime="update" onmousemove="onMouseMove">
 		<div class="hud corner top left"></div>
 		<div class="hud corner top right"></div>
 		<div class="hud corner bottom left"></div>
@@ -45,7 +45,7 @@
 		
 		<div class="hud top left" style="border: none;">
 			<div id="txt-caption" class="caption left">CAPTION</div>
-			<div id="txt-description" class="description right" style="max-width:60%">DESCRIPTION.</div>
+			<!--div id="txt-description" class="description right" style="max-width:60%">DESCRIPTION.</div-->
 		</div>
 		
 		<div id="txt-user" class="hud bottom footnote">USER</div>
@@ -56,7 +56,6 @@
 		var playground = new Playground;
 
 		window.addEventListener( 'resize', playground.resize );
-		
 		
 		function update( t, dT )
 		{

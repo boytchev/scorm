@@ -48,26 +48,44 @@ class Playground
 
 	translate( )
 	{
-		// https://stackoverflow.com/a/70870895
-		var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone,
+		var language;
+		
+		var urlParams = new URLSearchParams( window.location.search );
+
+		if( urlParams.has('lang') )
+		{
+			language = urlParams.get('lang');
+		}
+		else
+		{
+			// https://stackoverflow.com/a/70870895
+			var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 			language = timeZone=='Europe/Sofia' ? 'bg' : 'en';
+		}
 		
 		var dictionary = [
 			{id: 'txt-time',
 				en: 'Time',
-				bg: 'Време'},
+				bg: 'Време',
+				jp: '時間'},
 			{id: 'txt-score',
 				en: 'Score',
-				bg: 'Резултат'},
+				bg: 'Резултат',
+				jp: '時間'},
 			{id: 'txt-performance',
 				en: 'Performance',
-				bg: 'Изпълнение'},
+				bg: 'Изпълнение',
+				jp: '時間'},
 			{id: 'txt-caption',
 				en: 'Color hues',
-				bg: 'Цветни оттенъци'},
+				bg: 'Цветни оттенъци',
+				jp: '色相'},
+			/*
 			{id: 'txt-description',
 				en: 'The two closest color hues to the central color.',
-				bg: 'Двата най-близки цветни оттенъка до централния цвят.'},
+				bg: 'Двата най-близки цветни оттенъка до централния цвят.',
+				jp: '中央の色に最も近い2つの色相。'},
+			*/
 			{id: 'txt-user',
 				en: scorm.api
 						? `<b>${scorm.studentName}</b>`
@@ -75,6 +93,9 @@ class Playground
 				bg: scorm.api
 						? `<b>${scorm.studentName}</b>`
 						: 'Гост',
+				jp: scorm.api
+						? `<b>${scorm.studentName}</b>`
+						: '賓客',
 				},
 		];
 		
@@ -203,7 +224,9 @@ class Playground
 			plate.retract( );
 		}
 
-		
+		// Hide the FULL SCREEN button if it was shown but not used
+		if( element('suica-fullscreen-button' ) )
+			element('suica-fullscreen-button' ).remove();
 		
 		this.gameStarted = false;
 	} // Playground.endGame
@@ -211,9 +234,8 @@ class Playground
 	
 	resize( )
 	{
-		var distance = 90*THREE.MathUtils.clamp(suica.height/suica.width,1,3);
+		var distance = 90*THREE.MathUtils.clamp(suica.canvas.clientHeight/suica.canvas.clientWidth,1,3);
 		lookAt( [0,distance,0], [0,0,0], [0,0,1] );
-
 	}
 	
 	newGame( )
