@@ -11,6 +11,7 @@ h1 {
 .hud {
 	position: absolute;
 	z-index: 1000;
+	/*border: dotted 1px crimson !important;*/
 }
 
 .corner {
@@ -77,6 +78,16 @@ h1 {
 	user-select: none;
 }
 
+.bottom.footnote {
+	width: 100%;
+	text-align: center;
+	font-size: 2.5mm;
+	color: black;
+	border: none;
+	text-transform: uppercase;
+	user-select: none;
+}
+
 .hud.right {
 	text-align: right;
 }
@@ -100,6 +111,7 @@ canvas.perf {
 	margin-bottom: 0em;
 }
 
+/*
 .info-button {
 	display: inline-block;
 	text-align: center;
@@ -118,3 +130,4 @@ canvas.perf {
 	background: dimgray;
 	color: white;
 }
+*/

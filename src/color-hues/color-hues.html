@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-	<title>HSL Plates</title>
+	<title>Color hues</title>
 
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
@@ -21,7 +21,7 @@
 </head>
 
 <body>
-	<suica fullwindow background="linen" ontime="update">
+	<suica fullwindow background="linen" ontime="update" onmousemove="onMouseMove">
 		<div class="hud corner top left"></div>
 		<div class="hud corner top right"></div>
 		<div class="hud corner bottom left"></div>
@@ -44,10 +44,11 @@
 		</div>
 		
 		<div class="hud top left" style="border: none;">
-			<div id="txt-caption" class="caption left">Hue honeycomb</div>
-			<div id="txt-description" class="description right" style="max-width:60%">Find the two colours closest to the centre by hue.</div>
-			<div class="info-button" onclick="showhelp()">INFO</div>
+			<div id="txt-caption" class="caption left">CAPTION</div>
+			<div id="txt-description" class="description right" style="max-width:60%">DESCRIPTION.</div>
 		</div>
+		
+		<div id="txt-user" class="hud bottom footnote">USER</div>
 	</suica>
 
 	
@@ -84,6 +85,15 @@
 			if( seconds<10 ) seconds = '0'+seconds;
 			
 			element('timer').innerHTML = `${hours}:${minutes}:${seconds}`;
+		}
+		
+		function onMouseMove( event )
+		{
+			if( findObject( event ) )
+				event.target.style.cursor = 'pointer';
+			else
+				event.target.style.cursor = 'default';
+			
 		}
 	</script>
 	

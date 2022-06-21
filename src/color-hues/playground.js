@@ -42,20 +42,40 @@ class Playground
 		this.redrawPerformanceGraph( );
 		this.resize( );
 		this.translate( );
+
 	} // Playground.constructor
 	
 
 	translate( )
 	{
+		// https://stackoverflow.com/a/70870895
 		var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone,
 			language = timeZone=='Europe/Sofia' ? 'bg' : 'en';
 		
 		var dictionary = [
-			{id:'txt-time', en:'Time2', bg:'Време'},
-			{id:'txt-score', en:'Score2', bg:'Резултат'},
-			{id:'txt-performance', en:'Performance2', bg:'Изпълнение'},
-			{id:'txt-caption', en:'Hue honeycomb2', bg:'Цветна пчелна пита'},
-			{id:'txt-description', en:'Find the two colours closest to the centre by hue.2', bg:'Намерете двата най-близки цвята до централния цвят.'},
+			{id: 'txt-time',
+				en: 'Time',
+				bg: 'Време'},
+			{id: 'txt-score',
+				en: 'Score',
+				bg: 'Резултат'},
+			{id: 'txt-performance',
+				en: 'Performance',
+				bg: 'Изпълнение'},
+			{id: 'txt-caption',
+				en: 'Color hues',
+				bg: 'Цветни оттенъци'},
+			{id: 'txt-description',
+				en: 'The two closest color hues to the central color.',
+				bg: 'Двата най-близки цветни оттенъка до централния цвят.'},
+			{id: 'txt-user',
+				en: scorm.api
+						? `<b>${scorm.studentName}</b>`
+						: 'Guest',
+				bg: scorm.api
+						? `<b>${scorm.studentName}</b>`
+						: 'Гост',
+				},
 		];
 		
 		for( var string of dictionary )

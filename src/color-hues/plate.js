@@ -29,6 +29,8 @@ class Plate extends Group
 			its.y = 0.8;
 	
 		this.addEventListener( 'click', this.onClick );
+		this.addEventListener( 'mouseenter', this.onMark );
+		this.addEventListener( 'mouseleave', this.onUnmark );
 		
 		this.add( this.basePlate, this.colorPlate );
 		this.angle = 180;
@@ -69,6 +71,8 @@ class Plate extends Group
 				map: image( 'metal_plate.jpg' ),
 				normalMap: image( 'metal_plate_normal.jpg' ),
 				normalScale: new THREE.Vector2( 0.2, 0.2 ),
+				emissive: 'lightsalmon',
+				emissiveIntensity: 0,
 			});
 			
 		material.map.repeat.set( SCALE, SCALE );
@@ -202,5 +206,17 @@ class Plate extends Group
 			this.playground.newGame( 0 );
 		}
 	} // Plate.onClick
+	
+	
+	onMark( )
+	{
+		this.basePlate.color = 'gray';
+	} // Plate.onMark
+	
+	
+	onUnmark( )
+	{
+		this.basePlate.color = 'linen';
+	} // Plate.onUnmark
 	
 } // class Plate

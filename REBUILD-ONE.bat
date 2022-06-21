@@ -2,7 +2,7 @@
 
 CD src
 rem inside: GitHub\scorm\src\
-CALL :BuildOne "hsl-plates"
+CALL :BuildOne "color-hues"
 CD ..
 EXIT /B
 
