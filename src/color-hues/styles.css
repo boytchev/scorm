@@ -1,5 +1,6 @@
 body {
 	font-family: 'Roboto', sans-serif;
+	background: linen;
 }
 
 h1 {
@@ -81,7 +82,8 @@ h1 {
 	margin: 2mm;
 	text-shadow: 0 0 0.15em gray;
 	border: none;
-	font-variant: small-caps;
+	/*font-variant: small-caps;*/
+	text-transform: uppercase;
 	max-width: 50vw;
 }
 
@@ -148,3 +150,24 @@ canvas.perf {
 	color: white;
 }
 */
+
+body.index {
+	width: 30em;
+	max-width: calc(100% - 2em);
+	margin: 1em auto;
+}
+
+.index h1 {
+	font-size: 2em;
+	margin-bottom: 0.5em;
+}
+
+.index h2 {
+	color: indianred;
+	border-left: solid 0.5em indianred;
+	font-size: 1.25em;
+	margin-left: -1.1em;
+	margin-top: 2em;
+	margin-bottom: 0.25em;
+	padding-left: 0.5em;
+}

@@ -110,6 +110,18 @@ class Playground
 	} // Playground.translate
 	
 	
+	canEndGame( )
+	{
+		var selected = 0;
+		for( var plate of this.plates )
+		{
+			if( plate.selected ) selected++;
+		}
+		
+		return selected==2;
+	} // Playground.canEndGame
+	
+	
 	evaluate( )
 	{
 		var answers = [];
@@ -245,7 +257,7 @@ class Playground
 		this.masterPlate.index = random([0.5, 1.5, 2.5, 3.5, 4.5]);
 		
 		var masterHue = random( 0, 359 ),
-			hueStep = THREE.MathUtils.mapLinear( this.difficulty, 0, 1, 60, 10 );
+			hueStep = THREE.MathUtils.mapLinear( this.difficulty, 0, 1, 70, 10 );
 		
 		this.masterPlate.hue = masterHue + this.masterPlate.index*hueStep;
 		this.masterPlate.flipIn( 0 );

@@ -7,6 +7,7 @@ class Plate extends Group
 {
 	static FLIP_SPEED = 700; // in ms
 	static TOGGLE_SPEED = 300; // in ms
+	static YOYO_SPEED = 150; // in ms
 	
 	static blockInteraction = 0;
 	
@@ -19,13 +20,16 @@ class Plate extends Group
 		this.spinH = spin;
 		this.index = 0;
 		
-		this.basePlate = convex( this.hexagonalGeometry, [10,1] );
+		this.basePlate = convex( this.hexagonalGeometry(0.93), [10,1] );
 			its.y = 0.5;
 			its.threejs.material = this.frameMaterial;
 	
-		this.colorPlate = convex( this.hexagonalGeometry, [7,0.9] );
-			its.image = 'hexagon.png';
-			its.images = [3,5];
+		this.colorPlate = convex( this.hexagonalGeometry(1), [7,0.9] );
+			its.image = 'hexagon.jpg';
+//			its.threejs.material = this.colorMaterial;
+			var k = 0.15;
+			its.images = [2.9*k,3.3*k];
+			its.threejs.material.map.offset.set( 0.5, 0.5 );
 			its.y = 0.8;
 	
 		this.addEventListener( 'click', this.onClick );
@@ -40,7 +44,7 @@ class Plate extends Group
 	} // Plate.constructor
 
 
-	get hexagonalGeometry( )
+	hexagonalGeometry( inset )
 	{
 		var geometry = [],
 			x, z;
@@ -51,8 +55,8 @@ class Plate extends Group
 			x = Math.cos( radians(i+j) ),
 			z = Math.sin( radians(i+j) );
 			geometry.push( [x,-0.5,z], [x,0.5,z] );
-			x *= 0.975;
-			z *= 0.975;
+			x *= inset;
+			z *= inset;
 			geometry.push( [x,-0.6,z], [x,0.6,z] );
 		}
 		
@@ -85,6 +89,8 @@ class Plate extends Group
 	} // Plate.frameMaterial
 
 	
+
+	
 	get angle( )
 	{
 		return this.spinV;
@@ -106,11 +112,23 @@ class Plate extends Group
 	set hue( hue )
 	{
 		this._hue = hue;
-		
+
+		var colorSpline = spline([
+			[0],[18],[60],[72],[108],[140],[174],[210],[242],[268],[295],[332],[360]
+		], false, true);
+		function cos( base, x )
+		{
+			x = colorSpline( x/360 )[0];
+			return 255*1.25*(Math.cos(radians( x )-radians(base))/2+0.5);
+		}
+		this.colorPlate.color = rgb( cos(0,hue),
+				cos(120,hue),
+				cos(240,hue) );
+
 		// correct hue
-		hue = hue + 7*Math.sin(radians(3*hue))
+//		hue = hue + 7*Math.sin(radians(3*hue))
 		
-		this.colorPlate.color = hsl( hue, 100, 50 );
+//		this.colorPlate.color = hsl( hue, 100, 50 );
 	}
 	
 	
@@ -154,15 +172,34 @@ class Plate extends Group
 
 		Plate.blockInteraction++;
 		
-		new TWEEN.Tween( {h:plate.selected?1:18} )
-				.to( {h:plate.selected?18:1}, Plate.TOGGLE_SPEED )
+		new TWEEN.Tween( {h:plate.selected?1:15} )
+				.to( {h:plate.selected?15:1}, Plate.TOGGLE_SPEED )
 				.easing( TWEEN.Easing.Cubic.InOut )
 				.onUpdate( (state) => {
 					plate.height = state.h;
 					if( !plate.isMasterPlate )
 					{
-						plate.angle = -(state.h-1)*0.55;
+						plate.angle = -(state.h-1)*0.7;
 					}
+				})
+				.onComplete( () => {Plate.blockInteraction--} )
+				.start( );
+	}
+	
+		
+	yoyo( )
+	{		
+		var plate = this;
+
+		Plate.blockInteraction++;
+		
+		new TWEEN.Tween( {y:0} )
+				.to( {y:-5}, Plate.YOYO_SPEED )
+				.easing( TWEEN.Easing.Cubic.Out )
+				.repeat( 1 )
+				.yoyo( true )
+				.onUpdate( (state) => {
+					plate.y = state.y;
 				})
 				.onComplete( () => {Plate.blockInteraction--} )
 				.start( );
@@ -197,7 +234,12 @@ class Plate extends Group
 		if( this.playground.gameStarted )
 		{
 			if( this.isMasterPlate )
-				this.playground.endGame( );
+			{
+				if( this.playground.canEndGame() )
+					this.playground.endGame( );
+				else
+					this.yoyo( );
+			}
 			else
 				this.toggle( );
 		}
