@@ -74,7 +74,6 @@ class Playground
 				case 'Asia/Tokyo': language = 'jp'; break;
 				default: language = 'en';
 			}
-			language = timeZone=='Europe/Sofia' ? 'bg' : 'en';
 		}
 		
 		var dictionary = [
