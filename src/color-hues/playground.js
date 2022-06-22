@@ -66,6 +66,14 @@ class Playground
 		{
 			// https://stackoverflow.com/a/70870895
 			var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+			
+			// https://codepen.io/diego-fortes/pen/YzEPxYw
+			switch( timeZone )
+			{
+				case 'Europe/Sofia': language = 'bg'; break;
+				case 'Asia/Tokyo': language = 'jp'; break;
+				default: language = 'en';
+			}
 			language = timeZone=='Europe/Sofia' ? 'bg' : 'en';
 		}
 		
