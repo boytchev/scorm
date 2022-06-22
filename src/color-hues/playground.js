@@ -43,6 +43,12 @@ class Playground
 		this.resize( );
 		this.translate( );
 
+		if( scorm.api )
+		{
+			//console.log( 'cmi.core.lesson_status', 'browsed' );
+			scorm.setValue( 'cmi.core.lesson_status', 'browsed' );
+			scorm.score = '';
+		}
 	} // Playground.constructor
 	
 
@@ -185,6 +191,15 @@ class Playground
 	} // Playground.redrawPerformanceGraph
 	
 	
+	setScore( score )
+	{
+		if( scorm.api )
+		{
+			scorm.score = score;
+		}
+	} // Playground.setScore
+	
+	
 	endGame( )
 	{
 		var score = this.evaluate( );
@@ -198,6 +213,8 @@ class Playground
 		var oldScore = this.totalScore;
 		this.totalScore = Playground.TEMPORAL_AVERAGE_OLD*this.totalScore + Playground.TEMPORAL_AVERAGE_NEW*score;
 		
+		this.setScore( this.totalScore );
+
 		if( this.totalScore > oldScore && this.totalScore < oldScore+1 )
 			this.totalScore = THREE.MathUtils.clamp( oldScore+1, 0, 100 );
 
@@ -252,6 +269,17 @@ class Playground
 	
 	newGame( )
 	{
+		if( this.scoreHistory.length==0 && scorm.api )
+		{
+			//console.log( 'cmi.core.lesson_status', 'completed' );
+			scorm.setValue( 'cmi.core.lesson_status', 'completed' );
+			scorm.setValue( 'cmi.core.score.max', 100 );
+			scorm.setValue( 'cmi.core.score.min', 0 );
+		}
+
+		this.setScore( Playground.TEMPORAL_AVERAGE_OLD*this.totalScore );
+
+
 		// prepare master plate
 		
 		this.masterPlate.index = random([0.5, 1.5, 2.5, 3.5, 4.5]);

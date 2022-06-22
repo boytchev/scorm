@@ -56,6 +56,7 @@ h1 {
 	margin-right: 2mm;
 	border: none;
 	text-transform: uppercase;
+	font-weight: 300;
 }
 
 .value {
@@ -83,8 +84,10 @@ h1 {
 	text-shadow: 0 0 0.15em gray;
 	border: none;
 	/*font-variant: small-caps;*/
+	font-weight: normal;
 	text-transform: uppercase;
 	max-width: 50vw;
+	font-weight: 300;
 }
 
 .description {
@@ -93,6 +96,7 @@ h1 {
 	margin: 2mm;
 	border: none;
 	font-variant: small-caps;
+	font-weight: 300;
 }
 
 .bottom.footnote {
@@ -102,6 +106,7 @@ h1 {
 	color: black;
 	border: none;
 	text-transform: uppercase;
+	font-weight: 300;
 }
 
 .hud.right {
