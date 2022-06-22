@@ -5,9 +5,16 @@
 
 This repository and its documentation are currently under construction. Be patient, please. The first version should be ready by the end of June 2022.
 
-## LMS-Info
+## LMS Info
 
-This SCORM is used for experiments with the LMS. It shows the list of elements passed from the LMS to the SCORM. The elements that are read-write can be modified and sent back to the LMS.
+This SCO is used for experiments with SCORM 1.2-complient LMS. It shows the list of elements passed from the LMS to the SCORM. The elements that are read-write can be modified and sent back to the LMS.
+
+
+## Color hues
+
+<img src="src/color-hues/snapshot.jpg" width="200" style="float:right;"> This is the first (in the world) SCO that uses Three.js. It is used to evaluate how well a user distinguishes color hues.
+
+[ [Run online](src/color-hues/index.html) ] [ [Download](bin/color-hues.zip) ]
 
 
 <small>{{site.time | date: "%B, %Y"}}</small>
