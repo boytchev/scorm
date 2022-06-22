@@ -76,6 +76,8 @@ class Playground
 			}
 		}
 		
+		console.log('language',language);
+		
 		var dictionary = [
 			{id: 'txt-time',
 				en: 'Time',
