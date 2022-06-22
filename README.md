@@ -14,7 +14,7 @@ This SCO is used for experiments with SCORM 1.2-complient LMS. It shows the list
 
 <img src="src/color-hues/snapshot.jpg" width="200" style="float:right;"> This is the first (in the world) SCO that uses [Suica](https://boytchev.github.io/suica/) and [Three.js](https://threejs.org/). It is used to evaluate how well a user distinguishes color hues.
 
-[ [Run online](src/color-hues/index.html) ] [ [Download](bin/color-hues.zip) ]
+[ [More info](src/color-hues/index.html) ] [ [Run online](src/color-hues/color-hues.html) ] [ [Download](bin/color-hues.zip) ]
 
 
 <small>{{site.time | date: "%B, %Y"}}</small>
