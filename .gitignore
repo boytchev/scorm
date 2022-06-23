@@ -1,5 +1,6 @@
 
 misc/7z
 *.bak
+*.mp4
 src/lms-info/suica.min.js
 src/lms-info/three.min.js

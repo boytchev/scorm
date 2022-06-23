@@ -26,6 +26,8 @@ rem inside: GitHub\scorm\misc\xsd
 ..\..\misc\7z\7z a "..\..\bin\%~1.zip" *
 
 ..\..\misc\7z\7z d "..\..\bin\%~1.zip" *.bak
+..\..\misc\7z\7z d "..\..\bin\%~1.zip" *.mp4
+..\..\misc\7z\7z d "..\..\bin\%~1.zip" snapshot*.jpg
 
 cd ..\..\src
 rem inside: GitHub\scorm\misc\xsd
