@@ -25,7 +25,7 @@ class Plate extends Group
 			its.threejs.material = this.frameMaterial;
 	
 		this.colorPlate = convex( this.hexagonalGeometry(1), [7,0.9] );
-			its.image = 'hexagon.jpg';
+			its.image = 'images/hexagon.jpg';
 //			its.threejs.material = this.colorMaterial;
 			var k = 0.15;
 			its.images = [2.9*k,3.3*k];
@@ -72,8 +72,8 @@ class Plate extends Group
 		var material = new THREE.MeshPhongMaterial({
 				color: 'linen',
 				shininess: 150,
-				map: image( 'metal_plate.jpg' ),
-				normalMap: image( 'metal_plate_normal.jpg' ),
+				map: image( 'images/metal_plate.jpg' ),
+				normalMap: image( 'images/metal_plate_normal.jpg' ),
 				normalScale: new THREE.Vector2( 0.2, 0.2 ),
 				emissive: 'lightsalmon',
 				emissiveIntensity: 0,

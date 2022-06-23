@@ -13,7 +13,7 @@ EXIT /B
 ECHO Rebuilding SCORM "%~1"
 
 rem inside: GitHub\scorm\src\
-copy ..\misc\js\suica.js "%~1"
+rem copy ..\misc\js\suica.js "%~1"
 
 del "..\bin\%~1.zip"
 
@@ -27,7 +27,8 @@ rem inside: GitHub\scorm\misc\xsd
 
 ..\..\misc\7z\7z d "..\..\bin\%~1.zip" *.bak
 ..\..\misc\7z\7z d "..\..\bin\%~1.zip" *.mp4
-..\..\misc\7z\7z d "..\..\bin\%~1.zip" snapshot*.jpg
-
+..\..\misc\7z\7z d "..\..\bin\%~1.zip" *.md
+..\..\misc\7z\7z d "..\..\bin\%~1.zip" images\snapshot*.jpg
+..\..\misc\7z\7z d "..\..\bin\%~1.zip" images\doc-*.jpg
 cd ..\..\src
 rem inside: GitHub\scorm\misc\xsd

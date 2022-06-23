@@ -51,8 +51,21 @@ The XSD files for SCORM 1.2 are not strictly valid and may cause errors in some 
   -->
 	<resources>
 		<resource identifier="resource_1" type="webcontent" adlcp:scormtype="sco" href="color-hues.html">
+		
 			<file href="color-hues.html"/>
-			<file href="suica.js"/>
+			
+			<file href="plate.js"/>
+			<file href="styles.css"/>
+			<file href="playground.js"/>
+			
+			<file href="libs/suica.js"/>
+			<file href="libs/tween.umd.js"/>
+			
+			<file href="images/favicon.ico"/>
+			<file href="images/hexagon.jpg"/>
+			<file href="images/metal_plate.jpg"/>
+			<file href="images/metal_plate_normal.jpg"/>
+
 		</resource>
 	</resources>
 </manifest>
