@@ -52,7 +52,16 @@ The perception of hue varies among people, but also, it varies within the same p
 Although the application may suggest clues of color deficiencies, it is not a diagnostic tool and should not be used for medical examination. A low sensitivity to some hues is not a definitive indicator of color deficiency, as there are many factors that change the perception of hue.
 
 
+### Credits
 
+This application uses this sound from [freesound](https://freesound.org):
+
+- "[background melody (8)](https://freesound.org/people/deleted_user_6988258/sounds/378124/)" by deleted_user_6988258 licensed under [CC0 License](http://creativecommons.org/publicdomain/zero/1.0/)
+
+and these sound effects from [Mixkit](https://mixkit.co/):
+
+- "[Game quick warning notification](https://mixkit.co/free-sound-effects/click/)" licensed under [Mixkit Sound Effects Free License](https://mixkit.co/license/#sfxFree)
+- "[Quick win video game notification](https://mixkit.co/free-sound-effects/click/)" licensed under [Mixkit Sound Effects Free License](https://mixkit.co/license/#sfxFree).
 
 
 	

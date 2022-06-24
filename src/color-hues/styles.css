@@ -14,6 +14,7 @@ h1 {
 	z-index: 1000;
 	/*border: dotted 1px crimson !important;*/
 	user-select: none;
+	pointer-events: none;
 }
 
 .corner {
@@ -175,4 +176,13 @@ body.index {
 	margin-top: 2em;
 	margin-bottom: 0.25em;
 	padding-left: 0.5em;
+}
+
+.button {
+	width: 1.5em;
+	height: 1.5em;
+	margin: 0 2mm;
+	border: none;
+	cursor: pointer;
+	pointer-events: auto;
 }

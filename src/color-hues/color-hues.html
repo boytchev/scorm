@@ -16,6 +16,7 @@
 
 	<script src="libs/tween.umd.js"></script>
 	<script src="libs/suica.js"></script>
+	<script src="scorm.utils.js"></script>
 	<script src="plate.js"></script>
 	<script src="playground.js"></script>
 </head>
@@ -45,6 +46,7 @@
 		
 		<div class="hud top left" style="border: none;">
 			<div id="txt-caption" class="caption left">COLOR HUES</div>
+			<img id="sound-on-off" class="button left" src="images/sound-off.png"/>
 			<!--div id="txt-description" class="description right" style="max-width:60%">DESCRIPTION.</div-->
 		</div>
 		
@@ -56,6 +58,7 @@
 		var playground = new Playground;
 
 		window.addEventListener( 'resize', playground.resize );
+		window.addEventListener( 'click', onGlobalClick );
 		
 		function update( t, dT )
 		{
@@ -94,6 +97,13 @@
 				event.target.style.cursor = 'default';
 			
 		}
+		
+		function onGlobalClick( )
+		{
+			window.removeEventListener( 'click', onGlobalClick );
+			playground.loadSounds( );
+		}
+
 	</script>
 	
 </body>
