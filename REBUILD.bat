@@ -1,8 +1,11 @@
 @ECHO OFF
 
+SET ZIP=..\..\misc\7z\7z
+
 CD src
-rem inside: GitHub\scorm\src\
-FOR /D %%G in ("*") DO (CALL :BuildOne "%%~G")
+@rem inside: GitHub\scorm\src\
+ECHO.
+FOR /D %%F in ("*") DO (CALL :BuildOne "%%~F")
 CD ..
 EXIT /B
 
@@ -10,26 +13,18 @@ EXIT /B
 
 :BuildOne
 
-ECHO Rebuilding SCORM "%~1"
+ECHO - Rebuilding SCORM "%~1"
 
-rem inside: GitHub\scorm\src\
-rem copy ..\misc\js\suica.js "libs\%~1"
+REM Inside: GitHub\scorm\src\%~1\
+CD "%~1"
 
-del "..\bin\%~1.zip"
+SET XSD_PATH=..\..\misc\xsd
+SET ZIP_PATH=..\..\bin
+SET ZIP_FILE="%ZIP_PATH%\%~1.zip"
+SET EXCLUDES= -x!*.bak -x!*.md -x!docs
 
-cd "%~1"
-rem inside: GitHub\scorm\src\%~1\
-..\..\misc\7z\7z a "..\..\bin\%~1.zip" *
+DEL %ZIP_FILE%
 
-cd ..\..\misc\xsd
-rem inside: GitHub\scorm\misc\xsd
-..\..\misc\7z\7z a "..\..\bin\%~1.zip" *
+%ZIP% a %EXCLUDES% %ZIP_FILE% * %XSD_PATH%\* >nul
 
-..\..\misc\7z\7z d "..\..\bin\%~1.zip" *.bak
-..\..\misc\7z\7z d "..\..\bin\%~1.zip" *.mp4
-..\..\misc\7z\7z d "..\..\bin\%~1.zip" *.ms
-..\..\misc\7z\7z d "..\..\bin\%~1.zip" images\snapshot*.jpg
-..\..\misc\7z\7z d "..\..\bin\%~1.zip" images\doc-*.jpg
-
-cd ..\..\src
-rem inside: GitHub\scorm\misc\xsd
+CD ..\..\src
