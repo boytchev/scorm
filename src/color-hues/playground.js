@@ -358,12 +358,12 @@ class Playground
 	
 	
 	
-	unmute( )
+	unmute( unmuteBackground )
 	{
 		for( var i=0; i<4; i++ )
 			this._clickSound[i]?.setVolume( 0.1 );
 		this._clackSound?.setVolume( 0.03 );
-		this._backgroundSound?.setVolume( 0.2 );
+		this._backgroundSound?.setVolume( unmuteBackground?0.2:0 );
 	} // Playground.unmute
 	
 	

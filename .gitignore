@@ -4,3 +4,4 @@ misc/7z
 *.mp4
 src/lms-info/suica.min.js
 src/lms-info/three.min.js
+*.bkp
