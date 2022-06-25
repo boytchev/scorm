@@ -12,8 +12,7 @@
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap" rel="stylesheet">
 	<link rel="shortcut icon" type="image/png" href="logo.png"/>
 	
-	<script src="suica.js"></script>
-	<script src="lil-gui.umd.min.js"></script>
+	<script src="libs/suica.js"></script>
 
 	<style>
 		body {
@@ -33,109 +32,37 @@
 	</suica>
 
 	<script>
-			var gui = new lil.GUI();
-			var pose = {
-				a1: 30,
-				a2: 60,
-				a3: 90,
-				a4: 120,
-				a5: 150,
-				a6: 180,
-				a7: 210,
-				a8: 240,
-				a9: 270,
-				a10: 300,
-				a11: 330,
-			};
-			for(var i=1; i<=11; i++ )
-				gui.add( pose, 'a'+i, (i-1)*30, (i+1)*30 ).step(2).onChange( () => {updateColorWheel()} );
-			gui.open();
+		function hue( hue )
+		{
+			this._hue = hue;
 
-			function hue( i, k=0 )
-		{
-//			return i;
-			return i + k*Math.sin(radians(3*i));
-			return i + 10*Math.sin(radians(3*i));
-		}
-		
-		function brightness( i, k=1 )
-		{
-			var color = hsl(hue(i,k),100,50);
-			var r = color.r,
-				g = color.g,
-				b = color.b;
-				
-			bw = 0.299*r + 0.587*g + 0.114*b;
-			
-			
-			return THREE.MathUtils.mapLinear( bw, 0, 1, 70, 50 );
-		}
-		
+			var colorSpline = spline([
+				[0],[18],[60],[72],[108],[140],[174],[210],[242],[268],[295],[332],[360]
+			], false, true);
+
+			function cos( base, x )
+			{
+				x = colorSpline( x/360 )[0];
+				return 255*1.25*(Math.cos(radians( x )-radians(base))/2+0.5);
+			}
+
+			return rgb(
+					cos(0,hue),
+					cos(120,hue),
+					cos(240,hue) );
+		} // hue
+
 		s.image = drawing( 600, 600, 'white' );
+		
 		for( var i=0; i<360; i+=1 )
 		{
-			moveTo( 300+210*Math.cos(radians(i)), 300+210*Math.sin(radians(i)) );
+			moveTo( 300+190*Math.cos(radians(i)), 300+190*Math.sin(radians(i)) );
 			lineTo( 300+290*Math.cos(radians(i)), 300+290*Math.sin(radians(i)) );
-			stroke( hsl(hue(i),100,50), 6 );
-		}
-		for( var i=0; i<360; i+=60 )
-		{
-			moveTo( 300+210*Math.cos(radians(i)), 300+210*Math.sin(radians(i)) );
-			lineTo( 300+290*Math.cos(radians(i)), 300+290*Math.sin(radians(i)) );
-			stroke( 'black', 1 );
+			stroke( hue(i), 6 );
 		}
 
-/*		for( var i=0; i<360; i+=0.1 )
-		{
-			var color = hsl(hue(i),100,50);
-			var r = color.r,
-				g = color.g,
-				b = color.b;
-				
-			bw = 255*(0.299*r + 0.587*g + 0.114*b);
-			
-			moveTo( 300+120*Math.cos(radians(i)), 300+120*Math.sin(radians(i)) );
-			lineTo( 300+200*Math.cos(radians(i)), 300+200*Math.sin(radians(i)) );
-			stroke( hsl(hue(i,4),100,brightness(i,4)) );
-		}
-*/
-		colorSpline = spline([
-			[0],
-			[60],
-			[120],
-			[180],
-			[240],
-			[300],
-			[360]
-		], false, true);
-
-		
-		function cos( base, x )
-		{
-			x = colorSpline( x/360 )[0];
-			return 255*1.25*(Math.cos(radians( x )-radians(base))/2+0.5);
-		}
-
-		function updateColorWheel( )
-		{
-			var pnt = [ [0] ];
-			for( var i=1; i<=11; i++ )
-				pnt.push( [pose['a'+i]] );
-			pnt.push( [360] );
-			colorSpline = spline(pnt, false, true);
-			
-			//s.image.clear( );
-			for( var i=0; i<360; i+=1 )
-			{
-				s.image.moveTo( 300+120*Math.cos(radians(i)), 300+120*Math.sin(radians(i)) );
-				s.image.lineTo( 300+200*Math.cos(radians(i)), 300+200*Math.sin(radians(i)) );
-				s.image.stroke( rgb( cos(0,i),
-					cos(120,i),
-					cos(240,i) ), 5 );
-			}
-		}
-		
-		updateColorWheel( );
+		arc( 300, 300, 299 );
+		stroke( 'gray', 1 );
 	</script>
 	
 </body>

@@ -92,6 +92,10 @@ class Playground
 				bg: 'ПЪЛЕН ЕКРАН',
 				jp: 'フルスクリーン'},
 		] );
+		
+		scorm.setValue( 'cmi.core.lesson_status', 'not attempted' );
+		//scorm.setValue( 'cmi.student_data.mastery_score', '100' );
+
 	} // Playground.constructor
 
 	
@@ -110,7 +114,7 @@ class Playground
 
 		// protect agains browser closure - assume that the user
 		// will gets 0 points, update the points when the game ends
-		scorm.score = Playground.TEMPORAL_AVERAGE_OLD*this.totalScore;
+		scorm.score = (Playground.TEMPORAL_AVERAGE_OLD*this.totalScore).toFixed(1);
 
 		// generate initial hue and hue step
 		var masterHue = random( 0, 359 ),
@@ -244,7 +248,7 @@ class Playground
 			this.totalScore = THREE.MathUtils.clamp( oldScore+1, 0, 100 );
 
 		// send the score to LMS
-		scorm.score = this.totalScore;
+		scorm.score = this.totalScore.toFixed(1);
 
 		// record the score in the history
 		this.scoreHistory.push( this.totalScore );
@@ -321,7 +325,7 @@ class Playground
 			{
 				playground._clickSound[i] = new THREE.Audio( audioListener );
 				playground._clickSound[i].setBuffer( buffer );
-				playground._clickSound[i].setVolume( 0.05 );
+				playground._clickSound[i].setVolume( 0 );
 			}
 			setSound( );
 		});
@@ -329,14 +333,14 @@ class Playground
 		new THREE.AudioLoader().load( 'sounds/clack.mp3', function( buffer ) {
 			playground._clackSound = new THREE.Audio( audioListener );
 			playground._clackSound.setBuffer( buffer );
-			playground._clackSound.setVolume( 0.02 );
+			playground._clackSound.setVolume( 0 );
 			setSound( );
 		});
 
 		new THREE.AudioLoader().load( 'sounds/background.mp3', function( buffer ) {
 			playground._backgroundSound = new THREE.Audio( audioListener );
 			playground._backgroundSound.setBuffer( buffer );
-			playground._backgroundSound.setVolume( 0.6 );
+			playground._backgroundSound.setVolume( 0 );
 			playground._backgroundSound.play( );
 			setSound( );
 		});
@@ -357,9 +361,9 @@ class Playground
 	unmute( )
 	{
 		for( var i=0; i<4; i++ )
-			this._clickSound[i]?.setVolume( 0.05 );
-		this._clackSound?.setVolume( 0.02 );
-		this._backgroundSound?.setVolume( 0.6 );
+			this._clickSound[i]?.setVolume( 0.1 );
+		this._clackSound?.setVolume( 0.03 );
+		this._backgroundSound?.setVolume( 0.2 );
 	} // Playground.unmute
 	
 	
