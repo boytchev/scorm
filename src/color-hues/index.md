@@ -22,7 +22,7 @@ The next image shows two cases with arrows pointing to the plates with closest h
 
 This application is provided as [SCORM](https://scorm.com/scorm-explained/one-minute-scorm-overview/) (Sharable Content Object Reference Model) module. It can be used with any [LMS](https://en.wikipedia.org/wiki/Learning_management_system) (Learning Management System) that supports version SCORM 1.2. SCORM modules are delivered as ZIP archive.
 
-[ [Download ZIP](../bin/color-hues.zip) ]
+[ [Download ZIP](../../bin/color-hues.zip) ]
 
 Follow the instruction of your LMS on how to install a SCORM module. Usually the ZIP is uploaded and a few additional settings are set.
 
