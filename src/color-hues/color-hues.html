@@ -47,7 +47,6 @@
 		<div class="hud top left" style="border: none;">
 			<div id="txt-caption" class="caption left">COLOR HUES</div>
 			<img id="sound-on-off" class="button left" src="images/sound-off.png"/>
-			<!--div id="txt-description" class="description right" style="max-width:60%">DESCRIPTION.</div-->
 		</div>
 		
 		<div id="txt-user" class="hud bottom footnote">GUEST</div>
@@ -58,52 +57,15 @@
 		var playground = new Playground;
 
 		window.addEventListener( 'resize', playground.resize );
-		window.addEventListener( 'click', onGlobalClick );
-		
-		function update( t, dT )
-		{
-			if( playground.gameStarted )
-			{
-				playground.totalTime += dT;
-			}
-			TWEEN.update( 1000*t );
-		}
-		
-		setInterval( update4PerSecond, 500 );
-		
-		function update4PerSecond( )
-		{
-			var t = playground.totalTime;
-			
-			var hours = Math.floor(t/3600);
-			if( hours<10 ) hours = '0'+hours;
-			
-			t -= 3600*hours;
-			var minutes = Math.floor(t/60);
-			if( minutes<10 ) minutes = '0'+minutes;
-			
-			t -= 60*minutes;
-			var seconds = Math.floor(t);
-			if( seconds<10 ) seconds = '0'+seconds;
-			
-			element('timer').innerHTML = `${hours}:${minutes}:${seconds}`;
-		}
-		
+				
 		function onMouseMove( event )
 		{
 			if( findObject( event ) )
 				event.target.style.cursor = 'pointer';
 			else
 				event.target.style.cursor = 'default';
-			
 		}
 		
-		function onGlobalClick( )
-		{
-			window.removeEventListener( 'click', onGlobalClick );
-			playground.loadSounds( );
-		}
-
 	</script>
 	
 </body>

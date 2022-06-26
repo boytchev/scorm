@@ -34,7 +34,7 @@ When run from a LMS, the application sends back these data:
 - `cmi.core.score.raw` &ndash; a number from 0 to 100 for the overall score
 - `cmi.core.score.min` &ndash; 0
 - `cmi.core.score.max` &ndash; 100
-- `cmi.core.lesson_status` &ndash; `'completed'` or `'not attempted'`
+- `cmi.core.lesson_status` &ndash; `'completed'` or `'incomplete'`
 
 ### Data policy
 

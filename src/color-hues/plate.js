@@ -179,7 +179,7 @@ class Plate extends Group
 	{		
 		this.selected = !this.selected;
 
-		playground.clickSound();
+		playground.clickSound.play( );
 
 		new TWEEN.Tween( this )
 				.to( {
@@ -195,7 +195,7 @@ class Plate extends Group
 	// vibrate the plate
 	yoyo( )
 	{		
-		playground.clickSound();
+		playground.clickSound.play( );
 
 		new TWEEN.Tween( this )
 				.to( {y:-5}, Plate.YOYO_SPEED )
