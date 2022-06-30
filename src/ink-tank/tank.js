@@ -34,7 +34,7 @@ class Tank extends Group
 	{
 		var map = ScormUtils.image( 'metal_plate.jpg', Tank.FLOOR_SIZE ),
 			normalMap = ScormUtils.image( 'metal_plate_normal.jpg', Tank.FLOOR_SIZE ),
-			aoMap = ScormUtils.image( 'floor_ao.jpg' );
+			aoMap = ScormUtils.image( 'floor_ao.jpg', 0.9, 0.9, 0.05, 0.05 );
 		
 		var floor = polygon( 100, [0,0,0], Tank.FLOOR_SIZE );
 			floor.threejs.material = new THREE.MeshStandardMaterial( {
@@ -58,13 +58,9 @@ class Tank extends Group
 		
 	constructBase( )
 	{
-		var map = image( 'images/metal_plate.jpg' );
-			map.repeat.set( Tank.WIDTH, Tank.BASE_HEIGHT );
-		
-		var normalMap = image( 'images/metal_plate_normal.jpg' );
-			normalMap.repeat.set( Tank.WIDTH, Tank.BASE_HEIGHT );
-
-		var aoMap = image( 'images/wall_ao.jpg' );
+		var map = ScormUtils.image( 'metal_plate.jpg', Tank.WIDTH, Tank.BASE_HEIGHT ),
+			normalMap = ScormUtils.image( 'metal_plate_normal.jpg', Tank.WIDTH, Tank.BASE_HEIGHT ),
+			aoMap = ScormUtils.image( 'wall_ao.jpg' );
 
 		var base = cube( [0,Tank.BASE_HEIGHT/2,0], [Tank.WIDTH, Tank.BASE_HEIGHT, Tank.WIDTH] );
 			base.threejs.material = new THREE.MeshStandardMaterial( {
@@ -78,11 +74,8 @@ class Tank extends Group
 			});		
 		ScormUtils.addUV2( base ); // because of AO
 
-		var map = image( 'images/metal_plate.jpg' );
-			map.repeat.set( Tank.WIDTH, Tank.WIDTH );
-		
-		var normalMap = image( 'images/metal_plate_normal.jpg' );
-			normalMap.repeat.set( Tank.WIDTH, Tank.WIDTH );
+		var map = ScormUtils.image( 'metal_plate.jpg', Tank.WIDTH ),
+			normalMap = ScormUtils.image( 'metal_plate_normal.jpg', Tank.WIDTH );
 
 		var baseTop = square( [0,Tank.BASE_HEIGHT,0], Tank.WIDTH );
 			baseTop.threejs.material = new THREE.MeshStandardMaterial( {
