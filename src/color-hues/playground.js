@@ -30,37 +30,10 @@ class Playground extends ScormPlayground
 		this.resize( );
 
 		this.translate( [
-			{id: 'txt-time',
-				en: 'Time',
-				bg: 'Време',
-				jp: '時間'},
-			{id: 'txt-score',
-				en: 'Score',
-				bg: 'Резултат',
-				jp: '時間'},
-			{id: 'txt-performance',
-				en: 'Performance',
-				bg: 'Изпълнение',
-				jp: '時間'},
 			{id: 'txt-caption',
 				en: 'Color hues',
 				bg: 'Цветни оттенъци',
 				jp: '色相'},
-			{id: 'txt-user',
-				en: scorm.api
-						? `<b>${scorm.studentName}</b>`
-						: '<b>Guest</b>',
-				bg: scorm.api
-						? `<b>${scorm.studentName}</b>`
-						: '<b>Гост</b>',
-				jp: scorm.api
-						? `<b>${scorm.studentName}</b>`
-						: '<b>賓客</b>',
-				},
-			{id: 'suica-fullscreen-button',
-				en: 'FULLSCREEN',
-				bg: 'ПЪЛЕН ЕКРАН',
-				jp: 'フルスクリーン'},
 		] );
 		
 	} // Playground.constructor
