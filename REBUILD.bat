@@ -16,6 +16,8 @@ EXIT /B
 ECHO - Rebuilding SCORM "%~1"
 
 REM Inside: GitHub\scorm\src\%~1\
+COPY scorm.utils.js "%~1"
+COPY styles.css "%~1"
 CD "%~1"
 
 SET XSD_PATH=..\..\misc\xsd

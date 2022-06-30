@@ -455,15 +455,7 @@ class ScormPlayground
 } // class ScormPlayground
 	
 	
-class ScormUtils
-{	
-	static addUV2( object )
-	{
-		var geometry = object.threejs.geometry;
-		
-		var uv = geometry.getAttribute('uv');
-		
-		geometry.setAttribute( 'uv2', new THREE.BufferAttribute( uv.array, 2 ) );
-	}
-}
+	
+	
+	
 
