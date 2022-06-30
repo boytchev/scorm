@@ -14,6 +14,8 @@ class Playground extends ScormPlayground
 		
 		this.resize( );
 
+		this.tank = new Tank;
+		
 		this.translate( [
 			{id: 'txt-caption',
 				en: 'Ink tank',
