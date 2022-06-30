@@ -455,7 +455,29 @@ class ScormPlayground
 } // class ScormPlayground
 	
 	
+class ScormUtils
+{	
+
+	// add UV2 attribute to objects with materials with light or AO mapping
+	static addUV2( object )
+	{
+		var geometry = object.threejs.geometry;
+		
+		var uv = geometry.getAttribute('uv');
+		
+		geometry.setAttribute( 'uv2', new THREE.BufferAttribute( uv.array, 2 ) );
+	} // ScormUtils.addUV2
 	
 	
+	// load image and set its count and offset
+	static image( fileName, uCount=1, vCount=uCount, uOffset=0, vOffset=uOffset )
+	{
+		var map = image( 'images/'+fileName );
+			map.repeat.set( uCount, vCount );
+			map.offset.set( uOffset, vOffset );
+			
+		return map;
+	} // ScormUtils.image
 	
+} // class ScormUtils
 

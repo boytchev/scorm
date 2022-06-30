@@ -32,13 +32,9 @@ class Tank extends Group
 
 	constructFloor( )
 	{
-		var map = image( 'images/metal_plate.jpg' );
-			map.repeat.set( Tank.FLOOR_SIZE, Tank.FLOOR_SIZE );
-		
-		var normalMap = image( 'images/metal_plate_normal.jpg' );
-			normalMap.repeat.set( Tank.FLOOR_SIZE, Tank.FLOOR_SIZE );
-		
-		var aoMap = image( 'images/floor_ao.jpg' );
+		var map = ScormUtils.image( 'metal_plate.jpg', Tank.FLOOR_SIZE ),
+			normalMap = ScormUtils.image( 'metal_plate_normal.jpg', Tank.FLOOR_SIZE ),
+			aoMap = ScormUtils.image( 'floor_ao.jpg' );
 		
 		var floor = polygon( 100, [0,0,0], Tank.FLOOR_SIZE );
 			floor.threejs.material = new THREE.MeshStandardMaterial( {
