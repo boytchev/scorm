@@ -10,6 +10,10 @@ function update( t, dT )
 	{
 		playground.totalTime += dT;
 	}
+	if( playground?.update )
+	{
+		playground.update( t, dT );
+	}
 	TWEEN.update( 1000*t );
 }
 

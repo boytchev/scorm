@@ -12,17 +12,22 @@ class Tank extends Group
 	static BASE_HEIGHT = 2;
 	static FRAME_WIDTH = 0.25;
 	
+	static WATER_HEIGHT = 4;
+	
 	static GLASS_HEIGHT = 4.5;
 	static GLASS_WIDTH = 0.1;
 	
 	static FLOOR_SIZE = 18;
+	
+	static PLATE_SIZE = 4;
+	static PLATE_HEIGHT = 0.6;
 	
 	constructor( )
 	{
 		super( suica );
 		
 		// additional light
-		var light = new THREE.PointLight( 'white', 0.2 );
+		var light = new THREE.PointLight( 'white', 0.3 );
 			light.position.set( 0, 10, 0 );
 		this.suica.scene.add( light );
 		
@@ -30,7 +35,8 @@ class Tank extends Group
 		this.constructBase( );
 		this.constructFrames( );
 		this.constructGlass( );
-
+		
+		this.water = new Water( suica );
 
 	} // Tank.constructor
 
@@ -40,11 +46,11 @@ class Tank extends Group
 	{
 		var material = new THREE.MeshStandardMaterial( {
 			color: 'lightgray',
-			metalness: 0.5,
-			roughness: 0.32,
+			metalness: 0.3,
+			roughness: 0.42,
 			map: map,
 			normalMap: normalMap,
-			normalScale: new THREE.Vector2( 0.2, 0.2 ),
+			normalScale: new THREE.Vector2( 0.5, 0.5 ),
 			polygonOffset: offset!=0,
 			polygonOffsetFactor: offset,
 			polygonOffsetUnits: offset,
@@ -63,9 +69,8 @@ class Tank extends Group
 			normalMap = ScormUtils.image( 'metal_plate_normal.jpg', Tank.FLOOR_SIZE ),
 			aoMap = ScormUtils.image( 'floor_ao.jpg', 0.9, 0.9, 0.05, 0.05 );
 		
-		var floor = polygon( 100, [0,0,0], Tank.FLOOR_SIZE );
+		var floor = prism( 128, [0,-0.2,0], [Tank.FLOOR_SIZE,0.2] );
 			floor.threejs.material = Tank.metal( map, normalMap, aoMap );
-			floor.spinV = -90;
 
 		ScormUtils.addUV2( floor ); // because of AO
 

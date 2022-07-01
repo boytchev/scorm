@@ -16,6 +16,10 @@ class Playground extends ScormPlayground
 
 		this.tank = new Tank;
 		
+this.tank.water.addCyan( 0.25 );
+this.tank.water.addYellow( 0.25 );
+this.tank.water.addMagenta( 0.5 );
+
 		this.translate( [
 			{id: 'txt-caption',
 				en: 'Ink tank',
@@ -91,4 +95,14 @@ class Playground extends ScormPlayground
 		//this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
 	
+	
+	
+	// floating plate
+	update( t, dT )
+	{
+//		this.tank.water.addCyan( dT/2/30 );
+//		this.tank.water.addYellow( dT/30 );
+		this.tank.water.removeInk( dT/30 );
+		this.tank.water.waves( t );
+	}
 } // class Playground
