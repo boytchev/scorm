@@ -165,15 +165,20 @@ class Tank extends Group
 
 	constructPipes( )
 	{
-		for( var i=0; i<4; i++ )
-		{
-			var angle = radians( 90*i );
-				
-			var pipe = new Pipe( );
-				pipe.spinH = 90*i;
-				
-			this.add( pipe );
-		}
+		this.cyanPipe = new Pipe( 'cyan' );
+		this.cyanPipe.spinH = 0;
+			
+		this.magentaPipe = new Pipe( 'magenta' );
+		this.magentaPipe.spinH = 90;
+			
+		this.yellowPipe = new Pipe( 'yellow' );
+		this.yellowPipe.spinH = 180;
+			
+		this.drainPipe = new Pipe( 'black' );
+		this.drainPipe.spinH = 270;
+
+		this.add( this.cyanPipe, this.magentaPipe, this.yellowPipe, this.drainPipe );
+		
 	} // Tank.constructPipes
 
 

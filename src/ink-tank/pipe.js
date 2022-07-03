@@ -14,10 +14,12 @@ class Pipe extends Group
 	static LENGTH = 4;		// дължина на хоризонталната част на тръба
 	static EXTRUDE = 0.15;	// издаденост на пръстените на тръба
 
-	constructor( )
+	constructor( color )
 	{
 		super( suica );
 
+		this._aperture = 0;
+		
 		// floor connector
 		var floorConnector = new Connector( [0,0,Tank.WIDTH/2 + Pipe.LENGTH] );
 		var wallConnector = new Connector( [0,Tank.BASE_HEIGHT/2,Tank.WIDTH/2], 90 );
@@ -50,10 +52,55 @@ class Pipe extends Group
 					normalMap: ScormUtils.image( 'metal_pipe_normal.jpg', 10, 1, 0.5 ),
 				} );
 
-		this.add( floorConnector, wallConnector, pipe, pipeConnector );
+		// valve
+		this.valve = group( );
+		{
+			var valveMaterial = new THREE.MeshStandardMaterial( {
+							color: color,
+							metalness: 1,
+							roughness: 0.5,
+							normalMap: ScormUtils.image( 'metal_plate_normal.jpg', 2, 1 ),
+							normalScale: new THREE.Vector2( 1, 1 ),
+							emissive: color,
+							emissiveIntensity: 0.3,
+						} );
+						
+			var rod = cylinder( [0,0,0], [2*Pipe.VALVE_WIDTH,Pipe.VALVE_LENGTH] );
+				its.threejs.material = valveMaterial;
+				
+			var bar1 = cylinder( [0,Pipe.VALVE_LENGTH,-Pipe.VALVE_RADIUS], [Pipe.VALVE_WIDTH,2*Pipe.VALVE_RADIUS] );
+				its.spinV = 90;
+				its.threejs.material = valveMaterial;
+				
+			var bar2 = cylinder( [-Pipe.VALVE_RADIUS,Pipe.VALVE_LENGTH,0], [Pipe.VALVE_WIDTH,2*Pipe.VALVE_RADIUS] );
+				its.spinH = 90;
+				its.spinV = 90;
+				its.threejs.material = valveMaterial;
+			
+			var ring = tube( [0,Pipe.VALVE_LENGTH,0], u=>[Pipe.VALVE_RADIUS*Math.sin(2*Math.PI*u),0,Pipe.VALVE_RADIUS*Math.cos(2*Math.PI*u)], Pipe.VALVE_WIDTH, [20,8] );
+				its.threejs.material = valveMaterial;
+
+			this.valve.add( rod, bar1, bar2, ring );
+		}
+		this.valve.center = [0,Tank.BASE_HEIGHT/2,Tank.WIDTH/2 + Pipe.LENGTH - 2*Pipe.RADIUS];
+		
+		this.add( floorConnector, wallConnector, pipe, pipeConnector, this.valve );
 		
 	} // Pipe.constructor
 	
+	
+	
+	get aperture()
+	{
+		return this._aperture;
+	}
+	
+	set aperture( aperture )
+	{
+		this._aperture = aperture;
+		this.valve.y = Tank.BASE_HEIGHT/2 + aperture*Pipe.VALVE_LENGTH/2;
+		this.valve.spinH = 720*aperture;
+	}
 	
 	
 } // class Pipe

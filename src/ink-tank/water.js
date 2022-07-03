@@ -93,6 +93,11 @@ class Water extends Group
 				water.magenta = magenta*rec.total;
 				water.yellow = yellow*rec.total;
 				water.adjustWater( );
+				
+				playground.tank.drainPipe.aperture = rec.total;
+				playground.tank.yellowPipe.aperture = rec.total;
+				playground.tank.magentaPipe.aperture = rec.total;
+				playground.tank.cyanPipe.aperture = rec.total;
 			})
 			.onComplete( ()=>{ playground.drainSound?.play()} )
 			.start( );

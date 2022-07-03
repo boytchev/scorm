@@ -1,4 +1,4 @@
-LINES: 1097 -> 622 (57%)
+LINES: 1097 -> 324 (30%)
 
 //	Glass texture
 //		https://www.deviantart.com/galaxiesanddust/art/Dirty-Window-Texture-311006931
@@ -48,150 +48,8 @@ MEIRO.Models.T001.prototype.initialize = function()
 
 	
 
-MEIRO.Models.T001.prototype.constructPipe = function()
-{
-	var pipe = new THREE.Group();
-	pipe.position.y = this.BASE_HEIGHT/2;
-	
-	// horizontal pipe
-	var normalMap = MEIRO.loadTexture( "textures/Metal_pipe_32x32_normal.jpg", 1, 24 );
-	
-	var geometry = new THREE.CylinderBufferGeometry( this.PIPE_RADIUS, this.PIPE_RADIUS, this.PIPE_LENGTH, options.lowpoly?6:32, 1, false );
-	var material = new THREE.MeshStandardMaterial( {
-		normalMap: normalMap,
-		normalScale: new THREE.Vector2(2,2),
-		metalness: 0.2 } );
-		
-	var tube = new THREE.Mesh( geometry, material );
-	tube.position.z = this.POOL_SIZE/2+this.PIPE_LENGTH/2;
-	tube.rotation.x = Math.PI/2;
-	pipe.add( tube );
-
-	// curved pipe
-	var z = this.POOL_SIZE/2+this.PIPE_LENGTH;
-	var y = this.BASE_HEIGHT/2;
-	var curve = new THREE.CubicBezierCurve3(
-		new THREE.Vector3( 0, 0,    z ),
-		new THREE.Vector3( 0, 0,    z+3*y/4 ),
-		new THREE.Vector3( 0, -y/4, z+y ),
-		new THREE.Vector3( 0, -y,   z+y )
-	);
-
-	var normalMap = MEIRO.loadTexture( "textures/Metal_pipe_32x32_normal.jpg", 12, 1 );
-	
-	var geometry = new THREE.TubeGeometry( curve, options.lowpoly?6:20, this.PIPE_RADIUS, options.lowpoly?6:32, false );
-	var material = new THREE.MeshStandardMaterial( {
-		normalMap: normalMap,
-		normalScale: new THREE.Vector2(2,2),
-		metalness: 0.2 } );
-	var tube = new THREE.Mesh( geometry, material );
-	pipe.add( tube );
-
-	// wall connector
-	var normalMap = MEIRO.loadTexture( "textures/Metal_plate_256x256_normal.jpg", 2, 2 );
-
-	// floor connector
-	var connector = new THREE.Mesh( geometry, material );
-	connector.position.z = this.POOL_SIZE/2+this.PIPE_LENGTH+this.BASE_HEIGHT/2;
-	connector.position.y = this.PIPE_EXTRUDE/2-this.BASE_HEIGHT/2;
-	pipe.add( connector );
-
-	// valve connector
-	var normalMap = MEIRO.loadTexture( "textures/Metal_plate_256x256_normal.jpg", 2, 1/2 );
-	var geometry = new THREE.CylinderBufferGeometry(this.PIPE_RADIUS+this.PIPE_EXTRUDE/2,this.PIPE_RADIUS+this.PIPE_EXTRUDE/2,this.VALVE_LENGTH,options.lowpoly?6:32);
-	var material = new THREE.MeshStandardMaterial( {
-		color: 'lightgray',
-		normalMap: normalMap,
-		normalScale: new THREE.Vector2(1/2,1/2),
-		roughness: 0.6,
-		metalness: 0.7
-		} );
-	var connector = new THREE.Mesh( geometry, material );
-	connector.position.z = this.POOL_SIZE/2+this.PIPE_LENGTH;
-	connector.rotation.x = Math.PI/2;
-	pipe.add( connector );
-	
-	return pipe;
-}
-
-
-
-MEIRO.Models.T001.prototype.constructValve = function()
-{
-	// handle
-	var normalMap = MEIRO.loadTexture( "textures/Metal_plate_256x256_normal.jpg", 8, 1 );
-	normalMap.offset = new THREE.Vector2( 0, -0.25 );
-	
-	var material = new THREE.MeshStandardMaterial({
-			normalMap: normalMap,
-			normalScale: new THREE.Vector2( 2, 2 ),
-			metalness: 0.1
-		});
-	var valve = new THREE.Mesh(
-		new THREE.TorusBufferGeometry(this.VALVE_RADIUS,this.VALVE_WIDTH,options.lowpoly?6:12,options.lowpoly?6:30),
-		material
-	);
-	valve.position.y = this.PIPE_RADIUS/2+3*this.VALVE_LENGTH/4;
-	valve.position.z = this.POOL_SIZE/2+this.PIPE_LENGTH;
-	valve.rotation.x = Math.PI/2;
-	valve.scale.set(EPS,EPS,EPS);
-
-	// bar
-	var normalMap = MEIRO.loadTexture( "textures/Metal_plate_256x256_normal.jpg", 1/2, 2 );
-	var bar = new THREE.Mesh(
-		new THREE.CylinderBufferGeometry(this.VALVE_WIDTH*0.7,this.VALVE_WIDTH*0.7,2*this.VALVE_RADIUS,6,1,true),
-		new THREE.MeshStandardMaterial({
-			color: 'dimgray',
-			normalMap: normalMap,
-			normalScale: new THREE.Vector2( 2, 2 ),
-			metalness: 0.2
-		})
-	);
-	valve.add(bar);
-
-	// second bar
-	bar = bar.clone();
-	bar.rotation.z = Math.PI/2;
-	valve.add(bar);
-	valve.name = 'valve';
-
-	// rod
-	var normalMap = MEIRO.loadTexture( "textures/Metal_plate_256x256_normal.jpg", 2, 2 );
-	geometry = new THREE.CylinderBufferGeometry(this.PIPE_EXTRUDE,this.PIPE_EXTRUDE,this.VALVE_LENGTH,options.lowpoly?6:24);
-	var tube = new THREE.Mesh( 
-		geometry,
-		new THREE.MeshStandardMaterial({
-			color: 'dimgray',
-			normalMap: normalMap,
-			normalScale: new THREE.Vector2( 8, 8 ),
-			metalness: 0.2
-		})
-	);
-	tube.position.z = 2*this.VALVE_LENGTH/5;
-	tube.rotation.x = -Math.PI/2;
-	valve.add( tube );
-
-	return valve;
-}
-
-
-
 MEIRO.Models.T001.prototype.constructPipes = function()
 {
-	this.pipes = new THREE.Group();
-	
-	var that = this;
-	function attach( index, pipe, valve )
-	{
-		pipe.rotation.y = Math.PI/2*index;
-		pipe.index = 0;
-		pipe.add( valve );
-		pipe.valve = valve;
-		valve.material = valve.material.clone();
-		valve.material.color = new THREE.Color( (['cyan','magenta','yellow','black'])[index] );
-		that.pipes.add(pipe);
-	}
-	
 	// cyan, magenta, yellow and black pipes
 	var pipe = this.constructPipe();
 	var valve = this.constructValve();
@@ -252,54 +110,6 @@ MEIRO.Models.T001.prototype.onDragEnd = function()
 
 
 
-MEIRO.Models.T001.prototype.generateWaterSurface = function(time)
-{
-	// положение на горното ниво на водата
-	var surfaceY = this.BASE_HEIGHT + this.waterLevel*this.POOL_DEPTH*4/5 - this.water.position.y;
-	
-	// генериране на вълни по горната повърхност
-	var pos = this.water.geometry.getAttribute('position');
-	for (var i=0; i<pos.count; i++)
-	{
-		var x = pos.getX(i);
-		var y = pos.getY(i);
-		var z = pos.getZ(i);
-		if (y>0)
-		{
-			var y = surfaceY;
-			y += (this.waterLevel)*Math.sin(rpm(time,25)+x+z*z/10)/10;
-			y += (this.waterLevel)*Math.cos(rpm(time,28)+z-x*x/10)/10;
-			pos.setY(i,y);
-		}
-	}
-	pos.needsUpdate = true;	
-	
-	
-	// генериране на контура на водата
-	var pos = this.waterLine.geometry.getAttribute('position');
-	for (var i=0; i<pos.count; i++)
-	{
-		var x = pos.getX(i);
-		var y = pos.getY(i);
-		var z = pos.getZ(i);
-		
-		var y = surfaceY;
-		y += (this.waterLevel)*Math.sin(rpm(time,25)+x+z*z/10)/10;
-		y += (this.waterLevel)*Math.cos(rpm(time,28)+z-x*x/10)/10;
-		pos.setY(i,y);
-	}
-	pos.needsUpdate = true;	
-	
-	
-	this.targetColorBox.position.set(
-		this.waterLevel*Math.sin(rpm(time,3.5)),
-		this.BASE_HEIGHT + this.waterLevel*this.POOL_DEPTH*4/5 + 0.3-0.3*this.waterLevel,
-		this.waterLevel*Math.sin(rpm(time-2,3.1))
-	);
-	this.targetColorBox.rotation.set(0.2*this.waterLevel*Math.sin(rpm(time,10)),0.15*this.waterLevel*Math.cos(rpm(time,13)),0.1*this.waterLevel*Math.sin(rpm(time-1,14)));
-}
-
-
 MEIRO.Models.T001.prototype.updateWaterAmount = function()
 {
 	// добавяне на цветна вода според активния входен кран
@@ -321,42 +131,7 @@ MEIRO.Models.T001.prototype.updateWaterAmount = function()
 		this.waterMagenta = Math.max( 0, k*this.waterMagenta );
 		this.waterYellow = Math.max( 0, k*this.waterYellow );
 	}
-	
-	// сумарно водата не може да е повече от 100%
-	var sum = this.waterCyan+this.waterMagenta+this.waterYellow;
-	if (sum>1)
-	{
-		this.waterCyan *= 1/sum;
-		this.waterMagenta *= 1/sum;
-		this.waterYellow *= 1/sum;
-	}
 }
-
-
-MEIRO.Models.T001.prototype.updateWaterColor = function()
-{	
-	// определяне на цвета на водата, като всяка компонента
-	// се мащабира така, че най-голямата да стане 100%
-	var max = Math.max(this.waterCyan,this.waterMagenta,this.waterYellow);
-	max = Math.max(0.0001,max);
-	this.water.material.color.setRGB(
-		1-this.waterCyan/max,
-		1-this.waterMagenta/max,
-		1-this.waterYellow/max
-	);
-
-	// определяне на нивото на водата
-	this.oldWaterLevel = this.waterLevel;
-	this.waterLevel = this.waterCyan+this.waterMagenta+this.waterYellow;
-	
-	// определяне на прозрачността на водата - при малко вода
-	// тя изглежда по-прозрачна, при повече вода - по-гъста
-	//this.water.material.opacity = Math.pow((this.waterLevel),1/5);
-	//this.water.material.opacity = Math.cos(Math.PI*(1-this.waterLevel))*0.5+0.5;
-	this.water.material.opacity = Math.pow(Math.sin(Math.PI/2*(this.waterLevel)),2);
-}
-
-
 
 
 MEIRO.Models.T001.prototype.activateWaterSound = function()
@@ -456,16 +231,6 @@ MEIRO.Models.T001.prototype.evaluateResult = function()
 	
 	this.config.time =  Math.floor((animationLoop.time-this.startTime)/1000);
 	
-//	console.log('score=',this.config.score);
-	this.info = '';
-	this.info += '<h1 style="text-align:center;">Цветният резервоар &ndash; '+Math.round(1000*this.config.score)/10+' от '+Math.round(100*this.config.max_score)+' точки</span></h1>';
-
-	this.info += '<p><table style="width:20em; margin:auto;">';
-	this.info += '<tr><td style="text-align:center; width:10em;">Желан цвят:</td><td style="text-align:center; width:10em;">Постигнат цвят:</td></tr>';
-	this.info += '<tr><td style="text-align:center;">'+target_color+'</td><td style="text-align:center;">'+player_color+' </td></tr>';
-	this.info += '<tr><td style="text-align:center;"><div style="border: solid 1px black; height:3em; background:rgb('+Math.round(255*r2)+','+Math.round(255*g2)+','+Math.round(255*b2)+')"></div></td><td style="text-align:center;"><div style="border: solid 1px black; height:3em; background:rgb('+Math.round(255*r1)+','+Math.round(255*g1)+','+Math.round(255*b1)+')"></div></td></tr>';
-	this.info += '</table></p>';
-//	console.log('evaluation=',this.config.score*match);
 }
 
 
@@ -498,52 +263,6 @@ MEIRO.Models.T001.prototype.onEnter = function(element)
 			}
 		} )
 		.start();
-}
-
-
-// превключвател на модела
-MEIRO.Models.T001.prototype.onExitModel = function(element)
-{
-	//MEIRO.Model.prototype.onExit.call(this);
-	
-	var that = this;
-	
-	that.playing = false;
-	that.evaluateResult();
-	new TWEEN.Tween({k:1})
-		.to({k:EPS},500)
-		.easing( TWEEN.Easing.Quadratic.InOut )
-		.onUpdate( function(){
-			for( var i=0; i<4; i++)
-			{
-				that.pipes.children[i].valve.scale.set(this.k,this.k,this.k);
-			}
-		} )
-		.start();
-	that.sendResult(
-	function(){
-		MEIRO.showInfo(this,
-				function(){
-					console.log('on before close info');
-					if (MEIRO.singleRoom)
-					{	
-						window.history.back();
-					}
-				},
-				function(){
-					console.log('on after close info');
-					if (!MEIRO.singleRoom)
-					{
-						if (controls.buttonMotion) controls.buttonMotion.show();
-						controls.startWalk(true,false);
-					}
-					that.info = that.defaultInfo;
-				}
-		);
-	}
-	);
-	
-	reanimate();
 }
 
 
