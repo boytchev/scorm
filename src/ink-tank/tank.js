@@ -35,6 +35,7 @@ class Tank extends Group
 		this.constructBase( );
 		this.constructFrames( );
 		this.constructGlass( );
+		this.constructPipes( );
 		
 		this.water = new Water( suica );
 
@@ -159,6 +160,21 @@ class Tank extends Group
 			this.add( glass );
 		}
 	} // Tank.constructGlass
+
+
+
+	constructPipes( )
+	{
+		for( var i=0; i<4; i++ )
+		{
+			var angle = radians( 90*i );
+				
+			var pipe = new Pipe( );
+				pipe.spinH = 90*i;
+				
+			this.add( pipe );
+		}
+	} // Tank.constructPipes
 
 
 

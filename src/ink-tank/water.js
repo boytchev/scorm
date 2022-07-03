@@ -6,6 +6,8 @@
 
 class Water extends Group
 {
+	static DRAIN_SPEED = 3000;
+	
 	constructor( )
 	{
 		super( suica );
@@ -74,17 +76,27 @@ class Water extends Group
 
 	
 	
-	removeInk( value )
+	drain( )
 	{
+		var cyan = this.cyan,
+			magenta = this.magenta,
+			yellow = this.yellow;
+			
 		var total = this.cyan + this.magenta + this.yellow,
-			factor = Math.max( 0, (total-value)/total );
+			water = this;
 		
-		this.cyan *= factor;
-		this.magenta *= factor;
-		this.yellow *= factor;
-		
-		this.adjustWater( );
-	} // Water.removeInk
+		new TWEEN.Tween( {total:total} )
+			.to( {total:0}, Water.DRAIN_SPEED*total )
+			.easing( TWEEN.Easing.Linear.None )
+			.onUpdate( rec => {
+				water.cyan = cyan*rec.total;
+				water.magenta = magenta*rec.total;
+				water.yellow = yellow*rec.total;
+				water.adjustWater( );
+			})
+			.onComplete( ()=>{ playground.drainSound?.play()} )
+			.start( );
+	} // Water.drain
 	
 
 	

@@ -20,6 +20,8 @@ this.tank.water.addCyan( 0.25 );
 this.tank.water.addYellow( 0.25 );
 this.tank.water.addMagenta( 0.5 );
 
+setTimeout( ()=> playground.tank.water.drain(), 500 );
+
 		this.translate( [
 			{id: 'txt-caption',
 				en: 'Ink tank',
@@ -89,10 +91,11 @@ this.tank.water.addMagenta( 0.5 );
 	{
 		//this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1, 4 );
 		//this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
-		//this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.2, 1, true );
+		this.drainSound = new PlaygroundAudio( 'sounds/drain.mp3', 0.2 );
+		this.backgroundMelody = new PlaygroundAudio( 'sounds/bubbles.mp3', 0.2, 1, true );
 		
-		//this.soundEffects.push( this.clickSound, this.clackSound );
-		//this.soundMelody.push( this.backgroundMelody );
+		this.soundEffects.push( this.drainSound );
+		this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
 	
 	
@@ -100,9 +103,8 @@ this.tank.water.addMagenta( 0.5 );
 	// floating plate
 	update( t, dT )
 	{
-//		this.tank.water.addCyan( dT/2/30 );
-//		this.tank.water.addYellow( dT/30 );
-		this.tank.water.removeInk( dT/30 );
+		this.tank.water.addCyan( dT/2/90 );
+		this.tank.water.addYellow( dT/90 );
 		this.tank.water.waves( t );
 	}
 } // class Playground
