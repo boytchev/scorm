@@ -31,13 +31,14 @@ class Tank extends Group
 			light.position.set( 0, 10, 0 );
 		this.suica.scene.add( light );
 		
+		this.water = new Water( suica );
+		
 		this.constructFloor( );
 		this.constructBase( );
 		this.constructFrames( );
 		this.constructGlass( );
 		this.constructPipes( );
 		
-		this.water = new Water( suica );
 
 	} // Tank.constructor
 
@@ -177,7 +178,7 @@ class Tank extends Group
 		this.drainPipe = new Pipe( 'black' );
 		this.drainPipe.spinH = 270;
 
-		this.add( this.cyanPipe, this.magentaPipe, this.yellowPipe, this.drainPipe );
+		//this.add( this.cyanPipe, this.magentaPipe, this.yellowPipe, this.drainPipe );
 		
 	} // Tank.constructPipes
 

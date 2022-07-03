@@ -16,11 +16,11 @@ class Playground extends ScormPlayground
 
 		this.tank = new Tank;
 		
-this.tank.water.addCyan( 0.25 );
-this.tank.water.addYellow( 0.25 );
-this.tank.water.addMagenta( 0.5 );
+// this.tank.water.addCyan( 0.25 );
+// this.tank.water.addYellow( 0.25 );
+// this.tank.water.addMagenta( 0.25 );
 
-setTimeout( ()=> playground.tank.water.drain(), 500 );
+// setTimeout( ()=> playground.tank.water.drain(), 500 );
 
 		this.translate( [
 			{id: 'txt-caption',
@@ -103,8 +103,8 @@ setTimeout( ()=> playground.tank.water.drain(), 500 );
 	// floating plate
 	update( t, dT )
 	{
-		this.tank.water.addCyan( dT/2/90 );
-		this.tank.water.addYellow( dT/90 );
+		//this.tank.water.addCyan( dT/2/20 );
+		//this.tank.water.addYellow( dT/20 );
 		this.tank.water.waves( t );
 	}
 } // class Playground

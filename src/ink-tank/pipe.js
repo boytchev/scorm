@@ -14,11 +14,22 @@ class Pipe extends Group
 	static LENGTH = 4;		// дължина на хоризонталната част на тръба
 	static EXTRUDE = 0.15;	// издаденост на пръстените на тръба
 
+	static OPEN_SPEED = 500;
+	static OPEN_ANGLE = 270;
+	
 	constructor( color )
 	{
 		super( suica );
 
 		this._aperture = 0;
+		this._color = color;
+		
+		this.valveTween = new TWEEN.Tween( this );
+		
+		// wrapper
+		var wrapper = cube( [0,Tank.BASE_HEIGHT/2,Tank.WIDTH/2+Pipe.LENGTH/2+Pipe.RADIUS], [4*Pipe.RADIUS,Tank.BASE_HEIGHT,Pipe.LENGTH+Pipe.RADIUS] );
+		wrapper.threejs.material.transparent = true;
+		wrapper.threejs.material.opacity = 0;
 		
 		// floor connector
 		var floorConnector = new Connector( [0,0,Tank.WIDTH/2 + Pipe.LENGTH] );
@@ -49,7 +60,7 @@ class Pipe extends Group
 					color: new THREE.Color(1.2,1.2,1.2),
 					metalness: 0.6,
 					roughness: 0.4,
-					normalMap: ScormUtils.image( 'metal_pipe_normal.jpg', 10, 1, 0.5 ),
+					normalMap: ScormUtils.image( 'metal_pipe_normal.jpg', 10, 1, 0.25 ),
 				} );
 
 		// valve
@@ -84,8 +95,9 @@ class Pipe extends Group
 		}
 		this.valve.center = [0,Tank.BASE_HEIGHT/2,Tank.WIDTH/2 + Pipe.LENGTH - 2*Pipe.RADIUS];
 		
-		this.add( floorConnector, wallConnector, pipe, pipeConnector, this.valve );
+		this.add( floorConnector, wallConnector, pipe, pipeConnector, this.valve, wrapper );
 		
+		this.addEventListener( 'mousedown', this.onMouseDown );
 	} // Pipe.constructor
 	
 	
@@ -99,9 +111,21 @@ class Pipe extends Group
 	{
 		this._aperture = aperture;
 		this.valve.y = Tank.BASE_HEIGHT/2 + aperture*Pipe.VALVE_LENGTH/2;
-		this.valve.spinH = 720*aperture;
+		this.valve.spinH = Pipe.OPEN_ANGLE*aperture;
 	}
 	
 	
+	onMouseDown( event )
+	{
+		this.valveTween.stop();
+		
+		var goal = this.aperture > 0.1 ? 0 : 1,
+			speed = Pipe.OPEN_SPEED*Math.abs(goal-this.aperture);
+		
+		this.valveTween = new TWEEN.Tween( this )
+			.to( {aperture:goal}, speed )
+			.easing( TWEEN.Easing.Linear.None )
+			.start( );
+	}
 } // class Pipe
 

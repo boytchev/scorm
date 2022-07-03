@@ -26,8 +26,8 @@
 </head>
 
 <body>
-	<suica fullwindow fullscreen background="linen" ontime="update"> <!-- onmousemove="onMouseMove"-->
-		<demo distance="20" altitude="5" speed="0.1">
+	<suica fullwindow fullscreen background="linen" ontime="update"> <!-- onmousemove="onMouseMove" onclick="onClick"-->
+		<demo distance="20" altitude="15" speed="0.5">
 		<div class="hud corner top left"></div>
 		<div class="hud corner top right"></div>
 		<div class="hud corner bottom left"></div>
@@ -64,6 +64,11 @@
 		window.addEventListener( 'resize', playground.resize );
 				
 		//var controls = new THREE.OrbitControls( suica.camera, suica.renderer.domElement );
+		
+		<!-- function onClick( event ) -->
+		<!-- { -->
+			<!-- console.log( findObject( event ) ); -->
+		<!-- } -->
 		
 		<!-- function onMouseMove( event ) -->
 		<!-- { -->
