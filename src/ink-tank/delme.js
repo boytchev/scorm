@@ -1,4 +1,4 @@
-LINES: 1097 -> 324 (30%)
+LINES: 1097 -> 205 (19%)
 
 //	Glass texture
 //		https://www.deviantart.com/galaxiesanddust/art/Dirty-Window-Texture-311006931
@@ -33,80 +33,6 @@ MEIRO.Models.T001 = function T001(room, model)
 	this.audioBoom.volume = 0.5;
 }
 MEIRO.Models.T001.prototype = Object.create(MEIRO.Model.prototype);
-
-
-
-MEIRO.Models.T001.prototype.initialize = function()
-{
-	this.waterCyan = 0;
-	this.waterMagenta = 0;
-	this.waterYellow = 0;
-	this.waterLevel = 0;
-	this.oldWaterLevel = 0;
-	this.activePipe = undefined;
-}
-
-	
-
-MEIRO.Models.T001.prototype.constructPipes = function()
-{
-	// cyan, magenta, yellow and black pipes
-	var pipe = this.constructPipe();
-	var valve = this.constructValve();
-	attach( 0, pipe, valve );
-	attach( 1, pipe.clone(), valve.clone() );
-	attach( 2, pipe.clone(), valve.clone() );
-	attach( 3, pipe.clone(), valve.clone() );
-
-	this.image.add( this.pipes );
-}
-
-
-
-MEIRO.Models.T001.prototype.onObject = function()
-{
-	if (!this.playing) return undefined;
-	
-	// координати на мишка
-	this.mouse.x = (controls.human.mousePos.x/window.innerWidth)*2 - 1;
-	this.mouse.y = -(controls.human.mousePos.y/window.innerHeight)*2 + 1;
-
-	this.raycaster.setFromCamera( this.mouse, camera );
-	
-	var intersects = this.raycaster.intersectObject( this.water );
-	if (intersects.length)
-	{	// при кликване върху водата се маркира, че няма кликване
-		// в противен случай може да се кликне на тръба зад водата
-		return undefined;
-	}
-			
-	for( var i=0; i<4; i++)
-	{
-		var pipe = this.pipes.children[i];
-		
-		for(var j=0; j<pipe.children.length; j++)
-		{
-			var element = pipe.children[j];
-			var intersects = this.raycaster.intersectObject( element );
-			if (intersects.length)
-			{
-				this.clicks++;
-				//console.log('on '+i);
-				this.activePipe = pipe;
-				return pipe;
-			}
-		}
-	}
-
-	return undefined;
-}
-
-
-
-MEIRO.Models.T001.prototype.onDragEnd = function()
-{
-	this.activePipe = undefined;
-}
 
 
 
@@ -179,20 +105,6 @@ MEIRO.Models.T001.prototype.onAnimate = function(time)
 	this.generateWaterSurface(time);
 	this.activateWaterSound();
 	
-	// развъртане на активния кран (ако има такъв)
-	// и завъртане на всички неактивни кранове
-	for( var i=0; i<4; i++)
-	{
-		var pipe = this.pipes.children[i];
-		pipe.valve.position.y = this.PIPE_RADIUS+this.VALVE_LENGTH*(2/5-3/5*pipe.valve.rotation.z/(2*Math.PI));
-		
-		if (pipe == this.activePipe)
-			pipe.valve.rotation.z = THREE.Math.lerp(pipe.valve.rotation.z,-2*Math.PI,0.015);
-		else
-			pipe.valve.rotation.z = Math.min( pipe.valve.rotation.z+0.25, 0 );
-	}
-
-	
 	TWEEN.update();
 	reanimate();
 }
@@ -233,37 +145,6 @@ MEIRO.Models.T001.prototype.evaluateResult = function()
 	
 }
 
-
-
-
-
-MEIRO.Models.T001.prototype.onEnter = function(element)
-{
-	MEIRO.Model.prototype.onEnter.call(this);
-
-	var that = this;
-	
-	that.info = that.defaultInfo;
-
-	if (controls.buttonMotion) controls.buttonMotion.hide();
-	that.buttonTimer.setText('');
-	that.buttonTimer.show();
-	that.playing = true;
-	that.configure(parseInt(options.difficulty)|0);
-	that.startTime = animationLoop.time;
-	new TWEEN.Tween({k:0})
-		.to({k:1},500)
-		.easing( TWEEN.Easing.Quadratic.InOut )
-		.onUpdate( function(){
-			that.targetColorBox.material.color.lerp(that.config.targetColor,this.k);
-			that.targetColorPlate.material.color.set(that.targetColorBox.material.color);
-			for( var i=0; i<4; i++)
-			{
-				that.pipes.children[i].valve.scale.set(this.k,this.k,this.k);
-			}
-		} )
-		.start();
-}
 
 
 
