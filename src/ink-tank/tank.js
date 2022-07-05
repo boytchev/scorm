@@ -8,6 +8,7 @@ class Tank extends Group
 {
 	static WIDTH = 8;
 	static DEPTH = 5;
+	static VERTICAL_OFFSET = -2;
 
 	static BASE_HEIGHT = 2;
 	static FRAME_WIDTH = 0.25;
@@ -41,6 +42,8 @@ class Tank extends Group
 		
 		this.addEventListener( 'mousedown', this.onMouseDown );
 		
+		this.y = Tank.VERTICAL_OFFSET;
+		
 	} // Tank.constructor
 
 
@@ -48,8 +51,8 @@ class Tank extends Group
 	static metal( map, normalMap, aoMap=null, offset=0 )
 	{
 		var material = new THREE.MeshStandardMaterial( {
-			color: 'lightgray',
-			metalness: 0.3,
+			color: 'white',
+			metalness: 0.4,
 			roughness: 0.42,
 			map: map,
 			normalMap: normalMap,
@@ -91,22 +94,22 @@ class Tank extends Group
 			aoMap = ScormUtils.image( 'wall_ao.jpg' );
 
 		var base = cube( [0,Tank.BASE_HEIGHT/2,0], [Tank.WIDTH, Tank.BASE_HEIGHT, Tank.WIDTH] );
-			base.threejs.material = Tank.metal( map, normalMap, aoMap );
+			base.threejs.material = Tank.metal( map, normalMap, aoMap, 5 );
 			ScormUtils.addUV2( base ); // because of AO
 
 		var map = ScormUtils.image( 'metal_plate.jpg', Tank.WIDTH ),
 			normalMap = ScormUtils.image( 'metal_plate_normal.jpg', Tank.WIDTH );
 
 		var baseTop = square( [0,Tank.BASE_HEIGHT,0], Tank.WIDTH );
-			baseTop.threejs.material = Tank.metal( map, normalMap, null, -1 );
+			baseTop.threejs.material = Tank.metal( map, normalMap, null, -2 );
 			baseTop.spinV = -90;
 
-		var baseWhite = square( [0,Tank.BASE_HEIGHT,0], Tank.WIDTH-3*Tank.FRAME_WIDTH );
+		var baseWhite = square( [0,Tank.BASE_HEIGHT+0.1,0], Tank.WIDTH-3*Tank.FRAME_WIDTH );
 			baseWhite.threejs.material = new THREE.MeshBasicMaterial( {
 				color: 'white',
 				polygonOffset: true,
-				polygonOffsetFactor: -2,
-				polygonOffsetUnits: -2,
+				polygonOffsetFactor: -1,
+				polygonOffsetUnits: -1,
 			});		
 			baseWhite.spinV = -90;
 		

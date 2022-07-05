@@ -18,6 +18,9 @@ class Pipe extends Group
 	static OPEN_SPEED = 500;
 	static OPEN_ANGLE = 270;
 	
+//	static IND_SIZE = [1.6,0.2];
+//	static IND_FRAME_SIZE = [0.3,1.7];
+	
 	constructor( color )
 	{
 		super( suica );
@@ -25,6 +28,7 @@ class Pipe extends Group
 		this._aperture = 0;
 		this._color = color;
 		
+		this.y = Tank.VERTICAL_OFFSET;
 		
 		this.valveTween = new TWEEN.Tween( this );
 		
@@ -32,6 +36,14 @@ class Pipe extends Group
 		var wrapper = cube( [0,Tank.BASE_HEIGHT/2,Tank.WIDTH/2+Pipe.LENGTH/2+Pipe.RADIUS], [4*Pipe.RADIUS,Tank.BASE_HEIGHT,Pipe.LENGTH+Pipe.RADIUS] );
 		wrapper.threejs.material.transparent = true;
 		wrapper.threejs.material.opacity = 0;
+
+		// indicator
+//		this.indicator = cylinder( [0,Tank.BASE_HEIGHT/2,Tank.WIDTH/2 + Pipe.LENGTH/2], [2*Pipe.RADIUS-0.05,2*Pipe.RADIUS,2*Pipe.RADIUS+0.05], 'white' );
+//			its.spinV = -90;
+//			its.spinT = -180;
+//			its.image = drawing( 128, 128 );
+//			its.threejs.renderOrder = -2;
+//			its.threejs.material.map.wrapS = THREE.ClampToEdgeWrapping;
 		
 		// floor connector
 		var floorConnector = new Connector( [0,0,Tank.WIDTH/2 + Pipe.LENGTH] );
@@ -61,7 +73,7 @@ class Pipe extends Group
 		this.pipe.threejs.material = new THREE.MeshPhysicalMaterial( {
 					color: new THREE.Color(1.2,1.2,1.2),
 					metalness: 0.5,
-					roughness: 0,
+					roughness: 0.2,
 					normalMap: ScormUtils.image( 'metal_pipe_normal.jpg', 10, 1, 0.5 ),
 					sheenRoughness: 0.5,
 					sheenColor: color,
@@ -69,7 +81,7 @@ class Pipe extends Group
 					emissive: color,
 					emissiveIntensity: 0,
 				} );
-
+		
 		// valve
 		this.valve = group( );
 		{
@@ -104,7 +116,7 @@ class Pipe extends Group
 		}
 		this.valve.center = [0,Tank.BASE_HEIGHT/2,Tank.WIDTH/2 + Pipe.LENGTH - 2*Pipe.RADIUS];
 		
-		this.add( floorConnector, wallConnector, this.pipe, pipeConnector, this.valve, wrapper );
+		this.add( floorConnector, wallConnector, this.pipe, pipeConnector, this.valve, wrapper/*, this.indicator*/ );
 		
 		this.addEventListener( 'mousedown', this.onMouseDown );
 	} // Pipe.constructor
@@ -176,5 +188,27 @@ class Pipe extends Group
 			.easing( TWEEN.Easing.Linear.None )
 			.start( );
 	}
+	
+	
+/*
+	updateIndicator( )
+	{
+		var image = this.indicator.image;
+		image.clear( );
+	
+		for( var i=0; i<8; i++)
+		{
+			image.moveTo( 64-12,16*i+8,64-11,16*i+8 );
+			image.moveTo( 64+12,16*i+8,64+11,16*i+8 );
+		}
+
+		for( var i=0; i<Math.round(8*playground.tank.water[this._color]); i++)
+		{
+			image.moveTo( 64-10,16*i+8,64+10,16*i+8 );
+		}
+		image.stroke( 'black', 12 );
+	}
+*/
+	
 } // class Pipe
 

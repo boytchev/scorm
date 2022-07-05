@@ -46,13 +46,14 @@ class Water extends Group
 			its.threejs.material.opacity = 0.3;
 			its.threejs.renderOrder = -1;
 			
+		this.plateColor = sphere( [0,0.05,0], [Tank.PLATE_SIZE, Tank.PLATE_HEIGHT] );
 		this.plate = group(
-			cube( [0,Tank.PLATE_HEIGHT/2,0], [Tank.PLATE_SIZE, Tank.PLATE_HEIGHT] ),
-			cube( [0,Tank.PLATE_HEIGHT/2,0], [Tank.PLATE_SIZE, Tank.PLATE_HEIGHT], 'black' ).style({ wireframe:true }),
-			square( [0,Tank.PLATE_HEIGHT,0], Tank.PLATE_SIZE ).style({ spinV:-90 }),
+			this.plateColor,
+			sphere( [0,0,0], [Tank.PLATE_SIZE*1.1, Tank.PLATE_HEIGHT], 'black' )
 		);
+		this.plate.y = -2;
 		
-		this.plate.y = Water.PLATE_OFF_Y;
+		this.addEventListener( 'onMouseDown', this.clickOnPlate );
 		
 		this.add( this.water, this.waterBorder, this.plate );
 		
@@ -89,20 +90,21 @@ class Water extends Group
 			level = this.level;
 		}
 		
-		var color = rgb( 255-255*this.cyan/level, 255-255*this.magenta/level, 255-255*this.yellow/level );
+		var max = Math.max( this.cyan, this.magenta, this.yellow );
+		var color = rgb( 255-255*this.cyan/max, 255-255*this.magenta/max, 255-255*this.yellow/max );
 		
 		var height = level*Tank.WATER_HEIGHT;
 		
-		this.water.y = height/2 + Tank.BASE_HEIGHT;
+		this.water.y = height/2 + Tank.BASE_HEIGHT + Tank.VERTICAL_OFFSET;
 		this.water.height = height;
-		this.water.threejs.material.opacity = Math.pow(level,1/2);
-		this.water.threejs.material.transmission = 0;//1-0.9*Math.pow(level,1/6);
-		//this.water.threejs.material.roughness = Math.pow(level,1/6);
+		this.water.threejs.material.opacity = Math.pow(level,1);
+		this.water.threejs.material.transmission = 1-1*Math.pow(level,1/6);
+		this.water.threejs.material.roughness = Math.pow(level,1/6);
 		this.water.threejs.material.color = color;
 		
-		this.waterBorder.y = height + Tank.BASE_HEIGHT;
+		this.waterBorder.y = height + Tank.BASE_HEIGHT + Tank.VERTICAL_OFFSET;
 
-		this.plate.y = Math.max( 0.05, height-Tank.PLATE_HEIGHT/2 ) + Tank.BASE_HEIGHT;
+		this.plate.y = Math.max(height,Tank.PLATE_HEIGHT/2) + Tank.BASE_HEIGHT + Tank.VERTICAL_OFFSET;
 
 	} // Water.adjustWater
 
@@ -141,6 +143,13 @@ class Water extends Group
 		);
 		
 	} // Water.waves
+	
+	
+	clickOnPlate( )
+	{
+		if( playground.tank.water.level > 0.9 )
+			playground.endGame();
+	}
 	
 	
 } // class Water
