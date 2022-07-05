@@ -7,6 +7,8 @@
 class Playground extends ScormPlayground
 {
 	static POINTS_SPEED = 2000;
+	static FILL_SPEED = 0.2;
+	static DRAIN_SPEED = 0.5;
 	
 	constructor( )
 	{
@@ -38,8 +40,17 @@ class Playground extends ScormPlayground
 	{
 		super.newGame( );
 
-		// ...
+		this.tank.water.clearWater( );
+		this.tank.cyanPipe.show( );
+		this.tank.magentaPipe.show( );
+		this.tank.yellowPipe.show( );
+		this.tank.drainPipe.show( );
 
+		this.tank.water.plate.y = 20;
+		new TWEEN.Tween( this.tank.water.plate )
+			.to( {y:Tank.BASE_HEIGHT+Tank.PLATE_HEIGHT/2}, 1000 )
+			.easing( TWEEN.Easing.Quartic.In )
+			.start( );
 	} // Playground.newGame
 
 
@@ -69,6 +80,7 @@ class Playground extends ScormPlayground
 	// ends the current game - evaluate results, update data
 	endGame( )
 	{
+console.log('end game');
 		super.endGame( );
 		
 		// ...
@@ -103,7 +115,11 @@ class Playground extends ScormPlayground
 	// floating plate
 	update( t, dT )
 	{
-		//this.tank.water.addCyan( dT/2/20 );
+		this.tank.water.addInk( 'cyan', Math.pow(this.tank.cyanPipe.aperture,2)*dT*Playground.FILL_SPEED );
+		this.tank.water.addInk( 'magenta', Math.pow(this.tank.magentaPipe.aperture,2)*dT*Playground.FILL_SPEED );
+		this.tank.water.addInk( 'yellow', Math.pow(this.tank.yellowPipe.aperture,2)*dT*Playground.FILL_SPEED );
+		this.tank.water.drain( Math.pow(this.tank.drainPipe.aperture,2)*dT*Playground.DRAIN_SPEED );
+		
 		//this.tank.water.addYellow( dT/20 );
 		this.tank.water.waves( t );
 	}

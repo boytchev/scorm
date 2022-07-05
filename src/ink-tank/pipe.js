@@ -14,6 +14,7 @@ class Pipe extends Group
 	static LENGTH = 4;		// дължина на хоризонталната част на тръба
 	static EXTRUDE = 0.15;	// издаденост на пръстените на тръба
 
+	static SHOW_SPEED = 200;
 	static OPEN_SPEED = 500;
 	static OPEN_ANGLE = 270;
 	
@@ -23,6 +24,7 @@ class Pipe extends Group
 
 		this._aperture = 0;
 		this._color = color;
+		
 		
 		this.valveTween = new TWEEN.Tween( this );
 		
@@ -47,7 +49,7 @@ class Pipe extends Group
 					} );
 		
 		// pipe
-		var pipe = tube(
+		this.pipe = tube(
 			[0,0,0],
 			spline([ [0,Tank.BASE_HEIGHT/2,Tank.WIDTH/2-1], // wall
 			  [0,Tank.BASE_HEIGHT/2,Tank.WIDTH/2 + Pipe.LENGTH - Tank.BASE_HEIGHT/2],
@@ -56,11 +58,16 @@ class Pipe extends Group
 			  ],false,false),
 			 Pipe.RADIUS, [50,20], 1
 		);
-		pipe.threejs.material = new THREE.MeshPhysicalMaterial( {
+		this.pipe.threejs.material = new THREE.MeshPhysicalMaterial( {
 					color: new THREE.Color(1.2,1.2,1.2),
-					metalness: 0.6,
-					roughness: 0.4,
-					normalMap: ScormUtils.image( 'metal_pipe_normal.jpg', 10, 1, 0.25 ),
+					metalness: 0.5,
+					roughness: 0,
+					normalMap: ScormUtils.image( 'metal_pipe_normal.jpg', 10, 1, 0.5 ),
+					sheenRoughness: 0.5,
+					sheenColor: color,
+					sheen: 0,
+					emissive: color,
+					emissiveIntensity: 0,
 				} );
 
 		// valve
@@ -92,10 +99,12 @@ class Pipe extends Group
 				its.threejs.material = valveMaterial;
 
 			this.valve.add( rod, bar1, bar2, ring );
+			
+			this.valve.size = 0;
 		}
 		this.valve.center = [0,Tank.BASE_HEIGHT/2,Tank.WIDTH/2 + Pipe.LENGTH - 2*Pipe.RADIUS];
 		
-		this.add( floorConnector, wallConnector, pipe, pipeConnector, this.valve, wrapper );
+		this.add( floorConnector, wallConnector, this.pipe, pipeConnector, this.valve, wrapper );
 		
 		this.addEventListener( 'mousedown', this.onMouseDown );
 	} // Pipe.constructor
@@ -112,18 +121,58 @@ class Pipe extends Group
 		this._aperture = aperture;
 		this.valve.y = Tank.BASE_HEIGHT/2 + aperture*Pipe.VALVE_LENGTH/2;
 		this.valve.spinH = Pipe.OPEN_ANGLE*aperture;
+		this.pipe.threejs.material.sheen = aperture;
+		this.pipe.threejs.material.emissiveIntensity = 0.3*aperture;
 	}
 	
 	
 	onMouseDown( event )
 	{
+		// if a game is not started, then start a game
+		if( !playground.gameStarted )
+		{
+			playground.newGame();
+			return;
+		}
+		
+		
 		this.valveTween.stop();
 		
-		var goal = this.aperture > 0.1 ? 0 : 1,
-			speed = Pipe.OPEN_SPEED*Math.abs(goal-this.aperture);
+		var speed = Pipe.OPEN_SPEED*(1-this.aperture);
+
+		this.valveTween = new TWEEN.Tween( this )
+			.to( {aperture:1}, speed )
+			.easing( TWEEN.Easing.Linear.None )
+			.start( );
+	}
+	
+
+	deactivate( )
+	{
+		this.valveTween.stop();
+		
+		var speed = Pipe.OPEN_SPEED*this.aperture;
 		
 		this.valveTween = new TWEEN.Tween( this )
-			.to( {aperture:goal}, speed )
+			.to( {aperture:0}, speed )
+			.easing( TWEEN.Easing.Linear.None )
+			.start( );
+	}
+	
+
+	show( )
+	{
+		new TWEEN.Tween( this.valve )
+			.to( {size:1}, Pipe.SHOW_SPEED )
+			.easing( TWEEN.Easing.Linear.None )
+			.start( );
+	}
+	
+	
+	hide( )
+	{
+		new TWEEN.Tween( this.valve )
+			.to( {size:0}, Pipe.SHOW_SPEED )
 			.easing( TWEEN.Easing.Linear.None )
 			.start( );
 	}

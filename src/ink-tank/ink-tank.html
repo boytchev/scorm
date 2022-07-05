@@ -17,7 +17,6 @@
 	<script src="libs/tween.umd.js"></script>
 	<script src="libs/suica.js"></script>
 	<script src="libs/scorm.utils.js"></script>
-	<!--script src="libs/OrbitControls.js"></script-->
 	<script src="connector.js"></script>
 	<script src="pipe.js"></script>
 	<script src="water.js"></script>
@@ -26,7 +25,7 @@
 </head>
 
 <body>
-	<suica fullwindow fullscreen background="linen" ontime="update"> <!-- onmousemove="onMouseMove" onclick="onClick"-->
+	<suica fullwindow fullscreen background="linen" ontime="update" onmousemove="onMouseMove" onMouseUp="onMouseUp"> <!-- onclick="onClick"-->
 		<orbit distance="20" altitude="15">
 		<div class="hud corner top left"></div>
 		<div class="hud corner top right"></div>
@@ -63,20 +62,33 @@
 
 		window.addEventListener( 'resize', playground.resize );
 				
-		//var controls = new THREE.OrbitControls( suica.camera, suica.renderer.domElement );
 		
 		<!-- function onClick( event ) -->
 		<!-- { -->
 			<!-- console.log( findObject( event ) ); -->
 		<!-- } -->
 		
-		<!-- function onMouseMove( event ) -->
-		<!-- { -->
-			<!-- if( findObject( event ) ) -->
-				<!-- event.target.style.cursor = 'pointer'; -->
-			<!-- else -->
-				<!-- event.target.style.cursor = 'default'; -->
-		<!-- } -->
+		function onMouseMove( event )
+		{
+			if( findObject( event ) )
+			{
+				event.target.style.cursor = 'pointer';
+			}
+			else
+				event.target.style.cursor = 'default';
+		}
+		
+		function onMouseUp( )
+		{
+			if( playground.gameStarted )
+			{
+				var tank = playground.tank;
+				if( tank.cyanPipe.aperture ) tank.cyanPipe.deactivate( );
+				if( tank.magentaPipe.aperture ) tank.magentaPipe.deactivate( );
+				if( tank.yellowPipe.aperture ) tank.yellowPipe.deactivate( );
+				if( tank.drainPipe.aperture ) tank.drainPipe.deactivate( );
+			}
+		}
 		
 	</script>
 	
