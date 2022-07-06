@@ -122,28 +122,29 @@ class Playground extends ScormPlayground
 	evaluateGame( )
 	{
 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
+		var granularity  = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 3, 16 );
 		
 		var water = this.tank.water,
 			max = Math.max( water.cyan, water.magenta, water.yellow );
 		
-		console.log(1-water.cyan/max,1-water.magenta/max,1-water.yellow/max);
-		console.log(water.plateColor.color);
+		var userC = Math.round(granularity*water.cyan/max),
+			userM = Math.round(granularity*water.magenta/max),
+			userY = Math.round(granularity*water.yellow/max);
 		
-		var error =
-				Math.abs(water.plateColor.color[0] - (1-water.cyan/max)) +
-				Math.abs(water.plateColor.color[1] - (1-water.magenta/max)) +
-				Math.abs(water.plateColor.color[2] - (1-water.yellow/max));
-
-console.log('error',error);
+		var goalC = Math.round(granularity*(1-water.plateColor.color[0])),
+			goalM = Math.round(granularity*(1-water.plateColor.color[1])),
+			goalY = Math.round(granularity*(1-water.plateColor.color[2]));
 		
-		var score = THREE.MathUtils.mapLinear( error, 0, 0.25, 1, 0 );
+		var error = Math.pow(
+				Math.pow(userC-goalC,2)+
+				Math.pow(userM-goalM,2)+
+				Math.pow(userY-goalY,2),
+				0.5
+			);
 
-console.log('score',score);
-
-		score = Math.max( 0, score );
+		var score = THREE.MathUtils.mapLinear( error, 1.5, granularity, 1, 0 );
+			score = THREE.MathUtils.clamp( score, 0, 1 );
 		
-console.log('points',score * points);
-
 		return score * points;
 
 	} // Playground.evaluateGame
@@ -155,6 +156,8 @@ console.log('points',score * points);
 	{
 console.log('end game');
 		super.endGame( );
+		
+		this.tank.water.drainAll( );
 		
 		// ...
 		

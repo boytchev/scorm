@@ -6,6 +6,8 @@
 
 class Water extends Group
 {
+	static DRAIN_ALL_SPEED = 500;
+	
 	constructor( )
 	{
 		super( suica );
@@ -77,6 +79,16 @@ class Water extends Group
 		return this.cyan + this.magenta + this.yellow;
 	}
 	
+	set level( level )
+	{
+		var scale = level/this.level;
+		
+		this.cyan *= scale;
+		this.magenta *= scale;
+		this.yellow *= scale;
+		
+		this.adjustWater( );
+	}
 	
 	adjustWater( )
 	{
@@ -120,6 +132,16 @@ class Water extends Group
 		this.magenta *= scale;
 		this.yellow *= scale;
 		this.adjustWater( );
+	} // Water.drain
+	
+
+	
+	drainAll( )
+	{
+		new TWEEN.Tween( this )
+			.to( {level:0}, this.level*Water.DRAIN_ALL_SPEED )
+			.easing( TWEEN.Easing.Quartic.In )
+			.start( );
 	} // Water.drain
 	
 
