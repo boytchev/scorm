@@ -55,11 +55,12 @@ class Water extends Group
 			this.plateColor,
 			sphere( [0,0,0], [Tank.PLATE_SIZE*1.1, Tank.PLATE_HEIGHT], 'black' )
 		);
-		this.plate.y = -2;
 		
 		this.addEventListener( 'onMouseDown', this.clickOnPlate );
 		
 		this.add( this.water, this.waterBorder, this.plate );
+		
+		this.adjustWater( );
 		
 	} // Water.constructor
 	
@@ -172,10 +173,20 @@ class Water extends Group
 	
 	clickOnPlate( )
 	{
-		if( playground.tank.water.level > 0.9 )
-			playground.endGame();
+		if( !playground.gameStarted )
+			playground.newGame( )
+		else
+		{
+			if( playground.tank.water.level > 0.9 )
+				playground.endGame();
+		}
 	}
 	
 	
+	colorize( t )
+	{
+		//this.plateColor.color = hsl( (200*t + 100*Math.sin(t))%360, 100, 50 );
+		this.plateColor.color = hsl( 0, 0, 50+10*Math.sin(10*t)+10*Math.sin(5*t) );
+	}
 } // class Water
 

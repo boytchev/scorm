@@ -14,7 +14,7 @@ class Pipe extends Group
 	static LENGTH = 4;		// дължина на хоризонталната част на тръба
 	static EXTRUDE = 0.15;	// издаденост на пръстените на тръба
 
-	static SHOW_SPEED = 200;
+//	static SHOW_SPEED = 200;
 	static OPEN_SPEED = 500;
 	static OPEN_ANGLE = 270;
 	
@@ -112,7 +112,7 @@ class Pipe extends Group
 
 			this.valve.add( rod, bar1, bar2, ring );
 			
-			this.valve.size = 0;
+			//this.valve.size = 0;
 		}
 		this.valve.center = [0,Tank.BASE_HEIGHT/2,Tank.WIDTH/2 + Pipe.LENGTH - 2*Pipe.RADIUS];
 		
@@ -172,22 +172,22 @@ class Pipe extends Group
 	}
 	
 
-	show( )
-	{
-		new TWEEN.Tween( this.valve )
-			.to( {size:1}, Pipe.SHOW_SPEED )
-			.easing( TWEEN.Easing.Linear.None )
-			.start( );
-	}
+	// show( )
+	// {
+		// new TWEEN.Tween( this.valve )
+			// .to( {size:1}, Pipe.SHOW_SPEED )
+			// .easing( TWEEN.Easing.Linear.None )
+			// .start( );
+	// }
 	
 	
-	hide( )
-	{
-		new TWEEN.Tween( this.valve )
-			.to( {size:0}, Pipe.SHOW_SPEED )
-			.easing( TWEEN.Easing.Linear.None )
-			.start( );
-	}
+	// hide( )
+	// {
+		// new TWEEN.Tween( this.valve )
+			// .to( {size:0}, Pipe.SHOW_SPEED )
+			// .easing( TWEEN.Easing.Linear.None )
+			// .start( );
+	// }
 	
 	
 /*
