@@ -16,7 +16,8 @@ class Water extends Group
 		this.magenta = 0;
 		this.yellow = 0;
 
-		this.water = cube( [0,0,0], [Tank.WIDTH-2*Tank.FRAME_WIDTH/3,0] );
+		//.//this.water = cube( [0,0,0], [Tank.WIDTH-2*Tank.FRAME_WIDTH/3,0] );
+		this.water = cylinder( [0,0,0], [Tank.WIDTH-2*Tank.FRAME_WIDTH/3,0] );
 		this.water.threejs.material = new THREE.MeshStandardMaterial({
 				roughness: 0.5,
 				metalness: 0,
@@ -24,7 +25,8 @@ class Water extends Group
 		});
 		this.water.threejs.renderOrder = -2;
 		
-		this.waterBorder = square( [0,0,0], Tank.WIDTH-2*Tank.FRAME_WIDTH/3, 'black' );
+		//.//this.waterBorder = square( [0,0,0], Tank.WIDTH-2*Tank.FRAME_WIDTH/3, 'black' );
+		this.waterBorder = circle( [0,0,0], Tank.WIDTH-2*Tank.FRAME_WIDTH/3, 'black' );
 			its.wireframe = true;
 			its.spinV = 90;
 			its.threejs.material.transparent = true;
@@ -34,9 +36,18 @@ class Water extends Group
 		this.plateColor = sphere( [0,0.05,0], [Tank.PLATE_SIZE, Tank.PLATE_HEIGHT] );
 			its.threejs.material.map = ScormUtils.image( 'plate_border.jpg', 24, 0.85 );
 			
+		var plateFrame = sphere( [0,0,0], [Tank.PLATE_SIZE*1.1, Tank.PLATE_HEIGHT], 'black' ); 
+		its.threejs.material = new THREE.MeshStandardMaterial( {
+						color: 'gray',
+						metalness: 0.8,
+						roughness: 0.3,
+						normalMap: ScormUtils.image( 'metal_plate_normal.jpg', 8, 2 ),
+						normalScale: new THREE.Vector2( 0.25, 0.25 ),
+					} );
+					
 		this.plate = group(
 			this.plateColor,
-			sphere( [0,0,0], [Tank.PLATE_SIZE*1.1, Tank.PLATE_HEIGHT], 'black' )
+			plateFrame
 		);
 		
 		this.plate.addEventListener( 'onMouseDown', this.clickOnPlate );
@@ -93,9 +104,11 @@ class Water extends Group
 		
 		var height = level*Tank.WATER_HEIGHT;
 		
-		this.water.y = height/2 + Tank.BASE_HEIGHT + Tank.VERTICAL_OFFSET;
+		//.//this.water.y = height/2 + Tank.BASE_HEIGHT + Tank.VERTICAL_OFFSET;
+		this.water.y = Tank.BASE_HEIGHT + Tank.VERTICAL_OFFSET;
 		this.water.height = height;
 		this.water.threejs.material.opacity = Math.pow(level,1);
+//		this.water.threejs.material.transmission = 1-0.9*Math.pow(level,1);
 		this.water.threejs.material.color = color;
 		
 		this.waterBorder.y = height + Tank.BASE_HEIGHT + Tank.VERTICAL_OFFSET;
@@ -105,18 +118,18 @@ class Water extends Group
 	} // Water.adjustWater
 
 	
-	
-	drain( value )
-	{
-		if( this.level==0 ) return;
+//.//	
+	// drain( value )
+	// {
+		// if( this.level==0 ) return;
 		
-		var scale = Math.max( 0, (this.level-value)/this.level );
+		// var scale = Math.max( 0, (this.level-value)/this.level );
 		
-		this.cyan *= scale;
-		this.magenta *= scale;
-		this.yellow *= scale;
-		this.adjustWater( );
-	} // Water.drain
+		// this.cyan *= scale;
+		// this.magenta *= scale;
+		// this.yellow *= scale;
+		// this.adjustWater( );
+	// } // Water.drain
 	
 
 	
