@@ -81,7 +81,16 @@ class Tank extends Group
 
 		ScormUtils.addUV2( floor ); // because of AO
 
-		this.add( floor );
+		var shadow = square( [0,-0.2,0], Tank.FLOOR_SIZE*1.1 );
+			its.spinV = -90;
+			its.threejs.material = new THREE.MeshBasicMaterial( {
+				color: 'black',
+				alphaMap: ScormUtils.image( 'floor_shadow_alpha.jpg' ),
+				transparent: true,
+			});
+			its.threejs.renderOrder = -10;
+		
+		this.add( floor, shadow );
 
 	} // Tank.constructFloor	
 		
