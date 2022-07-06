@@ -17,27 +17,10 @@ class Water extends Group
 		this.yellow = 0;
 
 		this.water = cube( [0,0,0], [Tank.WIDTH-2*Tank.FRAME_WIDTH/3,0] );
-		// this.water.threejs.material = new THREE.MeshBasicMaterial({
-			// color: 'cyan',
-			// polygonOffset: true,
-			// polygonOffsetUnits: 1,
-			// polygonOffsetFactor: 1,
-			// transparent: true,
-			// opacity: 0.5,
-		// });
-		this.water.threejs.material = new THREE.MeshPhysicalMaterial({
-				//color: 'white',
-				//clearcoat: 1,
-				//clearcoatRoughness: 0,
-				ior: 1.05,
+		this.water.threejs.material = new THREE.MeshStandardMaterial({
 				roughness: 0.5,
 				metalness: 0,
-				thickness: 0.1,
-				transmission: 0.2,
-				//emissiveIntensity: 0.1,
-				//emissive: 'lime',
-				//opacity: 1,
-				transparent: !false,
+				transparent: true,
 		});
 		this.water.threejs.renderOrder = -2;
 		
@@ -56,9 +39,9 @@ class Water extends Group
 			sphere( [0,0,0], [Tank.PLATE_SIZE*1.1, Tank.PLATE_HEIGHT], 'black' )
 		);
 		
-		this.addEventListener( 'onMouseDown', this.clickOnPlate );
+		this.plate.addEventListener( 'onMouseDown', this.clickOnPlate );
 		
-		this.add( this.water, this.waterBorder, this.plate );
+		this.add( this.water, this.waterBorder );
 		
 		this.adjustWater( );
 		
@@ -113,9 +96,6 @@ class Water extends Group
 		this.water.y = height/2 + Tank.BASE_HEIGHT + Tank.VERTICAL_OFFSET;
 		this.water.height = height;
 		this.water.threejs.material.opacity = Math.pow(level,1);
-		this.water.threejs.material.transmission = 0;//-1*Math.pow(level,1/6);
-		this.water.threejs.material.roughness = 0;//Math.pow(level,1/6);
-		this.water.threejs.material.thickness = 0;//Math.pow(level,1/6);
 		this.water.threejs.material.color = color;
 		
 		this.waterBorder.y = height + Tank.BASE_HEIGHT + Tank.VERTICAL_OFFSET;

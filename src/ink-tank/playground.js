@@ -7,8 +7,8 @@
 class Playground extends ScormPlayground
 {
 	static POINTS_SPEED = 2000;
-	static FILL_SPEED = 0.3;
-	static DRAIN_SPEED = 0.5;
+	static FILL_SPEED = 0.4;
+	static DRAIN_SPEED = 0.6;
 
 	static PLATE_HIT_SPEED = 100;
 	static PLATE_FALL_SPEED = 900;
@@ -20,12 +20,6 @@ class Playground extends ScormPlayground
 		this.resize( );
 
 		this.tank = new Tank;
-		
-// this.tank.water.addCyan( 0.25 );
-// this.tank.water.addYellow( 0.25 );
-// this.tank.water.addMagenta( 0.25 );
-
-// setTimeout( ()=> playground.tank.water.drain(), 500 );
 
 		this.translate( [
 			{id: 'txt-caption',
@@ -79,57 +73,38 @@ class Playground extends ScormPlayground
 		super.newGame( );
 
 		this.tank.water.clearWater( );
-//		this.tank.cyanPipe.show( );
-//		this.tank.magentaPipe.show( );
-//		this.tank.yellowPipe.show( );
-//		this.tank.drainPipe.show( );
 
 		// invent new color
-//.//		var cmy;
-		
-//.//
-/*		
-		if( this.difficulty<20 )
-			cmy = random( this.inkVariations[60].concat(this.inkVariations[30]) );
-		else
-		if( this.difficulty<35 )
-			cmy = random( this.inkVariations[20] );
-		else
-		if( this.difficulty<50 )
-			cmy = random( this.inkVariations[15] );
-		else
-		if( this.difficulty<65 )
-			cmy = random( this.inkVariations[12] );
-		else
-		if( this.difficulty<80 )
-			cmy = random( this.inkVariations[10] );
-		else
-		if( this.difficulty<90 )
-			cmy = random( this.inkVariations[6] );
-		else
-			cmy = random( this.inkVariations[5].concat(this.inkVariations[4]) );
-*/
-		var countIdx = Math.min( Math.round(this.difficulty/10), this.inkCounts.length-1 );
-console.log('diff',this.difficulty,'colors',this.inkCounts[ countIdx ]);
-		var cmy = random( this.inkVariations.slice(0,this.inkCounts[ countIdx ]) );
+		// inkVariations[] contains many colours, in groups with increasing difficulty
+		// inkCounts[] marks the end of each group, pick a random color from the
+		// beginning of inkVariations[] till the end of a group dependent on
+		// difficulty
+		var countIdx = Math.min( Math.round(this.difficulty/10), this.inkCounts.length-1 ),
+			cmy = random( this.inkVariations.slice(0,this.inkCounts[ countIdx ]) ),
+			max = Math.max( cmy[0], cmy[1], cmy[2] );
 
-		var max = Math.max( cmy[0], cmy[1], cmy[2] );
 		
-		this.tank.water.plateColor.color = rgb(
-			255 - 255*cmy[0]/max,
-			255 - 255*cmy[1]/max,
-			255 - 255*cmy[2]/max
-		);
+		new TWEEN.Tween( this.tank.water.plate )
+			.to( {y:this.tank.water.plate.y+2}, Playground.PLATE_HIT_SPEED )
+			.easing( TWEEN.Easing.Quartic.Out )
+			.chain( 
+				new TWEEN.Tween( this.tank.water.plate )
+					.to( {y:this.tank.water.plate.y}, Playground.PLATE_FALL_SPEED )
+					.easing( TWEEN.Easing.Bounce.Out )
+			).start( );
 		
-		var tween1 = new TWEEN.Tween( this.tank.water.plate )
-			.to( {y:this.tank.water.plate.y+1}, Playground.PLATE_HIT_SPEED )
-			.easing( TWEEN.Easing.Quartic.Out );
-		var tween2 = new TWEEN.Tween( this.tank.water.plate )
-			.to( {y:this.tank.water.plate.y}, Playground.PLATE_FALL_SPEED )
-			.easing( TWEEN.Easing.Bounce.Out );
-			
-		tween1.chain( tween2 );
-		tween1.start( );
+		var colorA = rgb( ...playground.tank.water.plateColor.color );
+		var colorB = rgb(
+							255 - 255*cmy[0]/max,
+							255 - 255*cmy[1]/max,
+							255 - 255*cmy[2]/max
+						);
+		var target = playground.tank.water.plateColor;
+		new TWEEN.Tween( colorA )
+			.to( colorB, Playground.PLATE_FALL_SPEED )
+			.onUpdate( color => target.color = color )
+			.delay( Playground.PLATE_HIT_SPEED )
+			.start( );
 		
 	} // Playground.newGame
 	
@@ -159,7 +134,7 @@ console.log('diff',this.difficulty,'colors',this.inkCounts[ countIdx ]);
 				0.5
 			);
 
-		var score = THREE.MathUtils.mapLinear( error, 1.5, granularity, 1, 0 );
+		var score = THREE.MathUtils.mapLinear( error, 1, granularity, 1, 0 );
 			score = THREE.MathUtils.clamp( score, 0, 1 );
 		
 		return score * points;
@@ -171,12 +146,9 @@ console.log('diff',this.difficulty,'colors',this.inkCounts[ countIdx ]);
 	// ends the current game - evaluate results, update data
 	endGame( )
 	{
-console.log('end game');
 		super.endGame( );
 		
 		this.tank.water.drainAll( );
-		
-		// ...
 		
 	} // Playground.endGame
 	
