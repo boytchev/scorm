@@ -187,26 +187,29 @@ class Tank extends Group
 						[0, Tank.BASE_HEIGHT+Tank.GLASS_HEIGHT/2, 0],
 						[Tank.WIDTH, Tank.GLASS_HEIGHT],
 					);
-				glass.threejs.geometry = new THREE.CylinderGeometry(1/2,1/2,1,100,1,true);
-				glass.threejs.material = new THREE.MeshBasicMaterial({
-					map: map,
-					alphaMap: alphaMap,
-					side: THREE.DoubleSide,
-					transparent: true,
+			glass.threejs.geometry = new THREE.CylinderGeometry(1/2,1/2,1,100,1,true);
+			glass.threejs.material = new THREE.MeshBasicMaterial({
+				map: map,
+				alphaMap: alphaMap,
+				side: THREE.DoubleSide,
+				transparent: true,
 				})
+			glass.threejs.renderOrder = -1;
+			
 		var glass2 = cylinder(
 						[0, Tank.BASE_HEIGHT+Tank.GLASS_HEIGHT/2, 0],
 						[Tank.WIDTH-0.2, Tank.GLASS_HEIGHT],
 					);
-				glass2.threejs.geometry = new THREE.CylinderGeometry(1/2,1/2,1,100,1,true);
-				glass2.threejs.material = new THREE.MeshBasicMaterial({
-					map: map,
-					alphaMap: alphaMap,
-					side: THREE.BackSide,
-					transparent: true,
+			glass2.threejs.geometry = new THREE.CylinderGeometry(1/2,1/2,1,100,1,true);
+			glass2.threejs.material = new THREE.MeshBasicMaterial({
+				map: map,
+				alphaMap: alphaMap,
+				side: THREE.BackSide,
+				transparent: true,
 				})
+			glass2.threejs.renderOrder = -21;
 
-			this.add( glass, glass2 );
+		this.add( glass, glass2 );
 
 	} // Tank.constructGlass
 

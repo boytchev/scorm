@@ -23,7 +23,7 @@ class Water extends Group
 				metalness: 0,
 				transparent: true,
 		});
-		this.water.threejs.renderOrder = -2;
+		this.water.threejs.renderOrder = -10;
 		
 		//.//this.waterBorder = square( [0,0,0], Tank.WIDTH-2*Tank.FRAME_WIDTH/3, 'black' );
 		this.waterBorder = circle( [0,0,0], Tank.WIDTH-2*Tank.FRAME_WIDTH/3, 'black' );
