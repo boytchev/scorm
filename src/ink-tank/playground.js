@@ -107,7 +107,8 @@ class Playground extends ScormPlayground
 			255 - 255*cmy[0]/max,
 			255 - 255*cmy[1]/max,
 			255 - 255*cmy[2]/max
-		)
+		);
+		this.tank.water.plateColor.emissive = 'white';
 		
 		this.tank.water.plate.y = 20;
 		new TWEEN.Tween( this.tank.water.plate )

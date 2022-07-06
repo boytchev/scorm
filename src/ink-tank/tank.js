@@ -15,7 +15,7 @@ class Tank extends Group
 	
 	static WATER_HEIGHT = 4;
 	
-	static GLASS_HEIGHT = 4.5;
+	static GLASS_HEIGHT = 4.1;
 	static GLASS_WIDTH = 0.1;
 	
 	static FLOOR_SIZE = 18;

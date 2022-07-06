@@ -49,6 +49,8 @@ class Water extends Group
 			its.threejs.renderOrder = -1;
 			
 		this.plateColor = sphere( [0,0.05,0], [Tank.PLATE_SIZE, Tank.PLATE_HEIGHT] );
+			its.threejs.material.map = ScormUtils.image( 'plate_border.jpg', 24, 0.85 );
+			
 		this.plate = group(
 			this.plateColor,
 			sphere( [0,0,0], [Tank.PLATE_SIZE*1.1, Tank.PLATE_HEIGHT], 'black' )
@@ -110,8 +112,9 @@ class Water extends Group
 		this.water.y = height/2 + Tank.BASE_HEIGHT + Tank.VERTICAL_OFFSET;
 		this.water.height = height;
 		this.water.threejs.material.opacity = Math.pow(level,1);
-		this.water.threejs.material.transmission = 1-1*Math.pow(level,1/6);
-		this.water.threejs.material.roughness = Math.pow(level,1/6);
+		this.water.threejs.material.transmission = 0;//-1*Math.pow(level,1/6);
+		this.water.threejs.material.roughness = 0;//Math.pow(level,1/6);
+		this.water.threejs.material.thickness = 0;//Math.pow(level,1/6);
 		this.water.threejs.material.color = color;
 		
 		this.waterBorder.y = height + Tank.BASE_HEIGHT + Tank.VERTICAL_OFFSET;
@@ -156,10 +159,10 @@ class Water extends Group
 	
 	waves( t )
 	{
-		var amplitude = 0.06*this.level;
+		var amplitude = 0.08*this.level;
 		this.plate.threejs.rotation.set(
 			amplitude*Math.cos( 2.91*t ),
-			amplitude*Math.cos( 0.91*t ),
+			amplitude*Math.cos( 1.31*t ),
 			amplitude*Math.sin( 1.72*t  ),
 			'ZYX'
 		);
