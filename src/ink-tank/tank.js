@@ -100,7 +100,7 @@ class Tank extends Group
 	{
 		var map = ScormUtils.image( 'metal_plate.jpg', 24, Tank.BASE_HEIGHT ),
 			normalMap = ScormUtils.image( 'metal_plate_normal.jpg', Tank.WIDTH, Tank.BASE_HEIGHT ),
-			aoMap = ScormUtils.image( 'wall_ao.jpg' );
+			aoMap = ScormUtils.image( 'wall_ao.jpg', 3, 1, 0.5, 0 );
 
 		//.//var base = cube( [0,Tank.BASE_HEIGHT/2,0], [Tank.WIDTH, Tank.BASE_HEIGHT, Tank.WIDTH] );
 		var base = cylinder( [0,0,0], [Tank.WIDTH+0.1, Tank.BASE_HEIGHT] );
