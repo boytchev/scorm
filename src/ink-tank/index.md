@@ -61,7 +61,7 @@ This application uses a texture from [DeviantArt](https://www.deviantart.com):
 
 and a background music from [SoundCloud](https://soundcloud.com):
 
-- "[Calmness](https://soundcloud.com/ashamaluevmusic/calmness)" by Aleksandr Shamaluev / AShamaluevMusic, [https://www.ashamaluevmusic.com](https://www.ashamaluevmusic.com] ),
+- "[Calmness](https://soundcloud.com/ashamaluevmusic/calmness)" by Aleksandr Shamaluev / AShamaluevMusic, [https://www.ashamaluevmusic.com](https://www.ashamaluevmusic.com),
 
 and sound effects from [Freesound](https://freesound.org/) and [Mixkit](https://mixkit.co/):
 
