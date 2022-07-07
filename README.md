@@ -17,4 +17,11 @@ This SCO is used for experiments with SCORM 1.2-complient LMS. It shows the list
 [ [More info](src/color-hues/index.html) ] [ [Run online](src/color-hues/color-hues.html) ] [ [Download](bin/color-hues.zip) ]
 
 
+## Ink tank
+
+Under development
+
+[ More info ] [ [Run online](src/ink-tank/ink-tank.html) ] [ [Download](bin/ink-tank.zip) ]
+
+
 <small>{{site.time | date: "%B, %Y"}}</small>
