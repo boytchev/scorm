@@ -148,6 +148,9 @@ class Pipe extends Group
 		}
 		
 		
+		playground.bubblesSound.stop();
+		playground.bubblesSound.play();
+		
 		this.valveTween.stop();
 		
 		var speed = Pipe.OPEN_SPEED*(1-this.aperture);

@@ -7,6 +7,7 @@
 class Water extends Group
 {
 	static DRAIN_ALL_SPEED = 500;
+	static BOOM_TIMEOUT = 350;
 	
 	constructor( )
 	{
@@ -135,6 +136,8 @@ class Water extends Group
 	
 	drainAll( )
 	{
+		setTimeout( ()=> playground.boomSound.play(), Water.BOOM_TIMEOUT );
+		
 		new TWEEN.Tween( this )
 			.to( {level:0}, this.level*Water.DRAIN_ALL_SPEED )
 			.easing( TWEEN.Easing.Quartic.In )

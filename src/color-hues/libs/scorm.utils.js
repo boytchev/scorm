@@ -58,6 +58,12 @@ class PlaygroundAudio
 			audio.setVolume( this.volume );
 	}
 	
+	setVolume( volume )
+	{
+		this.volume = volume;
+		this.audio[this.index].setVolume( volume );
+	}
+	
 	play( )
 	{
 		if( playground.getSound()=='off' ) return;

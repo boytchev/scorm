@@ -70,6 +70,8 @@ class Playground extends ScormPlayground
 	// starts a new game by selecting new color hues
 	newGame( )
 	{
+		this.clickSound?.play();
+		
 		super.newGame( );
 
 		this.tank.water.clearWater( );
@@ -146,6 +148,8 @@ class Playground extends ScormPlayground
 	// ends the current game - evaluate results, update data
 	endGame( )
 	{
+		this.clackSound.play();
+		
 		super.endGame( );
 		
 		this.tank.water.drainAll( );
@@ -166,12 +170,13 @@ class Playground extends ScormPlayground
 	// load all sounds
 	loadSounds( )
 	{
-		//this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1, 4 );
-		//this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
-		this.drainSound = new PlaygroundAudio( 'sounds/drain.mp3', 0.2 );
-		this.backgroundMelody = new PlaygroundAudio( 'sounds/bubbles.mp3', 0.2, 1, true );
+		this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1 );
+		this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
+		this.boomSound = new PlaygroundAudio( 'sounds/boom.mp3', 0.2 );
+		this.bubblesSound = new PlaygroundAudio( 'sounds/bubbles.mp3', 0, 1,  true );
+		this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.2, 1, true );
 		
-		this.soundEffects.push( this.drainSound );
+		this.soundEffects.push( this.clickSound, this.clackSound, this.boomSound, this.bubblesSound );
 		this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
 	
@@ -182,10 +187,19 @@ class Playground extends ScormPlayground
 	{
 		if( playground.gameStarted )
 		{
-			this.tank.water.addInk( 'cyan', Math.pow(this.tank.cyanPipe.aperture,2)*dT*Playground.FILL_SPEED );
-			this.tank.water.addInk( 'magenta', Math.pow(this.tank.magentaPipe.aperture,2)*dT*Playground.FILL_SPEED );
-			this.tank.water.addInk( 'yellow', Math.pow(this.tank.yellowPipe.aperture,2)*dT*Playground.FILL_SPEED );
-			//.//this.tank.water.drain( Math.pow(this.tank.drainPipe.aperture,2)*dT*Playground.DRAIN_SPEED );
+			var aperture = Math.max( this.tank.cyanPipe.aperture, this.tank.magentaPipe.aperture, this.tank.yellowPipe.aperture );
+			if( aperture > 0 )
+			{
+				if( this.bubblesSound )
+				{
+					this.bubblesSound.setVolume( 0.3*aperture );
+				}
+				
+				this.tank.water.addInk( 'cyan', Math.pow(this.tank.cyanPipe.aperture,2)*dT*Playground.FILL_SPEED );
+				this.tank.water.addInk( 'magenta', Math.pow(this.tank.magentaPipe.aperture,2)*dT*Playground.FILL_SPEED );
+				this.tank.water.addInk( 'yellow', Math.pow(this.tank.yellowPipe.aperture,2)*dT*Playground.FILL_SPEED );
+				//.//this.tank.water.drain( Math.pow(this.tank.drainPipe.aperture,2)*dT*Playground.DRAIN_SPEED );
+			}
 		}
 		else
 			this.tank.water.colorize( t );
