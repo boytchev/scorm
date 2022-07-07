@@ -87,12 +87,12 @@ class Pipe extends Group
 		{
 			var valveMaterial = new THREE.MeshStandardMaterial( {
 							color: color,
-							metalness: 1,
-							roughness: 0.5,
-							normalMap: ScormUtils.image( 'metal_plate_normal.jpg', 2, 1 ),
-							normalScale: new THREE.Vector2( 1, 1 ),
-							emissive: color,
-							emissiveIntensity: 0.3,
+							metalness: 0.2,
+							roughness: 0.2,
+							normalMap: ScormUtils.image( 'metal_plate_normal.jpg', 8, 1 ),
+							normalScale: new THREE.Vector2( 10.2, 10.2 ),
+							//emissive: color,
+							//emissiveIntensity: 0.3,
 						} );
 						
 			var rod = cylinder( [0,0,0], [2*Pipe.VALVE_WIDTH,Pipe.VALVE_LENGTH] );
@@ -107,12 +107,11 @@ class Pipe extends Group
 				its.spinV = 90;
 				its.threejs.material = valveMaterial;
 			
-			var ring = tube( [0,Pipe.VALVE_LENGTH,0], u=>[Pipe.VALVE_RADIUS*Math.sin(2*Math.PI*u),0,Pipe.VALVE_RADIUS*Math.cos(2*Math.PI*u)], Pipe.VALVE_WIDTH, [20,8] );
+			var ring = tube( [0,Pipe.VALVE_LENGTH,0], u=>[Pipe.VALVE_RADIUS*Math.sin(2*Math.PI*u),0,Pipe.VALVE_RADIUS*Math.cos(2*Math.PI*u)], Pipe.VALVE_WIDTH, [40,8] );
 				its.threejs.material = valveMaterial;
 
 			this.valve.add( rod, bar1, bar2, ring );
-			
-			//this.valve.size = 0;
+			this.valve.size = 1.5;
 		}
 		this.valve.center = [0,Tank.BASE_HEIGHT/2,Tank.WIDTH/2 + Pipe.LENGTH - 2*Pipe.RADIUS];
 		

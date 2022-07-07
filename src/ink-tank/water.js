@@ -17,7 +17,6 @@ class Water extends Group
 		this.magenta = 0;
 		this.yellow = 0;
 
-		//.//this.water = cube( [0,0,0], [Tank.WIDTH-2*Tank.FRAME_WIDTH/3,0] );
 		this.water = cylinder( [0,0,0], [Tank.WIDTH-2*Tank.FRAME_WIDTH/3,0] );
 		this.water.threejs.material = new THREE.MeshStandardMaterial({
 				roughness: 0.5,
@@ -26,7 +25,6 @@ class Water extends Group
 		});
 		this.water.threejs.renderOrder = -10;
 		
-		//.//this.waterBorder = square( [0,0,0], Tank.WIDTH-2*Tank.FRAME_WIDTH/3, 'black' );
 		this.waterBorder = circle( [0,0,0], Tank.WIDTH-2*Tank.FRAME_WIDTH/3, 'black' );
 			its.wireframe = true;
 			its.spinV = 90;
@@ -105,11 +103,9 @@ class Water extends Group
 		
 		var height = level*Tank.WATER_HEIGHT;
 		
-		//.//this.water.y = height/2 + Tank.BASE_HEIGHT + Tank.VERTICAL_OFFSET;
 		this.water.y = Tank.BASE_HEIGHT + Tank.VERTICAL_OFFSET;
 		this.water.height = height;
 		this.water.threejs.material.opacity = Math.pow(level,1);
-//		this.water.threejs.material.transmission = 1-0.9*Math.pow(level,1);
 		this.water.threejs.material.color = color;
 		
 		this.waterBorder.y = height + Tank.BASE_HEIGHT + Tank.VERTICAL_OFFSET;
@@ -119,20 +115,6 @@ class Water extends Group
 	} // Water.adjustWater
 
 	
-//.//	
-	// drain( value )
-	// {
-		// if( this.level==0 ) return;
-		
-		// var scale = Math.max( 0, (this.level-value)/this.level );
-		
-		// this.cyan *= scale;
-		// this.magenta *= scale;
-		// this.yellow *= scale;
-		// this.adjustWater( );
-	// } // Water.drain
-	
-
 	
 	drainAll( )
 	{

@@ -102,7 +102,6 @@ class Tank extends Group
 			normalMap = ScormUtils.image( 'metal_plate_normal.jpg', Tank.WIDTH, Tank.BASE_HEIGHT ),
 			aoMap = ScormUtils.image( 'wall_ao.jpg', 3, 1, 0.5, 0 );
 
-		//.//var base = cube( [0,Tank.BASE_HEIGHT/2,0], [Tank.WIDTH, Tank.BASE_HEIGHT, Tank.WIDTH] );
 		var base = cylinder( [0,0,0], [Tank.WIDTH+0.1, Tank.BASE_HEIGHT] );
 			base.threejs.material = Tank.metal( map, normalMap, aoMap, 5 );
 			ScormUtils.addUV2( base ); // because of AO
@@ -110,12 +109,10 @@ class Tank extends Group
 		var map = ScormUtils.image( 'metal_plate.jpg', Tank.WIDTH ),
 			normalMap = ScormUtils.image( 'metal_plate_normal.jpg', Tank.WIDTH );
 
-		//.//var baseTop = square( [0,Tank.BASE_HEIGHT,0], Tank.WIDTH );
 		var baseTop = circle( [0,Tank.BASE_HEIGHT,0], Tank.WIDTH );
 			baseTop.threejs.material = Tank.metal( map, normalMap, null, -2 );
 			baseTop.spinV = -90;
 
-		//.//var baseWhite = square( [0,Tank.BASE_HEIGHT+0.1,0], Tank.WIDTH-3*Tank.FRAME_WIDTH );
 		var baseWhite = circle( [0,Tank.BASE_HEIGHT+0.1,0], Tank.WIDTH-3*Tank.FRAME_WIDTH );
 			baseWhite.threejs.material = new THREE.MeshBasicMaterial( {
 				color: 'white',
@@ -135,19 +132,16 @@ class Tank extends Group
 		var map = ScormUtils.image( 'metal_frame.jpg', 1, Tank.DEPTH+Tank.BASE_HEIGHT ),
 			normalMap = ScormUtils.image( 'metal_frame_normal.jpg', 1, Tank.DEPTH+Tank.BASE_HEIGHT );
 		
-		//.//for( var i=0; i<4; i++ )
 		for( var i=0; i<3; i++ )
 		{
-			//.//var angle = radians( 90*i + 45 ),
 			var angle = radians( 120*i+30 ),
-				//.//radius = Math.sqrt(2) * (Tank.WIDTH/2-Tank.FRAME_WIDTH/3);
 				radius = Tank.WIDTH/2-Tank.FRAME_WIDTH/6;
 			
 			var bar = cube(
 						[radius*Math.cos(angle), Tank.BASE_HEIGHT/2+Tank.DEPTH/2, radius*Math.sin(angle)],
 						[Tank.FRAME_WIDTH, Tank.DEPTH+Tank.BASE_HEIGHT, Tank.FRAME_WIDTH]
 					);
-			bar.spinH = -120*i-30;//.//
+			bar.spinH = -120*i-30;
 			bar.threejs.material = Tank.metal( map, normalMap, null );
 			bar.threejs.material.color = new THREE.Color( 1.2, 1.2, 1.2 );
 			bar.threejs.material.roughness = 1;
@@ -163,26 +157,6 @@ class Tank extends Group
 		var map = ScormUtils.image( 'glass.jpg', 3, 1, 1/2, 0 ),
 			alphaMap = ScormUtils.image( 'glass_alpha.jpg', 3, 1, 1/2, 0 );
 
-//.//		
-		// for( var i=0; i<4; i++ )
-		// {
-			// var angle = radians( 90*i ),
-				// radius = Tank.WIDTH/2 - Tank.GLASS_WIDTH/2;
-				
-			// var glass = cube(
-						// [radius*Math.cos(angle), Tank.BASE_HEIGHT+Tank.GLASS_HEIGHT/2, radius*Math.sin(angle)],
-						// [Tank.WIDTH, Tank.GLASS_HEIGHT, Tank.GLASS_WIDTH]
-					// );
-				// glass.threejs.material = new THREE.MeshBasicMaterial({
-					// map: map,
-					// alphaMap: alphaMap,
-					// transparent: true,
-				// })
-				// glass.spinH = 90*i-90;
-					
-			// this.add( glass );
-		// }
-				
 		var glass = cylinder(
 						[0, Tank.BASE_HEIGHT+Tank.GLASS_HEIGHT/2, 0],
 						[Tank.WIDTH, Tank.GLASS_HEIGHT],
@@ -221,16 +195,10 @@ class Tank extends Group
 		this.cyanPipe.spinH = 0;
 			
 		this.magentaPipe = new Pipe( 'magenta' );
-		this.magentaPipe.spinH = 120;//.//90;
+		this.magentaPipe.spinH = 120;
 			
 		this.yellowPipe = new Pipe( 'yellow' );
-		this.yellowPipe.spinH = 240;//.//180;
-			
-		//.//this.drainPipe = new Pipe( 'black' );
-		//.//this.drainPipe.spinH = 270;
-
-		//this.add( this.cyanPipe, this.magentaPipe, this.yellowPipe, this.drainPipe );
-		
+		this.yellowPipe.spinH = 240;		
 	} // Tank.constructPipes
 
 

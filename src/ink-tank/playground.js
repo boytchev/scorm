@@ -35,14 +35,11 @@ class Playground extends ScormPlayground
 		
 		var hashTable = [];
 		
-//.//		this.inkVariations = {};
 		this.inkVariations = [];
 		this.inkCounts = [];
 		
 		for( var step of STEPS )
 		{
-//.//			this.inkVariations[step] = [];
-			
 			var count = MAX/step;
 			
 			for( var cyan = 0; cyan<=count; cyan++ ) 
@@ -55,7 +52,6 @@ class Playground extends ScormPlayground
 				if( hashTable.indexOf(hash)==-1 )
 				{
 					hashTable.push( hash );
-//.//					this.inkVariations[step].push( hash.split(',') );
 					this.inkVariations.push( hash.split(',') );
 				}
 			}			
@@ -116,7 +112,7 @@ class Playground extends ScormPlayground
 	evaluateGame( )
 	{
 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
-		var granularity  = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 3, 16 );
+		var granularity  = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 3, 10 );
 		
 		var water = this.tank.water,
 			max = Math.max( water.cyan, water.magenta, water.yellow );
@@ -198,7 +194,6 @@ class Playground extends ScormPlayground
 				this.tank.water.addInk( 'cyan', Math.pow(this.tank.cyanPipe.aperture,2)*dT*Playground.FILL_SPEED );
 				this.tank.water.addInk( 'magenta', Math.pow(this.tank.magentaPipe.aperture,2)*dT*Playground.FILL_SPEED );
 				this.tank.water.addInk( 'yellow', Math.pow(this.tank.yellowPipe.aperture,2)*dT*Playground.FILL_SPEED );
-				//.//this.tank.water.drain( Math.pow(this.tank.drainPipe.aperture,2)*dT*Playground.DRAIN_SPEED );
 			}
 		}
 		else
