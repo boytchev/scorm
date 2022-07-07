@@ -55,12 +55,11 @@ This application is not appropriate to users with color deficiencies. Emotional 
 
 ### Credits
 
-This application uses a tecture from [DeviantArt](https://www.deviantart.com):
+This application uses a texture from [DeviantArt](https://www.deviantart.com):
 
-- "[Dirty Window Texture](https://www.deviantart.com/galaxiesanddust/art/Dirty-Window-Texture-311006931)" by [galaxiesanddust](https://www.deviantart.com/galaxiesanddust).
+- "[Dirty Window Texture](https://www.deviantart.com/galaxiesanddust/art/Dirty-Window-Texture-311006931)" by [galaxiesanddust](https://www.deviantart.com/galaxiesanddust),
 
-
-This application uses a background music from [SoundCloud](https://soundcloud.com):
+and a background music from [SoundCloud](https://soundcloud.com):
 
 - "[Calmness](https://soundcloud.com/ashamaluevmusic/calmness)" by Aleksandr Shamaluev / AShamaluevMusic, [https://www.ashamaluevmusic.com](https://www.ashamaluevmusic.com] ),
 
