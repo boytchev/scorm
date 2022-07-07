@@ -6,20 +6,16 @@
 class Pipe extends Group
 {
 	
-	static VALVE_LENGTH = 0.8;	// дължина на спирателния кран
-	static VALVE_RADIUS = 0.8;	// радиус на врътката на крана
-	static VALVE_WIDTH = 0.1;	// дебелина на врътката на крана
+	static VALVE_LENGTH = 0.8;
+	static VALVE_RADIUS = 0.8;
+	static VALVE_WIDTH = 0.1;
 
 	static RADIUS = 0.5;	
-	static LENGTH = 4;		// дължина на хоризонталната част на тръба
-	static EXTRUDE = 0.15;	// издаденост на пръстените на тръба
+	static LENGTH = 3.5;
+	static EXTRUDE = 0.15;
 
-//	static SHOW_SPEED = 200;
 	static OPEN_SPEED = 500;
 	static OPEN_ANGLE = 270;
-	
-//	static IND_SIZE = [1.6,0.2];
-//	static IND_FRAME_SIZE = [0.3,1.7];
 	
 	constructor( color )
 	{
@@ -37,14 +33,6 @@ class Pipe extends Group
 		wrapper.threejs.material.transparent = true;
 		wrapper.threejs.material.opacity = 0;
 
-		// indicator
-//		this.indicator = cylinder( [0,Tank.BASE_HEIGHT/2,Tank.WIDTH/2 + Pipe.LENGTH/2], [2*Pipe.RADIUS-0.05,2*Pipe.RADIUS,2*Pipe.RADIUS+0.05], 'white' );
-//			its.spinV = -90;
-//			its.spinT = -180;
-//			its.image = drawing( 128, 128 );
-//			its.threejs.renderOrder = -2;
-//			its.threejs.material.map.wrapS = THREE.ClampToEdgeWrapping;
-		
 		// floor connector
 		var floorConnector = new Connector( [0,0,Tank.WIDTH/2 + Pipe.LENGTH] );
 		var wallConnector = new Connector( [0,Tank.BASE_HEIGHT/2,Tank.WIDTH/2], 90 );
@@ -87,12 +75,8 @@ class Pipe extends Group
 		{
 			var valveMaterial = new THREE.MeshStandardMaterial( {
 							color: color,
-							metalness: 0.2,
-							roughness: 0.2,
-							normalMap: ScormUtils.image( 'metal_plate_normal.jpg', 8, 1 ),
-							normalScale: new THREE.Vector2( 10.2, 10.2 ),
-							//emissive: color,
-							//emissiveIntensity: 0.3,
+							metalness: 0.6,
+							roughness: 0.7,
 						} );
 						
 			var rod = cylinder( [0,0,0], [2*Pipe.VALVE_WIDTH,Pipe.VALVE_LENGTH] );
@@ -107,7 +91,7 @@ class Pipe extends Group
 				its.spinV = 90;
 				its.threejs.material = valveMaterial;
 			
-			var ring = tube( [0,Pipe.VALVE_LENGTH,0], u=>[Pipe.VALVE_RADIUS*Math.sin(2*Math.PI*u),0,Pipe.VALVE_RADIUS*Math.cos(2*Math.PI*u)], Pipe.VALVE_WIDTH, [40,8] );
+			var ring = tube( [0,Pipe.VALVE_LENGTH,0], u=>[Pipe.VALVE_RADIUS*Math.sin(2*Math.PI*u),0,Pipe.VALVE_RADIUS*Math.cos(2*Math.PI*u)], Pipe.VALVE_WIDTH, [40,16] );
 				its.threejs.material = valveMaterial;
 
 			this.valve.add( rod, bar1, bar2, ring );
@@ -174,43 +158,5 @@ class Pipe extends Group
 	}
 	
 
-	// show( )
-	// {
-		// new TWEEN.Tween( this.valve )
-			// .to( {size:1}, Pipe.SHOW_SPEED )
-			// .easing( TWEEN.Easing.Linear.None )
-			// .start( );
-	// }
-	
-	
-	// hide( )
-	// {
-		// new TWEEN.Tween( this.valve )
-			// .to( {size:0}, Pipe.SHOW_SPEED )
-			// .easing( TWEEN.Easing.Linear.None )
-			// .start( );
-	// }
-	
-	
-/*
-	updateIndicator( )
-	{
-		var image = this.indicator.image;
-		image.clear( );
-	
-		for( var i=0; i<8; i++)
-		{
-			image.moveTo( 64-12,16*i+8,64-11,16*i+8 );
-			image.moveTo( 64+12,16*i+8,64+11,16*i+8 );
-		}
-
-		for( var i=0; i<Math.round(8*playground.tank.water[this._color]); i++)
-		{
-			image.moveTo( 64-10,16*i+8,64+10,16*i+8 );
-		}
-		image.stroke( 'black', 12 );
-	}
-*/
-	
 } // class Pipe
 

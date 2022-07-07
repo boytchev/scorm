@@ -6,7 +6,7 @@
 
 class Tank extends Group
 {
-	static WIDTH = 8;
+	static WIDTH = 9;
 	static DEPTH = 4.1;
 	static VERTICAL_OFFSET = -2;
 
@@ -148,6 +148,7 @@ class Tank extends Group
 			bar.threejs.material.metalness = 0;
 			this.add( bar );
 		}
+		
 	} // Tank.constructFrames
 
 

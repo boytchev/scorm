@@ -75,8 +75,7 @@ class Playground extends ScormPlayground
 		// invent new color
 		// inkVariations[] contains many colours, in groups with increasing difficulty
 		// inkCounts[] marks the end of each group, pick a random color from the
-		// beginning of inkVariations[] till the end of a group dependent on
-		// difficulty
+		// beginning of inkVariations[] till the end of a group dependent on difficulty
 		var countIdx = Math.min( Math.round(this.difficulty/10), this.inkCounts.length-1 ),
 			cmy = random( this.inkVariations.slice(0,this.inkCounts[ countIdx ]) ),
 			max = Math.max( cmy[0], cmy[1], cmy[2] );

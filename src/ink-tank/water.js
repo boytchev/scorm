@@ -17,7 +17,7 @@ class Water extends Group
 		this.magenta = 0;
 		this.yellow = 0;
 
-		this.water = cylinder( [0,0,0], [Tank.WIDTH-2*Tank.FRAME_WIDTH/3,0] );
+		this.water = prism( 100, [0,0,0], [Tank.WIDTH-2*Tank.FRAME_WIDTH/3,0] );
 		this.water.threejs.material = new THREE.MeshStandardMaterial({
 				roughness: 0.5,
 				metalness: 0,
@@ -25,9 +25,10 @@ class Water extends Group
 		});
 		this.water.threejs.renderOrder = -10;
 		
-		this.waterBorder = circle( [0,0,0], Tank.WIDTH-2*Tank.FRAME_WIDTH/3, 'black' );
+		this.waterBorder = polygon( 100, [0,0,0], Tank.WIDTH-2*Tank.FRAME_WIDTH/3, 'black' );
 			its.wireframe = true;
 			its.spinV = 90;
+			its.spinH = 60;
 			its.threejs.material.transparent = true;
 			its.threejs.material.opacity = 0.3;
 			its.threejs.renderOrder = -1;
