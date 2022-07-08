@@ -21,7 +21,7 @@
 </head>
 
 <body>
-	<suica fullwindow fullscreen background="linen" ontime="update"> <!-- onmousemove="onMouseMove"-->
+	<suica fullwindow fullscreen background="linen" ontime="update"> <!-- onpointermove="onPointerMove"-->
 		<div class="hud corner top left"></div>
 		<div class="hud corner top right"></div>
 		<div class="hud corner bottom left"></div>
@@ -57,7 +57,7 @@
 
 		window.addEventListener( 'resize', playground.resize );
 				
-		<!-- function onMouseMove( event ) -->
+		<!-- function onPointerMove( event ) -->
 		<!-- { -->
 			<!-- if( findObject( event ) ) -->
 				<!-- event.target.style.cursor = 'pointer'; -->

@@ -693,7 +693,7 @@ const DEBUG_CALLS=false;const DEBUG_EVENTS=false;const TEST_MODE=typeof SUICA_TE
 console.log('::> suica');else
 console.log(`(\\/)
 ( ..)  Suica 2.0
-c(”)(”)  (220628)
+c(”)(”)  (220704)
 `);var suica=null;class Suica
 {static allSuicas=[];static CIRCLECOUNT=50;static OX=new THREE.Vector3(1,0,0);static OY=new THREE.Vector3(0,1,0);static OZ=new THREE.Vector3(0,0,1);static ORIENTATIONS={YXZ:{SCALE:new THREE.Vector3(1,-1,1),LOOKAT:{FROM:[0,0,100],TO:[0,0,0],UP:[1,0,0]},RIGHT:Suica.OY,UP:Suica.OX,FORWARD:Suica.OZ,},ZYX:{SCALE:new THREE.Vector3(1,1,-1),LOOKAT:{FROM:[100,0,0],TO:[0,0,0],UP:[0,1,0]},RIGHT:Suica.OZ,UP:Suica.OY,FORWARD:Suica.OX,},XZY:{SCALE:new THREE.Vector3(-1,1,1),LOOKAT:{FROM:[0,100,0],TO:[0,0,0],UP:[0,0,1]},RIGHT:Suica.OX,UP:Suica.OZ,FORWARD:Suica.OY,},ZXY:{SCALE:new THREE.Vector3(1,1,1),LOOKAT:{FROM:[0,100,0],TO:[0,0,0],UP:[1,0,0]},RIGHT:Suica.OZ,UP:Suica.OX,FORWARD:Suica.OY,},XYZ:{SCALE:new THREE.Vector3(1,1,1),LOOKAT:{FROM:[0,0,100],TO:[0,0,0],UP:[0,1,0]},RIGHT:Suica.OX,UP:Suica.OY,FORWARD:Suica.OZ,},YZX:{SCALE:new THREE.Vector3(1,1,1),LOOKAT:{FROM:[100,0,0],TO:[0,0,0],UP:[0,0,1]},RIGHT:Suica.OY,UP:Suica.OZ,FORWARD:Suica.OX,},}
 static globalHoverObject;static globalHoverEvent;flipNormal(geometry)
@@ -705,7 +705,7 @@ static OXYZ={COLOR:'black',SIZE:30};static DEMO={DISTANCE:100,ALTITUDE:30,SPEED:
 {this._={solidGeometry:{},frameGeometry:{},};suicaTag.style.display='inline-block';suicaTag.style.boxSizing='border-box';if(!getComputedStyle(suicaTag).width&&!suicaTag.hasAttribute('width'))
 suicaTag.style.width=TEST_MODE?'400px':'500px';if(!getComputedStyle(suicaTag).height&&!suicaTag.hasAttribute('height'))
 suicaTag.style.height=TEST_MODE?'400px':'300px';if(!suicaTag.style.position)suicaTag.style.position='relative';this.id=suicaTag.getAttribute('id')||`suica${Suica.allSuicas.length}`
-if(DEBUG_CALLS)console.log(`Suica :: ${this.id}`);this.suicaTag=suicaTag;this.isProactive=false;this.capturer=null;this.orientation=Suica.ORIENTATIONS[suicaTag.getAttribute('ORIENTATION')?.toUpperCase()||Suica.DEFAULT_ORIENTATION];this.orientation.MATRIX=new THREE.Matrix4().makeBasis(this.orientation.RIGHT,this.orientation.UP,this.orientation.FORWARD);this.orientation.FLIP_NORMAL=this.orientation.SCALE.x<0||this.orientation.SCALE.y<0||this.orientation.SCALE.z<0;this.viewPoint={from:this.orientation.LOOKAT.FROM,to:this.orientation.LOOKAT.TO,up:this.orientation.LOOKAT.UP,};this.createCanvas();this.createRenderer();this.parser=new HTMLParser(this);this.parser.parseEvents(suicaTag,this.canvas,this);this.demoViewPoint=null;this.controls=null;this.raycaster=new THREE.Raycaster();this.raycastPointer=new THREE.Vector2();window.suica=this;Suica.allSuicas.push(this);window[this.id]=this;this.canvas.addEventListener('mousemove',Suica.onMouseMove);this.canvas.addEventListener('mousedown',Suica.onMouseDown);this.canvas.addEventListener('mouseup',Suica.onMouseUp);this.canvas.addEventListener('click',Suica.onClick);if(TEST_MODE)
+if(DEBUG_CALLS)console.log(`Suica :: ${this.id}`);this.suicaTag=suicaTag;this.isProactive=false;this.capturer=null;this.orientation=Suica.ORIENTATIONS[suicaTag.getAttribute('ORIENTATION')?.toUpperCase()||Suica.DEFAULT_ORIENTATION];this.orientation.MATRIX=new THREE.Matrix4().makeBasis(this.orientation.RIGHT,this.orientation.UP,this.orientation.FORWARD);this.orientation.FLIP_NORMAL=this.orientation.SCALE.x<0||this.orientation.SCALE.y<0||this.orientation.SCALE.z<0;this.viewPoint={from:this.orientation.LOOKAT.FROM,to:this.orientation.LOOKAT.TO,up:this.orientation.LOOKAT.UP,};this.createCanvas();this.createRenderer();this.parser=new HTMLParser(this);this.parser.parseEvents(suicaTag,this.canvas,this);this.demoViewPoint=null;this.controls=null;this.raycaster=new THREE.Raycaster();this.raycastPointer=new THREE.Vector2();window.suica=this;Suica.allSuicas.push(this);window[this.id]=this;this.canvas.addEventListener('pointermove',Suica.onPointerMove);this.canvas.addEventListener('pointerdown',Suica.onPointerDown);this.canvas.addEventListener('pointerup',Suica.onPointerUp);this.canvas.addEventListener('click',Suica.onClick);if(TEST_MODE)
 {THREE.MathUtils.seededRandom(1);}
 else
 {this.canvas.addEventListener('contextmenu',Suica.onContextMenu);THREE.MathUtils.seededRandom(Math.round(Number.MAX_SAFE_INTEGER*Math.random()));}
@@ -776,7 +776,7 @@ if(that.ontime)
 {if(typeof that.ontime==='string'||that.ontime instanceof String)
 that.ontime=window[that.ontime];that.ontime(time,time-that.lastTime);}
 if(that.isProactive)
-Suica.onMouseMoveUpdate();that.render();if(that.capturer)that.capturer.capture();that.lastTime=time;}
+Suica.onPointerMoveUpdate();that.render();if(that.capturer)that.capturer.capture();that.lastTime=time;}
 this.renderer.setAnimationLoop(loop);}
 vr()
 {this.parser?.parseTags();this.debugCall('vr');var button=this.suicaTag.appendChild(VRButton.createButton(this.renderer));button.style.background='rgba(0, 0, 0, 0.5)';this.renderer.xr.enabled=true;this.camera.position.set(0,0,0);}
@@ -858,7 +858,7 @@ return foundObjects;}
 findObjects(domEvent,onlyInteractive=false)
 {var scanObjects=[];if(onlyInteractive)
 {for(let object of this.scene.children)
-{let suicaObject=object.suicaObject;if(!suicaObject)continue;if(suicaObject.onmousemove||suicaObject.onmousedown||suicaObject.onmouseup||suicaObject.onmouseenter||suicaObject.onmouseleave||suicaObject.onclick)
+{let suicaObject=object.suicaObject;if(!suicaObject)continue;if(suicaObject.onpointermove||suicaObject.onpointerdown||suicaObject.onpointerup||suicaObject.onpointerenter||suicaObject.onpointerleave||suicaObject.onclick)
 scanObjects.push(object);}}
 else
 {scanObjects=this.scene.children;}
@@ -885,33 +885,33 @@ static eventCall(object,eventName,eventParam)
 {if(!object)return;if(!object[eventName])return;if(typeof object[eventName]==='string'||object[eventName]instanceof String)
 {object[eventName]=window[object[eventName]];}
 object[eventName](eventParam);if(DEBUG_EVENTS)console.log(object.id+' :: '+eventName);}
-static onMouseMove(event)
+static onPointerMove(event)
 {Suica.globalHoverEvent=event;var object=findObject(event,true);if(Suica.hoverObject)
 {if(object==Suica.hoverObject)
-{Suica.eventCall(object,'onmousemove',event);}
+{Suica.eventCall(object,'onpointermove',event);}
 else
-{Suica.eventCall(Suica.hoverObject,'onmouseleave',event);Suica.hoverObject=object;Suica.eventCall(Suica.hoverObject,'onmouseenter',event);}}
+{Suica.eventCall(Suica.hoverObject,'onpointerleave',event);Suica.hoverObject=object;Suica.eventCall(Suica.hoverObject,'onpointerenter',event);}}
 else
-{Suica.hoverObject=object;Suica.eventCall(Suica.hoverObject,'onmouseenter',event);}}
-static onMouseMoveUpdate()
+{Suica.hoverObject=object;Suica.eventCall(Suica.hoverObject,'onpointerenter',event);}}
+static onPointerMoveUpdate()
 {if(!Suica.globalHoverEvent)return;var event=Suica.globalHoverEvent;var object=findObject(event,true);if(Suica.hoverObject)
 {if(object!=Suica.hoverObject)
-{Suica.eventCall(Suica.hoverObject,'onmouseleave',event);Suica.hoverObject=object;Suica.eventCall(Suica.hoverObject,'onmouseenter',event);}}
+{Suica.eventCall(Suica.hoverObject,'onpointerleave',event);Suica.hoverObject=object;Suica.eventCall(Suica.hoverObject,'onpointerenter',event);}}
 else
-{Suica.hoverObject=object;Suica.eventCall(Suica.hoverObject,'onmouseenter',event);}}
-static onMouseDown(event)
+{Suica.hoverObject=object;Suica.eventCall(Suica.hoverObject,'onpointerenter',event);}}
+static onPointerDown(event)
 {var object=findObject(event,true);if(object)
-{Suica.eventCall(object,'onmousedown',event);}
+{Suica.eventCall(object,'onpointerdown',event);}
 event.preventDefault();}
-static onMouseUp(event)
+static onPointerUp(event)
 {var object=findObject(event,true);if(object)
-{Suica.eventCall(object,'onmouseup',event);}}
+{Suica.eventCall(object,'onpointerup',event);}}
 static onClick(event)
 {var object=findObject(event,true);if(object)
 {Suica.eventCall(object,'onclick',event);}
 Suica.eventCall(window.suica,'onclick',event);}
 static cloneEvents(target,source)
-{target.onmouseenter=source.onmouseenter;target.onmousemove=source.onmousemove;target.onmouseleave=source.onmouseleave;target.onmousedown=source.onmousedown;target.onclick=source.onclick;target.onmouseup=source.onmouseup;}
+{target.onpointerenter=source.onpointerenter;target.onpointermove=source.onpointermove;target.onpointerleave=source.onpointerleave;target.onpointerdown=source.onpointerdown;target.onclick=source.onclick;target.onpointerup=source.onpointerup;}
 static onContextMenu(event)
 {event.preventDefault();}}
 window.style=function(object,properties)
@@ -1006,8 +1006,8 @@ if(parentElem.type=='attributes'&&parentElem.target.suicaObject)
 {var name=parentElem.attributeName,value=parentElem.target.getAttribute(parentElem.attributeName);parentElem.target.suicaObject[name]=value;}}}).observe(document,{childList:true,subtree:true,attributes:true});window.addEventListener('load',function()
 {for(var suica of Suica.allSuicas)
 suica.parser?.parseTags();});function createFSButton(suica)
-{var inFullScreen=false;var button=document.createElement('button');button.id='suica-fullscreen-button';button.style.display='';button.style.cursor='pointer';button.style.left='calc(50% - 90px)';button.style.width='180px';button.style.position='absolute';button.style.bottom='20px';button.style.padding='12px 6px';button.style.border='1px solid #fff';button.style.borderRadius='4px';button.style.background='rgba(0,0,0,0.5)';button.style.color='#fff';button.style.font='normal 13px';button.style.textAlign='center';button.style.opacity='0.5';button.style.outline='none';button.style.zIndex='999';var requestFullscreen=suica.suicaTag.requestFullscreen||suica.suicaTag.webkitRequestFullscreen||suica.suicaTag.msRequestFullscreen;button.textContent=requestFullscreen?'ENTER FULLSCREEN':'FULLSCREEN NOT SUPPORTED';button.onmouseenter=function()
-{button.style.opacity='1.0';};button.onmouseleave=function()
+{var inFullScreen=false;var button=document.createElement('button');button.id='suica-fullscreen-button';button.style.display='';button.style.cursor='pointer';button.style.left='calc(50% - 90px)';button.style.width='180px';button.style.position='absolute';button.style.bottom='20px';button.style.padding='12px 6px';button.style.border='1px solid #fff';button.style.borderRadius='4px';button.style.background='rgba(0,0,0,0.5)';button.style.color='#fff';button.style.font='normal 13px';button.style.textAlign='center';button.style.opacity='0.5';button.style.outline='none';button.style.zIndex='999';var requestFullscreen=suica.suicaTag.requestFullscreen||suica.suicaTag.webkitRequestFullscreen||suica.suicaTag.msRequestFullscreen;button.textContent=requestFullscreen?'ENTER FULLSCREEN':'FULLSCREEN NOT SUPPORTED';button.onpointerenter=function()
+{button.style.opacity='1.0';};button.onpointerleave=function()
 {button.style.opacity='0.5';};if(requestFullscreen)
 {button.onclick=function()
 {requestFullscreen.call(suica.suicaTag);};}
@@ -1099,7 +1099,7 @@ parseEvents(tag,object,suica=null)
 {object[actualName]=tag.getAttribute(name);if(!object[actualName])
 {object[actualName]=function(event)
 {object[actualName]=window[tag.getAttribute(name)];object[actualName](event);}}}}
-parseEvent('onmousemove','onmousemove');parseEvent('onmouseleave','onmouseleave');parseEvent('onmouseenter','onmouseenter');parseEvent('onmousedown','onmousedown');parseEvent('onmouseup','onmouseup');parseEvent('onclick','onclick');parseEvent('onmousemove','mousemove');parseEvent('onmouseleave','mouseleave');parseEvent('onmouseenter','mouseenter');parseEvent('onmousedown','mousedown');parseEvent('onmouseup','mouseup');parseEvent('onclick','click');if(suica)
+parseEvent('onpointermove','onpointermove');parseEvent('onpointerleave','onpointerleave');parseEvent('onpointerenter','onpointerenter');parseEvent('onpointerdown','onpointerdown');parseEvent('onpointerup','onpointerup');parseEvent('onclick','onclick');parseEvent('onpointermove','pointermove');parseEvent('onpointerleave','pointerleave');parseEvent('onpointerenter','pointerenter');parseEvent('onpointerdown','pointerdown');parseEvent('onpointerup','pointerup');parseEvent('onclick','click');if(suica)
 {object=suica;parseEvent('ontime','ontime');parseEvent('ontime','time');}}
 parseTagPOINT(suica,elem)
 {var p=suica.point(elem.getAttribute('center'),elem.getAttribute('size'),elem.getAttribute('color'));suica.parserReadonly.parseAttributes(elem,p);elem.suicaObject=p;return p;}

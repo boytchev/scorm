@@ -50,7 +50,7 @@ class Water extends Group
 			plateFrame
 		);
 		
-		this.plate.addEventListener( 'onMouseDown', this.clickOnPlate );
+		this.plate.addEventListener( 'onPointerDown', this.clickOnPlate );
 		
 		this.add( this.water, this.waterBorder );
 		

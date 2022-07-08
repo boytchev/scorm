@@ -45,8 +45,8 @@ class Plate extends Group
 			its.y = 0.8;
 	
 		this.addEventListener( 'click', this.onClick );
-		this.addEventListener( 'mouseenter', this.onMark );
-		this.addEventListener( 'mouseleave', this.onUnmark );
+		this.addEventListener( 'pointerenter', this.onMark );
+		this.addEventListener( 'pointerleave', this.onUnmark );
 		
 		this.add( this.basePlate, this.colorPlate );
 		this.angle = 180;

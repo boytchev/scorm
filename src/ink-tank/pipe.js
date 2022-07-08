@@ -101,7 +101,7 @@ class Pipe extends Group
 		
 		this.add( floorConnector, wallConnector, this.pipe, pipeConnector, this.valve, wrapper/*, this.indicator*/ );
 		
-		this.addEventListener( 'mousedown', this.onMouseDown );
+		this.addEventListener( 'pointerdown', this.onPointerDown );
 	} // Pipe.constructor
 	
 	
@@ -121,7 +121,7 @@ class Pipe extends Group
 	}
 	
 	
-	onMouseDown( event )
+	onPointerDown( event )
 	{
 		// if a game is not started, then start a game
 		if( !playground.gameStarted )

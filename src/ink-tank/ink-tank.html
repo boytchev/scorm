@@ -25,7 +25,7 @@
 </head>
 
 <body>
-	<suica fullwindow fullscreen background="linen" ontime="update" onmousemove="onMouseMove" onMouseUp="onMouseUp"> <!-- onclick="onClick"-->
+	<suica fullwindow fullscreen background="linen" ontime="update" onpointermove="onPointerMove" onpointerup="onPointerUp">
 		<orbit distance="20" altitude="15" maxPolarAngle="1.6">
 		<div class="hud corner top left"></div>
 		<div class="hud corner top right"></div>
@@ -68,7 +68,7 @@
 			<!-- console.log( findObject( event ) ); -->
 		<!-- } -->
 		
-		function onMouseMove( event )
+		function onPointerMove( event )
 		{
 			if( findObject( event ) )
 			{
@@ -78,7 +78,7 @@
 				event.target.style.cursor = 'default';
 		}
 		
-		function onMouseUp( )
+		function onPointerUp( )
 		{
 			if( playground.gameStarted )
 			{

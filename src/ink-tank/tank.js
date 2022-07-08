@@ -40,7 +40,7 @@ class Tank extends Group
 		this.constructGlass( );
 		this.constructPipes( );
 		
-		this.addEventListener( 'mousedown', this.onMouseDown );
+		this.addEventListener( 'pointerdown', this.onPointerDown );
 		
 		this.y = Tank.VERTICAL_OFFSET;
 		
@@ -204,7 +204,7 @@ class Tank extends Group
 
 
 
-	onMouseDown( )
+	onPointerDown( )
 	{
 		if( !playground.gameStarted )
 			playground.newGame();
