@@ -14,12 +14,9 @@ Alternatively, here are versions in [English](ink-tank.html?lang=en), [Bulgarian
 
 When the application is started it shows an empty tank and three tubes. Inside the tank there is a plate which color must be recreated as a mixture of cyan, magenta and yellow inks. This must be done on a sequence of challenges with increasing difficulties. The ultimate goal is to reach score 100. 
 
-1. Click on the tank to start a challenge.
-1. While the color of the ink differes from the color of the plate:
-   - With mouse: click and hold the mouse button down on any tube to keep it open
-   - With touch screen: touch any tube to open it, then touch it again to close it
-1. Click on the plate to end the challenge.
-1. Repeat from step 1 for a new challenge.
+- **Starting**: Click anywhere on the tank.
+- **Playing**:  Press and hold on a tube to add more ink. Do this until the tank is full to the top and the tank ink color matches the plate color.
+- **Ending**: Click on the plate to end the challenge.
 
 Here are a few hints: The tubes can be activated as many times as it is needed. Some complex colors are difficult to create at once. A challenge can be ended only when the tank is full to the top, otherwise clicking on the plate has no effect. Higher difficulties use more complex colors and require higher precision of color matching. Sometimes it is easier to spot the difference between two colors by looking from the side or from the top. In the next image, for example, the side view reveals better the difference (the ink is slightly bluish compared to the plate).
 
