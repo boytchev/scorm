@@ -106,8 +106,8 @@ class Tank extends Group
 			base.threejs.material = Tank.metal( map, normalMap, aoMap, 5 );
 			ScormUtils.addUV2( base ); // because of AO
 
-		var map = ScormUtils.image( 'metal_plate.jpg', Tank.WIDTH ),
-			normalMap = ScormUtils.image( 'metal_plate_normal.jpg', Tank.WIDTH );
+		map = ScormUtils.image( 'metal_plate.jpg', Tank.WIDTH ),
+		normalMap = ScormUtils.image( 'metal_plate_normal.jpg', Tank.WIDTH );
 
 		var baseTop = circle( [0,Tank.BASE_HEIGHT,0], Tank.WIDTH );
 			baseTop.threejs.material = Tank.metal( map, normalMap, null, -2 );
