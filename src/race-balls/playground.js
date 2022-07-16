@@ -21,6 +21,12 @@ class Playground extends ScormPlayground
 				jp: 'レースボール'},
 		] );
 		
+		this.tracks = [];
+		for( var i=0; i<8; i++ )
+		{
+			this.tracks.push( new Track( 5+5*i ) );
+		}
+		
 	} // Playground.constructor
 
 	
