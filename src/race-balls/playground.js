@@ -7,6 +7,8 @@
 class Playground extends ScormPlayground
 {
 	static POINTS_SPEED = 2000;
+	static FLIP_SPEED = 6000;
+	static BALL_SHOW_SPEED = 500;
 	
 	constructor( )
 	{
@@ -21,19 +23,13 @@ class Playground extends ScormPlayground
 				jp: 'レースボール'},
 		] );
 		
-		this.speeds = [0.1,0.12,0.14,0.16,0.18];
-		this.speeds.sort( ()=>random(-10,10) );
-		this.speeds.sort( ()=>random(-10,10) );
-		this.speeds.sort( ()=>random(-10,10) );
-		console.log( this.speeds );
-		
 		this.tracks = [];
 		for( var i=0; i<5; i++ )
-		{
-			this.tracks.push( new Track( 5+5*i ) );
-			this.tracks[i].speed = this.speeds[i];
-			
-		}
+			this.tracks.push( new Track( 5+3.9*i ) );
+		
+		this.lastEventIsMove = false;
+		
+		this.switcher = new Switcher;
 		
 	} // Playground.constructor
 
@@ -44,7 +40,50 @@ class Playground extends ScormPlayground
 	{
 		super.newGame( );
 
-		// ...
+
+		// working with angular speed
+		
+		// speed difference between wrong angles
+		var speedGap = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0.1, 0.02 ),
+			speed = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0.1, 0.3 );
+
+speedGap = 0.1
+speed = 0.1
+
+		// generate array of speeds
+		var speeds = [];
+		for( var i=0; i<this.tracks.length; i++ )
+		{
+			speeds.push( speed );
+			speed += speedGap*random(0.9,1.1);
+		}
+		
+		// shuffle the speeds
+		speeds.sort( ()=>random(-10,10) );
+		speeds.sort( ()=>random(-10,10) );
+		speeds.sort( ()=>random(-10,10) );
+		
+
+		// configure tracks
+		var offset = random( 0, 360 ),
+			offsetSpan = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0, 360 );
+		
+		for( var track of this.tracks )
+		{
+			track.speed = speeds.pop();
+			track.pos = offset + random( 0, offsetSpan );
+
+			new TWEEN.Tween( track )
+				.to( {spinV:0, spinH:random(0,360), spinT:random(0,360)}, Playground.FLIP_SPEED )
+				.easing( TWEEN.Easing.Elastic.Out )
+				.start( );
+
+			new TWEEN.Tween( track.ball )
+				.to( {size:1}, Playground.BALL_SHOW_SPEED )
+				.easing( TWEEN.Easing.Quadratic.InOut )
+				.start( );
+		}
+		
 
 	} // Playground.newGame
 

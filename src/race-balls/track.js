@@ -18,6 +18,7 @@ class Track extends Group
 		this.radius = radius;
 		this.speed = random(0.1,0.3)///radius//random(1,2)/radius;
 		this._pos = 0;
+		this.selected = false;
 
 		// create track
 		this.track = tube( [0,0,0], spline(this.trajectory,radius,0), Track.RADIUS, [150,20] );
@@ -31,13 +32,13 @@ class Track extends Group
 						normalScale: new THREE.Vector2( 1/2, 1/2 ),
 					} );
 
-		var ballLight = new THREE.SpotLight( 'white', -1, 3*Track.BALL_SIZE, 1.2, 1 );
-			ballLight.position.y = 0.1;
+		this.ballLight = new THREE.SpotLight( 'white', -1, 3*Track.BALL_SIZE, 1.2, 1 );
+		this.ballLight.position.y = 0.1;
 		
 		// create ball
 		var target = new THREE.Object3D();
 			target.position.set( 0, -2, 0 );
-			ballLight.target = target;
+		this.ballLight.target = target;
 		
 		this.subball = sphere( [0,0,0], Track.BALL_SIZE );
 		this.subball.threejs.material = new THREE.MeshPhysicalMaterial( {
@@ -48,26 +49,27 @@ class Track extends Group
 						sheenColor: 'blue',
 						sheenRoughness: 0.5,
 						map: ScormUtils.image( 'marble.jpg', 1, 1 ),
+						emissive: 'orange',
+						emissiveIntensity: 0,
 					} );
 		this.subball.spinV = random( 0, 90 );
 		this.subball.spinH = random( 0, 360 );
 
 		this.trueball = group( this.subball );
 		this.ball = group( this.trueball );
-		this.ball.threejs.add( ballLight, target );
+		this.ball.threejs.add( this.ballLight, target );
+		this.ball.size = 0;
 
 		this.pos = random(0,1);
 
-					
 		this.spinV = 180;
-		this.spinH = random( 0, 360 );
+		this.spinH = 0;
 		
 		this.add( this.track, this.ball );
 		
-		new TWEEN.Tween( this )
-			.to( {spinV:random(-90,90), spinH:random(0,360), spinT:random(0,360)}, 30*this.spinV )
-			.easing( TWEEN.Easing.Elastic.Out )
-			.start( );
+		this.addEventListener( 'click', this.onClick );
+		this.addEventListener( 'pointerenter', this.onMark );
+		this.addEventListener( 'pointerleave', this.onUnmark );
 
 	} // Track.constructor
 	
@@ -148,9 +150,78 @@ class Track extends Group
 		}
 	} // Track.reshapeTrack
 	
+	
+	
 	moveBall( dT )
 	{
 		this.pos += this.speed*dT;
-	}
+	} // Track.moveBall
+	
+	
+	
+	// handles clicks on a track
+	onClick( )
+	{
+		// avoid fake onClicks -- this is when the pointer is dragged
+		if( playground.lastEventIsMove ) return;
+			
+		// if game is not started, click on any plate will start it
+		if( playground.gameStarted )
+		{
+			this.toggle( );
+		}
+		else
+			playground.newGame( );
+	} // Plate.onClick
+	
+	
+	
+	// marks a track when the mouse pointer goes over it
+	onMark( )
+	{
+		if( playground.gameStarted && !this.selected ) this.track.color = 'white';
+	} // Track.onMark
+	
+	
+	
+	// unmarks a plate when the mouse pointer goes out of it
+	onUnmark( )
+	{
+		if( !this.selected ) this.track.color = 'lightgray';
+	} // Track.onUnmark
+
+
+
+	// selects a track on click
+	toggle( )
+	{
+		if( playground.gameStarted )
+		{
+			this.selected = !this.selected;
+			
+			if( this.selected )
+			{
+				this.track.threejs.material.color.setRGB( 0.2, 0.2, 0.2 );
+				this.subball.color = 'orange';
+				this.subball.threejs.material.emissiveIntensity = 0.6;
+				this.ballLight.color.set( 'orange' );
+				this.ballLight.intensity = 3;
+				this.ballLight.position.y = 4;
+			}
+			else
+			{
+				this.track.color = 'lightgray';
+				this.subball.color = 'white';
+				this.subball.threejs.material.emissiveIntensity = 0;
+				this.ballLight.color.set( 'white' );
+				this.ballLight.intensity = -1;
+				this.ballLight.position.y = 0.1;
+			}
+		}
+	} // Track.onMark
+	
+	
+	
+	
 } // class Track
 

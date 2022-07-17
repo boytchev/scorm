@@ -19,11 +19,12 @@
 	<script src="libs/scorm.utils.js"></script>
 	<script src="playground.js"></script>
 	<script src="track.js"></script>
+	<script src="switcher.js"></script>
 </head>
 
 <body>
-	<suica fullwindow fullscreen background="linen" ontime="update"> <!-- onpointermove="onPointerMove"-->
-		<orbit id="orb" distance="20" altitude="15" maxPolarAngle="1.6" enablePan="true">
+	<suica fullwindow fullscreen background="linen" ontime="update" onpointermove="onPointerMove" onpointerdown="onPointerDown">
+		<orbit id="orb" distance="10" altitude="100" maxPolarAngle="1.57" enablePan="true">
 		
 		<div class="hud corner top left"></div>
 		<div class="hud corner top right"></div>
@@ -52,21 +53,30 @@
 		</div>
 		
 		<div id="txt-user" class="hud bottom footnote">GUEST</div>
+		
 	</suica>
 
 	
 	<script>
+		console.log(suica.camera.position);
+		
 		var playground = new Playground;
 
 		window.addEventListener( 'resize', playground.resize );
 				
-		<!-- function onPointerMove( event ) -->
-		<!-- { -->
-			<!-- if( findObject( event ) ) -->
-				<!-- event.target.style.cursor = 'pointer'; -->
-			<!-- else -->
-				<!-- event.target.style.cursor = 'default'; -->
-		<!-- } -->
+		function onPointerMove( event )
+		{
+			if( playground ) playground.lastEventIsMove = true;
+			if( findObject( event ) )
+				event.target.style.cursor = 'pointer';
+			else
+				event.target.style.cursor = 'default';
+		}
+		
+		function onPointerDown( event )
+		{
+			if( playground ) playground.lastEventIsMove = false;
+		}
 		
 	</script>
 	
