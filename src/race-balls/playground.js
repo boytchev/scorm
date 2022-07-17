@@ -21,10 +21,18 @@ class Playground extends ScormPlayground
 				jp: 'レースボール'},
 		] );
 		
+		this.speeds = [0.1,0.12,0.14,0.16,0.18];
+		this.speeds.sort( ()=>random(-10,10) );
+		this.speeds.sort( ()=>random(-10,10) );
+		this.speeds.sort( ()=>random(-10,10) );
+		console.log( this.speeds );
+		
 		this.tracks = [];
-		for( var i=0; i<8; i++ )
+		for( var i=0; i<5; i++ )
 		{
 			this.tracks.push( new Track( 5+5*i ) );
+			this.tracks[i].speed = this.speeds[i];
+			
 		}
 		
 	} // Playground.constructor
@@ -94,5 +102,13 @@ class Playground extends ScormPlayground
 		//this.soundEffects.push( this.clickSound, this.clackSound );
 		//this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
+	
+	
+	
+	update( t, dT )
+	{
+		for( var track of this.tracks )
+			track.moveBall( dT );
+	}
 	
 } // class Playground
