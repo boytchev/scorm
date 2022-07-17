@@ -47,9 +47,6 @@ class Playground extends ScormPlayground
 		var speedGap = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0.1, 0.02 ),
 			speed = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0.1, 0.3 );
 
-speedGap = 0.1
-speed = 0.1
-
 		// generate array of speeds
 		var speeds = [];
 		for( var i=0; i<this.tracks.length; i++ )
