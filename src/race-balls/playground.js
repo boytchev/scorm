@@ -96,7 +96,7 @@ class Playground extends ScormPlayground
 
 //for(var d=0; d<=100; d+=5)
 //console.log( 90*Math.pow(0.5+0.5*Math.cos(radians(360*(d/100-0.5))),2)  );	
-		for( var track of this.tracks )
+		for( let track of this.tracks )
 		{
 			track.speed = speeds.pop();
 			track.pos = offset + random( 0, offsetSpan );
@@ -113,7 +113,7 @@ class Playground extends ScormPlayground
 		}
 
 console.log('new----------------');		
-		for( var track of this.tracks )
+		for( let track of this.tracks )
 		{
 			speeds.push( track.speed );
 			console.log( track.speed.toFixed(2), track.selected );
