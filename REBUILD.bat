@@ -17,6 +17,7 @@ REM Inside: GitHub\scorm\src\
 
 ECHO - Rebuilding SCORM "%~1"
 
+COPY ..\misc\js\suica.js "%~1\libs"
 COPY scorm.utils.js "%~1\libs"
 COPY styles.css "%~1"
 

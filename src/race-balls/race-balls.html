@@ -24,7 +24,7 @@
 
 <body>
 	<suica fullwindow fullscreen background="linen" ontime="update" onpointermove="onPointerMove" onpointerdown="onPointerDown">
-		<orbit id="orb" distance="10" altitude="100" maxPolarAngle="1.57" enablePan="true">
+		<orbit id="orb" distance="1" altitude="70" maxPolarAngle="1.57" enablePan="true">
 		
 		<div class="hud corner top left"></div>
 		<div class="hud corner top right"></div>
@@ -58,8 +58,6 @@
 
 	
 	<script>
-		console.log(suica.camera.position);
-		
 		var playground = new Playground;
 
 		window.addEventListener( 'resize', playground.resize );

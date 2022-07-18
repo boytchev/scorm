@@ -693,7 +693,7 @@ const DEBUG_CALLS=false;const DEBUG_EVENTS=false;const TEST_MODE=typeof SUICA_TE
 console.log('::> suica');else
 console.log(`(\\/)
 ( ..)  Suica 2.0
-c(”)(”)  (220704)
+c(”)(”)   (2207)
 `);var suica=null;class Suica
 {static allSuicas=[];static CIRCLECOUNT=50;static OX=new THREE.Vector3(1,0,0);static OY=new THREE.Vector3(0,1,0);static OZ=new THREE.Vector3(0,0,1);static ORIENTATIONS={YXZ:{SCALE:new THREE.Vector3(1,-1,1),LOOKAT:{FROM:[0,0,100],TO:[0,0,0],UP:[1,0,0]},RIGHT:Suica.OY,UP:Suica.OX,FORWARD:Suica.OZ,},ZYX:{SCALE:new THREE.Vector3(1,1,-1),LOOKAT:{FROM:[100,0,0],TO:[0,0,0],UP:[0,1,0]},RIGHT:Suica.OZ,UP:Suica.OY,FORWARD:Suica.OX,},XZY:{SCALE:new THREE.Vector3(-1,1,1),LOOKAT:{FROM:[0,100,0],TO:[0,0,0],UP:[0,0,1]},RIGHT:Suica.OX,UP:Suica.OZ,FORWARD:Suica.OY,},ZXY:{SCALE:new THREE.Vector3(1,1,1),LOOKAT:{FROM:[0,100,0],TO:[0,0,0],UP:[1,0,0]},RIGHT:Suica.OZ,UP:Suica.OX,FORWARD:Suica.OY,},XYZ:{SCALE:new THREE.Vector3(1,1,1),LOOKAT:{FROM:[0,0,100],TO:[0,0,0],UP:[0,1,0]},RIGHT:Suica.OX,UP:Suica.OY,FORWARD:Suica.OZ,},YZX:{SCALE:new THREE.Vector3(1,1,1),LOOKAT:{FROM:[100,0,0],TO:[0,0,0],UP:[0,0,1]},RIGHT:Suica.OY,UP:Suica.OZ,FORWARD:Suica.OX,},}
 static globalHoverObject;static globalHoverEvent;flipNormal(geometry)
@@ -750,10 +750,10 @@ this.scene.background=Suica.parseColor(color);this.vrCamera=new THREE.Group();th
 {var value=this.suicaTag.getAttribute(attribute);switch(attribute.toUpperCase())
 {case'PERSPECTIVE':this.perspective(...Suica.evaluate('['+value+']'));break;case'ORTHOGRAPHIC':this.orthographic(...Suica.evaluate('['+value+']'));break;case'ANAGLYPH':this.anaglyph(...Suica.evaluate('['+value+']'));break;case'STEREO':this.stereo(...Suica.evaluate('['+value+']'));break;case'VR':this.vr();break;case'FULLSCREEN':this.fullScreen();break;case'FULLWINDOW':this.fullWindow();break;case'PROACTIVE':this.proactive();break;}}
 this.light=new THREE.PointLight('white',0.5);this.light.position.set(1000,1500,3000);this.scene.add(this.light);this.scene.add(new THREE.AmbientLight('white',0.5));var that=this;this.lastTime=0;function adjustOrbitControls()
-{that.controls.update();that.light.position.copy(that.camera.position);}
+{that.camera.up.copy(that.orientation.UP);that.controls.update();that.light.position.copy(that.camera.position);that.light.position.multiply(that.orientation.SCALE);}
 function adjustDemoViewPoint(time)
-{time*=that.demoViewPoint.speed;var x=that.demoViewPoint.distance*Math.cos(time),y=that.demoViewPoint.altitude,z=that.demoViewPoint.distance*Math.sin(time);that.camera.up.copy(that.orientation.UP);switch(that.orientation)
-{case Suica.ORIENTATIONS.XYZ:that.camera.position.set(x,y,-z);that.light.position.set(2*x,2*y,-2*z);break;case Suica.ORIENTATIONS.XZY:that.camera.position.set(-x,-z,y);that.light.position.set(2*x,-2*z,2*y);break;case Suica.ORIENTATIONS.YXZ:that.camera.position.set(y,-x,-z);that.light.position.set(2*y,2*x,-2*z);break;case Suica.ORIENTATIONS.YZX:that.camera.position.set(-z,x,y);that.light.position.set(-2*z,2*x,2*y);break;case Suica.ORIENTATIONS.ZXY:that.camera.position.set(y,-z,x);that.light.position.set(2*y,-2*z,2*x);break;case Suica.ORIENTATIONS.ZYX:that.camera.position.set(-z,y,-x);that.light.position.set(-2*z,2*y,2*x);break;default:console.error('error: Unknown orientation in <suica>');};that.camera.lookAt(that.scene.position);that.camera.updateMatrixWorld();}
+{time*=that.demoViewPoint.speed;var cos=-that.demoViewPoint.distance*Math.cos(time),up=that.demoViewPoint.altitude,sin=-that.demoViewPoint.distance*Math.sin(time);that.camera.up.copy(that.orientation.UP);switch(that.orientation)
+{case Suica.ORIENTATIONS.YXZ:that.camera.position.set(up,cos,sin);that.light.position.set(2*up,-2*cos,2*sin);break;case Suica.ORIENTATIONS.ZYX:that.camera.position.set(sin,up,cos);that.light.position.set(2*sin,2*up,-2*cos);break;case Suica.ORIENTATIONS.XZY:that.camera.position.set(cos,sin,up);that.light.position.set(-2*cos,2*sin,2*up);break;case Suica.ORIENTATIONS.ZXY:that.camera.position.set(up,sin,-cos);that.light.position.set(2*up,2*sin,-2*cos);break;case Suica.ORIENTATIONS.XYZ:that.camera.position.set(-cos,up,sin);that.light.position.set(-2*cos,2*up,2*sin);break;case Suica.ORIENTATIONS.YZX:that.camera.position.set(sin,-cos,up);that.light.position.set(2*sin,-2*cos,2*up);break;default:console.error('error: Unknown orientation in <suica>');};that.camera.lookAt(that.scene.position);that.camera.updateMatrixWorld();}
 function adjustViewPoint()
 {var up=[...that.viewPoint.up],from=[...that.viewPoint.from],to=[...that.viewPoint.to];switch(that.orientation)
 {case Suica.ORIENTATIONS.XZY:up[0]=-up[0];from[0]=-from[0];to[0]=-to[0];break;case Suica.ORIENTATIONS.YXZ:up[1]=-up[1];from[1]=-from[1];to[1]=-to[1];break;case Suica.ORIENTATIONS.ZYX:up[2]=-up[2];from[2]=-from[2];to[2]=-to[2];break;}
@@ -805,7 +805,9 @@ axes.setColors(color,color,color);this.scene.add(axes);}
 demo(distance,altitude,speed)
 {this.parser?.parseTags();this.debugCall('demo',...arguments);this.demoViewPoint={distance:Suica.parseNumber(distance,Suica.DEMO.DISTANCE),altitude:Suica.parseNumber(altitude,Suica.DEMO.ALTITUDE),speed:Suica.parseNumber(speed,Suica.DEMO.SPEED),};}
 orbit(distance,altitude,speed)
-{this.parser?.parseTags();this.debugCall('orbit',...arguments);this.controls=new THREE.OrbitControls(this.camera,this.renderer.domElement);this.camera.position.set(0,Suica.parseNumber(altitude,Suica.ORBIT.ALTITUDE),Suica.parseNumber(distance,Suica.ORBIT.DISTANCE));this.controls.update();this.controls.autoRotateSpeed=-4*Suica.parseNumber(speed,Suica.ORBIT.SPEED);this.controls.autoRotate=this.controls.autoRotateSpeed!=0;this.controls.enablePan=false;return this.controls;}
+{this.parser?.parseTags();this.debugCall('orbit',...arguments);this.camera.up.copy(this.orientation.UP);var d=Suica.parseNumber(distance,Suica.ORBIT.DISTANCE),a=Suica.parseNumber(altitude,Suica.ORBIT.ALTITUDE);switch(this.orientation)
+{case Suica.ORIENTATIONS.YXZ:this.camera.position.set(a,0,d);break;case Suica.ORIENTATIONS.ZYX:this.camera.position.set(d,a,0);break;case Suica.ORIENTATIONS.XZY:this.camera.position.set(0,d,a);break;case Suica.ORIENTATIONS.ZXY:this.camera.position.set(a,d,0);break;case Suica.ORIENTATIONS.XYZ:this.camera.position.set(0,a,d);break;case Suica.ORIENTATIONS.YZX:this.camera.position.set(d,0,a);break;default:throw'error: unknown orientation';}
+this.controls=new THREE.OrbitControls(this.camera,this.renderer.domElement);this.controls.autoRotateSpeed=-4*Suica.parseNumber(speed,Suica.ORBIT.SPEED);this.controls.autoRotate=this.controls.autoRotateSpeed!=0;this.controls.enablePan=false;return this.controls;}
 static precheck()
 {if(!(window.suica instanceof Suica))
 throw'error: No Suica instance is active';}
@@ -910,8 +912,10 @@ static onClick(event)
 {var object=findObject(event,true);if(object)
 {Suica.eventCall(object,'onclick',event);}
 Suica.eventCall(window.suica,'onclick',event);}
+static onLoad(object)
+{Suica.eventCall(object,'onload',object);}
 static cloneEvents(target,source)
-{target.onpointerenter=source.onpointerenter;target.onpointermove=source.onpointermove;target.onpointerleave=source.onpointerleave;target.onpointerdown=source.onpointerdown;target.onclick=source.onclick;target.onpointerup=source.onpointerup;}
+{target.onpointerenter=source.onpointerenter;target.onpointermove=source.onpointermove;target.onpointerleave=source.onpointerleave;target.onpointerdown=source.onpointerdown;target.onclick=source.onclick;target.onpointerup=source.onpointerup;target.onload=source.onload;}
 static onContextMenu(event)
 {event.preventDefault();}}
 window.style=function(object,properties)
@@ -999,8 +1003,9 @@ new MutationObserver(function(mutations)
 {for(var parentElem of mutations)
 {for(var childElem of parentElem.addedNodes)
 {if(childElem?.tagName=='SCRIPT')
-for(var suica of Suica.allSuicas)
-suica.parser?.parseTags();if(childElem?.tagName=='SUICA')
+{for(var suica of Suica.allSuicas)
+suica.parser?.parseTags();}
+if(childElem?.tagName=='SUICA')
 new Suica(childElem);}
 if(parentElem.type=='attributes'&&parentElem.target.suicaObject)
 {var name=parentElem.attributeName,value=parentElem.target.getAttribute(parentElem.attributeName);parentElem.target.suicaObject[name]=value;}}}).observe(document,{childList:true,subtree:true,attributes:true});window.addEventListener('load',function()
@@ -1047,6 +1052,8 @@ parseTagCANVAS(suica,elem){}
 parseTagDIV(suica,elem){}
 parseTagSPAN(suica,elem){}
 parseTagIMG(suica,elem){}
+parseTagBR(suica,elem){}
+parseTagSMALL(suica,elem){}
 parseTagOXYZ(suica,elem)
 {suica.oxyz(elem.getAttribute('size'),elem.getAttribute('color'));}
 parseTagDEMO(suica,elem)
@@ -1099,7 +1106,7 @@ parseEvents(tag,object,suica=null)
 {object[actualName]=tag.getAttribute(name);if(!object[actualName])
 {object[actualName]=function(event)
 {object[actualName]=window[tag.getAttribute(name)];object[actualName](event);}}}}
-parseEvent('onpointermove','onpointermove');parseEvent('onpointerleave','onpointerleave');parseEvent('onpointerenter','onpointerenter');parseEvent('onpointerdown','onpointerdown');parseEvent('onpointerup','onpointerup');parseEvent('onclick','onclick');parseEvent('onpointermove','pointermove');parseEvent('onpointerleave','pointerleave');parseEvent('onpointerenter','pointerenter');parseEvent('onpointerdown','pointerdown');parseEvent('onpointerup','pointerup');parseEvent('onclick','click');if(suica)
+parseEvent('onpointermove','onpointermove');parseEvent('onpointerleave','onpointerleave');parseEvent('onpointerenter','onpointerenter');parseEvent('onpointerdown','onpointerdown');parseEvent('onpointerup','onpointerup');parseEvent('onclick','onclick');parseEvent('onload','onload');parseEvent('onpointermove','pointermove');parseEvent('onpointerleave','pointerleave');parseEvent('onpointerenter','pointerenter');parseEvent('onpointerdown','pointerdown');parseEvent('onpointerup','pointerup');parseEvent('onclick','click');parseEvent('onload','load');if(suica)
 {object=suica;parseEvent('ontime','ontime');parseEvent('ontime','time');}}
 parseTagPOINT(suica,elem)
 {var p=suica.point(elem.getAttribute('center'),elem.getAttribute('size'),elem.getAttribute('color'));suica.parserReadonly.parseAttributes(elem,p);elem.suicaObject=p;return p;}
@@ -1368,7 +1375,22 @@ addEventListener(type,listener,aux)
 type='on'+type;this[type.toLowerCase()]=listener;}
 removeEventListener(type,listener,aux)
 {if(listener)console.warn('Suica objects do not support second parameter of removeEventListener');if(aux)console.warn('Suica objects do not support third parameter of removeEventListener');if(!type.startsWith('on'))
-type='on'+type;this[type.toLowerCase()]=null;}}
+type='on'+type;this[type.toLowerCase()]=null;}
+objectPosition(localOffset=[0,0,0])
+{localOffset=Suica.parseCenter(localOffset);switch(this.suica.orientation)
+{case Suica.ORIENTATIONS.YXZ:localOffset[0]/=this.threejs.scale.y;localOffset[1]/=this.threejs.scale.x;localOffset[2]/=this.threejs.scale.z;break;case Suica.ORIENTATIONS.ZYX:localOffset[0]/=this.threejs.scale.z;localOffset[1]/=this.threejs.scale.y;localOffset[2]/=this.threejs.scale.x;break;case Suica.ORIENTATIONS.XZY:localOffset[0]/=this.threejs.scale.x;localOffset[1]/=this.threejs.scale.z;localOffset[2]/=this.threejs.scale.y;break;case Suica.ORIENTATIONS.ZXY:localOffset[0]/=this.threejs.scale.z;localOffset[1]/=this.threejs.scale.x;localOffset[2]/=this.threejs.scale.y;break;case Suica.ORIENTATIONS.XYZ:localOffset[0]/=this.threejs.scale.x;localOffset[1]/=this.threejs.scale.y;localOffset[2]/=this.threejs.scale.z;break;case Suica.ORIENTATIONS.YZX:localOffset[0]/=this.threejs.scale.y;localOffset[1]/=this.threejs.scale.z;localOffset[2]/=this.threejs.scale.x;break;default:throw'error: unknown orientation';}
+this.threejs.updateWorldMatrix(true,true);var target=new THREE.Vector3(...localOffset),pos=this.threejs.localToWorld(target);return[pos.x,pos.y,pos.z];}
+screenPosition(localOffset=[0,0,0],globalOffset=[0,0,0])
+{var pos=new THREE.Vector3(...this.objectPosition(localOffset));globalOffset=Suica.parseCenter(globalOffset);pos.x+=globalOffset[0];pos.y+=globalOffset[1];pos.z+=globalOffset[2];pos.project(this.suica.camera);var x=(1+pos.x)/2*this.suica.canvas.clientWidth,y=(1-pos.y)/2*this.suica.canvas.clientHeight,z=pos.z;return[Math.round(100*x)/100,Math.round(100*y)/100,Math.round(1000*z)/1000];}
+get vertices()
+{var vertices=[],v=new THREE.Vector3();function processMesh(mesh)
+{if(mesh.geometry)
+{var pos=mesh.geometry.getAttribute('position');if(pos)
+{for(var i=0;i<pos.count;i++)
+{v.set(pos.getX(i),pos.getY(i),pos.getZ(i));v=mesh.localToWorld(v);vertices.push([v.x,v.y,v.z]);}}}
+for(var submesh of mesh.children)
+processMesh(submesh);}
+this.threejs.updateWorldMatrix(true,true);processMesh(this.threejs);return vertices;}}
 Mesh.createMaterials();﻿
 class Point extends Mesh
 {static COLOR='black';static SIZE=7;static solidGeometry;constructor(suica,center,size,color)
@@ -1392,7 +1414,7 @@ super(suica,new THREE.LineSegments(Line.solidGeometry.clone(),Mesh.lineMaterial.
 get center()
 {this.suica.parser?.parseTags();var pos=this.threejs.geometry.getAttribute('position');return[pos.getX(0),pos.getY(0),pos.getZ(0)];}
 set center(center)
-{this.suica.parser?.parseTags();center=Suica.parseCenter(center);this.threejs.geometry.getAttribute('position').setXYZ(0,...center);this.threejs.geometry.needsUpdate=true;}
+{this.suica.parser?.parseTags();center=Suica.parseCenter(center);var pos=this.threejs.geometry.getAttribute('position');pos.setXYZ(0,...center);pos.needsUpdate=true;}
 get from()
 {return this.center;}
 set from(from)
@@ -1400,7 +1422,7 @@ set from(from)
 get to()
 {this.suica.parser?.parseTags();var pos=this.threejs.geometry.getAttribute('position');return[pos.getX(1),pos.getY(1),pos.getZ(1)];}
 set to(to)
-{this.suica.parser?.parseTags();to=Suica.parseCenter(to);this.threejs.geometry.getAttribute('position').setXYZ(1,...to);this.threejs.geometry.needsUpdate=true;}
+{this.suica.parser?.parseTags();to=Suica.parseCenter(to);var pos=this.threejs.geometry.getAttribute('position');pos.setXYZ(1,...to);pos.needsUpdate=true;}
 get clone()
 {var object=new Line(this.suica,this.from,this.to,this.color);object.image=this.image;Suica.cloneEvents(object,this);return object;}}
 ﻿
@@ -1613,10 +1635,7 @@ geometry.setAttribute('uv',new THREE.BufferAttribute(new Float32Array(uvs),2));r
 get clone()
 {var object=new Convex(this.suica,this._points,this.size,this.color);object.spin=this.spin;object.image=this.image;Suica.cloneEvents(object,this);return object;}
 set src(points)
-{this._points=points;this.threejs.geometry.dispose();this.threejs.geometry=Convex.generateGeometry(points);}
-get vertices()
-{var vertices=[],pos=this.threejs.geometry.getAttribute('position');for(var i=0;i<pos.count;i++)
-vertices.push([pos.getX(i),pos.getY(i),pos.getZ(i)]);return vertices;}}
+{this._points=points;this.threejs.geometry.dispose();this.threejs.geometry=Convex.generateGeometry(points);}}
 ﻿
 class Model extends Mesh
 {static SIZE=1;constructor(suica,src,center,size)
@@ -1629,7 +1648,7 @@ set src(src)
 function objectLoadedGLTF(object)
 {object=object.scene;object.traverse(noMetal);function noMetal(child)
 {if(child.isMesh)child.material.metalness=0;if(child.children.lenhth)child.traverse(noMetal);}
-replaceObject(object);that.ready=true;for(var waiting of that.waitingList)
+replaceObject(object);that.ready=true;Suica.onLoad(that);for(var waiting of that.waitingList)
 {waiting.threejs.add(object.clone());}
 that.waitingList=[];}
 function replaceObject(object)
@@ -1707,14 +1726,14 @@ get font()
 set font(fontName)
 {var that=this;if(this._fontName==fontName)return;this._fontName=fontName;this._font=undefined;if(Text3D.fontsCache[fontName])
 {if(Text3D.fontsCache[fontName].isFont)
-{this._font=Text3D.fontsCache[fontName];this.regenerateGeometry();}
+{this._font=Text3D.fontsCache[fontName];this.regenerateGeometry();Suica.onLoad(this);}
 else
 {Text3D.waitingList.push(this);}}
 else
 {Text3D.fontsCache[fontName]='loading';Text3D.fontLoader.load(fontName,function(font)
-{Text3D.fontsCache[fontName]=font;that._font=font;that.regenerateGeometry();for(var i in Text3D.waitingList)
+{Text3D.fontsCache[fontName]=font;that._font=font;that.regenerateGeometry();Suica.onLoad(that);for(var i in Text3D.waitingList)
 {var obj=Text3D.waitingList[i];if(Text3D.fontsCache[obj._fontName]?.isFont)
-{obj._font=Text3D.fontsCache[obj._fontName];obj.regenerateGeometry();delete Text3D.waitingList[i];}}
+{obj._font=Text3D.fontsCache[obj._fontName];obj.regenerateGeometry();delete Text3D.waitingList[i];Suica.onLoad(obj);}}
 Text3D.waitingList=Text3D.waitingList.filter(value=>value);});}}
 regenerateGeometry()
 {this.solidMesh.geometry.dispose();this.solidMesh.geometry=new THREE.TextGeometry(this.text,{font:this._font,size:1,height:1,curveSegments:8,bevelEnabled:!true,});}

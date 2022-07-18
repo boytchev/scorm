@@ -5,13 +5,13 @@
 	
 class Switcher extends Group
 {
-	static SIZE = 6.1;
+	static SIZE = 10;
 	
 	constructor( )
 	{
 		super( suica );
 	
-		var ball = sphere( [0,0,0], Switcher.SIZE );
+		var ball = sphere( [0,0,0], Switcher.SIZE+0.1 );
 		ball.threejs.material = new THREE.MeshPhysicalMaterial( {
 						color: 0x202020,
 						metalness: 0.5,
@@ -65,7 +65,8 @@ class Switcher extends Group
 		// if game is not started, click on any plate will start it
 		if( playground.gameStarted )
 		{
-		//	this.toggle( );
+			if( playground.canEndGame( ) )
+				playground.endGame( );
 		}
 		else
 			playground.newGame( );

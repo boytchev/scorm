@@ -9,6 +9,7 @@ class Playground extends ScormPlayground
 	static POINTS_SPEED = 2000;
 	static FLIP_SPEED = 6000;
 	static BALL_SHOW_SPEED = 500;
+	static N = 6;
 	
 	constructor( )
 	{
@@ -23,11 +24,16 @@ class Playground extends ScormPlayground
 				jp: 'レースボール'},
 		] );
 		
-		this.tracks = [];
-		for( var i=0; i<5; i++ )
-			this.tracks.push( new Track( 5+3.9*i ) );
+		this.tracks = []; // active tracks
+		this.allTracks = [];
+		for( var i=0; i<Playground.N; i++ )
+		{
+			this.allTracks.push( new Track( Switcher.SIZE/2+Track.RADIUS+(2*Track.RADIUS-0.1)*i ) );
+			this.allTracks[i].threejs.visible = i<3;
+		}
 		
 		this.lastEventIsMove = false;
+		this.direction = 0;
 		
 		this.switcher = new Switcher;
 		
@@ -40,16 +46,30 @@ class Playground extends ScormPlayground
 	{
 		super.newGame( );
 
-
-		// working with angular speed
+		this.direction = random( [-1, 1] );
+		
+		// number of tracks
+		var n = THREE.MathUtils.clamp( Math.round( THREE.MathUtils.mapLinear( Math.pow(this.difficulty/100,2), 0, 1, 3, Playground.N )), 3, Playground.N );
+		
+		this.tracks = [];
+		for( let i=0; i<Playground.N; i++ )
+			if( i < n )
+			{
+				this.allTracks[i].threejs.visible = true;
+				this.tracks.push( this.allTracks[i] );
+			}
+			else
+			{
+				this.allTracks[i].threejs.visible = false;
+			}
 		
 		// speed difference between wrong angles
-		var speedGap = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0.1, 0.02 ),
+		var speedGap = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0.2, 0.02 ),
 			speed = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0.1, 0.3 );
 
 		// generate array of speeds
 		var speeds = [];
-		for( var i=0; i<this.tracks.length; i++ )
+		for( var i=0; i<n; i++ )
 		{
 			speeds.push( speed );
 			speed += speedGap*random(0.9,1.1);
@@ -63,15 +83,26 @@ class Playground extends ScormPlayground
 
 		// configure tracks
 		var offset = random( 0, 360 ),
-			offsetSpan = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0, 360 );
-		
+			offsetSpan = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0, 360 ),
+			verticalSpan = 0;
+			
+		if( this.difficulty>=80 )
+		{
+			var x = (this.difficulty-80)/20; //0..1
+				x = Math.pow( x, 4 ); //0..1
+				x = THREE.MathUtils.mapLinear( x, 0, 1, 0, 60 );
+			verticalSpan = x;
+		}
+
+//for(var d=0; d<=100; d+=5)
+//console.log( 90*Math.pow(0.5+0.5*Math.cos(radians(360*(d/100-0.5))),2)  );	
 		for( var track of this.tracks )
 		{
 			track.speed = speeds.pop();
 			track.pos = offset + random( 0, offsetSpan );
 
 			new TWEEN.Tween( track )
-				.to( {spinV:0, spinH:random(0,360), spinT:random(0,360)}, Playground.FLIP_SPEED )
+				.to( {spinV:verticalSpan, spinH:random(0,360), spinT:random(0,720)}, Playground.FLIP_SPEED )
 				.easing( TWEEN.Easing.Elastic.Out )
 				.start( );
 
@@ -80,7 +111,14 @@ class Playground extends ScormPlayground
 				.easing( TWEEN.Easing.Quadratic.InOut )
 				.start( );
 		}
-		
+
+console.log('new----------------');		
+		for( var track of this.tracks )
+		{
+			speeds.push( track.speed );
+			console.log( track.speed.toFixed(2), track.selected );
+		}
+console.log('\t-------');		
 
 	} // Playground.newGame
 
@@ -89,8 +127,13 @@ class Playground extends ScormPlayground
 	// check whether a game can end
 	canEndGame( )
 	{
-		// ...
-		return false;
+		// can end only if there are exactly two selected tracks
+		var selected = 0;
+		for( var track of this.tracks )
+			if( track.selected )
+				selected++;
+			
+		return selected == 2;
 	} // Playground.canEndGame
 	
 	
@@ -99,10 +142,31 @@ class Playground extends ScormPlayground
 	evaluateGame( )
 	{
 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
-		
-		// ...
-		
-		return 0 * points;
+
+		var speeds = [];
+		for( var track of this.tracks )
+		{
+			speeds.push( track.speed );
+			console.log( track.speed.toFixed(2), track.selected );
+		}
+		speeds.sort();
+
+		var score = 0;
+
+		// each correct answers gives 50%,
+		// each answer next to the correct one gives 15%
+		// possible results: 100% 75% 50% 30% 15% 0%
+		for( var track of this.tracks )
+			if( track.selected )
+			{
+				var idx = speeds.indexOf( track.speed );
+				if( idx==0 ) score += 0.5;
+				if( idx==1 ) score += 0.15;
+				if( idx==speeds.length-1 ) score += 0.5;
+				if( idx==speeds.length-2 ) score += 0.15;
+			}
+console.log( score );		
+		return score * points;
 
 	} // Playground.evaluateGame
 	
@@ -113,8 +177,20 @@ class Playground extends ScormPlayground
 	{
 		super.endGame( );
 		
-		// ...
-		
+		for( var track of this.tracks )
+		{
+			if( track.selected ) track.toggle( );
+			
+			new TWEEN.Tween( track )
+				.to( {spinV:180, spinH:random(0,360), spinT:random(0,360)}, Playground.FLIP_SPEED )
+				.easing( TWEEN.Easing.Elastic.Out )
+				.start( );
+
+			new TWEEN.Tween( track.ball )
+				.to( {size:0}, Playground.BALL_SHOW_SPEED )
+				.easing( TWEEN.Easing.Quadratic.InOut )
+				.start( );
+		}		
 	} // Playground.endGame
 	
 
@@ -144,7 +220,7 @@ class Playground extends ScormPlayground
 	update( t, dT )
 	{
 		for( var track of this.tracks )
-			track.moveBall( dT );
+			track.moveBall( this.direction*dT );
 	}
 	
 } // class Playground

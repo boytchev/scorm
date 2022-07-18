@@ -195,33 +195,28 @@ class Track extends Group
 	// selects a track on click
 	toggle( )
 	{
-		if( playground.gameStarted )
+		this.selected = !this.selected;
+		
+		if( this.selected )
 		{
-			this.selected = !this.selected;
-			
-			if( this.selected )
-			{
-				this.track.threejs.material.color.setRGB( 0.2, 0.2, 0.2 );
-				this.subball.color = 'orange';
-				this.subball.threejs.material.emissiveIntensity = 0.6;
-				this.ballLight.color.set( 'orange' );
-				this.ballLight.intensity = 3;
-				this.ballLight.position.y = 4;
-			}
-			else
-			{
-				this.track.color = 'lightgray';
-				this.subball.color = 'white';
-				this.subball.threejs.material.emissiveIntensity = 0;
-				this.ballLight.color.set( 'white' );
-				this.ballLight.intensity = -1;
-				this.ballLight.position.y = 0.1;
-			}
+			this.track.threejs.material.color.setRGB( 0.2, 0.2, 0.2 );
+			this.subball.color = 'orange';
+			this.subball.threejs.material.emissiveIntensity = 0.6;
+			this.ballLight.color.set( 'orange' );
+			this.ballLight.intensity = 3;
+			this.ballLight.position.y = 4;
+		}
+		else
+		{
+			this.track.color = 'lightgray';
+			this.subball.color = 'white';
+			this.subball.threejs.material.emissiveIntensity = 0;
+			this.ballLight.color.set( 'white' );
+			this.ballLight.intensity = -1;
+			this.ballLight.position.y = 0.1;
 		}
 	} // Track.onMark
-	
-	
-	
+
 	
 } // class Track
 
