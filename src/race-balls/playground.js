@@ -144,7 +144,7 @@ console.log('\t-------');
 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
 
 		var speeds = [];
-		for( var track of this.tracks )
+		for( let track of this.tracks )
 		{
 			speeds.push( track.speed );
 			console.log( track.speed.toFixed(2), track.selected );
@@ -156,7 +156,7 @@ console.log('\t-------');
 		// each correct answers gives 50%,
 		// each answer next to the correct one gives 15%
 		// possible results: 100% 75% 50% 30% 15% 0%
-		for( var track of this.tracks )
+		for( let track of this.tracks )
 			if( track.selected )
 			{
 				var idx = speeds.indexOf( track.speed );
