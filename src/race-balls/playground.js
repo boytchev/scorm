@@ -10,6 +10,7 @@ class Playground extends ScormPlayground
 	static FLIP_SPEED = 6000;
 	static BALL_SHOW_SPEED = 500;
 	static N = 6;
+	static CLICK_TIMEOUT = 100;
 	
 	constructor( )
 	{
@@ -32,7 +33,7 @@ class Playground extends ScormPlayground
 			this.allTracks[i].threejs.visible = i<3;
 		}
 		
-		this.lastEventIsMove = false;
+		this.pointerDownTime = null;
 		this.direction = 0;
 		
 		this.switcher = new Switcher;
@@ -48,19 +49,17 @@ class Playground extends ScormPlayground
 	{
 		super.newGame( );
 
+		// direction of balls
 		this.direction = random( [-1, 1] );
 		
-		// difficulty
-		//  0 ..  80 - tracks 3->7, vertical 0
-		// 80 .. 100 - tracks 7->4, vertical 0->90
+		// number of tracks
 		var n;
-		
 		if( this.difficulty < 70 )
 			n = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 0, 70, 3, Playground.N ));
 		else
 			n = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 70, 100, Playground.N-1, 4 ));
-		
-		
+
+		// prepare this.tracks to contain only vactuve tracks
 		this.tracks = [];
 		for( let i=0; i<Playground.N; i++ )
 			if( i < n )
@@ -75,56 +74,42 @@ class Playground extends ScormPlayground
 				this.allTracks[i].size = 0;
 			}
 		
-		// speed difference between wrong angles
+		// pick speeds based on difficulty
 		var speedGap = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 1, 0.15 )/Math.pow(n,1.25),
 			speed = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0.1, 0.5 );
 
-		// generate array of speeds
+		// generate shuffled array of speeds
 		var speeds = [];
 		for( var i=0; i<n; i++ )
 		{
 			speeds.push( speed );
-			speed += speedGap*random(0.9,1.1);
+			speeds.sort( ()=>random(-10,10) );
+			
+			speed += speedGap;
 		}
-console.log(speeds[0],speeds[n-1]);		
-		// shuffle the speeds
-		speeds.sort( ()=>random(-10,10) );
-		speeds.sort( ()=>random(-10,10) );
-		speeds.sort( ()=>random(-10,10) );
-		
 
 		// configure tracks
-		var offset = random( 0, 360 ),
-			offsetSpan = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0, 360 );
-			
-//for(var d=0; d<=100; d+=5)
-//console.log( 90*Math.pow(0.5+0.5*Math.cos(radians(360*(d/100-0.5))),2)  );	
-		for( let track of this.tracks )
+		for( var track of this.tracks )
 		{
 			track.speed = speeds.pop();
-			track.pos = offset + random( 0, offsetSpan );
+			track.pos = random( 0, 360 );
 
-			var ver = 0,
-				hor = random( [-180, -135, -90, -45, 0, 45, 90, 135, 180] ),
-				tor = random( [-180, -135, -90, -45, 0, 45, 90, 135, 180] );
+			var verticalAngle = 0;
 			
 			if( this.difficulty > 90 )
-			{
-				ver = random( [-90, -45, 0, 45, 90] );
-			}
+				verticalAngle = random( [-90, -45, 0, 45, 90] );
 			else
 			if( this.difficulty > 80 )
-			{
-				ver = random( [-40, -20, 0, 20, 40] );
-			}
+				verticalAngle = random( [-40, -20, 0, 20, 40] );
 			else
 			if( this.difficulty > 70 )
-			{
-				ver = random( [-20, -10, 0, 10, 20] );
-			}
+				verticalAngle = random( [-20, -10, 0, 10, 20] );
 				
 			new TWEEN.Tween( track )
-				.to( {spinV:ver, spinH:hor, spinT:tor}, Playground.FLIP_SPEED )
+				.to( {	spinV: verticalAngle,
+						spinH: random( [-180, -135, -90, -45, 0, 45, 90, 135, 180] ),
+						spinT: random( [-180, -135, -90, -45, 0, 45, 90, 135, 180] )
+					}, Playground.FLIP_SPEED )
 				.easing( TWEEN.Easing.Elastic.Out )
 				.start( );
 
@@ -132,11 +117,6 @@ console.log(speeds[0],speeds[n-1]);
 				.to( {size:1}, Playground.BALL_SHOW_SPEED )
 				.easing( TWEEN.Easing.Quadratic.InOut )
 				.start( );
-		}
-
-		for( let track of this.tracks )
-		{
-			speeds.push( track.speed );
 		}
 
 	} // Playground.newGame
@@ -224,11 +204,11 @@ console.log(speeds[0],speeds[n-1]);
 	// load all sounds
 	loadSounds( )
 	{
-		//this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1, 4 );
-		//this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
+		this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1 );
+		this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
 		//this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.2, 1, true );
 		
-		//this.soundEffects.push( this.clickSound, this.clackSound );
+		this.soundEffects.push( this.clickSound, this.clackSound );
 		//this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
 	

@@ -64,7 +64,6 @@
 				
 		function onPointerMove( event )
 		{
-			if( playground ) playground.lastEventIsMove = true;
 			if( findObject( event ) )
 				event.target.style.cursor = 'pointer';
 			else
@@ -73,7 +72,7 @@
 		
 		function onPointerDown( event )
 		{
-			if( playground ) playground.lastEventIsMove = false;
+			if( playground ) playground.pointerDownTime = Date.now();
 		}
 		
 	</script>

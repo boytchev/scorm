@@ -68,8 +68,8 @@ class Track extends Group
 		this.add( this.track, this.ball );
 		
 		this.addEventListener( 'click', this.onClick );
-		this.addEventListener( 'pointerenter', this.onMark );
-		this.addEventListener( 'pointerleave', this.onUnmark );
+		//this.addEventListener( 'pointerenter', this.onMark );
+		//this.addEventListener( 'pointerleave', this.onUnmark );
 
 	} // Track.constructor
 	
@@ -163,7 +163,7 @@ class Track extends Group
 	onClick( )
 	{
 		// avoid fake onClicks -- this is when the pointer is dragged
-		if( playground.lastEventIsMove ) return;
+		if( Date.now()-playground.pointerDownTime < Playground.CLICK_TIMEOUT ) return;
 			
 		// if game is not started, click on any plate will start it
 		if( playground.gameStarted )
@@ -172,23 +172,26 @@ class Track extends Group
 		}
 		else
 			playground.newGame( );
+		
+		playground.clickSound.play();
+		
 	} // Plate.onClick
 	
 	
 	
 	// marks a track when the mouse pointer goes over it
-	onMark( )
-	{
-		if( playground.gameStarted && !this.selected ) this.track.color = 'white';
-	} // Track.onMark
+//	onMark( )
+//	{
+//		if( playground.gameStarted && !this.selected ) this.track.color = 'white';
+//	} // Track.onMark
 	
 	
 	
 	// unmarks a plate when the mouse pointer goes out of it
-	onUnmark( )
-	{
-		if( !this.selected ) this.track.color = 'lightgray';
-	} // Track.onUnmark
+//	onUnmark( )
+//	{
+//		if( !this.selected ) this.track.color = 'lightgray';
+//	} // Track.onUnmark
 
 
 
