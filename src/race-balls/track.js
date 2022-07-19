@@ -21,7 +21,7 @@ class Track extends Group
 		this.selected = false;
 
 		// create track
-		this.track = tube( [0,0,0], spline(this.trajectory,radius,0), Track.RADIUS, [150,20] );
+		this.track = tube( [0,0,0], spline(this.trajectory,radius,0), Track.RADIUS, [100,15] );
 		this.reshapeTrack();
 		this.track.threejs.material = new THREE.MeshStandardMaterial( {
 						color: 'lightgray',

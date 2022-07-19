@@ -36,7 +36,9 @@ class Playground extends ScormPlayground
 		this.direction = 0;
 		
 		this.switcher = new Switcher;
-		
+
+//this.totalScore = 95;
+
 	} // Playground.constructor
 
 	
@@ -48,8 +50,16 @@ class Playground extends ScormPlayground
 
 		this.direction = random( [-1, 1] );
 		
-		// number of tracks
-		var n = THREE.MathUtils.clamp( Math.round( THREE.MathUtils.mapLinear( Math.pow(this.difficulty/100,2), 0, 1, 3, Playground.N )), 3, Playground.N );
+		// difficulty
+		//  0 ..  80 - tracks 3->7, vertical 0
+		// 80 .. 100 - tracks 7->4, vertical 0->90
+		var n;
+		
+		if( this.difficulty < 70 )
+			n = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 0, 70, 3, Playground.N ));
+		else
+			n = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 70, 100, Playground.N-1, 4 ));
+		
 		
 		this.tracks = [];
 		for( let i=0; i<Playground.N; i++ )
@@ -57,15 +67,17 @@ class Playground extends ScormPlayground
 			{
 				this.allTracks[i].threejs.visible = true;
 				this.tracks.push( this.allTracks[i] );
+				this.allTracks[i].size = 1;
 			}
 			else
 			{
 				this.allTracks[i].threejs.visible = false;
+				this.allTracks[i].size = 0;
 			}
 		
 		// speed difference between wrong angles
-		var speedGap = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0.2, 0.02 ),
-			speed = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0.1, 0.3 );
+		var speedGap = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 1, 0.15 )/Math.pow(n,1.25),
+			speed = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0.1, 0.5 );
 
 		// generate array of speeds
 		var speeds = [];
@@ -74,7 +86,7 @@ class Playground extends ScormPlayground
 			speeds.push( speed );
 			speed += speedGap*random(0.9,1.1);
 		}
-		
+console.log(speeds[0],speeds[n-1]);		
 		// shuffle the speeds
 		speeds.sort( ()=>random(-10,10) );
 		speeds.sort( ()=>random(-10,10) );
@@ -83,17 +95,8 @@ class Playground extends ScormPlayground
 
 		// configure tracks
 		var offset = random( 0, 360 ),
-			offsetSpan = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0, 360 ),
-			verticalSpan = 0;
+			offsetSpan = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0, 360 );
 			
-		if( this.difficulty>=80 )
-		{
-			var x = (this.difficulty-80)/20; //0..1
-				x = Math.pow( x, 4 ); //0..1
-				x = THREE.MathUtils.mapLinear( x, 0, 1, 0, 60 );
-			verticalSpan = x;
-		}
-
 //for(var d=0; d<=100; d+=5)
 //console.log( 90*Math.pow(0.5+0.5*Math.cos(radians(360*(d/100-0.5))),2)  );	
 		for( let track of this.tracks )
@@ -101,8 +104,27 @@ class Playground extends ScormPlayground
 			track.speed = speeds.pop();
 			track.pos = offset + random( 0, offsetSpan );
 
+			var ver = 0,
+				hor = random( [-180, -135, -90, -45, 0, 45, 90, 135, 180] ),
+				tor = random( [-180, -135, -90, -45, 0, 45, 90, 135, 180] );
+			
+			if( this.difficulty > 90 )
+			{
+				ver = random( [-90, -45, 0, 45, 90] );
+			}
+			else
+			if( this.difficulty > 80 )
+			{
+				ver = random( [-40, -20, 0, 20, 40] );
+			}
+			else
+			if( this.difficulty > 70 )
+			{
+				ver = random( [-20, -10, 0, 10, 20] );
+			}
+				
 			new TWEEN.Tween( track )
-				.to( {spinV:verticalSpan, spinH:random(0,360), spinT:random(0,720)}, Playground.FLIP_SPEED )
+				.to( {spinV:ver, spinH:hor, spinT:tor}, Playground.FLIP_SPEED )
 				.easing( TWEEN.Easing.Elastic.Out )
 				.start( );
 
@@ -112,13 +134,10 @@ class Playground extends ScormPlayground
 				.start( );
 		}
 
-console.log('new----------------');		
 		for( let track of this.tracks )
 		{
 			speeds.push( track.speed );
-			console.log( track.speed.toFixed(2), track.selected );
 		}
-console.log('\t-------');		
 
 	} // Playground.newGame
 
@@ -147,25 +166,23 @@ console.log('\t-------');
 		for( let track of this.tracks )
 		{
 			speeds.push( track.speed );
-			console.log( track.speed.toFixed(2), track.selected );
 		}
 		speeds.sort();
 
 		var score = 0;
 
-		// each correct answers gives 50%,
-		// each answer next to the correct one gives 15%
-		// possible results: 100% 75% 50% 30% 15% 0%
+		// each correct answers = +50%,
+		// each next to correct = +10..30% (depending on difficulty)
 		for( let track of this.tracks )
 			if( track.selected )
 			{
 				var idx = speeds.indexOf( track.speed );
-				if( idx==0 ) score += 0.5;
-				if( idx==1 ) score += 0.15;
-				if( idx==speeds.length-1 ) score += 0.5;
-				if( idx==speeds.length-2 ) score += 0.15;
+				if( idx==0 || idx==speeds.length-1 )
+					score += 0.5
+				else
+				if( idx==1 || idx==speeds.length-2 )
+					score += THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0.1, 0.3 );
 			}
-console.log( score );		
 		return score * points;
 
 	} // Playground.evaluateGame
