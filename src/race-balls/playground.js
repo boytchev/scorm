@@ -10,7 +10,7 @@ class Playground extends ScormPlayground
 	static FLIP_SPEED = 6000;
 	static BALL_SHOW_SPEED = 500;
 	static N = 6;
-	static CLICK_TIMEOUT = 100;
+	static POINTER_MOVEMENT = 5;
 	
 	constructor( )
 	{
@@ -33,7 +33,7 @@ class Playground extends ScormPlayground
 			this.allTracks[i].threejs.visible = i<3;
 		}
 		
-		this.pointerDownTime = null;
+		this.pointerMovement = 0;
 		this.direction = 0;
 		
 		this.switcher = new Switcher;

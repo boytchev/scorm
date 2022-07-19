@@ -163,7 +163,7 @@ class Track extends Group
 	onClick( )
 	{
 		// avoid fake onClicks -- this is when the pointer is dragged
-		if( Date.now()-playground.pointerDownTime < Playground.CLICK_TIMEOUT ) return;
+		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 			
 		// if game is not started, click on any plate will start it
 		if( playground.gameStarted )
@@ -173,7 +173,7 @@ class Track extends Group
 		else
 			playground.newGame( );
 		
-		playground.clickSound.play();
+		playground.clickSound?.play();
 		
 	} // Plate.onClick
 	

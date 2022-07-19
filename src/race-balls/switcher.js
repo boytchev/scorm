@@ -31,7 +31,7 @@ class Switcher extends Group
 	onClick( )
 	{
 		// avoid fake onClicks -- this is when the pointer is dragged
-		if( Date.now()-playground.pointerDownTime < Playground.CLICK_TIMEOUT ) return;
+		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 			
 		new TWEEN.Tween( this.ball )
 				.to( {size:Switcher.SIZE*0.8}, Switcher.YOYO_SPEED )
