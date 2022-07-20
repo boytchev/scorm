@@ -56,9 +56,10 @@ The XSD files for SCORM 1.2 are not strictly valid and may cause errors in some 
 			<file href="race-balls.html"/>
 			
 			<!-- modules -->
-			<!--file href="plate.js"/-->
 			<file href="styles.css"/>
 			<file href="playground.js"/>
+			<file href="switcher.js"/>
+			<file href="track.js"/>
 
 			<!-- libraries -->
 			<file href="libs/scorm.utils.js"/>
@@ -69,11 +70,14 @@ The XSD files for SCORM 1.2 are not strictly valid and may cause errors in some 
 			<file href="images/logo.png"/>
 			<file href="images/sound-on.png"/>
 			<file href="images/sound-off.png"/>
+			<file href="images/marble.jpg"/>
+			<file href="images/metal_plate.jpg"/>
+			<file href="images/metal_plate_normal.jpg"/>
 			
 			<!-- sounds -->
-			<!--file href="sounds/background.mp3"/-->
+			<file href="sounds/background.mp3"/>
 			<file href="sounds/click.mp3"/>
-			<!--file href="sounds/clack.mp3"/-->
+			<file href="sounds/clack.mp3"/>
 
 			<!-- SCORM related definitions -->
 			<file href="adlcp_rootv1p2.xsd"/>

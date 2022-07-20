@@ -24,4 +24,11 @@ This SCO is used for experiments with SCORM 1.2-complient LMS. It shows the list
 [ [More info](src/ink-tank/index.html) ] [ [Run online](src/ink-tank/ink-tank.html) ] [ [Download](bin/ink-tank.zip) ]
 
 
+## Race balls
+
+<img src="src/race-balls/docs/snapshot.jpg" width="200" style="float:right;"> Several balls are rolling on circular tracks. Pick the two balls &ndash; the one with highest and the one with lowest angular speed.
+
+[ [More info](src/race-balls/index.html) ] [ [Run online](src/race-balls/race-balls.html) ] [ [Download](bin/race-balls.zip) ]
+
+
 <small>{{site.time | date: "%B, %Y"}}</small>
