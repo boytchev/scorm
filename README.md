@@ -12,21 +12,21 @@ This SCO is used for experiments with SCORM 1.2-complient LMS. It shows the list
 
 ## Color hues
 
-<img src="src/color-hues/docs/snapshot.jpg" width="200" style="float:right;"> This is the first (in the world) SCO that uses [Suica](https://boytchev.github.io/suica/) and [Three.js](https://threejs.org/). The challenge is to find which two of six colors have hues closest to the hue of a randomly generated color.
+<a href="src/color-hues/color-hues.html"><img src="src/color-hues/docs/snapshot.jpg" width="200" style="float:right;"></a> This is the first (in the world) SCO that uses [Suica](https://boytchev.github.io/suica/) and [Three.js](https://threejs.org/). The challenge is to find which two of six colors have hues closest to the hue of a randomly generated color.
 
 [ [More info](src/color-hues/index.html) ] [ [Run online](src/color-hues/color-hues.html) ] [ [Download](bin/color-hues.zip) ]
 
 
 ## Ink tank
 
-<img src="src/ink-tank/docs/snapshot.jpg" width="200" style="float:right;"> The challenge is to construct color by mixing cyan, magenta and yellow ink. This is done by filling a tank with colored liquids.
+<a href="src/ink-tank/ink-tank.html"><img src="src/ink-tank/docs/snapshot.jpg" width="200" style="float:right;"></a> The challenge is to construct color by mixing cyan, magenta and yellow ink. This is done by filling a tank with colored liquids.
 
 [ [More info](src/ink-tank/index.html) ] [ [Run online](src/ink-tank/ink-tank.html) ] [ [Download](bin/ink-tank.zip) ]
 
 
 ## Race balls
 
-<img src="src/race-balls/docs/snapshot.jpg" width="200" style="float:right;"> Several balls are rolling on circular tracks. Pick the two balls &ndash; the one with highest and the one with lowest angular speed.
+<a href="src/race-balls/race-balls.html"><img src="src/race-balls/docs/snapshot.jpg" width="200" style="float:right;"></a> Several balls are rolling on circular tracks. Pick the two balls &ndash; the one with highest and the one with lowest angular speed.
 
 [ [More info](src/race-balls/index.html) ] [ [Run online](src/race-balls/race-balls.html) ] [ [Download](bin/race-balls.zip) ]
 
