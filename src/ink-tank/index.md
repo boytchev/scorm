@@ -1,3 +1,4 @@
+&nbsp;
 # Ink tank
 
 There are different ways to construct a color. When using dyes and inks the most common way to represent a color is as a combination of different proportions of *cyan*, *magenta* and *yellow* inks. This is the so called [CMY color model](https://en.wikipedia.org/wiki/CMY_color_model). CMY color model is subtractive model &ndash; each ink absorbs (subtracts) part of the light. When all inks are used together, they absorb the full spectrum and the result is a black color.
