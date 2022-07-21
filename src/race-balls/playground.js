@@ -42,7 +42,7 @@ class Playground extends ScormPlayground
 
 	
 
-	// starts a new game by selecting new color hues
+	// starts a new game by selecting new tracks and new balls' speeds
 	newGame( )
 	{
 		super.newGame( );

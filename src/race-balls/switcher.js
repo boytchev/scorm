@@ -54,7 +54,7 @@ class Switcher extends Group
 			playground.clickSound?.play( );
 			playground.newGame( );
 		}
-	} // Plate.onClick
+	} // Switcher.onClick
 		
-} // class Track
+} // class Switcher
 

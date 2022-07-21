@@ -16,7 +16,7 @@ class Track extends Group
 		super( suica );
 	
 		this.radius = radius;
-		this.speed = random(0.1,0.3)///radius//random(1,2)/radius;
+		this.speed = random(0.1,0.3);
 		this._pos = 0;
 		this.selected = false;
 
@@ -68,8 +68,6 @@ class Track extends Group
 		this.add( this.track, this.ball );
 		
 		this.addEventListener( 'click', this.onClick );
-		//this.addEventListener( 'pointerenter', this.onMark );
-		//this.addEventListener( 'pointerleave', this.onUnmark );
 
 	} // Track.constructor
 	
@@ -141,10 +139,6 @@ class Track extends Group
 				}
 			}
 
-			// var angle = Math.atan2( z, x );
-			// var r = Math.round( 1+Math.sqrt(x*x+z*z)/35);
-			// y += 0.8*Math.sin( 2*r*angle )+0.5*Math.sin( 5*r*angle )+0.3*Math.sin( 11*r*angle );
-			
 			pos.setXYZ( i, x, y, z );
 			nor.setXYZ( i, nx, ny, nz );
 		}
@@ -175,26 +169,10 @@ class Track extends Group
 		
 		playground.clickSound?.play();
 		
-	} // Plate.onClick
+	} // Track.onClick
 	
 	
 	
-	// marks a track when the mouse pointer goes over it
-//	onMark( )
-//	{
-//		if( playground.gameStarted && !this.selected ) this.track.color = 'white';
-//	} // Track.onMark
-	
-	
-	
-	// unmarks a plate when the mouse pointer goes out of it
-//	onUnmark( )
-//	{
-//		if( !this.selected ) this.track.color = 'lightgray';
-//	} // Track.onUnmark
-
-
-
 	// selects a track on click
 	toggle( )
 	{
