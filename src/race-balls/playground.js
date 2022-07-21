@@ -38,8 +38,6 @@ class Playground extends ScormPlayground
 		
 		this.switcher = new Switcher;
 
-//this.totalScore = 95;
-
 	} // Playground.constructor
 
 	
