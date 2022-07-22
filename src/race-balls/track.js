@@ -41,13 +41,10 @@ class Track extends Group
 		this.ballLight.target = target;
 		
 		this.subball = sphere( [0,0,0], Track.BALL_SIZE );
-		this.subball.threejs.material = new THREE.MeshPhysicalMaterial( {
+		this.subball.threejs.material = new THREE.MeshStandardMaterial( {
 						color: 'white',
 						metalness: 0.,
 						roughness: 0,
-						sheen: 1/2,
-						sheenColor: 'blue',
-						sheenRoughness: 0.5,
 						map: ScormUtils.image( 'marble.jpg', 1, 1 ),
 						emissive: 'orange',
 						emissiveIntensity: 0,
