@@ -43,7 +43,7 @@ class Track extends Group
 		this.subball = sphere( [0,0,0], Track.BALL_SIZE );
 		this.subball.threejs.material = new THREE.MeshStandardMaterial( {
 						color: 'white',
-						metalness: 0.,
+						metalness: 0.1,
 						roughness: 0,
 						map: ScormUtils.image( 'marble.jpg', 1, 1 ),
 						emissive: 'orange',

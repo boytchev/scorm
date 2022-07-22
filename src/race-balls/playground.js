@@ -92,6 +92,8 @@ class Playground extends ScormPlayground
 			track.speed = speeds.pop();
 			track.pos = random( 0, 360 );
 
+			track.ballLight.position.y = 0.1;
+
 			var verticalAngle = 0;
 			
 			if( this.difficulty > 90 )
