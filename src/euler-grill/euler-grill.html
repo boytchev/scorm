@@ -17,11 +17,13 @@
 	<script src="libs/tween.umd.js"></script>
 	<script src="libs/suica.js"></script>
 	<script src="libs/scorm.utils.js"></script>
+	<script src="box.js"></script>
 	<script src="playground.js"></script>
 </head>
 
 <body>
 	<suica fullwindow fullscreen background="linen" ontime="update"> <!-- onpointermove="onPointerMove"-->
+		<orbit id="orb" distance="1" altitude="70" maxPolarAngle="1.57" maxDistance="150" minDistance="25">
 		<div class="hud corner top left"></div>
 		<div class="hud corner top right"></div>
 		<div class="hud corner bottom left"></div>
@@ -53,7 +55,9 @@
 
 	
 	<script>
+		var boxA, boxB;
 		var playground = new Playground;
+
 
 		window.addEventListener( 'resize', playground.resize );
 				

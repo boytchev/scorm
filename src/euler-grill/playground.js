@@ -21,6 +21,8 @@ class Playground extends ScormPlayground
 				jp: 'オイラーグリル'},
 		] );
 		
+		this.box = new Box;
+		
 	} // Playground.constructor
 
 	
