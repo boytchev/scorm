@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>SCORM-TEMPLATE</title>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&display=swap" rel="stylesheet">
+	<link rel="shortcut icon" type="image/png" href="images/logo.png"/>
+	
+	<link rel="stylesheet" href="styles.css">
+
+	<script src="libs/tween.umd.js"></script>
+	<script src="libs/suica.js"></script>
+	<script src="libs/scorm.utils.js"></script>
+	<script src="playground.js"></script>
+</head>
+
+<body>
+	<suica fullwindow fullscreen background="linen" ontime="update"> <!-- onpointermove="onPointerMove"-->
+		<div class="hud corner top left"></div>
+		<div class="hud corner top right"></div>
+		<div class="hud corner bottom left"></div>
+		<div class="hud corner bottom right"></div>
+
+		<div class="hud top right" style="border: none;">
+			<div id="timer" class="value">00:00:00</div>
+			<div id="txt-time" class="label right">TIME</div>
+		</div>
+		
+		<div id="points" class="hud value" style="opacity:0; transform-origin: right bottom; font-weight: bold;">+20</div>
+		<div class="hud bottom right" style="border: none;">
+			<div id="txt-score" class="label right">SCORE</div>
+			<div id="score" class="value">0.0</div>
+		</div>
+		
+		<div class="hud bottom left" style="border: none;">
+			<div id="txt-performance" class="label right">PERFORMANCE</div>
+			<canvas id="performance" class="label left perf" width="241" height="81"></canvas>
+		</div>
+		
+		<div class="hud top left" style="border: none;">
+			<div id="txt-caption" class="caption left">SCORM-TEMPLATE</div>
+			<img id="sound-on-off" class="button left" src="images/sound-off.png"/>
+		</div>
+		
+		<div id="txt-user" class="hud bottom footnote">GUEST</div>
+	</suica>
+
+	
+	<script>
+		var playground = new Playground;
+
+		window.addEventListener( 'resize', playground.resize );
+				
+		<!-- function onPointerMove( event ) -->
+		<!-- { -->
+			<!-- if( findObject( event ) ) -->
+				<!-- event.target.style.cursor = 'pointer'; -->
+			<!-- else -->
+				<!-- event.target.style.cursor = 'default'; -->
+		<!-- } -->
+		
+	</script>
+	
+</body>
+</html>
