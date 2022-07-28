@@ -1,8 +1,4 @@
-1252 -> 912(73%)
-
-var DIFFICULTY_LOW = 0;		// ниска трудност
-var DIFFICULTY_MEDIUM = 1;	// средна трудност
-var DIFFICULTY_HIGH = 2;	// висока трудност
+1252 -> 640(51%)
 
 MEIRO.Models.T004.prototype.initialize = function()
 {
@@ -35,10 +31,6 @@ MEIRO.Models.T004.prototype.initialize = function()
 	
 	this.axes = new THREE.Group();
 	this.object = new THREE.Group();
-////	this.objectShadow = new THREE.Group();
-////	this.objectShadowFlat = new THREE.Group();
-////	this.objectShadowFlat.add( this.objectShadow );
-////	this.objectShadowFlat.scale.set( 1, 0.01, 1 );
 
 	this.tubeBalance = Math.PI/2;
 	this.inBalancing = false;
@@ -67,10 +59,6 @@ MEIRO.Models.T004.prototype.initialize = function()
 
 MEIRO.Models.T004.prototype.construct = function()
 {
-	// допълнителна светлина, прави пода по-красив
-//	var light = new THREE.PointLight( 'white', 1 );
-//	light.position.set( 0, 5, 0 );
-
 	var light = new THREE.SpotLight( 'white', 1, 0, Math.PI/2, 1 );
 	light.position.set( 4, 4, 0 );
 	light.target = new THREE.Object3D();
@@ -321,242 +309,9 @@ MEIRO.Models.T004.prototype.constructTube = function()
 
 
 
-MEIRO.Models.T004.prototype.generateGeometry = function(space)
-{
-	var N = this.config.size;
-	var M = N/2-1/2;
-
-	var triangles = this.F*2;
-	var vertices = triangles*3;
-
-	// attribure arrays
-	posArr = new Float32Array(3*vertices);
-	norArr = new Float32Array(3*vertices);
-	texArr = new Float32Array(2*vertices);
-	
-	var index = 0;
-	
-	function set(x,y,z,nx,ny,nz,u,v)
-	{
-		posArr[3*index] = x-M;
-		posArr[3*index+1] = y-M;
-		posArr[3*index+2] = z-M;
-		
-		norArr[3*index] = nx;
-		norArr[3*index+1] = ny;
-		norArr[3*index+2] = nz;
-
-		texArr[2*index] = u;
-		texArr[2*index+1] = v;
-		
-		index++;
-	}	
-	
-	// top plates (from Y+ -> Y-)
-	for (var x=0; x<N; x++)
-	for (var y=0; y<N; y++)
-	for (var z=0; z<N; z++)
-		if (space[x][y][z] && !space[x][y+1][z] )
-		{
-			set(x,y+1,z,		0,1,0,	0,1);
-			set(x+1,y+1,z+1,	0,1,0,	1,0);
-			set(x+1,y+1,z,		0,1,0,	1,1);
-
-			set(x,y+1,z,		0,1,0,	0,1);
-			set(x,y+1,z+1,		0,1,0,	0,0);
-			set(x+1,y+1,z+1,	0,1,0,	1,0);
-		}
-		
-	// bottom plates (from Y- -> Y+)
-	for (var x=0; x<N; x++)
-	for (var y=0; y<N; y++)
-	for (var z=0; z<N; z++)
-		if (space[x][y][z] && !space[x][y-1][z] )
-		{
-			set(x,y,z,		0,-1,0,	0,1);
-			set(x+1,y,z,	0,-1,0,	1,1);
-			set(x+1,y,z+1,	0,-1,0,	1,0);
-
-			set(x,y,z,		0,-1,0,	0,1);
-			set(x+1,y,z+1,	0,-1,0,	1,0);
-			set(x,y,z+1,	0,-1,0,	0,0);
-		}
-	
-	// front plates (from Z+ -> Z-)
-	for (var x=0; x<N; x++)
-	for (var y=0; y<N; y++)
-	for (var z=0; z<N; z++)
-		if (space[x][y][z] && !space[x][y][z+1] )
-		{
-			set(x,y,z+1,		0,0,1,	0,1);
-			set(x+1,y,z+1,		0,0,1,	1,1);
-			set(x+1,y+1,z+1,	0,0,1,	1,0);
-
-			set(x,y,z+1,		0,0,1,	0,1);
-			set(x+1,y+1,z+1,	0,0,1,	1,0);
-			set(x,y+1,z+1,		0,0,1,	0,0);
-		}
-	
-	// back plates (from Z- -> Z+)
-	for (var x=0; x<N; x++)
-	for (var y=0; y<N; y++)
-	for (var z=0; z<N; z++)
-		if (space[x][y][z] && !space[x][y][z-1] )
-		{
-			set(x,y,z,		0,0,-1,	0,1);
-			set(x+1,y+1,z,	0,0,-1,	1,0);
-			set(x+1,y,z,	0,0,-1,	1,1);
-
-			set(x,y,z,		0,0,-1,	0,1);
-			set(x,y+1,z,	0,0,-1,	0,0);
-			set(x+1,y+1,z,	0,0,-1,	1,0);
-		}
-		
-	// right plates (from X+ -> X-)
-	for (var x=0; x<N; x++)
-	for (var y=0; y<N; y++)
-	for (var z=0; z<N; z++)
-		if (space[x][y][z] && !space[x+1][y][z] )
-		{
-			set(x+1,y,z,		1,0,0,	0,1);
-			set(x+1,y+1,z+1,	1,0,0,	1,0);
-			set(x+1,y,z+1,		1,0,0,	1,1);
-
-			set(x+1,y,z,		1,0,0,	0,1);
-			set(x+1,y+1,z,		1,0,0,	0,0);
-			set(x+1,y+1,z+1,	1,0,0,	1,0);
-		}
-		
-	// left plates (from X- -> X+)
-	for (var x=0; x<N; x++)
-	for (var y=0; y<N; y++)
-	for (var z=0; z<N; z++)
-		if (space[x][y][z] && !space[x-1][y][z] )
-		{
-			set(x,y,z,		-1,0,0,	0,1);
-			set(x,y,z+1,		-1,0,0,	1,1);
-			set(x,y+1,z+1,	-1,0,0,	1,0);
-
-			set(x,y,z,		-1,0,0,	0,1);
-			set(x,y+1,z+1,	-1,0,0,	1,0);
-			set(x,y+1,z,		-1,0,0,	0,0);
-		}
-
-	var geometry = new THREE.BufferGeometry();
-
-	geometry.addAttribute( 'position', new THREE.BufferAttribute(posArr,3) );
-	geometry.addAttribute( 'normal', new THREE.BufferAttribute(norArr,3) );
-	geometry.addAttribute( 'uv', new THREE.BufferAttribute(texArr,2) );
-		
-	return geometry;
-}
-
-
-MEIRO.Models.T004.prototype.constructObject = function()
-{
-	var N = this.config.size;
-
-	var space = this.generateSpace();
-	this.generateTunnels( space );
-	this.calculateEuler( space );
-
-	this.planes = this.generateGeometry( space );
-	this.edges = new THREE.EdgesGeometry( this.planes );
-	this.W = this.edges.getAttribute('position').count/6;
-	if (IN_SCORE_STATISTICS)
-	{
-		this.edges.dispose();
-		this.planes.dispose();
-		//console.log('dispose');
-		return;
-	}
-}
-	
-
-MEIRO.Models.T004.prototype.constructObjectImage = function()
-{
-	var N = this.config.size;
-
-	var group = new THREE.Group();
-////	var groupShadow = new THREE.Group();
-	
-	var materialBack = new THREE.MeshPhongMaterial( {
-		color: 'pink',
-		transparent: true,
-		side: THREE.BackSide,
-		emissive: 'goldenrod',
-		emissiveIntensity: 0.7,
-		opacity: 0.8,
-		polygonOffset: true,
-		polygonOffsetUnits: 1,
-		polygonOffsetFactor: 1,
-	});
-	var	materialFront = materialBack.clone();
-	materialFront.side = THREE.FrontSide;
-	
-
-	
-	var platesBack = new THREE.Mesh( this.planes, materialBack );
-	var platesFront = new THREE.Mesh( this.planes, materialFront );
-	
-	platesBack.position.y = -1/2;
-	platesFront.position.y = -1/2;
-	
-	group.add(platesBack);
-	group.add(platesFront);
-
-
-	this.object.position.y = this.OBJECT_HEIGHT;
-////	this.objectShadow.position.y = this.OBJECT_HEIGHT;
-////	this.objectShadowFlat.position.y = this.BASE_HEIGHT+0.02;
-
-	var scale = this.OBJECT_SIZE/N;
-	this.object.scale.set( scale, scale, scale );
-////	this.objectShadow.scale.set( scale*0.8, scale*0.8, scale*0.8 );
-
-	// edges
-	var wireframe = new THREE.LineSegments( this.edges, new THREE.LineBasicMaterial( { color: 'brown' } ) );
-	wireframe.position.y = -1/2;
-	group.add(wireframe);
-	
-////	var wireframeShadow = new THREE.LineSegments( this.edges, new THREE.LineBasicMaterial( { color: 'black', transparent: true, opacity: 0.1 } ) );
-////	wireframeShadow.position.y = -1/2;
-////	groupShadow.add(wireframeShadow);
-
-	// wrapper cube
-	var geometry = new THREE.EdgesGeometry(new THREE.BoxBufferGeometry(N,N,N));
-	var material = new THREE.LineBasicMaterial({
-		color: 'brown',
-		transparent: true,
-		opacity: 0.3,
-	});
-	var wrapper = new THREE.LineSegments( geometry, material );
-	wrapper.position.x = 1/2;
-	wrapper.position.z = 1/2;
-	group.add(wrapper);
-	
-	var angle = Math.acos(2/Math.sqrt(2)/Math.sqrt(3));
-	//var axis = new THREE.Mesh(new THREE.CylinderGeometry(0.1,0.1,12*N));
-	//axis.rotation.set(Math.PI/2-angle,Math.PI/4,0,'YXZ');
-	//platesFront.add(axis);
-	
-	group.position.set(-0.6+0.03,0.4,0);
-	group.rotation.set(0,Math.PI/4,-angle,'ZYX');
-////	groupShadow.position.set(-0.6+0.03,0.4,0);
-////	groupShadow.rotation.set(0,Math.PI/4,-angle,'ZYX');
-	this.object.add( group );
-////	this.objectShadow.add( groupShadow );
-	this.image.add(this.object);
-////	this.image.add(this.objectShadowFlat);
-}	
-
-
-
 MEIRO.Models.T004.prototype.constructAxes = function()
 {
 	var textureMap = MEIRO.loadTexture( "textures/002_sucktion.jpg", 1, 1 );
-	//var normalMap = MEIRO.loadTexture( "textures/Metal_plate_256x256_normal.jpg", 6, 1 );
-	//var lightMap = MEIRO.loadTexture( "textures/003_floor_lightmap.jpg", 1, 1 );
 
 	// axes
 	var material = new THREE.MeshStandardMaterial( {
@@ -732,31 +487,12 @@ MEIRO.Models.T004.prototype.onObject = function()
 
 
 
-MEIRO.Models.T004.prototype.onDragEnd = function()
-{
-	this.inBalancing = false;
-	this.tubeBalance = Math.PI/2;
-}
-
-
 
 // аниматор на модела
 MEIRO.Models.T004.prototype.onAnimate = function(time)
 {	
 	if (this.playing)
 	{
-		if (time-this.lastTime>=1000)
-		{
-			var dTime =  Math.floor((time-this.startTime)/1000);
-			var s = dTime%60;
-			var m = Math.floor(dTime/60)%60;
-			var h = Math.floor(dTime/60/60);
-			var string = (m<10?0:'')+m+':'+(s<10?0:'')+s;
-			if (h) string = h+':'+string;
-			this.buttonTimer.setText(string);
-			this.lastTime = time;
-		}
-
 		
 ////		this.objectShadow.rotation.x = rpm(time,2);
 		this.object.rotation.x = rpm(time,2);
@@ -778,14 +514,6 @@ MEIRO.Models.T004.prototype.onAnimate = function(time)
 
 	//TWEEN.update();
 	reanimate();
-}
-
-
-
-// информатор на модела
-MEIRO.Models.T004.prototype.onInfo = function(element)
-{
-	element.innerHTML = this.info;
 }
 
 

@@ -11,15 +11,11 @@ class Box extends Group
 	{
 		super( suica );
 	
-		this.N = 7;
+		this.T = {x:1,y:0,z:0};
+		this.N = 5;
 		this.space = null;
 		
-		this.generateSpace( );
-		this.generateTunnels( {x:1,y:1,z:1} );
-		this.calculateEuler( );
-
 		this.backBox = cube([0,0,0],1);
-		this.backBox.threejs.geometry = this.generateGeometry( );
 		this.backBox.threejs.material = new THREE.MeshPhysicalMaterial( {
 						// clearcoat: 1,
 						// clearcoatRoughness: 0,
@@ -39,23 +35,66 @@ class Box extends Group
 
 		
 		this.frontBox = this.backBox.clone;
-		this.frontBox.threejs.geometry = this.backBox.threejs.geometry;
 		this.frontBox.threejs.material = this.backBox.threejs.material.clone();
 		this.frontBox.threejs.material.side = THREE.FrontSide;
 		
 
 		this.edges = line();
-		this.edges.threejs.geometry = new THREE.EdgesGeometry( this.backBox.threejs.geometry );
 		this.edges.threejs.material = new THREE.LineBasicMaterial( { color: 'Sienna', side: THREE.DoubleSide } );
 
-		this.add( this.edges, this.backBox, this.frontBox );
+		this.axis = line( [10,10,10], [-10,-10,-10] );
+		var angle = degrees( Math.acos(2/Math.sqrt(2)/Math.sqrt(3)) );
+		this.spinH = 90-angle;
+		this.spinV = 45;
+
+		var dotted = drawing( 4, 1 );
+			moveTo( 0, 0 );
+			lineTo( 2, 0 );
+		stroke( 'white', 2 );
+		
+		this.wrapper = cube( [1/2,1/2,1/2], this.N, 'gray' );
+		its.wireframe = true;
+		its.image = dotted;
+		its.images = 30;
+		its.threejs.material.transparent = true;
+		its.threejs.material.opacity = 0.5;
+		
+		this.add( this.axis, this.edges, this.backBox, this.frontBox, this.wrapper );
+
+		this.regenerateBox( );
 		
 		this.addEventListener( 'click', this.onClick );
 	} // Box.constructor
 	
 	
 
+	regenerateBox( )
+	{
+		// generate a new shape
+		this.generateSpace( );
+		this.generateTunnels( );
+		this.calculateEuler( );
 
+		// update the geometries
+		var geometry = this.generateGeometry( );
+		
+		this.backBox.threejs.geometry.dispose( );
+		this.backBox.threejs.geometry = geometry;
+
+		this.frontBox.threejs.geometry.dispose( );
+		this.frontBox.threejs.geometry = geometry;
+		
+		this.edges.threejs.geometry.dispose( );
+		this.edges.threejs.geometry = new THREE.EdgesGeometry( geometry );
+
+		// resize the box
+		this.size = Box.SIZE/this.N;
+		
+
+	} // Box.regenerateBox
+	
+	
+	
 	// handles clicks on the box
 	onClick( )
 	{
@@ -99,9 +138,10 @@ class Box extends Group
 	
 	
 	
-	generateTunnels( T )
+	generateTunnels( )
 	{
-		var N = this.N;
+		var N = this.N,
+			T = this.T;
 		
 		
 		function punch()

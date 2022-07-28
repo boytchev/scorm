@@ -22,6 +22,9 @@ class Playground extends ScormPlayground
 		] );
 		
 		this.box = new Box;
+		this.axis = line( [30,0,0], [-30,0,0], 'crimson' );
+		
+		this.spinner = group( this.box, this.axis );
 		
 	} // Playground.constructor
 
@@ -90,5 +93,11 @@ class Playground extends ScormPlayground
 		//this.soundEffects.push( this.clickSound, this.clackSound );
 		//this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
+	
+	
+	update( t, dT )
+	{
+		this.spinner.spinV += 20*dT;
+	}
 	
 } // class Playground
