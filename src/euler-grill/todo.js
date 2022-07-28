@@ -1,20 +1,10 @@
-1252 -> 640(51%)
+1252 -> 517(41%)
 
 MEIRO.Models.T004.prototype.initialize = function()
 {
 	if (SCORE_STATISTICS) this.configureStats();
 	
 	random.randomize();
-
-	this.OBJECT_SIZE = 5;
-	this.OBJECT_HEIGHT = 6;
-	
-	this.AXIS_LENGTH = 3;
-	this.AXIS_RADIUS = 0.2;
-	this.AXIS_DISTANCE = 5.05;
-
-	this.DISC_RADIUS = 1;
-	this.DISC_WIDTH = 1/2;
 
 	this.PILLAR_WIDTH = 2*this.DISC_RADIUS+1;
 	
@@ -29,64 +19,19 @@ MEIRO.Models.T004.prototype.initialize = function()
 	this.RULER_WIDTH = 0.5;
 	this.RULER_DISTANCE = 0;
 	
-	this.axes = new THREE.Group();
-	this.object = new THREE.Group();
-
-	this.tubeBalance = Math.PI/2;
-	this.inBalancing = false;
-	this.userAnswer = 0;
 	
 	this.F = 0;
 	this.E = 0;
 	this.V = 0;
 
-	//this.constructObject(); -- in configure()
-	this.constructAxes();
 	this.constructPillars();
 	this.constructBase();
 	this.constructTube();
 	this.constructRuler();
-	
-	this.playing = false;
-	this.startTime = 0;
-	this.lastTime = 0;
-	this.clicks = 0;
-	
 	this.waterGulp = new Audio('sounds/water-gulp.mp3');
 }
 
 	
-
-MEIRO.Models.T004.prototype.construct = function()
-{
-	var light = new THREE.SpotLight( 'white', 1, 0, Math.PI/2, 1 );
-	light.position.set( 4, 4, 0 );
-	light.target = new THREE.Object3D();
-	light.target.position.set( 5, 4+1, 0 );
-	this.image.add( light );
-	this.image.add( light.target );
-	
-	var light = new THREE.SpotLight( 'white', 1, 0, Math.PI/2, 1 );
-	light.position.set( -4, 4, 0 );
-	light.target = new THREE.Object3D();
-	light.target.position.set( -5, 4+1, 0 );
-	this.image.add( light );
-	this.image.add( light.target );
-	
-
-	this.raycaster = new THREE.Raycaster();
-	this.mouse = new THREE.Vector2();
-
-	// бутон за стартиране/приключване
-	var that = this;
-	this.buttonTimer = new MEIRO.CornerButton('topLeft', function(){that.onExitModel();}, '0:00', 'images/time.png');
-	this.buttonTimer.hide();
-
-	this.defaultInfo = '<h1>Характерният брой</h1>';
-	this.defaultInfo += '<p>Определете Ойлеровата характеристика на централното тяло. Тази характеристика е равна на броя стени минус броя ръбове плюс броя върхове. Огледайте добре дали има тунели или вдлъбнатини и колко са.</p><p>Отговорът е цяло число (положително, нула или отрицателно) и се избира като се кликва на тръбичката с течност. Ако се кликне в някоя от половините на тръбичката, тази половина се издига нагоре и мехурчето се плъзва към нея.</p>';
-}
-
-
 
 MEIRO.Models.T004.prototype.constructRuler = function()
 {
@@ -309,89 +254,21 @@ MEIRO.Models.T004.prototype.constructTube = function()
 
 
 
-MEIRO.Models.T004.prototype.constructAxes = function()
-{
-	var textureMap = MEIRO.loadTexture( "textures/002_sucktion.jpg", 1, 1 );
-
-	// axes
-	var material = new THREE.MeshStandardMaterial( {
-			color: 'black',
-			metalness: 0.2,
-			side: THREE.DoubleSide,
-			emissive: 'moccasin',
-			emissiveIntensity: 0.1,
-			polygonOffset: true,
-			polygonOffsetUnits: -1,
-			polygonOffsetFactor: -1,
-	});
-
-	var geometry = new THREE.CylinderBufferGeometry( this.AXIS_RADIUS, this.AXIS_RADIUS, this.AXIS_LENGTH, 3, 12, true );
-	var pos = geometry.getAttribute( 'position' );
-	for (var i=0; i<pos.count; i++)
-	{
-		var y = pos.getY(i);
-		var scale = Math.pow(1/(y/this.AXIS_LENGTH+1),2.5);
-		pos.setXYZ( i, scale*pos.getX(i), y, scale*pos.getZ(i)); 
-	}
-	
-	var axis = new THREE.Mesh( geometry, material );
-	axis.rotation.x = Math.PI/6;
-	axis.rotation.z = Math.PI/2;
-	axis.position.x = -this.AXIS_DISTANCE;
-	this.axes.add( axis );
-	
-	var axis = new THREE.Mesh( geometry, material );
-	axis.rotation.x = -Math.PI/6;
-	axis.rotation.z = -Math.PI/2;
-	axis.position.x = this.AXIS_DISTANCE;
-	this.axes.add( axis );
-
-	
-	// rotation discs
-	var material = new THREE.MeshStandardMaterial( {
-			color: 'white',
-			map: textureMap,
-			metalness: 0.5,
-			side: THREE.DoubleSide,
-			emissive: 'moccasin',
-			emissiveIntensity: 0.1,
-	});
-	var geometry = new THREE.CylinderBufferGeometry( this.DISC_RADIUS, this.DISC_RADIUS, this.DISC_WIDTH, 40 );
-	var disc = new THREE.Mesh( geometry, material );
-	disc.rotation.z = -Math.PI/2;
-	disc.position.x = this.AXIS_DISTANCE+this.AXIS_LENGTH/2-this.DISC_WIDTH/1.5+0.04;
-	this.axes.add( disc );	
-	
-	var disc = disc.clone();
-	disc.position.x *= -1;
-	this.axes.add( disc );	
-	
-	this.axes.position.y = this.OBJECT_HEIGHT;
-
-	this.image.add( this.axes );
-}	
-
-
 MEIRO.Models.T004.prototype.constructPillars = function()
 {
 	// pillars
 	var textureMap = MEIRO.loadTexture( "textures/Metal_plate_256x256.jpg", this.PILLAR_WIDTH, this.OBJECT_HEIGHT );
-	//var normalMap = MEIRO.loadTexture( "textures/Metal_plate_64x256_normal.jpg", this.PILLAR_WIDTH, this.OBJECT_HEIGHT );
 	var lightMap = MEIRO.loadTexture( "textures/004_pillar_lightmap.jpg", 1, 1 );
 	
 	var geometry = new THREE.BoxBufferGeometry(this.DISC_WIDTH-0.1,this.OBJECT_HEIGHT-this.BASE_HEIGHT,this.PILLAR_WIDTH,1, 16, 1);
 	MEIRO.allowLightmap(geometry);
 	var material = new THREE.MeshStandardMaterial({
 							color: 'white',
-							//emissive: 'white',
-							//emissiveIntensity: 0.1,
 							metalness: 0.3,
 							roughness: 0.5,
 							map: textureMap,
 							lightMap: lightMap,
 							lightMapIntensity: -1,
-							//normalMap: normalMap,
-							//normalScale: new THREE.Vector2(1/3,1/3),
 						})
 	var normal = geometry.getAttribute('normal');
 	var position = geometry.getAttribute('position');

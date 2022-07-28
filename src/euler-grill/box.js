@@ -11,7 +11,7 @@ class Box extends Group
 	{
 		super( suica );
 	
-		this.T = {x:1,y:0,z:0};
+		this.T = {x:0,y:0,z:0};
 		this.N = 5;
 		this.space = null;
 		
@@ -28,9 +28,9 @@ class Box extends Group
 						emissive: 'orange',
 						emissiveIntensity: 0.7,
 						opacity: 0.7,
-						polygonOffset: true,
-						polygonOffsetUnits: 1,
-						polygonOffsetFactor: 1,
+						// polygonOffset: true,
+						// polygonOffsetUnits: -2,
+						// polygonOffsetFactor: -2,
 					} );
 
 		
@@ -40,9 +40,9 @@ class Box extends Group
 		
 
 		this.edges = line();
-		this.edges.threejs.material = new THREE.LineBasicMaterial( { color: 'Sienna', side: THREE.DoubleSide } );
+		this.edges.threejs.material = new THREE.LineBasicMaterial( { color: 'Sienna' } );
 
-		this.axis = line( [10,10,10], [-10,-10,-10] );
+//		this.axis = line( [10,10,10], [-10,-10,-10] );
 		var angle = degrees( Math.acos(2/Math.sqrt(2)/Math.sqrt(3)) );
 		this.spinH = 90-angle;
 		this.spinV = 45;
@@ -52,18 +52,17 @@ class Box extends Group
 			lineTo( 2, 0 );
 		stroke( 'white', 2 );
 		
-		this.wrapper = cube( [1/2,1/2,1/2], this.N, 'gray' );
+		var wrapper = cube( [0,0,0], this.N, 'gray' );
 		its.wireframe = true;
 		its.image = dotted;
 		its.images = 30;
 		its.threejs.material.transparent = true;
 		its.threejs.material.opacity = 0.5;
 		
-		this.add( this.axis, this.edges, this.backBox, this.frontBox, this.wrapper );
+		this.add( /*this.axis,*/ this.edges, this.backBox, this.frontBox, wrapper );
 
 		this.regenerateBox( );
-		
-		this.addEventListener( 'click', this.onClick );
+
 	} // Box.constructor
 	
 	
@@ -92,26 +91,6 @@ class Box extends Group
 		
 
 	} // Box.regenerateBox
-	
-	
-	
-	// handles clicks on the box
-	onClick( )
-	{
-		// avoid fake onClicks -- this is when the pointer is dragged
-		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
-			
-		// if game is not started, click on any plate will start it
-		if( playground.gameStarted )
-		{
-//			this.toggle( );
-		}
-		else
-			playground.newGame( );
-		
-		playground.clickSound?.play();
-		
-	} // Box.onClick
 
 	
 	
@@ -269,7 +248,7 @@ class Box extends Group
 	generateGeometry = function(space)
 	{
 		var N = this.N;
-		var M = N/2-1/2;
+		var M = N/2;
 
 		var triangles = this.F*2;
 		var vertices = triangles*3;
@@ -280,9 +259,16 @@ class Box extends Group
 		var texArr = new Float32Array(2*vertices);
 		
 		var index = 0;
-		
+// var minX=1000,minY=1000,minZ=1000;
+// var maxX=-1000,maxY=-1000,maxZ=-1000;
 		function set(x,y,z,nx,ny,nz,u,v)
 		{
+// minX=Math.min(minX,x-M);
+// maxX=Math.max(maxX,x-M);
+// minY=Math.min(minY,y-M);
+// maxY=Math.max(maxY,y-M);
+// minZ=Math.min(minZ,z-M);
+// maxZ=Math.max(maxZ,z-M);
 			posArr[3*index] = x-M;
 			posArr[3*index+1] = y-M;
 			posArr[3*index+2] = z-M;
@@ -393,6 +379,9 @@ class Box extends Group
 		geometry.setAttribute( 'normal', new THREE.BufferAttribute(norArr,3) );
 		geometry.setAttribute( 'uv', new THREE.BufferAttribute(texArr,2) );
 			
+// console.log('min',minX,minY,minZ);
+// console.log('max',maxX,maxY,maxZ);
+
 		return geometry;
 	} // Box.generateGeometry
 

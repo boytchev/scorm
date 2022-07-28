@@ -21,10 +21,7 @@ class Playground extends ScormPlayground
 				jp: 'オイラーグリル'},
 		] );
 		
-		this.box = new Box;
-		this.axis = line( [30,0,0], [-30,0,0], 'crimson' );
-		
-		this.spinner = group( this.box, this.axis );
+		this.spinner = new Spinner;
 		
 	} // Playground.constructor
 
