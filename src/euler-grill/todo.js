@@ -1,13 +1,7 @@
-1252 -> 517(41%)
+1252 -> 301(24%)
 
 MEIRO.Models.T004.prototype.initialize = function()
 {
-	if (SCORE_STATISTICS) this.configureStats();
-	
-	random.randomize();
-
-	this.PILLAR_WIDTH = 2*this.DISC_RADIUS+1;
-	
 	this.BASE_HEIGHT = 1;
 	this.BASE_LENGTH = 13;
 	this.BASE_WIDTH = 7;
@@ -18,16 +12,7 @@ MEIRO.Models.T004.prototype.initialize = function()
 	this.RULER_LENGTH = this.BASE_LENGTH-0.3;
 	this.RULER_WIDTH = 0.5;
 	this.RULER_DISTANCE = 0;
-	
-	
-	this.F = 0;
-	this.E = 0;
-	this.V = 0;
 
-	this.constructPillars();
-	this.constructBase();
-	this.constructTube();
-	this.constructRuler();
 	this.waterGulp = new Audio('sounds/water-gulp.mp3');
 }
 
@@ -185,10 +170,7 @@ MEIRO.Models.T004.prototype.constructTube = function()
 				opacity: 0.5,
 				emissive: 'white',
 				emissiveIntensity: 0.2,
-				//polygonOffset: !true,
-				//polygonOffsetFactor: -10,
-				//polygonOffsetUnits: -10,
-				
+	
 		})
 	);
 	bubble.scale.set(1,1.5,1);
@@ -202,11 +184,7 @@ MEIRO.Models.T004.prototype.constructTube = function()
 	bubble2.position.y = 0;
 	bubble.add(bubble2);
 	bubble2.scale.set(0.8,0.7,0.8);
-	
-//	var light = new THREE.SpotLight('red',1);
-//	light.position.y = 1;
-//	light.target = bubble;
-//	bubble.add( light );
+
 	
 	// caps
 	var geometry = new THREE.SphereBufferGeometry( this.TUBE_RADIUS, 24, 12, 0, 2*Math.PI, 0, Math.PI/2 );
@@ -250,116 +228,6 @@ MEIRO.Models.T004.prototype.constructTube = function()
 	rod.position.z = -0.7;
 	tube.add( rod );
 	
-}
-
-
-
-MEIRO.Models.T004.prototype.constructPillars = function()
-{
-	// pillars
-	var textureMap = MEIRO.loadTexture( "textures/Metal_plate_256x256.jpg", this.PILLAR_WIDTH, this.OBJECT_HEIGHT );
-	var lightMap = MEIRO.loadTexture( "textures/004_pillar_lightmap.jpg", 1, 1 );
-	
-	var geometry = new THREE.BoxBufferGeometry(this.DISC_WIDTH-0.1,this.OBJECT_HEIGHT-this.BASE_HEIGHT,this.PILLAR_WIDTH,1, 16, 1);
-	MEIRO.allowLightmap(geometry);
-	var material = new THREE.MeshStandardMaterial({
-							color: 'white',
-							metalness: 0.3,
-							roughness: 0.5,
-							map: textureMap,
-							lightMap: lightMap,
-							lightMapIntensity: -1,
-						})
-	var normal = geometry.getAttribute('normal');
-	var position = geometry.getAttribute('position');
-	for (var i=0; i<normal.count; i++)
-	{
-		if (normal.getX(i)==0)
-			normal.setXYZ(i,0,0,0);
-		if (position.getY(i)<0 && position.getX(i)<0)
-			position.setX(i,(1+Math.pow(-position.getY(i),2.26))*position.getX(i));
-	}
-	
-	var pillar = new THREE.Mesh(geometry, material);
-	pillar.position.set(this.AXIS_DISTANCE+this.AXIS_LENGTH/2-this.DISC_WIDTH/1.5+0.04,this.OBJECT_HEIGHT/2+this.BASE_HEIGHT/2,0);
-	this.image.add(pillar);
-	
-	var pillar = pillar.clone();
-	pillar.rotation.y = Math.PI;
-	pillar.position.x *= -1;
-	this.image.add(pillar);
-	
-	
-	// pillar arks
-	var textureMap = MEIRO.loadTexture( "textures/Metal_plate_256x256.jpg", this.PILLAR_WIDTH, this.PILLAR_WIDTH );
-	textureMap.offset = new THREE.Vector2(0, 0.5);
-//	var normalMap = MEIRO.loadTexture( "textures/Metal_plate_64x256_normal.jpg", this.PILLAR_WIDTH, this.PILLAR_WIDTH );
-	var lightMap = MEIRO.loadTexture( "textures/004_ark_lightmap.jpg", 1, 1 );
-	
-	var geometry = new THREE.CylinderBufferGeometry(this.PILLAR_WIDTH/2,this.PILLAR_WIDTH/2,this.DISC_WIDTH-0.1, 30, 1, false, 0, Math.PI);
-	var material = new THREE.MeshStandardMaterial({
-							metalness: 0.3,
-							//roughness: 0.5,
-							map: textureMap,
-//							normalMap: normalMap,
-							lightMap: lightMap,
-							lightMapIntensity: -1,
-						})
-	MEIRO.allowLightmap(geometry);
-	
-	var normal = geometry.getAttribute('normal');
-	for (var i=0; i<normal.count; i++)
-		if (normal.getZ(i)!=0)
-			normal.setXYZ(i,0,0,0);
-		
-	var ark = new THREE.Mesh(geometry, material);
-	ark.rotation.z = Math.PI/2;
-	ark.position.set(this.AXIS_DISTANCE+this.AXIS_LENGTH/2-this.DISC_WIDTH/1.5+0.04,this.OBJECT_HEIGHT,0);
-	this.image.add(ark);
-	
-	var ark = ark.clone();
-	ark.position.x *= -1;
-	this.image.add(ark);
-}
-
-
-
-MEIRO.Models.T004.prototype.onObject = function()
-{
-	if (!this.playing) return undefined;
-	
-	// координати на мишка
-	this.mouse.x = (controls.human.mousePos.x/window.innerWidth)*2 - 1;
-	this.mouse.y = -(controls.human.mousePos.y/window.innerHeight)*2 + 1;
-
-	this.raycaster.setFromCamera( this.mouse, camera );
-	
-	var intersects = this.raycaster.intersectObject( this.tube, true );
-	if (intersects.length)
-	{	
-		this.clicks++;
-		var pnt = this.tube.worldToLocal(intersects[0].point);
-		if (pnt.y<0)
-		{
-//			console.log('up');
-			this.tubeBalance = Math.PI/2+0.1;
-			this.tubeDebalance = 0;
-		}
-		else
-		{
-//			console.log('down');
-			this.tubeBalance = Math.PI/2-0.1;
-			this.tubeDebalance = 0;
-		}
-		this.inBalancing = true;
-		this.waterGulp.pause();
-		this.waterGulp.volume = 1;
-		this.waterGulp.currentTime = 0;
-		this.waterGulp.play();
-		return this.tube;
-	}
-
-	return undefined;
 }
 
 
@@ -419,98 +287,4 @@ MEIRO.Models.T004.prototype.evaluateResult = function()
 	this.info += '<p>Конструкцията има ойлерова характеристика F-E+V='+euler+'. Вашият отговор е '+this.userAnswer+'.</p>';
 
 //	console.log('evaluation=',this.config.score*match);
-}
-
-
-
-// конфигурира сцената според желаната трудност
-MEIRO.Models.T004.prototype.configure = function(difficulty)
-{	
-	this.config = {difficulty: difficulty};
-		
-	var max_score = 0;
-	var s = x = y = z = sum = 0;
-	var limit = {from:0, to:0};
-	var map = {from:0, to:0};
-	
-	var attempt = 30;
-	while (--attempt > 0)
-	{
-		switch (difficulty)
-		{
-			// ниска трудност (10-20)
-			case DIFFICULTY_LOW:
-				s = random(3,5);
-				sum = random(1,3);
-				limit = {from:0.10, to:0.30};
-				map   = {from:0.10, to:0.20};
-				break;
-				
-			// средна трудност (30-40)
-			case DIFFICULTY_MEDIUM:
-				s = random(5,7);
-				sum = random(2,5);
-				limit = {from:0.20, to:0.40};
-				map   = {from:0.30, to:0.40};
-				break;
-				
-			// висока трудност (70-100)
-			case DIFFICULTY_HIGH:
-				s = random(8,11);
-				sum = random(5,6);
-				limit = {from:0.50, to:1.00};
-				map   = {from:0.70, to:1.00};
-				break;
-				
-			default: console.error('Unknown difficulty level');
-		}
-				
-		x = random(0,sum-1);
-		y = random(0,sum-x);
-		z = sum-x-y;
-
-		this.config.size = s;
-		this.config.tunnels = {x:x,y:y,z:z};
-		this.constructObject();
-
-		var complexity = this.W;
-		var euleristic1 = (this.F-this.E+this.V)!=2?1.25:1;		// *1,25 if euler not 2
-		var euleristic2 = (100+this.F-this.E+this.V)%2?1.25:1;	// *1.25 if euler odd
-		max_score = (complexity*euleristic1*euleristic2)/300;
-		//break;
-		
-		//console.log('diff='+difficulty,' max_score=',max_score,'limit=[',limit.from,'..',limit.to,']');
-		//if (max_score<limit.from) console.log('spoiled');
-		if (max_score<limit.from)
-		{
-			if (!IN_SCORE_STATISTICS)
-			{
-				this.planes.dispose();
-				this.edges.dispose();
-			}
-			continue;
-		}
-		if (max_score>limit.to) continue;
-		
-		break;
-	}
-	this.constructObjectImage();
-	//if (30-attempt!=1) console.log('attempts',30-attempt);
-	max_score = THREE.Math.mapLinear(max_score,limit.from,limit.to,map.from,map.to);
-	max_score = THREE.Math.clamp(max_score,map.from,map.to);
-
-	//	console.log('max_score=',max_score,' tunnels:',x,y,z);
-
-	// recalibrate, because scores are crowded near the
-	// bottom limit (=map.from)
-	max_score = (max_score-map.from)/(map.to-map.from);
-	max_score = Math.pow(max_score,1/6);
-	max_score = max_score*(map.to-map.from)+map.from;
-//	console.log('new_score=',max_score);
-	
-	this.config.max_score = max_score;
-	if (!IN_SCORE_STATISTICS)
-	{
-		this.sendStartup();
-	}
 }

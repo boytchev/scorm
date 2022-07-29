@@ -11,8 +11,12 @@ class Box extends Group
 	{
 		super( suica );
 	
-		this.T = {x:0,y:0,z:0};
-		this.N = 5;
+		this.F = 0; // number of faces
+		this.E = 0; // number of edges
+		this.V = 0; // number or vertices
+
+		this.T = {x:2,y:2,z:2}; // number of tummels
+		this.N = 10; //numbed of grid units
 		this.space = null;
 		
 		this.backBox = cube([0,0,0],1);

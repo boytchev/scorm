@@ -22,7 +22,7 @@ class Playground extends ScormPlayground
 		] );
 		
 		this.spinner = new Spinner;
-		
+		this.base = new Base;
 	} // Playground.constructor
 
 	

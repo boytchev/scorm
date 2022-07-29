@@ -6,7 +6,7 @@
 class Spinner extends Group
 {
 	static SIZE = [3,7,3];
-	static ROTOR_SIZE = [10, 2, 10];
+	static ROTOR_SIZE = [10, 2.1, 10];
 	static ROTOR_POS = 22;
 	
 	constructor( )
@@ -30,6 +30,8 @@ class Spinner extends Group
 		this.add( leftRotor, rightRotor, leftHandle, rightHandle, this.box/*, axisLine*/ );
 		
 		this.addEventListener( 'click', this.onClick );
+		
+		this.y = Base.POS_Y;
 
 	} // Box.constructor
 
