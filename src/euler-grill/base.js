@@ -143,8 +143,8 @@ class Base extends Group
 	constructScale( )
 	{
 		// front scale
-		var alphaMap = ScormUtils.image( 'scale_alpha.jpg' ),
-			normalMap = ScormUtils.image( 'scale_normal.jpg' );
+		var alphaMap = ScormUtils.image( 'scale_alpha.jpg' );
+		//	normalMap = ScormUtils.image( 'scale_normal.jpg' );
 			
 		var material = new THREE.MeshStandardMaterial( {
 			color: 'white',
@@ -164,7 +164,7 @@ class Base extends Group
 
 		// back scale
 		alphaMap = ScormUtils.image( 'scale_rev_alpha.jpg' );
-		normalMap = ScormUtils.image( 'scale_rev_normal.jpg' );
+		//normalMap = ScormUtils.image( 'scale_rev_normal.jpg' );
 			
 		material = new THREE.MeshStandardMaterial( {
 			color: 'white',

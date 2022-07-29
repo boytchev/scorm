@@ -1,4 +1,4 @@
-1252 -> 301(24%)
+// 1252 -> 301(24%)
 
 MEIRO.Models.T004.prototype.initialize = function()
 {

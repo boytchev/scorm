@@ -226,17 +226,17 @@ class Box extends Group
 				count += this.space[x][y+1][z+1]+this.space[x+1][y+1][z+1];
 				if (0<count && count<8 ) this.V++;
 				
-				var count = 0; // XY
+				count = 0; // XY
 				count += this.space[x][y][z]+this.space[x+1][y][z];
 				count += this.space[x][y+1][z]+this.space[x+1][y+1][z];
 				if (0<count && count<4 ) this.E++;
 				
-				var count = 0; // XZ
+				count = 0; // XZ
 				count += this.space[x][y][z]+this.space[x+1][y][z];
 				count += this.space[x][y][z+1]+this.space[x+1][y][z+1];
 				if (0<count && count<4 ) this.E++;
 				
-				var count = 0; // YZ
+				count = 0; // YZ
 				count += this.space[x][y][z]+this.space[x][y+1][z];
 				count += this.space[x][y][z+1]+this.space[x][y+1][z+1];
 				if (0<count && count<4 ) this.E++;
