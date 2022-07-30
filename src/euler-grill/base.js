@@ -6,7 +6,7 @@
 class Base extends Group
 {
 	static POS_Y = 6;
-	static SIZE = [48,4,28];
+	static SIZE = [48,1,28];
 	static PILLAR_SIZE = [2,20,12];
 	static PILLAR_POS = Spinner.ROTOR_POS+1.05;
 	static SCALE_SIZE = [32,0.1,4*20/64];
@@ -23,6 +23,8 @@ class Base extends Group
 		
 		this.y = Base.POS_Y;
 		
+		this.addEventListener( 'click', this.onClick );
+
 	} // Box.constructor
 
 
@@ -30,6 +32,7 @@ class Base extends Group
 	// handles clicks on the box
 	onClick( )
 	{
+		console.log('base.onclick');
 		// avoid fake onClicks -- this is when the pointer is dragged
 		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 			
@@ -150,7 +153,7 @@ class Base extends Group
 		var material, scale, alphaMap;
 		
 		// front scale
-		alphaMap = ScormUtils.image( 'scale_alpha.png', 1, 20/64, 0, 0 );
+		alphaMap = ScormUtils.image( 'scale_alpha.png', 1, 20/64 );
 		material = new THREE.MeshBasicMaterial( {
 			color: 'Linen',
 			alphaMap: alphaMap,

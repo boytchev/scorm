@@ -5,6 +5,7 @@
 	
 class Spinner extends Group
 {
+	static SPEED = 0;
 	static SIZE = [3,7,3];
 	static ROTOR_SIZE = [10, 2.1, 10];
 	static ROTOR_POS = 22;
@@ -14,6 +15,8 @@ class Spinner extends Group
 		super( suica );
 
 		this.box = new Box( );
+		this.speed = 0;
+		this._state = 0;
 		
 		//var axisLine = line( [30,0,0], [-30,0,0], 'crimson' );
 		var leftRotor = cylinder( [Spinner.ROTOR_POS,0,0], Spinner.ROTOR_SIZE, 'white' );
@@ -77,9 +80,22 @@ class Spinner extends Group
 	// spin the spinner
 	update( t, dT )
 	{
-		this.spinV += 20*dT;
+		this.spinV += this.speed*dT;
 	} // Spinner.update
 	
+	
+	
+	// state: 0=stopped, 1=fully working
+	get state( )
+	{
+		return this._state;
+	}
+	set state( state )
+	{
+		this._state = state;
+		this.speed = Spinner.SPEED * state; // grill rotating speed
+		this.box.state = state;
+	}
 	
 } // class Spinner
 

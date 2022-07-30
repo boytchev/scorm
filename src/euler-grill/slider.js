@@ -8,11 +8,14 @@ class Slider extends Group
 	static SIZE = [5,2,2];
 	static SHADOW_SIZE = [9,4.2];
 	static OFFSET = 10;
+	static PARK_SPEED = 200;
 	
 	constructor( )
 	{
 		super( suica );
 
+		this.inDrag = false;
+		
 		var geometry = new THREE.BoxGeometry( 1, 1, 1, 64, 16, 1 );
 		var nor = geometry.getAttribute( 'normal' );
 		var pos = geometry.getAttribute( 'position' );
@@ -52,7 +55,7 @@ class Slider extends Group
 		}
 
 
-		// pillar material
+		// slider material
 		var material = new THREE.MeshStandardMaterial( {
 			color: 'Linen',
 			metalness: 0,
@@ -60,17 +63,17 @@ class Slider extends Group
 		} );	
 			
 		// front slider
-		this.frontSlider = cube( [0,-Base.PILLAR_SIZE[1]+Base.SIZE[1]+2,Slider.OFFSET], Slider.SIZE, 'linen' );
+		this.frontSlider = cube( [0,-Base.PILLAR_SIZE[1]+Base.POS_Y,Slider.OFFSET], Slider.SIZE, 'linen' );
 			its.solidMesh.geometry = geometry;
 			its.solidMesh.material = material;
 
-		var frontShadow = square( [0,-Base.PILLAR_SIZE[1]+Base.SIZE[1]+2.01,Slider.OFFSET], Slider.SHADOW_SIZE, 'black' );
+		var frontShadow = square( [0,-Base.PILLAR_SIZE[1]+Base.POS_Y+0.01,Slider.OFFSET], Slider.SHADOW_SIZE, 'black' );
 			its.spinV = 90;
 			its.threejs.material.transparent = true;
 			its.threejs.material.opacity = 0.5;
 			its.threejs.material.alphaMap = ScormUtils.image( 'slider_ao.jpg' );
 
-		this.backSlider = cube( [0,-Base.PILLAR_SIZE[1]+Base.SIZE[1]+2,-Slider.OFFSET], Slider.SIZE, 'linen' );
+		this.backSlider = cube( [0,-Base.PILLAR_SIZE[1]+Base.POS_Y,-Slider.OFFSET], Slider.SIZE, 'linen' );
 			its.solidMesh.geometry = geometry;
 			its.solidMesh.material = material;
 
@@ -86,6 +89,7 @@ class Slider extends Group
 
 		
 		this.addEventListener( 'click', this.onClick );
+		this.addEventListener( 'pointerdown', this.onPointerDown );
 
 	} // Slider.constructor
 
@@ -106,9 +110,51 @@ class Slider extends Group
 			playground.newGame( );
 		
 		playground.clickSound?.play();
-		
+
 	} // Slider.onClick
+
+
+
+	onPointerDown( event )
+	{
+		console.log('down');
+		this.inDrag = true;
+		orb.enableRotate = false;
+	}
 	
+
+	slideTo( x )
+	{
+		// restrict slider to groove
+		var limit = Base.GROOVE_SIZE[0]/2;
+		x = THREE.MathUtils.clamp( x, -limit, limit );
+		
+		// find closest park slot
+		//var step = 2*limit / 12;
+		//var xPark = Math.round((x+limit)/step)*step - limit;
+		
+		// glue x to park slot
+		//x = 0.4*x + 0.6*xPark;
+		
+		this.x = x;
+	}
+	
+
+
+	slideEnd( )
+	{
+		// restrict slider to groove
+		var limit = Base.GROOVE_SIZE[0]/2;
+		
+		// find closest park slot
+		var step = 2*limit / 12;
+		var xPark = Math.round((this.x+limit)/step)*step - limit;
+		
+		new TWEEN.Tween( this )
+			.to( {x:xPark}, Slider.PARK_SPEED )
+			.easing( TWEEN.Easing.Sinusoidal.InOut )
+			.start( );
+	}
 	
 } // class Slider
 

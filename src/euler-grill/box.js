@@ -19,10 +19,24 @@ class Box extends Group
 		this.N = 10; //numbed of grid units
 		this.space = null;
 		
+		this.fullBox = cube([0,0,0],Box.SIZE/2);
+			its.threejs.material = new THREE.MeshPhysicalMaterial( {
+						sheen: 2,
+						sheenColor: 'Crimson',
+						sheenRoughness: 0.2,
+						color: 'Wheat',
+						transparent: true,
+						emissive: 'orange',
+						emissiveIntensity: 0.7,
+						opacity: 0.7,
+						depthWrite: false,
+					} );
+		this.fullEdges = cube([0,0,0],Box.SIZE/2,'Sienna');
+			its.wireframe = true;
+			its.threejs.material.transparent = true;
+
 		this.backBox = cube([0,0,0],1);
 		this.backBox.threejs.material = new THREE.MeshPhysicalMaterial( {
-						// clearcoat: 1,
-						// clearcoatRoughness: 0,
 						sheen: 2,
 						sheenColor: 'Crimson',
 						sheenRoughness: 0.2,
@@ -31,10 +45,8 @@ class Box extends Group
 						side: THREE.BackSide,
 						emissive: 'orange',
 						emissiveIntensity: 0.7,
-						opacity: 0.7,
-						// polygonOffset: true,
-						// polygonOffsetUnits: -2,
-						// polygonOffsetFactor: -2,
+						opacity: 0, //0.7,
+						depthWrite: false,
 					} );
 
 		
@@ -42,11 +54,12 @@ class Box extends Group
 		this.frontBox.threejs.material = this.backBox.threejs.material.clone();
 		this.frontBox.threejs.material.side = THREE.FrontSide;
 		
-
 		this.edges = line();
-		this.edges.threejs.material = new THREE.LineBasicMaterial( { color: 'Sienna' } );
+		this.edges.threejs.material = new THREE.LineBasicMaterial( { 		color: 'Sienna',
+				transparent: true,
+				opacity: 0, //1,
+		} );
 
-//		this.axis = line( [10,10,10], [-10,-10,-10] );
 		var angle = degrees( Math.acos(2/Math.sqrt(2)/Math.sqrt(3)) );
 		this.spinH = 90-angle;
 		this.spinV = 45;
@@ -56,15 +69,26 @@ class Box extends Group
 			lineTo( 2, 0 );
 		stroke( 'white', 2 );
 		
-		var wrapper = cube( [0,0,0], this.N, 'gray' );
-		its.wireframe = true;
-		its.image = dotted;
-		its.images = 30;
-		its.threejs.material.transparent = true;
-		its.threejs.material.opacity = 0.5;
+		this.wrapper = cube( [0,0,0], this.N, 'black' );
+			its.wireframe = true;
+			its.image = dotted;
+			its.images = 60;
+			// its.threejs.material.transparent = true;
+			// its.threejs.material.opacity = 0, //0.5;
+			// its.threejs.material.polygonOffset = true;
+			// its.threejs.material.polygonOffsetUnits = 1;
+			// its.threejs.material.polygonOffsetFactor = 1;
 		
-		this.add( /*this.axis,*/ this.edges, this.backBox, this.frontBox, wrapper );
+		this.add( this.fullBox, this.fullEdges, this.edges, this.backBox, this.frontBox, this.wrapper );
 
+		this.state = 0; // must be after creating elements
+
+		this.backBox.threejs.renderOrder = 1;
+		this.frontBox.threejs.renderOrder = 2;
+		this.edges.threejs.renderOrder = 0;
+		this.wrapper.threejs.renderOrder = 3;
+	
+		
 		this.regenerateBox( );
 
 	} // Box.constructor
@@ -263,16 +287,8 @@ class Box extends Group
 		var texArr = new Float32Array(2*vertices);
 		
 		var index = 0;
-// var minX=1000,minY=1000,minZ=1000;
-// var maxX=-1000,maxY=-1000,maxZ=-1000;
 		function set(x,y,z,nx,ny,nz,u,v)
 		{
-// minX=Math.min(minX,x-M);
-// maxX=Math.max(maxX,x-M);
-// minY=Math.min(minY,y-M);
-// maxY=Math.max(maxY,y-M);
-// minZ=Math.min(minZ,z-M);
-// maxZ=Math.max(maxZ,z-M);
 			posArr[3*index] = x-M;
 			posArr[3*index+1] = y-M;
 			posArr[3*index+2] = z-M;
@@ -388,6 +404,30 @@ class Box extends Group
 
 		return geometry;
 	} // Box.generateGeometry
+
+
+	
+	
+	
+	// state: 0=stopped, 1=fully working
+	set state( state )
+	{
+		this.fullBox.threejs.material.opacity   = 0.7 * (1-state);
+		this.fullEdges.threejs.material.opacity = 1.0 * (1-state);
+		
+		this.backBox.threejs.material.opacity   = 0.5 * state;
+		this.frontBox.threejs.material.opacity  = 0.5 * state;
+		this.edges.threejs.material.opacity     = 1.0 * state;
+		this.wrapper.threejs.material.opacity   = 0.3 * state;
+		
+		this.fullBox.threejs.material.visible   = state < 1;
+		this.fullEdges.threejs.material.visible = state < 1;
+		
+		this.backBox.threejs.material.visible   = state > 0;
+		this.frontBox.threejs.material.visible  = state > 0;
+		this.edges.threejs.material.visible     = state > 0;
+		this.wrapper.threejs.material.visible   = state > 0;
+	}
 
 
 } // class Box

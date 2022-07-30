@@ -7,6 +7,8 @@
 class Playground extends ScormPlayground
 {
 	static POINTS_SPEED = 2000;
+	static START_SPEED = 1500;
+	static POINTER_MOVEMENT = 5;
 	
 	constructor( )
 	{
@@ -24,6 +26,17 @@ class Playground extends ScormPlayground
 		this.spinner = new Spinner;
 		this.slider = new Slider;
 		this.base = new Base;
+
+		this.dragPlane = new THREE.Mesh(
+			new THREE.PlaneGeometry( 1000, 1000 ).rotateX( -Math.PI/2 ),
+			new THREE.MeshBasicMaterial({ color: 'Crimson', transparent: true, opacity: 0.3 })
+		);
+		this.dragPlane.position.y = -14;
+		this.dragPlane.visible = false;
+		suica.scene.add( this.dragPlane );
+		
+		this.pointerMovement = 0;
+		
 	} // Playground.constructor
 
 	
@@ -33,7 +46,12 @@ class Playground extends ScormPlayground
 	{
 		super.newGame( );
 
-		// ...
+		Spinner.SPEED = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 10, 40 ); 
+		
+		new TWEEN.Tween( this.spinner )
+			.to( {state:1}, Playground.START_SPEED )
+			.easing( TWEEN.Easing.Sinusoidal.InOut )
+			.start( );
 
 	} // Playground.newGame
 
@@ -97,7 +115,30 @@ class Playground extends ScormPlayground
 	{
 		this.spinner.update( t, dT );
 		this.base.update( );
-		this.slider.x = Base.GROOVE_SIZE[0]/2*Math.sin(t);
+//		this.slider.x = Base.GROOVE_SIZE[0]/2*Math.sin(t);
 	}
 	
+	
+	
+	// the slider is being dragged, this sends a ray from view point
+	// to horizontal plane where the slider is, from coordinates of
+	// intersection finds the new position of the slider
+	dragX( event )
+	{		
+		// sets this.raycastPointer
+		suica.findPosition( event );
+
+		// cast a ray and find intersection with all objects
+		suica.raycaster.setFromCamera( suica.raycastPointer, suica.camera );
+		
+		var intersects = suica.raycaster.intersectObject( this.dragPlane );
+
+		if( intersects.length )
+			return intersects[0].point.x;
+		else
+			return 0;
+	}
+	
+	
+
 } // class Playground

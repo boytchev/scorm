@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-	<title>SCORM-TEMPLATE</title>
+	<title>Euler Grill</title>
 
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
@@ -25,7 +25,7 @@
 </head>
 
 <body>
-	<suica fullwindow fullscreen background="linen" ontime="update"> <!-- onpointermove="onPointerMove"-->
+	<suica fullwindow fullscreen background="linen" ontime="update" onpointermove="onPointerMove" onpointerdown="onPointerDown" onpointerup="onPointerUp"> 
 		<orbit id="orb" distance="70" altitude="0" maxPolarAngle="1.57" maxDistance="150" minDistance="25">
 		<div class="hud corner top left"></div>
 		<div class="hud corner top right"></div>
@@ -64,14 +64,40 @@
 
 		window.addEventListener( 'resize', playground.resize );
 				
-		<!-- function onPointerMove( event ) -->
-		<!-- { -->
-			<!-- if( findObject( event ) ) -->
-				<!-- event.target.style.cursor = 'pointer'; -->
-			<!-- else -->
-				<!-- event.target.style.cursor = 'default'; -->
-		<!-- } -->
+		function onPointerMove( event )
+		{
+			playground.pointerMovement += Math.abs( event.movementX ) + Math.abs( event.movementY );
+			
+			if( playground.slider.inDrag )
+			{
+				playground.slider.slideTo( playground.dragX( event ) );
+			}
+			else
+			{
+				if( findObject( event ) )
+					event.target.style.cursor = 'pointer';
+				else
+					event.target.style.cursor = 'default';
+			}
+		}
 		
+		function onPointerDown( event )
+		{
+			if( playground ) playground.pointerMovement = 0;
+		}		
+		
+		function onPointerUp( )
+		{
+			if( playground ) 
+			{
+				if( playground.slider.inDrag )
+				{
+					playground.slider.inDrag = false;
+					playground.slider.slideEnd( );
+				}
+				orb.enableRotate = true;
+			}
+		}		
 	</script>
 	
 </body>
