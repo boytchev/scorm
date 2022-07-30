@@ -6,11 +6,12 @@
 class Base extends Group
 {
 	static POS_Y = 6;
-	static SIZE = [48,1,28];
+	static SIZE = [48,4,28];
 	static PILLAR_SIZE = [2,20,12];
 	static PILLAR_POS = Spinner.ROTOR_POS+1.05;
-	static SCALE_SIZE = [32,0.02,4];
-	static SCALE_POS = [0,-Base.PILLAR_SIZE[1]+Base.SIZE[1]/2-0.5,10];
+	static SCALE_SIZE = [32,0.1,4*20/64];
+	static SCALE_Y = -Base.PILLAR_SIZE[1];
+	static GROOVE_SIZE = [28,0.5];
 	
 	constructor( )
 	{
@@ -65,12 +66,15 @@ class Base extends Group
 
 		var base = cube( [0,-Base.PILLAR_SIZE[1]-Base.SIZE[1]/2,0], Base.SIZE );
 			its.threejs.material = material;
+		ScormUtils.addUV2( base );
 			
 		var border = cube( [0,-Base.PILLAR_SIZE[1]-Base.SIZE[1]/2-0.01,0], [Base.SIZE[0]+0.02,Base.SIZE[1],Base.SIZE[2]+0.02], 'black' );
-			
-		ScormUtils.addUV2( base );
+		var groove1 = square( [0,-Base.PILLAR_SIZE[1]+0.01,Slider.OFFSET], Base.GROOVE_SIZE, 'black' );
+			its.spinV = 90;
+		var groove2 = square( [0,-Base.PILLAR_SIZE[1]+0.01,-Slider.OFFSET], Base.GROOVE_SIZE, 'black' );
+			its.spinV = 90;
 		
-		this.add( base, border );
+		this.add( base, border, groove1, groove2 );
 	}
 	
 	
@@ -85,10 +89,10 @@ class Base extends Group
 		var uv = geometry.getAttribute( 'uv' );
 		for( var i=0; i<nor.count; i++ )
 		{
-			// bottom of pillar
+			// bottom curve
 			if( pos.getY(i)<0 && pos.getX(i)<0 )
 				pos.setX( i, -1/2-Math.pow(3*pos.getY(i),2) );
-			
+						
 			// top ark
 			if( pos.getY(i)>=1/2-0.01 )
 			{
@@ -142,48 +146,42 @@ class Base extends Group
 	// construct scale
 	constructScale( )
 	{
+
+		var material, scale, alphaMap;
+		
 		// front scale
-		var alphaMap = ScormUtils.image( 'scale_alpha.jpg' );
-		//	normalMap = ScormUtils.image( 'scale_normal.jpg' );
-			
-		var material = new THREE.MeshStandardMaterial( {
-			color: 'white',
-			metalness: 0.1,
-			roughness: 0.5,
-			//normalMap: normalMap,
-			//normalScale: new THREE.Vector2( 1, 1 ),
+		alphaMap = ScormUtils.image( 'scale_alpha.png', 1, 20/64, 0, 0 );
+		material = new THREE.MeshBasicMaterial( {
+			color: 'Linen',
 			alphaMap: alphaMap,
 			transparent: true,
-			emissive: 'white',
-			emissiveIntensity: 0.25,
 		} );	
 			
-		var scale = cube( Base.SCALE_POS, Base.SCALE_SIZE );
+		scale = cube( [0,Base.SCALE_Y,Slider.OFFSET+2.25*Base.SCALE_SIZE[2]], Base.SCALE_SIZE );
 			its.solidMesh.material = material;
 		this.add( scale );
 
+
 		// back scale
-		alphaMap = ScormUtils.image( 'scale_rev_alpha.jpg' );
-		//normalMap = ScormUtils.image( 'scale_rev_normal.jpg' );
-			
-		material = new THREE.MeshStandardMaterial( {
-			color: 'white',
-			metalness: 0.1,
-			roughness: 0.5,
-			//normalMap: normalMap,
-			//normalScale: new THREE.Vector2( 1, 1 ),
+		alphaMap = ScormUtils.image( 'scale_alpha.png', 1, 20/64, 0, 1-20/64 );
+		material = new THREE.MeshBasicMaterial( {
+			color: 'Linen',
 			alphaMap: alphaMap,
 			transparent: true,
-			emissive: 'white',
-			emissiveIntensity: 0.25,
 		} );	
 			
-		scale = cube( Base.SCALE_POS, Base.SCALE_SIZE );
-		its.spinH = 180;
-		its.z = -its.z;
-		its.solidMesh.material = material;
+		scale = cube( [0,Base.SCALE_Y,-Slider.OFFSET-2.25*Base.SCALE_SIZE[2]], Base.SCALE_SIZE );
+			its.solidMesh.material = material;
 		this.add( scale );
+		
 	} // Base.constructScale
+	
+
+
+	update( )
+	{
+
+	} // Base.update
 	
 } // class Base
 

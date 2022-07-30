@@ -22,6 +22,7 @@ class Playground extends ScormPlayground
 		] );
 		
 		this.spinner = new Spinner;
+		this.slider = new Slider;
 		this.base = new Base;
 	} // Playground.constructor
 
@@ -94,7 +95,9 @@ class Playground extends ScormPlayground
 	
 	update( t, dT )
 	{
-		this.spinner.spinV += 20*dT;
+		this.spinner.update( t, dT );
+		this.base.update( );
+		this.slider.x = Base.GROOVE_SIZE[0]/2*Math.sin(t);
 	}
 	
 } // class Playground

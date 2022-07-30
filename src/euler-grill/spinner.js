@@ -74,5 +74,12 @@ class Spinner extends Group
 	
 	
 	
+	// spin the spinner
+	update( t, dT )
+	{
+		this.spinV += 20*dT;
+	} // Spinner.update
+	
+	
 } // class Spinner
 
