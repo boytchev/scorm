@@ -53,9 +53,6 @@ class Slider extends Group
 
 
 		// pillar material
-		var map = ScormUtils.image( 'metal_plate.jpg',Base.PILLAR_SIZE[2]/4, Base.PILLAR_SIZE[1]/4 ),
-			normalMap = ScormUtils.image( 'metal_plate_normal.jpg',Base.PILLAR_SIZE[2]/4, Base.PILLAR_SIZE[1]/4 ),
-			lightMap = ScormUtils.image( 'pillar_antilight.jpg', 1, 15/20, 0, 0 );
 		var material = new THREE.MeshStandardMaterial( {
 			color: 'Linen',
 			metalness: 0,
