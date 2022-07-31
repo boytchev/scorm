@@ -15,6 +15,9 @@ class Slider extends Group
 		super( suica );
 
 		this.inDrag = false;
+		this.dragOffset = 0;
+
+		this.euler = 0; // selected result [-6..6]
 		
 		var geometry = new THREE.BoxGeometry( 1, 1, 1, 64, 16, 1 );
 		var nor = geometry.getAttribute( 'normal' );
@@ -109,47 +112,62 @@ class Slider extends Group
 		else
 			playground.newGame( );
 		
-		playground.clickSound?.play();
-
 	} // Slider.onClick
 
 
 
 	onPointerDown( event )
 	{
-		console.log('down');
-		this.inDrag = true;
-		orb.enableRotate = false;
+		if( playground.gameStarted )
+		{
+			this.inDrag = true;
+			this.dragOffset = playground.dragX(event) - this.x;
+			orb.enableRotate = false;
+		}
+		else
+		{
+			playground.newGame( );
+		}
 	}
 	
 
 	slideTo( x )
 	{
+		x = x - this.dragOffset;
+		
 		// restrict slider to groove
 		var limit = Base.GROOVE_SIZE[0]/2;
 		x = THREE.MathUtils.clamp( x, -limit, limit );
 		
 		// find closest park slot
-		//var step = 2*limit / 12;
-		//var xPark = Math.round((x+limit)/step)*step - limit;
-		
+		var step = 2*limit / 6;
+		var xPark = Math.round((x+limit)/step)*step - limit,
+			xOldPark = Math.round((this.x+limit)/step)*step - limit;
+	
 		// glue x to park slot
-		//x = 0.4*x + 0.6*xPark;
+		x = 0.6*x + 0.4*xPark;
 		
 		this.x = x;
+		
+		if( xPark!=xOldPark )
+			playground.slideOnSound.play( );
 	}
 	
 
 
 	slideEnd( )
 	{
+		playground.slideOffSound.play( );
+		
 		// restrict slider to groove
 		var limit = Base.GROOVE_SIZE[0]/2;
 		
 		// find closest park slot
-		var step = 2*limit / 12;
-		var xPark = Math.round((this.x+limit)/step)*step - limit;
-		
+		var step = 2*limit / 6,
+			xPark = Math.round((this.x+limit)/step)*step - limit;
+			
+		this.euler = Math.round( 2*xPark/step );
+
 		new TWEEN.Tween( this )
 			.to( {x:xPark}, Slider.PARK_SPEED )
 			.easing( TWEEN.Easing.Sinusoidal.InOut )

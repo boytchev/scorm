@@ -32,20 +32,14 @@ class Base extends Group
 	// handles clicks on the box
 	onClick( )
 	{
-		console.log('base.onclick');
 		// avoid fake onClicks -- this is when the pointer is dragged
 		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 			
 		// if game is not started, click on any plate will start it
-		if( playground.gameStarted )
+		if( !playground.gameStarted )
 		{
-//			this.toggle( );
-		}
-		else
 			playground.newGame( );
-		
-		playground.clickSound?.play();
-		
+		}
 	} // Spinner.onClick
 	
 	

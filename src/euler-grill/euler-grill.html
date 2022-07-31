@@ -21,12 +21,13 @@
 	<script src="spinner.js"></script>
 	<script src="base.js"></script>
 	<script src="slider.js"></script>
+	<script src="button.js"></script>
 	<script src="playground.js"></script>
 </head>
 
 <body>
 	<suica fullwindow fullscreen background="linen" ontime="update" onpointermove="onPointerMove" onpointerdown="onPointerDown" onpointerup="onPointerUp"> 
-		<orbit id="orb" distance="70" altitude="0" maxPolarAngle="1.57" maxDistance="150" minDistance="25">
+		<orbit id="orb" distance="70" altitude="0" maxPolarAngle="1.57" maxDistance="150" minDistance="25" enablePan="true">
 		<div class="hud corner top left"></div>
 		<div class="hud corner top right"></div>
 		<div class="hud corner bottom left"></div>
@@ -58,7 +59,6 @@
 
 	
 	<script>
-		var boxA, boxB;
 		var playground = new Playground;
 
 
@@ -75,7 +75,9 @@
 			else
 			{
 				if( findObject( event ) )
+				{
 					event.target.style.cursor = 'pointer';
+				}
 				else
 					event.target.style.cursor = 'default';
 			}
@@ -83,7 +85,10 @@
 		
 		function onPointerDown( event )
 		{
-			if( playground ) playground.pointerMovement = 0;
+			if( playground )
+			{
+				playground.pointerMovement = 0;
+			}
 		}		
 		
 		function onPointerUp( )

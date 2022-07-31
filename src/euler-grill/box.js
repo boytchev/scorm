@@ -15,11 +15,13 @@ class Box extends Group
 		this.E = 0; // number of edges
 		this.V = 0; // number or vertices
 
-		this.T = {x:2,y:2,z:2}; // number of tummels
-		this.N = 10; //numbed of grid units
+		this.T = {x:0,y:0,z:0}; // number of tunnels
+		this.N = 6; //numbed of grid units
 		this.space = null;
 		
-		this.fullBox = cube([0,0,0],Box.SIZE/2);
+		this.size = Box.SIZE;
+		
+		this.fullBox = cube([0,0,0],1);
 			its.threejs.material = new THREE.MeshPhysicalMaterial( {
 						sheen: 2,
 						sheenColor: 'Crimson',
@@ -31,7 +33,7 @@ class Box extends Group
 						opacity: 0.7,
 						depthWrite: false,
 					} );
-		this.fullEdges = cube([0,0,0],Box.SIZE/2,'Sienna');
+		this.fullEdges = cube([0,0,0],1,'Sienna');
 			its.wireframe = true;
 			its.threejs.material.transparent = true;
 
@@ -69,7 +71,7 @@ class Box extends Group
 			lineTo( 2, 0 );
 		stroke( 'white', 2 );
 		
-		this.wrapper = cube( [0,0,0], this.N, 'black' );
+		this.wrapper = cube( [0,0,0], 1, 'black' );
 			its.wireframe = true;
 			its.image = dotted;
 			its.images = 60;
@@ -97,27 +99,30 @@ class Box extends Group
 
 	regenerateBox( )
 	{
+//		console.log('T =',this.T,'N =',this.N);
+		
+		this.size = Box.SIZE/this.N
+		//this.fullBox.size = this.N;
+		//this.fullEdges.size = this.N;
+		//this.wrapper.size = this.N;
+		
 		// generate a new shape
 		this.generateSpace( );
 		this.generateTunnels( );
+		this.regenerateNonManifolds( );
 		this.calculateEuler( );
 
 		// update the geometries
-		var geometry = this.generateGeometry( );
+		var geometry = this.generateGeometry( ).scale(1/this.N,1/this.N,1/this.N);
 		
 		this.backBox.threejs.geometry.dispose( );
 		this.backBox.threejs.geometry = geometry;
-
+		
 		this.frontBox.threejs.geometry.dispose( );
 		this.frontBox.threejs.geometry = geometry;
 		
 		this.edges.threejs.geometry.dispose( );
 		this.edges.threejs.geometry = new THREE.EdgesGeometry( geometry );
-
-		// resize the box
-		this.size = Box.SIZE/this.N;
-		
-
 	} // Box.regenerateBox
 
 	
@@ -149,75 +154,137 @@ class Box extends Group
 	{
 		var N = this.N,
 			T = this.T;
+
+// console.log(this.space);
+// for (var i=0; i<4; i++)
+	// this.space[i][2][2] = 0;
+// for (var i=4; i<N; i++)
+	// this.space[i][3][2] = 0;
+// return
+
 		
+		var a1,a2,b1,b2,c1,c2;
 		
 		function punch()
 		{	// generate random tunel
 			function iRandom( a, b ) { return Math.floor(random(a,b+1)); }
 			
-			var p = {};
-			p.a1 = iRandom( 0, N-1 );
-			p.a2 = iRandom( p.a1, N-1 );
-			p.b1 = iRandom( 0, N-1 );
-			p.b2 = iRandom( p.b1, N-1 );
+			a1 = iRandom( 0, N-1 );
+			a2 = iRandom( a1, N-1 );
+			b1 = iRandom( 0, N-1 );
+			b2 = iRandom( b1, N-1 );
 			
-			if( iRandom(0,1)>0.4 )
+			if( iRandom(0,1)>-0.4 )
 			{	// whole hole
-				p.c1 = 0;
-				p.c2 = N-1;
+				c1 = 0;
+				c2 = N-1;
 			}
 			else
 			{	// only dent
 				if( iRandom(0,1)>0.5 )
 				{
-					p.c1 = 0;
-					p.c2 = iRandom( 0,N-2 );
+					c1 = 0;
+					c2 = iRandom( 0,N-2 );
 				}
 				else
 				{
-					p.c1 = iRandom( 1, N-1 );
-					p.c2 = N-1;
+					c1 = iRandom( 1, N-1 );
+					c2 = N-1;
 				}
 			}
-			return p;
 		}
 		
 		//tunel XY
 		for (var i=0; i<T.z; i++)
 		{
-			var p = punch();
+			punch();
 			
-			for (var x=p.a1; x<=p.a2; x++)
-			for (var y=p.b1; y<=p.b2; y++)
-			for (var z=p.c1; z<=p.c2; z++)
+			for (var x=a1; x<=a2; x++)
+			for (var y=b1; y<=b2; y++)
+			for (var z=c1; z<=c2; z++)
 				this.space[x][y][z] = 0;
 		}
 
 		//tunel YZ
 		for (var i=0; i<T.x; i++)
 		{
-			var p = punch();
+			punch();
 			
-			for (var y=p.a1; y<=p.a2; y++)
-			for (var z=p.b1; z<=p.b2; z++)
-			for (var x=p.c1; x<=p.c2; x++)
+			for (var y=a1; y<=a2; y++)
+			for (var z=b1; z<=b2; z++)
+			for (var x=c1; x<=c2; x++)
 				this.space[x][y][z] = 0;
 		}
 		
 		//tunel XZ
 		for (var i=0; i<T.y; i++)
 		{
-			var p = punch();
+			punch();
 			
-			for (var z=p.a1; z<=p.a2; z++)
-			for (var x=p.b1; x<=p.b2; x++)
-			for (var y=p.c1; y<=p.c2; y++)
+			for (var z=a1; z<=a2; z++)
+			for (var x=b1; x<=b2; x++)
+			for (var y=c1; y<=c2; y++)
 				this.space[x][y][z] = 0;
 		}	
 	} // Box.generateTunnels
 	
 	
 
+	regenerateNonManifolds( )
+	{
+		// cheks all edges - if an edge is shared by two opposite cubes,
+		// then this edge makes the shape non-manifold and is removed by
+		// adding a cube
+		var addedCubes = 1;
+		while( addedCubes > 0 )
+		{
+			addedCubes = 0;
+			
+			for( var x=0; x<this.N; x++ )
+			for( var y=0; y<this.N; y++ )
+			for( var z=0; z<this.N; z++ )
+			{
+				// XY
+				if( this.space[x][y][z] && this.space[x+1][y+1][z] && !this.space[x+1][y][z] && !this.space[x][y+1][z] )
+				{
+					this.space[x+1][y][z] = 1;
+					addedCubes++;
+				}
+				if( !this.space[x][y][z] && !this.space[x+1][y+1][z] && this.space[x+1][y][z] && this.space[x][y+1][z] )
+				{
+					this.space[x][y][z] = 1;
+					addedCubes++;
+				}
+
+				// XZ
+				if( this.space[x][y][z] && this.space[x+1][y][z+1] && !this.space[x+1][y][z] && !this.space[x][y][z+1] )
+				{
+					this.space[x+1][y][z] = 1;
+					addedCubes++;
+				}
+				if( !this.space[x][y][z] && !this.space[x+1][y][z+1] && this.space[x+1][y][z] && this.space[x][y][z+1] )
+				{
+					this.space[x][y][z] = 1;
+					addedCubes++;
+				}
+
+				// YZ
+				if( this.space[x][y][z] && this.space[x][y+1][z+1] && !this.space[x][y+1][z] && !this.space[x][y][z+1] )
+				{
+					this.space[x][y+1][z] = 1;
+					addedCubes++;
+				}
+				if( !this.space[x][y][z] && !this.space[x][y+1][z+1] && this.space[x][y+1][z] && this.space[x][y][z+1] )
+				{
+					this.space[x][y][z] = 1;
+					addedCubes++;
+				}
+			}
+console.log('added cubes',addedCubes);
+		}
+	}
+	
+	
 	calculateEuler( )
 	{
 		this.F = 0;
@@ -266,9 +333,9 @@ class Box extends Group
 				if (0<count && count<4 ) this.E++;
 			}		
 		
-		console.log('F =',this.F);
-		console.log('E =',this.E);
-		console.log('V =',this.V);
+		// console.log('F =',this.F);
+		// console.log('E =',this.E);
+		// console.log('V =',this.V);
 		console.log('F-E+V =',this.F-this.E+this.V);
 	} // Box.calculateEuler
 	
@@ -412,6 +479,8 @@ class Box extends Group
 	// state: 0=stopped, 1=fully working
 	set state( state )
 	{
+		this.size = Box.SIZE*state + 5*(1-state);
+		
 		this.fullBox.threejs.material.opacity   = 0.7 * (1-state);
 		this.fullEdges.threejs.material.opacity = 1.0 * (1-state);
 		

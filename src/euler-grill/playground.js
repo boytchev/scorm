@@ -7,7 +7,8 @@
 class Playground extends ScormPlayground
 {
 	static POINTS_SPEED = 2000;
-	static START_SPEED = 1500;
+	static START_SPEED = 800;
+	static END_SPEED = 500;
 	static POINTER_MOVEMENT = 5;
 	
 	constructor( )
@@ -26,6 +27,7 @@ class Playground extends ScormPlayground
 		this.spinner = new Spinner;
 		this.slider = new Slider;
 		this.base = new Base;
+		this.button = new Button;
 
 		this.dragPlane = new THREE.Mesh(
 			new THREE.PlaneGeometry( 1000, 1000 ).rotateX( -Math.PI/2 ),
@@ -46,11 +48,30 @@ class Playground extends ScormPlayground
 	{
 		super.newGame( );
 
-		Spinner.SPEED = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 10, 40 ); 
+		this.clickSound?.play();
+
+		Spinner.SPEED = random([-1,1]) * THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0, 50 ); 
 		
+		var diff = this.difficulty/100;
+		
+		var tunnels = Math.round( THREE.MathUtils.mapLinear( diff**2, 0, 1, 1, 10 ) ),
+			n = Math.max(6, tunnels+Math.round( THREE.MathUtils.mapLinear( diff, 0, 100, 0, 6 ) ) );
+console.log('tunnels',tunnels,'n',n);
+
+		// 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+		// e e m m m d d
+		// e=easy m=medium h=hard
+		this.spinner.box.T = {x: 0, y:0, z:0};
+		for( var i=0; i<tunnels; i++ )
+			this.spinner.box.T[random(['x','y','z'])]++;
+		
+		this.spinner.box.N = n; //numbed of grid units
+
+		this.spinner.box.regenerateBox( );
+
 		new TWEEN.Tween( this.spinner )
 			.to( {state:1}, Playground.START_SPEED )
-			.easing( TWEEN.Easing.Sinusoidal.InOut )
+			.easing( TWEEN.Easing.Elastic.Out )
 			.start( );
 
 	} // Playground.newGame
@@ -60,8 +81,7 @@ class Playground extends ScormPlayground
 	// check whether a game can end
 	canEndGame( )
 	{
-		// ...
-		return false;
+		return true;
 	} // Playground.canEndGame
 	
 	
@@ -69,11 +89,18 @@ class Playground extends ScormPlayground
 	// returns the score of the current game
 	evaluateGame( )
 	{
-		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
+		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 ),
+			maxError = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 6, 4 );
+			
+		var box = playground.spinner.box,
+			error = Math.abs( THREE.MathUtils.clamp( box.F-box.E+box.V, -6, 6 ) - playground.slider.euler);
 		
-		// ...
+		var score = THREE.MathUtils.mapLinear( error, 0, maxError, 1, 0 );
+			score = THREE.MathUtils.clamp( score, 0, 1 );
 		
-		return 0 * points;
+console.log('score',score);
+
+		return score * points;
 
 	} // Playground.evaluateGame
 	
@@ -84,8 +111,21 @@ class Playground extends ScormPlayground
 	{
 		super.endGame( );
 		
-		// ...
+		this.clackSound?.play();
+
+		// based on TWEEN.Easing.Elastic.Out
+		function myElasticOut( amount )
+		{
+			if( amount === 0 ) return 0;
+			if( amount === 1 ) return 1;
+			return Math.pow(2, -2-10 * amount) * Math.sin((amount - 0.1) * 6 * Math.PI) + 1;
+		}
 		
+		new TWEEN.Tween( this.spinner )
+			.to( {state:0}, Playground.END_SPEED )
+			.easing( myElasticOut )
+			.start( );
+
 	} // Playground.endGame
 	
 
@@ -102,11 +142,13 @@ class Playground extends ScormPlayground
 	// load all sounds
 	loadSounds( )
 	{
-		//this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1, 4 );
-		//this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
+		this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1 );
+		this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
+		this.slideOnSound = new PlaygroundAudio( 'sounds/slide-on.mp3', 0.05, 8 );
+		this.slideOffSound = new PlaygroundAudio( 'sounds/slide-off.mp3', 0.1 );
 		//this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.2, 1, true );
 		
-		//this.soundEffects.push( this.clickSound, this.clackSound );
+		this.soundEffects.push( this.clickSound, this.clackSound, this.slideOnSound, this.slideOffSound );
 		//this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
 	
