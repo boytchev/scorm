@@ -29,4 +29,11 @@ This SCO is used for experiments with SCORM 1.2-complient LMS. It shows the list
 [ <!-- markdown-link-check-disable -->[More info](src/race-balls/index.html)<!-- markdown-link-check-enable --> ] [ [Run online](src/race-balls/race-balls.html) ] [ [Download](bin/race-balls.zip) ]
 
 
+## Euler grill
+
+<a href="src/euler-grill/euler-grill.html"><img src="src/euler-grill/docs/snapshot.jpg" width="200" style="float:right; border-radius: 0.5em; border-bottom: 0.3em BurlyWood solid;"></a> Under development.
+
+[ [Run online](src/euler-grill/race-balls.html) ] [ [Download](bin/euler-grill.zip) ]
+
+
 <small>{{site.time | date: "%B, %Y"}}</small>

@@ -54,8 +54,8 @@ class Playground extends ScormPlayground
 		
 		var diff = this.difficulty/100;
 		
-		var tunnels = Math.round( THREE.MathUtils.mapLinear( diff**2, 0, 1, 1, 10 ) ),
-			n = Math.max(6, tunnels+Math.round( THREE.MathUtils.mapLinear( diff, 0, 100, 0, 6 ) ) );
+		var tunnels = Math.round( THREE.MathUtils.mapLinear( diff**1.5, 0, 1, 1, 10 ) ),
+			n = Math.max(6, tunnels+Math.round( THREE.MathUtils.mapLinear( diff**2, 0, 1, 0, 5 ) ) );
 console.log('tunnels',tunnels,'n',n);
 
 		// 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
