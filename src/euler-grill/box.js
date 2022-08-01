@@ -280,7 +280,6 @@ class Box extends Group
 					addedCubes++;
 				}
 			}
-console.log('added cubes',addedCubes);
 		}
 	}
 	
@@ -336,7 +335,7 @@ console.log('added cubes',addedCubes);
 		// console.log('F =',this.F);
 		// console.log('E =',this.E);
 		// console.log('V =',this.V);
-		console.log('F-E+V =',this.F-this.E+this.V);
+		// console.log('F-E+V =',this.F-this.E+this.V);
 	} // Box.calculateEuler
 	
 	

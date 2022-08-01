@@ -34,8 +34,8 @@ class Spinner extends Group
 		this.add( leftRotor, rightRotor, this.leftHandle, this.rightHandle, this.box/*, axisLine*/ );
 		
 		this.addEventListener( 'click', this.onClick );
-		this.addEventListener( 'pointerMove', this.onPointerMove );
-		this.addEventListener( 'pointerDown', this.onPointerDown );
+//.//		this.addEventListener( 'pointerMove', this.onPointerMove );
+//.//		this.addEventListener( 'pointerDown', this.onPointerDown );
 		
 		this.y = Base.POS_Y;
 
@@ -45,6 +45,18 @@ class Spinner extends Group
 
 
 
+	// make the spinner (non-)interactive (pass through pointer
+	// events to the slider and the button)
+	activate( )
+	{
+		this.addEventListener( 'click', this.onClick );
+	}
+	deactivate( )
+	{
+		this.removeEventListener( 'click' );
+	}
+	
+	
 	// handles clicks on the box
 	onClick( event )
 	{
@@ -54,13 +66,13 @@ class Spinner extends Group
 		// if game is not started, click on any plate will start it
 		if( playground.gameStarted )
 		{
-			// if the click is also over the button, then activate it manually
-			var objects = findObjects( event );
-			if( objects.length>=2 )
-			{
-				if( objects[1]==playground.button )
-					playground.button.onClick( event );
-			}
+//.//			// if the click is also over the button, then activate it manually
+//.//			var objects = findObjects( event );
+//.//			if( objects.length>=2 )
+//.//			{
+//.//				if( objects[1]==playground.button )
+//.//					playground.button.onClick( event );
+//.//			}
 		}
 		else
 			playground.newGame( );
@@ -68,42 +80,41 @@ class Spinner extends Group
 	} // Spinner.onClick
 
 
-	// handles pointer down events
-	onPointerDown( event )
-	{
-		// if game is not started, click on any plate will start it
-		if( playground.gameStarted )
-		{
-			// if the click is also over the button, then activate it manually
-			var objects = findObjects( event );
-			if( objects.length>=2 )
-			{
-				if( objects[1]==playground.slider )
-					playground.slider.onPointerDown( event );
-			}
-		}
-	} // Spinner.onPointerDown
+//.//	// handles pointer down events
+//.//	onPointerDown( event )
+//.//	{
+//.//		if( playground.gameStarted )
+//.//		{
+//.//			// if the click is also over the button, then activate it manually
+//.//			var objects = findObjects( event );
+//.//			if( objects.length>=2 )
+//.//			{
+//.//				if( objects[1]==playground.slider )
+//.//					playground.slider.onPointerDown( event );
+//.//			}
+//.//		}
+//.//	} // Spinner.onPointerDown
 
 	
 	
-	// handles clicks on the box
-	onPointerMove( event )
-	{
-		// if game is not started, click on any plate will start it
-		if( playground.gameStarted )
-		{
-			// if the click is also over the button, then activate it manually
-			var objects = findObjects( event );
-
-			if( objects.length>=2 )
-				if( objects[1]==playground.button )
-				{
-					playground.button.onMark( );
-					return;
-				}
-			playground.button.onUnmark( );
-		}
-	} // Spinner.onPointerMove
+//.//	// handles clicks on the box
+//.//	onPointerMove( event )
+//.//	{
+//.//		// if game is not started, click on any plate will start it
+//.//		if( playground.gameStarted )
+//.//		{
+//.//			// if the click is also over the button, then activate it manually
+//.//			var objects = findObjects( event );
+//.//
+//.//			if( objects.length>=2 )
+//.//				if( objects[1]==playground.button )
+//.//				{
+//.//					playground.button.onMark( );
+//.//					return;
+//.//				}
+//.//			playground.button.onUnmark( );
+//.//		}
+//.//	} // Spinner.onPointerMove
 
 	
 	

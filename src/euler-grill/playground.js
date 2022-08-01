@@ -50,13 +50,13 @@ class Playground extends ScormPlayground
 
 		this.clickSound?.play();
 
+		this.spinner.deactivate( );
+		
 		Spinner.SPEED = random([-1,1]) * THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0, 50 ); 
 		
-		var diff = this.difficulty/100;
-		
-		var tunnels = Math.round( THREE.MathUtils.mapLinear( diff**1.5, 0, 1, 1, 10 ) ),
-			n = Math.max(6, tunnels+Math.round( THREE.MathUtils.mapLinear( diff**2, 0, 1, 0, 5 ) ) );
-console.log('tunnels',tunnels,'n',n);
+		var tunnels = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 1, 8 ) - random([0,1]) ),
+			n = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 4, 10 ) );
+//console.log('tunnels',tunnels,'n',n);
 
 		// 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 		// e e m m m d d
@@ -98,7 +98,7 @@ console.log('tunnels',tunnels,'n',n);
 		var score = THREE.MathUtils.mapLinear( error, 0, maxError, 1, 0 );
 			score = THREE.MathUtils.clamp( score, 0, 1 );
 		
-console.log('score',score);
+//console.log('score',score,'error',error);
 
 		return score * points;
 
@@ -113,6 +113,8 @@ console.log('score',score);
 		
 		this.clackSound?.play();
 
+		this.spinner.activate( );
+		
 		// based on TWEEN.Easing.Elastic.Out
 		function myElasticOut( amount )
 		{
@@ -146,10 +148,10 @@ console.log('score',score);
 		this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
 		this.slideOnSound = new PlaygroundAudio( 'sounds/slide-on.mp3', 0.05, 8 );
 		this.slideOffSound = new PlaygroundAudio( 'sounds/slide-off.mp3', 0.1 );
-		//this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.2, 1, true );
+		this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.2, 1, true );
 		
 		this.soundEffects.push( this.clickSound, this.clackSound, this.slideOnSound, this.slideOffSound );
-		//this.soundMelody.push( this.backgroundMelody );
+		this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
 	
 	
