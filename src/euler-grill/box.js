@@ -294,6 +294,8 @@ class Box extends Group
 	
 	calculateEuler( )
 	{
+		var count;
+		
 		this.F = 0;
 		this.E = 0;
 		this.V = 0;
@@ -317,7 +319,7 @@ class Box extends Group
 				// a box of 2x2x2 cubes around each vertex
 				// if 0 cubes - no vertex (external vertex)
 				// if 8 cubes - no vertex (internal vertex)
-				var count = 0;
+				count = 0;
 				count += this.space[x][y][z]+this.space[x+1][y][z];
 				count += this.space[x][y+1][z]+this.space[x+1][y+1][z];
 				count += this.space[x][y][z+1]+this.space[x+1][y][z+1];
@@ -351,7 +353,7 @@ class Box extends Group
 		for( var y=-1; y<this.N; y++ )
 		for( var z=-1; z<this.N; z++ )
 		{
-			var count = 0;
+			count = 0;
 			for( var dx=0; dx<2; dx++ )
 			for( var dy=0; dy<2; dy++ )
 			for( var dz=0; dz<2; dz++ )
