@@ -32,7 +32,7 @@ class Spinner extends Group
 		this.rightHandle = this.handle( offset, -90 );
 		
 		this.add( leftRotor, rightRotor, this.leftHandle, this.rightHandle, this.box/*, axisLine*/ );
-		
+
 		this.addEventListener( 'click', this.onClick );
 //.//		this.addEventListener( 'pointerMove', this.onPointerMove );
 //.//		this.addEventListener( 'pointerDown', this.onPointerDown );

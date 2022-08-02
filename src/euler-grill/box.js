@@ -102,15 +102,23 @@ class Box extends Group
 //		console.log('T =',this.T,'N =',this.N);
 		
 		this.size = Box.SIZE/this.N
-		//this.fullBox.size = this.N;
-		//this.fullEdges.size = this.N;
-		//this.wrapper.size = this.N;
-		
+
 		// generate a new shape
-		this.generateSpace( );
-		this.generateTunnels( );
-		this.regenerateNonManifolds( );
-		this.calculateEuler( );
+		var that = this;
+		function regenerate( )
+		{
+			that.generateSpace( );
+			that.generateTunnels( );
+			that.regenerateNonManifolds( );
+			that.calculateEuler( );
+		}
+		
+		// is it too easy? try another regenaration, up to 4 times
+		regenerate( );
+		if( this.complexity-playground?.difficulty<-30 ) regenerate( );
+		if( this.complexity-playground?.difficulty<-30 ) regenerate( );
+		if( this.complexity-playground?.difficulty<-30 ) regenerate( );
+
 
 		// update the geometries
 		var geometry = this.generateGeometry( ).scale(1/this.N,1/this.N,1/this.N);
@@ -169,19 +177,19 @@ class Box extends Group
 		{	// generate random tunel
 			function iRandom( a, b ) { return Math.floor(random(a,b+1)); }
 			
-			a1 = iRandom( 0, N-1 );
-			a2 = iRandom( a1, N-1 );
-			b1 = iRandom( 0, N-1 );
-			b2 = iRandom( b1, N-1 );
+			a1 = iRandom( 0, N-2 );
+			a2 = iRandom( a1+1, N-1 );
+			b1 = iRandom( 0, N-2 );
+			b2 = iRandom( b1+1, N-1 );
 			
-			if( iRandom(0,1)>-0.4 )
+			if( random(0,1)>-0.4 )
 			{	// whole hole
 				c1 = 0;
 				c2 = N-1;
 			}
 			else
 			{	// only dent
-				if( iRandom(0,1)>0.5 )
+				if( random(0,1)>0.5 )
 				{
 					c1 = 0;
 					c2 = iRandom( 0,N-2 );
@@ -336,6 +344,21 @@ class Box extends Group
 		// console.log('E =',this.E);
 		// console.log('V =',this.V);
 		// console.log('F-E+V =',this.F-this.E+this.V);
+
+		// calculate complecity
+		this.complexity = 0;
+		for( var x=-1; x<this.N; x++ )
+		for( var y=-1; y<this.N; y++ )
+		for( var z=-1; z<this.N; z++ )
+		{
+			var count = 0;
+			for( var dx=0; dx<2; dx++ )
+			for( var dy=0; dy<2; dy++ )
+			for( var dz=0; dz<2; dz++ )
+				count += this.space[x+dx][y+dy][z+dz]
+			this.complexity += count%2;
+		}
+//		if( playground ) console.log('complexity',complexity,'diff',(complexity-playground.difficulty)+'%');
 	} // Box.calculateEuler
 	
 	
