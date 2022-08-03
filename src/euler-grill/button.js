@@ -8,6 +8,7 @@ class Button extends Group
 {
 	static SIZE = 8;
 	static YOYO_SPEED = 150; // in ms
+	static POINTER_USED = false; // true when the pointer is used by orbit controls
 	
 	constructor( )
 	{
@@ -21,6 +22,9 @@ class Button extends Group
 		this.addEventListener( 'click', this.onClick );
 		this.addEventListener( 'pointerenter', this.onMark );
 		this.addEventListener( 'pointerleave', this.onUnmark );
+		
+		orb.addEventListener( 'start', () => Button.POINTER_USED=true  );
+		orb.addEventListener( 'end', () => Button.POINTER_USED=false );
 		
 		this.add( this.basePlate, this.colorPlate );
 	} // Button.constructor
@@ -57,6 +61,7 @@ class Button extends Group
 	// marks the button when the mouse pointer goes over it
 	onMark( )
 	{
+		if( Button.POINTER_USED ) return;
 		this.colorPlate.color = 'gold';
 	} // Button.onMark
 	

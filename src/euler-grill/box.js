@@ -75,11 +75,6 @@ class Box extends Group
 			its.wireframe = true;
 			its.image = dotted;
 			its.images = 60;
-			// its.threejs.material.transparent = true;
-			// its.threejs.material.opacity = 0, //0.5;
-			// its.threejs.material.polygonOffset = true;
-			// its.threejs.material.polygonOffsetUnits = 1;
-			// its.threejs.material.polygonOffsetFactor = 1;
 		
 		this.add( this.fullBox, this.fullEdges, this.edges, this.backBox, this.frontBox, this.wrapper );
 
@@ -99,8 +94,6 @@ class Box extends Group
 
 	regenerateBox( )
 	{
-//		console.log('T =',this.T,'N =',this.N);
-		
 		this.size = Box.SIZE/this.N
 
 		// generate a new shape
@@ -113,7 +106,7 @@ class Box extends Group
 			that.calculateEuler( );
 		}
 		
-		// is it too easy? try another regenaration, up to 4 times
+		// is it too easy? try another regenaration, several times times
 		regenerate( );
 		if( this.complexity-playground?.difficulty<-30 ) regenerate( );
 		if( this.complexity-playground?.difficulty<-30 ) regenerate( );
@@ -131,6 +124,7 @@ class Box extends Group
 		
 		this.edges.threejs.geometry.dispose( );
 		this.edges.threejs.geometry = new THREE.EdgesGeometry( geometry );
+		
 	} // Box.regenerateBox
 
 	
@@ -162,14 +156,6 @@ class Box extends Group
 	{
 		var N = this.N,
 			T = this.T;
-
-// console.log(this.space);
-// for (var i=0; i<4; i++)
-	// this.space[i][2][2] = 0;
-// for (var i=4; i<N; i++)
-	// this.space[i][3][2] = 0;
-// return
-
 		
 		var a1,a2,b1,b2,c1,c2;
 		
@@ -289,7 +275,7 @@ class Box extends Group
 				}
 			}
 		}
-	}
+	} // Box.regenerateNonManifolds
 	
 	
 	calculateEuler( )
@@ -304,7 +290,7 @@ class Box extends Group
 		for( var z=0; z<this.N; z++ )
 			if (this.space[x][y][z])
 			{
-//cube( [5*x-5*(this.N/2-1),5*y-5*(this.N/2-1),5*z-5*(this.N-1)/2], 4.5 );				
+				//cube( [5*x-5*(this.N/2-1),5*y-5*(this.N/2-1),5*z-5*(this.N-1)/2], 4.5 );				
 				if (!this.space[x+1][y][z] ) this.F++;
 				if (!this.space[x-1][y][z] ) this.F++;
 				if (!this.space[x][y+1][z] ) this.F++;
@@ -360,7 +346,7 @@ class Box extends Group
 				count += this.space[x+dx][y+dy][z+dz]
 			this.complexity += count%2;
 		}
-//		if( playground ) console.log('complexity',complexity,'diff',(complexity-playground.difficulty)+'%');
+
 	} // Box.calculateEuler
 	
 	
@@ -490,14 +476,9 @@ class Box extends Group
 		geometry.setAttribute( 'normal', new THREE.BufferAttribute(norArr,3) );
 		geometry.setAttribute( 'uv', new THREE.BufferAttribute(texArr,2) );
 			
-// console.log('min',minX,minY,minZ);
-// console.log('max',maxX,maxY,maxZ);
-
 		return geometry;
 	} // Box.generateGeometry
 
-
-	
 	
 	
 	// state: 0=stopped, 1=fully working
