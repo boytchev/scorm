@@ -71,7 +71,18 @@ class Base extends Group
 		var groove2 = square( [0,-Base.PILLAR_SIZE[1]+0.01,-Slider.OFFSET], Base.GROOVE_SIZE, 'black' );
 			its.spinV = 90;
 		
-		this.add( base, border, groove1, groove2 );
+		// base shadow
+		var shadow = square( [0,-Base.PILLAR_SIZE[1]-Base.SIZE[1],0], [Base.SIZE[0]+2,Base.SIZE[2]+2] );
+			its.spinV = -90;
+			its.threejs.material = new THREE.MeshBasicMaterial( {
+				color: 'black',
+				alphaMap: ScormUtils.image( 'floor_shadow_alpha.jpg' ),
+				transparent: true,
+			});
+			its.threejs.renderOrder = -10;
+		
+		
+		this.add( base, border, groove1, groove2, shadow );
 	}
 	
 	
