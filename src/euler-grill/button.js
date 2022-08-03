@@ -30,6 +30,9 @@ class Button extends Group
 	// handles clicks on a plate
 	onClick( )
 	{
+		// avoid fake onClicks -- this is when the pointer is dragged
+		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+
 		new TWEEN.Tween( this )
 				.to( {height:1/2}, Button.YOYO_SPEED )
 				.easing( TWEEN.Easing.Cubic.Out )
