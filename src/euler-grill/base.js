@@ -114,6 +114,7 @@ class Base extends Group
 			color: 'white',
 			metalness: 0,
 			roughness: 0.42,
+			side: THREE.FrontSide,
 			map: map,
 			normalMap: normalMap,
 			normalScale: new THREE.Vector2( 0.5, 0.5 ),
@@ -127,6 +128,13 @@ class Base extends Group
 			its.solidMesh.material = material;
 			ScormUtils.addUV2( pillar );
 		this.add( pillar );
+
+		var uv2 = geometry.getAttribute( 'uv2' );
+		for( var i=0; i<nor.count; i++ )
+		{
+			if( nor.getX(i)==0 )
+				uv2.setXY( i, 0, 0 );
+		}
 		
 		// left pillar
 		pillar = pillar.clone;
