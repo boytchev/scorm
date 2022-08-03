@@ -25,28 +25,29 @@ class Base extends Group
 		
 		this.addEventListener( 'click', this.onClick );
 
-	} // Box.constructor
+	} // Base.constructor
 
 
 
-	// handles clicks on the box
+	// handles clicks on the base
 	onClick( )
 	{
-		// avoid fake onClicks -- this is when the pointer is dragged
+		// avoid fake onClicks
 		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 			
-		// if game is not started, click on any plate will start it
+		// if game is not started, click on the base will start it
 		if( !playground.gameStarted )
 		{
 			playground.newGame( );
 		}
-	} // Spinner.onClick
+	} // Base.onClick
 	
 	
 	
 	// construct the base
 	constructBase( )
 	{
+		// main body of the base
 		var map = ScormUtils.image( 'metal_plate.jpg', Base.SIZE[0]/4, Base.SIZE[2]/4 ),
 			normalMap = ScormUtils.image( 'metal_plate_normal.jpg', Base.SIZE[0]/4, Base.SIZE[2]/4 ),
 			lightMap = ScormUtils.image( 'base_antilight.jpg', 1, 1 );
@@ -65,13 +66,14 @@ class Base extends Group
 			its.threejs.material = material;
 		ScormUtils.addUV2( base );
 			
+		// black border of the base
 		var border = cube( [0,-Base.PILLAR_SIZE[1]-Base.SIZE[1]/2-0.01,0], [Base.SIZE[0]+0.02,Base.SIZE[1],Base.SIZE[2]+0.02], 'black' );
 		var groove1 = square( [0,-Base.PILLAR_SIZE[1]+0.01,Slider.OFFSET], Base.GROOVE_SIZE, 'black' );
 			its.spinV = 90;
 		var groove2 = square( [0,-Base.PILLAR_SIZE[1]+0.01,-Slider.OFFSET], Base.GROOVE_SIZE, 'black' );
 			its.spinV = 90;
 		
-		// base shadow
+		// shadow under the base
 		var shadow = square( [0,-Base.PILLAR_SIZE[1]-Base.SIZE[1],0], [Base.SIZE[0]+2,Base.SIZE[2]+2] );
 			its.spinV = -90;
 			its.threejs.material = new THREE.MeshBasicMaterial( {
@@ -81,9 +83,8 @@ class Base extends Group
 			});
 			its.threejs.renderOrder = -10;
 		
-		
 		this.add( base, border, groove1, groove2, shadow );
-	}
+	} // Base.constructBase
 	
 	
 	
@@ -111,7 +112,7 @@ class Base extends Group
 			// black border
 			if( nor.getX(i)==0 )
 				nor.setXYZ( i, 0, 0, 0 );
-			
+
 			// texture
 			uv.setXY( i, 1/2+pos.getZ(i), 1/2+pos.getY(i) );
 		}
@@ -140,6 +141,7 @@ class Base extends Group
 			ScormUtils.addUV2( pillar );
 		this.add( pillar );
 
+		// add black border
 		var uv2 = geometry.getAttribute( 'uv2' );
 		for( var i=0; i<nor.count; i++ )
 		{
@@ -154,7 +156,7 @@ class Base extends Group
 		pillar.x = -Base.PILLAR_POS;
 		pillar.spin = 180;
 		this.add( pillar );
-	}
+	} // Base.constructPillars
 	
 	
 	
@@ -191,13 +193,6 @@ class Base extends Group
 		this.add( scale );
 		
 	} // Base.constructScale
-	
-
-
-	update( )
-	{
-
-	} // Base.update
 	
 } // class Base
 

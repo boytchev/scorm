@@ -53,19 +53,15 @@ class Playground extends ScormPlayground
 		this.spinner.deactivate( );
 		
 		Spinner.SPEED = random([-1,1]) * THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0, 50 ); 
-		
-		var tunnels = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 1, 8 ) - random([0,1]) ),
-			n = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 6, 12 ) );
-//console.log('tunnels',tunnels,'n',n);
 
-		// 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
-		// e e m m m d d
-		// e=easy m=medium h=hard
+		// tunnels
+		var tunnels = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 1, 8 ) - random([0,1]) );
 		this.spinner.box.T = {x: 0, y:0, z:0};
 		for( var i=0; i<tunnels; i++ )
 			this.spinner.box.T[random(['x','y','z'])]++;
 		
-		this.spinner.box.N = n; //numbed of grid units
+		//numbed of grid units
+		this.spinner.box.N = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 6, 12 ) );
 
 		this.spinner.box.regenerateBox( );
 
@@ -97,8 +93,6 @@ class Playground extends ScormPlayground
 		
 		var score = THREE.MathUtils.mapLinear( error, 0, maxError, 1, 0 );
 			score = THREE.MathUtils.clamp( score, 0, 1 );
-		
-//console.log('score',score,'error',error);
 
 		return score * points;
 
@@ -158,8 +152,6 @@ class Playground extends ScormPlayground
 	update( t, dT )
 	{
 		this.spinner.update( t, dT );
-		this.base.update( );
-//		this.slider.x = Base.GROOVE_SIZE[0]/2*Math.sin(t);
 	}
 	
 	
@@ -184,5 +176,4 @@ class Playground extends ScormPlayground
 	}
 	
 	
-
 } // class Playground

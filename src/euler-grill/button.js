@@ -30,7 +30,7 @@ class Button extends Group
 	// handles clicks on a plate
 	onClick( )
 	{
-		// avoid fake onClicks -- this is when the pointer is dragged
+		// avoid fake onClicks
 		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 
 		new TWEEN.Tween( this )
@@ -40,7 +40,7 @@ class Button extends Group
 				.yoyo( true )
 				.start( );
 
-		// if game is not started, click on any plate will start it
+		// if game is not started, click on the button will start it
 		if( playground.gameStarted )
 		{
 			if( playground.canEndGame() )
@@ -54,7 +54,7 @@ class Button extends Group
 	
 	
 	
-	// marks a plate when the mouse pointer goes over it
+	// marks the button when the mouse pointer goes over it
 	onMark( )
 	{
 		this.colorPlate.color = 'gold';
@@ -62,7 +62,7 @@ class Button extends Group
 	
 	
 	
-	// unmarks a plate when the mouse pointer goes out of it
+	// unmarks the button when the mouse pointer goes out of it
 	onUnmark( )
 	{
 		this.colorPlate.color = 'goldenrod';
