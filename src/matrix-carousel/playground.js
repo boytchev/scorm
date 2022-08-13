@@ -12,6 +12,9 @@ class Playground extends ScormPlayground
 	{
 		super( );
 		
+		new Base( );
+		
+		
 		this.resize( );
 
 		this.translate( [
