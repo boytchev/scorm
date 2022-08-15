@@ -5,15 +5,15 @@
 	
 class Matrix extends Group
 {
+	static allMatrixData;
 	
 	constructor( )
 	{
 		super( suica );
 
-//.//		this.arenas = [];	
-		this.matrixData = [];
-		this.generateMatrixData( );
-		console.log(this.matrixData);
+		if( !Matrix.allMatrixData )
+			this.generateAllMatrixData( );
+
 		this.addEventListener( 'click', this.onClick );
 
 	} // Matrix.constructor
@@ -36,7 +36,7 @@ class Matrix extends Group
 	
 	
 	// generate a list of all possible matrices
-	generateMatrixData( )
+	generateAllMatrixData( )
 	{
 		// group 0	I				0
 		// group 1	Tx Ty Tz		1..6
@@ -56,7 +56,7 @@ class Matrix extends Group
 			SN = Math.sin(Math.PI/2),	// rot value
 			CS = Math.cos(Math.PI/2);	// rot value
 			
-		this.matrixData = [
+		Matrix.allMatrixData = [
 			//0
 			{id:'I', matrix:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]],			step:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]]},
 			//1
@@ -142,7 +142,7 @@ class Matrix extends Group
 			//.....
 		];
 		
-		for( var data of this.matrixData )
+		for( var data of Matrix.allMatrixData )
 		{
 			if (!data.offset) data.offset = [0, 0, 0];
 		}
