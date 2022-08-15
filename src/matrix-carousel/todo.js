@@ -1,11 +1,8 @@
-// 1138 -> 748 (66%)
+// 1138 -> 686 (60%)
 
 MEIRO.Models.T007.prototype.initialize = function()
 {
 	this.matrixData = [];
-	
-	this.ARENA_RADIUS = 1.5;
-	this.ARENA_DISTANCE = 4.9;
 	
 	this.DIGIT_SIZE = 0.3;
 	
@@ -23,7 +20,6 @@ MEIRO.Models.T007.prototype.initialize = function()
 	this.carouselSpin = random(1,5);
 	this.carouselUp = 0;
 	this.carouselBack = 0;
-	this.carousel = new THREE.Group();
 	
 	this.animationSteps = 90;
 	this.animationStep = 0;
@@ -47,30 +43,6 @@ MEIRO.Models.T007.prototype.initialize = function()
 	
 MEIRO.Models.T007.prototype.constructCarousel = function()
 {
-
-	// pillar
-	var textureMap = MEIRO.loadTexture( "textures/007_pillar.jpg", 1, 1 );
-	var normalMap = MEIRO.loadTexture( "textures/metric_plate_256x256_normal.jpg", 1, 1 );
-	
-	var points = [];
-	var r = 3.2;
-	for ( var i = 0; i < 5*this.SYSTEM_HEIGHT; i ++ )
-	{
-		points.push( new THREE.Vector2(r,i/5));
-		r = r*0.92
-	}
-	var geometryPillar = new THREE.LatheBufferGeometry( points, 32 );
-	var material = new THREE.MeshStandardMaterial({
-		color: 'cornflowerblue',
-		metalness: 0.2,
-		map: textureMap,
-		normalMap: normalMap,
-		normalScale: new THREE.Vector2(0.5,0.5),
-	});
-	this.pillar = new THREE.Mesh( geometryPillar, material );
-	this.pillar.position.y = this.BASE_HEIGHT;
-	this.carousel.add( this.pillar );
-	
 	// topper
 	var geometryTopper = new THREE.SphereBufferGeometry(1,12);
 	var material = new THREE.MeshStandardMaterial({
@@ -276,40 +248,6 @@ MEIRO.Models.T007.prototype.constructSystems = function()
 		this.systems.push( system );
 	}
 }
-
-MEIRO.Models.T007.prototype.constructArenas = function()
-{
-	var arenas = this.config.arenas;
-	var angle = 2*Math.PI/arenas;
-	var dArena = Math.round(6/arenas);
-	
-	var geometry = new THREE.CircleBufferGeometry(this.ARENA_RADIUS,48);
-	geometry.rotateX(-Math.PI/2);
-	geometry.rotateY(Math.PI/2);
-	geometry.translate(this.ARENA_DISTANCE,0,0);
-	
-	for (var i=0; i<arenas; i++)
-	{
-		var matrixData = this.matrixData[i*dArena];
-		var textureMap = this.constructMatrixTexture(matrixData.matrix);
-
-		var material = new THREE.MeshBasicMaterial({
-			color: 'white',
-			map: textureMap,
-			polygonOffset: true,
-			polygonOffsetUnits: -1,
-			polygonOffsetFactor: -1,
-		});
-		
-		var arena = new THREE.Mesh(geometry,material);
-		arena.rotation.y = -i*angle;
-		arena.position.set(0,this.BASE_HEIGHT,0);
-		this.image.add( arena );
-		
-		//this.arenas.push( matrixData );
-	}
-}
-
 
 
 MEIRO.Models.T007.prototype.randomMatrix = function()

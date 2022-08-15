@@ -89,4 +89,11 @@ class Playground extends ScormPlayground
 		//this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
 	
+	
+	
+	// update the playground
+	update( t, dT )
+	{
+		// ...
+	}
 } // class Playground

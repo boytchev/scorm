@@ -709,9 +709,9 @@ if(DEBUG_CALLS)console.log(`Suica :: ${this.id}`);this.suicaTag=suicaTag;this.is
 {THREE.MathUtils.seededRandom(1);}
 else
 {this.canvas.addEventListener('contextmenu',Suica.onContextMenu);THREE.MathUtils.seededRandom(Math.round(Number.MAX_SAFE_INTEGER*Math.random()));}
-for(var classObject of[Point,Line,Square,Cube,Polygon,Sphere,Group,Tube,Surface,Prism,Cylinder,Cone,Pyramid,Circle,Convex,Model,Construct,Text3D,Capture])
+for(var classObject of[Point,Line,Square,Cube,Polygon,Sphere,Group,Tube,Surface,Prism,Cylinder,Cone,Pyramid,Circle,Convex,Extrude,Model,Construct,Text3D,Capture])
 {Suica.registerClass(this,classObject);}
-for(var methodName of['cube','square','sphere','point','line','group','cylinder','prism','cone','pyramid','circle','polygon','tube','surface','lookAt','fullScreen','fullWindow','proactive','anaglyph','stereo','perspective','orthographic','lookAt','background','oxyz','demo','allObjects','convex','model','construct','text3d','capture','orbit'])
+for(var methodName of['cube','square','sphere','point','line','group','cylinder','prism','cone','pyramid','circle','polygon','tube','surface','lookAt','fullScreen','fullWindow','proactive','anaglyph','stereo','perspective','orthographic','lookAt','background','oxyz','demo','allObjects','convex','extrude','model','construct','text3d','capture','orbit'])
 {Suica.register(this,methodName);}
 this.model.save=function(...params)
 {this.parser?.parseTags();return Model.save(...params);}
@@ -1033,7 +1033,7 @@ class StereoEffect extends THREE.StereoEffect
 ﻿
 class HTMLParser
 {constructor(suica)
-{this.suica=suica;this.openGroups=[];this.openDrawings=[];}
+{this.suica=suica;this.openGroups=[];this.openDrawing=false;}
 parseTags()
 {this.suica.debugCall('parseTags');this.suica.parser=null;this.suica.parserReadonly=this;this.parseTagsInElement(this.suica,this.suica.suicaTag);this.suica.render();}
 parseTagsInElement(that,elem)
@@ -1044,13 +1044,13 @@ this.openGroups[this.openGroups.length-1].add(newObject);}
 else
 console.error(`error: unknown tag <${tagName}> in <${that.tagName}>`);if(tagName=='GROUP')
 {this.openGroups.push(newObject);}
-if(tagName=='DRAWING')
-{this.openDrawings.push(newObject);}
+if(tagName=='DRAWING'||tagName=='SHAPE')
+{if(this.openDrawing)throw'Cannot start a drawing/shape inside another drawing/shape';this.openDrawing=true;}
 this.parseTagsInElement(this.suica,tagElement);if(tagName=='GROUP')
 {var group=this.openGroups.pop();if(tagElement.hasAttribute('color'))
 {group.color=tagElement.getAttribute('color');}}
-if(tagName=='DRAWING')
-{this.openDrawings.pop();}}}
+if(tagName=='DRAWING'||tagName=='SHAPE')
+{this.openDrawing=false;}}}
 parseTagBUTTON(suica,elem){}
 parseTagCANVAS(suica,elem){}
 parseTagDIV(suica,elem){}
@@ -1155,7 +1155,9 @@ parseTagSPLANE(suica,elem)
 parseTagGROUP(suica,elem)
 {var p=suica.group();if(elem.hasAttribute('center'))p.center=elem.getAttribute('center');if(elem.hasAttribute('size'))p.size=elem.getAttribute('size');if(elem.hasAttribute('spin'))p.spin=elem.getAttribute('spin');suica.parserReadonly.parseAttributes(elem,p,{widthHeight:true,depth:true,spin:true,visible:true});elem.suicaObject=p;return p;}
 parseTagCONVEX(suica,elem)
-{var points=elem.getAttribute('src');points=Suica.evaluate('[['+points.replaceAll(';','],[')+']]');var p=convex(points,elem.getAttribute('size'),elem.getAttribute('color'));suica.parserReadonly.parseAttributes(elem,p,{widthHeight:true,depth:true,spin:true,visible:true});return p;}
+{var points=elem.getAttribute('src');points=Suica.evaluate('[['+points.replaceAll(';','],[')+']]');var p=convex(points,elem.getAttribute('size'),elem.getAttribute('color'));suica.parserReadonly.parseAttributes(elem,p,{widthHeight:true,depth:true,spin:true,visible:true});elem.suicaObject=p;return p;}
+parseTagEXTRUDE(suica,elem)
+{var src=elem.getAttribute('src');src=Suica.evaluate('['+src+']');var p=extrude(src,elem.getAttribute('center'),elem.getAttribute('size'),elem.getAttribute('color'));p.radius=Drawing.parseN(elem,'radius',Extrude.RADIUS);p.offset=Drawing.parseN(elem,'offset',Extrude.OFFSET);p.count=Suica.parseSize(elem.getAttribute('count'),[Extrude.COUNT,Extrude.SHAPECOUNT]);suica.parserReadonly.parseAttributes(elem,p,{widthHeight:true,depth:true,spin:true,visible:true});elem.suicaObject=p;return p;}
 parseTagCLONE(suica,elem)
 {var sourceId=elem.getAttribute('src');if(!window[sourceId])
 {console.error(`error: unknown object name '${sourceId}' in attribute 'src' of tag <clone>`);return;}
@@ -1170,6 +1172,8 @@ if(size.length==2)
 else
 {width=height=size;}}
 var p=drawing(width,height,color);var id=elem.getAttribute('id');if(id)window[id]=p;elem.suicaObject=p;return p;}
+parseTagSHAPE(suica,elem)
+{var p=shape(elem.getAttribute('count'));var id=elem.getAttribute('id');if(id)window[id]=p;elem.suicaObject=p;return p;}
 parseTagMOVETO(suica,elem)
 {moveTo(...Drawing.parseXY(elem,'point','x','y'));}
 parseTagLINETO(suica,elem)
@@ -1188,7 +1192,7 @@ parseTagCLEAR(suica,elem)
 {var color=elem.getAttribute('color')||elem.getAttribute('background');clear(color);}}
 class Drawing
 {static SIZE=32;static COLOR=null;static ARC_RADIUS=10;static ARC_FROM=0;static ARC_TO=360;static ARC_CW=true;static FILL_COLOR='gray';static STROKE_COLOR='black';static STROKE_WIDTH=1;static STROKE_CLOSED=false;static FONT='20px Arial';static current;constructor(width=Drawing.SIZE,height=width,color=Drawing.COLOR,newCanvas=true)
-{if(newCanvas)
+{if(width!==null&&newCanvas)
 {this.canvas=document.createElement('canvas');this.canvas.width=width;this.canvas.height=height;this.texture=null;this.context=this.canvas.getContext('2d');this.context.clearRect(0,0,width,height);if(color)
 {this.context.fillStyle=color;this.context.fillRect(0,0,width,height);}
 this.needsNewPath=true;}
@@ -1218,16 +1222,24 @@ return defaultValue;}
 managePath()
 {if(this.needsNewPath)
 {this.context.beginPath();this.needsNewPath=false;}}
+_moveTo(x,y)
+{this.context.moveTo(x,this.canvas.height-y);}
+_lineTo(x,y)
+{this.context.lineTo(x,this.canvas.height-y);}
+_quadraticCurveTo(mx,my,x,y)
+{this.context.quadraticCurveTo(mx,this.canvas.height-my,x,this.canvas.height-y);}
+_arc(x,y,r,from,to,cw)
+{this.context.arc(x,this.canvas.height-y,r,from,to,cw);}
 moveTo(x=0,y=0,...morePoints)
-{this.managePath();this.context.moveTo(x,this.canvas.height-y);for(var i=0;i<morePoints.length;i+=2)
-{x=morePoints[i]||0;y=morePoints[i+1]||0;this.context.lineTo(x,this.canvas.height-y);}}
+{this.managePath();this._moveTo(x,y);for(var i=0;i<morePoints.length;i+=2)
+{x=morePoints[i]||0;y=morePoints[i+1]||0;this._lineTo(x,y);}}
 lineTo(x=0,y=0,...morePoints)
-{this.managePath();this.context.lineTo(x,this.canvas.height-y);for(var i=0;i<morePoints.length;i+=2)
-{x=morePoints[i]||0;y=morePoints[i+1]||0;this.context.lineTo(x,this.canvas.height-y);}}
+{this.managePath();this._lineTo(x,y);for(var i=0;i<morePoints.length;i+=2)
+{x=morePoints[i]||0;y=morePoints[i+1]||0;this._lineTo(x,y);}}
 curveTo(mx=0,my=0,x=0,y=0)
-{this.managePath();this.context.quadraticCurveTo(mx,this.canvas.height-my,x,this.canvas.height-y);}
+{this.managePath();this._quadraticCurveTo(mx,my,x,y);}
 arc(x=0,y=0,r=Drawing.ARC_RADIUS,from=Drawing.ARC_FROM,to=Drawing.ARC_TO,cw=Drawing.ARC_CW)
-{this.managePath();this.context.arc(x,this.canvas.height-y,r,THREE.MathUtils.degToRad(from-90),THREE.MathUtils.degToRad(to-90),!cw);}
+{this.managePath();this._arc(x,y,r,THREE.MathUtils.degToRad(from-90),THREE.MathUtils.degToRad(to-90),!cw);}
 fillText(x=0,y=0,text='',color=Drawing.FILL_COLOR,font=Drawing.FONT)
 {if(this.texture)this.texture.needsUpdate=true;this.context.fillStyle=color;this.context.font=font;this.context.fillText(text,x,this.canvas.height-y);}
 cssColor(color)
@@ -1251,12 +1263,40 @@ return this.texture;}
 get clone()
 {var newDrawing=drawing(this.canvas.width,this.canvas.height,'white',false);newDrawing.canvas=this.canvas;newDrawing.context=this.context;newDrawing.texture=this.texture;return newDrawing;}
 static precheck()
-{if(!(Drawing.current instanceof Drawing))
-throw'error: No Drawing instance is active';}}
+{if(!(Drawing.current instanceof Drawing)&&!(Drawing.current instanceof Shape))
+throw'error: No drawing or shape instance is active';}}
 window.drawing=function(...params)
 {Drawing.current=new Drawing(...params);return Drawing.current;}
 window.image=function(url=null)
 {var texture=new THREE.TextureLoader().load(url);texture.wrapS=THREE.RepeatWrapping;texture.wrapT=THREE.RepeatWrapping;texture.magFilter=THREE.LinearFilter;texture.minFilter=THREE.LinearMipmapLinearFilter;texture.anisotropy=window.suica.renderer.capabilities.getMaxAnisotropy();return texture;}
+class Shape extends Drawing
+{static COUNT=10;static current;constructor(count)
+{super(null);suica.parser?.parseTags();suica.debugCall('shape',count);this.count=Suica.parseNumber(count,Shape.COUNT);this.shape=new THREE.Shape();}
+managePath()
+{}
+_moveTo(x,y)
+{this.shape.moveTo(x,y);}
+_lineTo(x,y)
+{this.shape.lineTo(x,y);}
+_quadraticCurveTo(mx,my,x,y)
+{this.shape.quadraticCurveTo(mx,my,x,y);}
+_arc(x,y,r,from,to,cw)
+{this.shape.arc(x,y,r,from,to,cw);}
+fillText()
+{throw'fillText() is supported only in drawings, not in shapes';}
+stroke()
+{throw'stroke() is supported only in drawings, not in shapes';}
+fill()
+{throw'fill() is supported only in drawings, not in shapes';}
+clear()
+{throw'clear() is supported only in drawings, not in shapes';}
+get clone()
+{var newShape=shape();newShape.shape=this.shape.clone();return newShape;}
+get vertices()
+{var vertices=[];for(var point of this.shape.extractPoints(this.count).shape)
+vertices.push([point.x,point.y,0]);return vertices;}}
+window.shape=function(...params)
+{Drawing.current=new Shape(...params);return Drawing.current;}
 ﻿
 class Mesh
 {static id=0;constructor(suica,solidMesh,frameMesh)
@@ -1687,6 +1727,36 @@ get clone()
 {var object=new Convex(this.suica,this._points,this.size,this.color);object.spin=this.spin;object.image=this.image;object.visible=this.visible;Suica.cloneEvents(object,this);return object;}
 set src(points)
 {this._points=points;this.threejs.geometry.dispose();this.threejs.geometry=Convex.generateGeometry(points);}}
+﻿
+class Extrude extends Mesh
+{static SIZE=[1,1,1];static COLOR='lightsalmon';static RADIUS=0;static OFFSET=0;static COUNT=10;static SHAPECOUNT=10;constructor(suica,shapes,center,size,color)
+{suica.parser?.parseTags();suica.debugCall('extrude',shapes,center,size,color);var shape;var settings={steps:1,depth:1,curveSegments:Extrude.SHAPECOUNT,bevelEnabled:true,bevelThickness:Extrude.RADIUS,bevelSize:Extrude.RADIUS,bevelOffset:Extrude.OFFSET,bevelSegments:Extrude.COUNT};if(shapes instanceof THREE.Shape)
+{shape=shapes;settings=shapes.settings;}
+else
+if(shapes instanceof Array)
+{shape=shapes[0].shape.clone();shape.holes=[];for(var i=1;i<shapes.length;i++)
+shape.holes.push(shapes[i].shape.clone());}
+else
+{shape=shapes.shape.clone();shape.holes=[];}
+var geometry=new THREE.ExtrudeGeometry(shape,settings);super(suica,new THREE.Mesh(geometry,Mesh.solidMaterial.clone()),null,);this.shape=shape;this.settings=settings;this.center=Suica.parseCenter(center);this.size=Suica.parseSize(size,Extrude.SIZE);this.color=Suica.parseColor(color,Extrude.COLOR);}
+get radius()
+{return this.settings.bevelThickness;}
+set radius(radius)
+{this.settings.bevelThickness=Math.abs(radius/this.depth);this.settings.bevelSize=radius/this.width;this.solidMesh.geometry.dispose();this.solidMesh.geometry=new THREE.ExtrudeGeometry(this.shape,this.settings);}
+get offset()
+{return this.settings.bevelOffset;}
+set offset(offset)
+{this.settings.bevelOffset=offset;this.solidMesh.geometry.dispose();this.solidMesh.geometry=new THREE.ExtrudeGeometry(this.shape,this.settings);}
+get count()
+{return[this.settings.bevelSegments,this.settings.curveSegments];}
+set count(count)
+{if(count instanceof Array)
+{this.settings.bevelSegments=count[0];this.settings.curveSegments=count[1]||count[0];}
+else
+{this.settings.bevelSegments=count;}
+this.solidMesh.geometry.dispose();this.solidMesh.geometry=new THREE.ExtrudeGeometry(this.shape,this.settings);}
+get clone()
+{this.shape.settings={...this.settings};var object=new Extrude(this.suica,this.shape,this.center,this.size,this.color);object.spin=this.spin;object.image=this.image;object.visible=this.visible;Suica.cloneEvents(object,this);return object;}}
 ﻿
 class Model extends Mesh
 {static SIZE=1;constructor(suica,src,center,size)

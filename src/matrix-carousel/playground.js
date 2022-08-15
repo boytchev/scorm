@@ -13,7 +13,8 @@ class Playground extends ScormPlayground
 		super( );
 		
 		new Base( );
-		
+		new Matrix( );
+		this.carousel = new Carousel( );
 		
 		this.resize( );
 
@@ -92,4 +93,10 @@ class Playground extends ScormPlayground
 		//this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
 	
+	
+	update( t, dT )
+	{
+		this.carousel.update( dT );
+	}
+
 } // class Playground

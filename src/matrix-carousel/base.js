@@ -5,7 +5,9 @@
 	
 class Base extends Group
 {
+	static POS_Y = -10;
 	static FLOOR_SIZE = 40;
+	static SHADOW_SIZE = 49.5;
 	static BASE_SIZE = 30;
 	static BASE_HEIGHT = 4;
 	
@@ -13,10 +15,15 @@ class Base extends Group
 	{
 		super( suica );
 
+		this.arenas = [];
+		
 		this.constructBase();
+		this.constructArenas();
 		
 		this.addEventListener( 'click', this.onClick );
 
+		this.y = Base.POS_Y;
+		
 	} // Base.constructor
 
 
@@ -120,8 +127,27 @@ class Base extends Group
 			}
 		}
 
-		this.add( base, top );
+		var shadow = square( [0,-0.05,0], Base.SHADOW_SIZE );
+			its.spinV = -90;
+			its.threejs.material = new THREE.MeshBasicMaterial( {
+				color: 'black',
+				alphaMap: ScormUtils.image( 'floor_shadow_alpha.jpg' ),
+				transparent: true,
+			});
+
+		this.add( base, top, shadow );
 	} // Base.constructBase
+	
+	
+	// arenas - the white circles
+	constructArenas( )
+	{
+		for( var i=0; i<6; i++ )
+		{
+			this.arenas.push( new Arena(i) );
+		}
+	}
+	
 	
 } // class Base
 
