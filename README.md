@@ -36,4 +36,9 @@ This SCO is used for experiments with SCORM 1.2-complient LMS. It shows the list
 [ <!-- markdown-link-check-disable -->[More info](src/euler-grill/index.html)<!-- markdown-link-check-enable --> ] [ [Run online](src/euler-grill/euler-grill.html) ] [ [Download](bin/euler-grill.zip) ]
 
 
+## Matrix carousel
+
+Under development.
+
+
 <small>{{site.time | date: "%B, %Y"}}</small>

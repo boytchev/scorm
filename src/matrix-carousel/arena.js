@@ -44,7 +44,6 @@ class Arena extends Group
 		console.log( matrixData );
 		
 		var S = Arena.S,	// canvas size
-			D = S/5,		// digit size
 			H = 1.25;		// horizontal scale
 
 		this.matrixImage.clear( 'white' );	
