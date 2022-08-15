@@ -91,7 +91,6 @@ class Base extends Group
 					x1 = x*radius;
 					z1 = z*radius;
 					
-				var k = y*y;
 				pos.setXYZ( i, x2*(1-y)+x1*y, y**6-0.01, z2*(1-y)+z1*y );
 			}
 			
@@ -107,20 +106,20 @@ class Base extends Group
 			its.threejs.material.polygonOffsetFactor = -2;
 			its.threejs.material.polygonOffsetUnits = -1;
 		
-		var pos = top.threejs.geometry.getAttribute( 'position' );
+		pos = top.threejs.geometry.getAttribute( 'position' );
 		for( let i=0; i<pos.count; i++ )
 		{
 			var x = pos.getX( i ),
 				z = pos.getY( i ),
 				y = pos.getZ( i );
 				
-			var angle = Math.atan2( z, x );
+			angle = Math.atan2( z, x );
 			
 			if( x*x+z*z > 0.1 )
 			{
 				x = Math.cos(angle);
 				z = Math.sin(angle);
-				var radius = 1/2*(1+0.1*Math.cos(6*angle));
+				radius = 1/2*(1+0.1*Math.cos(6*angle));
 				x *= radius;
 				z *= radius;
 				pos.setXYZ( i, x, z, y );
