@@ -32,9 +32,9 @@ class CoSys extends Group
 			side: THREE.DoubleSide,
 		});
 
-		var rope = cone( [0,0,0], CoSys.ROPE_SIZE, 'yellow' );
-			//its.threejs.material = material;
-			//its.spinV = 180;
+		var rope = cone( [0,0,0], CoSys.ROPE_SIZE );
+			its.threejs.material = material;
+			its.spinV = 180;
 			
 		this.add( rope );
 		
