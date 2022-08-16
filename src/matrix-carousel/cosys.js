@@ -5,16 +5,15 @@
 	
 class CoSys extends Group
 {
-//	static ROPE_SIZE = [0.2, 10];
-	static ROPE_SIZE = [2, 30];
-	static BALL_SIZE = 2;
+	static ROPE_SIZE = [0.2, 10];
+	static BALL_SIZE = [2, 1];
 	
 	constructor( )
 	{
 		super( suica );
 
-		//this.constructRope( );
-		this.constructBall( );
+		this.constructRope( );
+//		this.constructBall( );
 
 	} // Arena.constructor
 
@@ -22,7 +21,7 @@ class CoSys extends Group
 	
 	constructRope( )
 	{
-		var alphaMap = ScormUtils.image( 'rope_alpha.jpg', 1, 10 );
+		var alphaMap = ScormUtils.image( 'rope_alpha.jpg', 1, 5 );
 			alphaMap.rotation = 0.025;
 			
 		var material = new THREE.MeshBasicMaterial({
@@ -35,8 +34,10 @@ class CoSys extends Group
 		var rope = cone( [0,0,0], CoSys.ROPE_SIZE );
 			its.threejs.material = material;
 			its.spinV = 180;
-			
-		this.add( rope );
+
+		var ball = prism( 6, [0,-CoSys.BALL_SIZE[1]/2,0], CoSys.BALL_SIZE, 'black' );
+
+		this.add( rope, ball );
 		
 	} // CoSys.constructRope
 
@@ -44,12 +45,6 @@ class CoSys extends Group
 	
 	constructBall( )
 	{
-		var ball = sphere( [0,0,0], 10, 'yellow' );
-		var ball2 = cube( [15,15,15], 5, 'red' );
-
-		this.add( ball, ball2 );
-		console.log( 'b1',ball );
-		console.log( 'b2',ball2 );
 	} // CoSys.constructBall
 	
 	

@@ -113,14 +113,15 @@ class Carousel extends Group
 
 	constructCoSys( )
 	{
-		for( var i=0; i<1; i++ )
+		for( var i=0; i<6; i++ )
 		{
 			var angle = radians( (i+0.5)/6 * 360 ),
 				x = Arena.DISTANCE * Math.cos( angle ),
 				z = Arena.DISTANCE * Math.sin( angle );
 			
 			var cosys = new CoSys( );
-				its.center = [x, Carousel.BRANCH_POS[1], z];
+				cosys.center = [x, Carousel.BRANCH_POS[1], z];
+				cosys.spinH = 0;
 			
 			this.cosys.push( cosys );
 			this.add( cosys );
