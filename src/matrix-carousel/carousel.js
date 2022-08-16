@@ -8,15 +8,17 @@ class Carousel extends Group
 	static PILLAR_HEIGHT = 20;
 	static PILLAR_RADIUS = 7;
 	static TOP_SIZE = [10,2,10];
-	static BRANCH_SIZE = [3,Arena.DISTANCE+1,7];
-	static BRANCH_POS = [0,Carousel.PILLAR_HEIGHT+0,0];
+	static BRANCH_SIZE = [2, Arena.DISTANCE+0.5, 6];
+	static BRANCH_POS = [0,Carousel.PILLAR_HEIGHT,0];
 	
 	constructor( )
 	{
 		super( suica );
 
-//.//		this.arenas = [];	
+		this.cosys = [];
+
 		this.constructPillar( );
+		this.constructCoSys( );
 		
 		this.addEventListener( 'click', this.onClick );
 
@@ -56,9 +58,7 @@ class Carousel extends Group
 
 		function pillarProfile( u )
 		{
-			var r1 = 1-0.9*u**0.3,
-				r2 = (1-(1-u)**0.1)/2,
-				r = THREE.MathUtils.mapLinear( u, 0, 1, r1, r2 );
+			var r = 1-0.9*u**0.3;
 			return [0,u,0,Carousel.PILLAR_RADIUS*r];
 		}
 		
@@ -74,32 +74,32 @@ class Carousel extends Group
 		// branches
 		function branchProfile( u )
 		{
-			var r = 0.7*(1-0.98*u**0.1);
-	
-			// assumes u is:
-			// 0.702...
-			// 0.820...
-			// 0.897...
-			// 0.904...
-			// 1.000
-			if( u > 0.99 ) return [0,1,0,0.01];
-			if( u > 0.91 ) return [0,1,0,0.02];
-			if( u > 0.80 ) return [0,0.95,0,0.1];
-			
+			var r = 0.1;
 			return [0,u,0,r];
 		}
 		var branch;
 		for( var i=0; i<6; i++ )
 		{
-			branch = tube( Carousel.BRANCH_POS, branchProfile, 1, [10,8], Carousel.BRANCH_SIZE );
+			branch = tube( Carousel.BRANCH_POS, branchProfile, 1, [20,16], Carousel.BRANCH_SIZE );
 			var pos = branch.threejs.geometry.getAttribute( 'position' );
 			for( var j=0; j<pos.count; j++ )
 			{
-				if( pos.getZ(j)<-0.2 ) pos.setZ( j, -0.2 );
+				var x = pos.getX( j ),
+					y = pos.getY( j ),
+					z = pos.getZ( j );
+					
+				x *= 0.1+0.9*(y+0.5)**4;
+				z *= 0.2+0.8*(1.1-y)**10;
+				
+				if( z<-0.1 ) z = -0.1;
+				if( z>0 ) z *= 4;
+				
+				pos.setXYZ( j, x, y, z );
 			}
 			its.threejs.material = material;
 			its.spinH = i/6 * 360;
 			its.spinV = 90;
+			
 			this.add( branch );
 		}
 		
@@ -111,7 +111,25 @@ class Carousel extends Group
 
 
 
-
+	constructCoSys( )
+	{
+		for( var i=0; i<1; i++ )
+		{
+			var angle = radians( (i+0.5)/6 * 360 ),
+				x = Arena.DISTANCE * Math.cos( angle ),
+				z = Arena.DISTANCE * Math.sin( angle );
+			
+			var cosys = new CoSys( );
+				its.center = [x, Carousel.BRANCH_POS[1], z];
+			
+			this.cosys.push( cosys );
+			this.add( cosys );
+		}
+		
+	} // Carousel.constructCoSys
+	
+	
+	
 	update( dT )
 	{
 		this.spinH += 50*dT;

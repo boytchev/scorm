@@ -33,29 +33,24 @@ class Arena extends Group
 		this.add( arena );
 		
 		this.generateTexture( random(Matrix.allMatrixData) );
-//		this.generateTexture( Matrix.allMatrixData[0] );
 	} // Arena.constructor
 
 
 
 	generateTexture( matrixData )
 	{
-		
-		console.log( matrixData );
-		
 		var S = Arena.S,	// canvas size
 			H = 1.25;		// horizontal scale
 
 		this.matrixImage.clear( 'white' );	
 		this.matrixImage.context.textAlign = 'center';
 		this.matrixImage.context.scale( H, 1 );
-//	ctx.font = "bold 18px Arial";
 
 		for( var i=0; i<4; i++ )
 			for( var j=0; j<4; j++ )
 			{
-				var color = matrixData.matrix[i][j] ? 'crimson' : 'lightgray',
-					font = matrixData.matrix[i][j] ? 'bold 18px Arial' : '18px Arial';
+				var color = matrixData.matrix[i][j] ? 'black' : 'lightgray',
+					font = matrixData.matrix[i][j] ? 'bold 18px Arial' : 'normal 15px Arial';
 				
 				this.matrixImage.fillText(
 					S/2/H+S/5*(j-1.5)/H, // x
