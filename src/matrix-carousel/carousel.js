@@ -144,7 +144,7 @@ class Carousel extends Group
 		this.spinH += 50*dT;
 		for( var cosys of this.cosys )
 		{
-			cosys.swingOutward( 60 );
+			cosys.swingOutward( 30+30*Math.sin( this.spinH/20) );
 			//cosys.swingForward( 45*Math.sin( this.spinH/2) );
 		}
 	}
