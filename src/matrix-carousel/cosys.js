@@ -6,13 +6,13 @@
 class CoSys extends Group
 {
 	static ROPE_SIZE = [0.2, 10];
-	static BALL_SIZE = [2, 1];
 	
 	constructor( )
 	{
 		super( suica );
 
-		this.constructRope( );
+		this.rope = this.constructRope( );
+		
 //		this.constructBall( );
 
 	} // Arena.constructor
@@ -33,11 +33,11 @@ class CoSys extends Group
 
 		var rope = cone( [0,0,0], CoSys.ROPE_SIZE );
 			its.threejs.material = material;
+			its.spinH = 90;
 			its.spinV = 180;
 
-		var ball = prism( 6, [0,-CoSys.BALL_SIZE[1]/2,0], CoSys.BALL_SIZE, 'black' );
-
-		this.add( rope, ball );
+		this.add( rope );
+		return rope;
 		
 	} // CoSys.constructRope
 
@@ -47,6 +47,16 @@ class CoSys extends Group
 	{
 	} // CoSys.constructBall
 	
+	
+	swingForward( angle )
+	{
+		this.spinV = angle;
+	}
+
+	swingOutward( angle )
+	{
+		this.rope.spinV = 180-angle;
+	}
 	
 } // class CoSys
 

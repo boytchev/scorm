@@ -8,8 +8,9 @@ class Carousel extends Group
 	static PILLAR_HEIGHT = 20;
 	static PILLAR_RADIUS = 7;
 	static TOP_SIZE = [10,2,10];
-	static BRANCH_SIZE = [2, Arena.DISTANCE+0.5, 6];
+	static BRANCH_SIZE = [2, Arena.DISTANCE+0.25, 6];
 	static BRANCH_POS = [0,Carousel.PILLAR_HEIGHT,0];
+	static END_SIZE = [2.5, 0.8];
 	
 	constructor( )
 	{
@@ -77,10 +78,10 @@ class Carousel extends Group
 			var r = 0.1;
 			return [0,u,0,r];
 		}
-		var branch;
+
 		for( var i=0; i<6; i++ )
 		{
-			branch = tube( Carousel.BRANCH_POS, branchProfile, 1, [20,16], Carousel.BRANCH_SIZE );
+			var branch = tube( [0,0,0], branchProfile, 1, [20,16], Carousel.BRANCH_SIZE );
 			var pos = branch.threejs.geometry.getAttribute( 'position' );
 			for( var j=0; j<pos.count; j++ )
 			{
@@ -97,10 +98,17 @@ class Carousel extends Group
 				pos.setXYZ( j, x, y, z );
 			}
 			its.threejs.material = material;
-			its.spinH = i/6 * 360;
+			its.spinH = 360/12;
 			its.spinV = 90;
 			
-			this.add( branch );
+			var branchEnd = prism( 6, [Carousel.BRANCH_SIZE[1],-0.75*Carousel.END_SIZE[1],0], Carousel.END_SIZE, 'black' );
+
+			var branchGroup = group( );
+				its.add( branch, branchEnd );
+				its.center = Carousel.BRANCH_POS;
+				its.spinH = i/6 * 360;
+				
+			this.add( branchGroup );
 		}
 		
 		this.y = Base.POS_Y+Base.BASE_HEIGHT;
@@ -115,13 +123,13 @@ class Carousel extends Group
 	{
 		for( var i=0; i<6; i++ )
 		{
-			var angle = radians( (i+0.5)/6 * 360 ),
+			var angle = radians( i/6 * 360 ),
 				x = Arena.DISTANCE * Math.cos( angle ),
 				z = Arena.DISTANCE * Math.sin( angle );
 			
 			var cosys = new CoSys( );
 				cosys.center = [x, Carousel.BRANCH_POS[1], z];
-				cosys.spinH = 0;
+				cosys.spinH = -i/6 * 360;
 			
 			this.cosys.push( cosys );
 			this.add( cosys );
@@ -134,6 +142,50 @@ class Carousel extends Group
 	update( dT )
 	{
 		this.spinH += 50*dT;
+		for( var cosys of this.cosys )
+		{
+			cosys.swingOutward( 60 );
+			//cosys.swingForward( 45*Math.sin( this.spinH/2) );
+		}
 	}
 } // class Carousel
+
+
+//
+//	assume chunk size 1024 -> 10 bits per coordinate
+//
+//	bits in 32-bit integer:
+//
+//	00zzzzzz zzzzyyyy yyyyyyxx xxxxxxxx
+//
+
+// function getVoxel( x, y, z )
+// {
+	// return (z<<20) + (y<<10) + x;
+// }
+
+// function getPos( voxel )
+// {
+	// var x = voxel & 0x3FF;
+	// var y = (voxel>>10) & 0x3FF;
+	// var z = voxel>>20;
+	
+	// return [x,y,z];
+// }
+
+// testing
+
+// console.log( getPos( getVoxel(0,0,0) ) );
+// console.log( getPos( getVoxel(1,2,3) ) );
+// console.log( getPos( getVoxel(100,259,381) ) );
+// console.log( getPos( getVoxel(1023,1022,1021) ) );
+
+
+
+
+
+
+
+
+
 
