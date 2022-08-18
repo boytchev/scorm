@@ -138,8 +138,7 @@ class Matrix
 		//		if k=1 return the matrix
 		
 		var matrix = [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]], // identity
-			target = Matrix.allMatrixData[idx].step, 	// target matrix
-			offset = Matrix.allMatrixData[idx].offset;	// position offset
+			target = Matrix.allMatrixData[idx].step; 	// target matrix
 
 		var matrixType = Matrix.allMatrixData[idx].id[0];
 		

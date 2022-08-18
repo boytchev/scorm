@@ -1,9 +1,7 @@
-// 1138 -> 264 (23%)
+// 1138 -> 234 (21%)
 
 MEIRO.Models.T007.prototype.initialize = function()
 {
-	this.matrixData = [];
-
 	this.carouselSpeed = 0;
 	this.carouselSpin = random(1,5);
 	this.carouselUp = 0;
@@ -51,15 +49,7 @@ MEIRO.Models.T007.prototype.randomMatrix = function()
 	if (randomIndex>=59) hard++;
 	if (randomIndex>=65) hard++;
 	matrixData.hard = hard;
-	
-	var mat4 = new THREE.Matrix4();
-	mat4.set(
-		...matrixData.step[0],
-		...matrixData.step[1],
-		...matrixData.step[2],
-		...matrixData.step[3] );
-	matrixData.matrixStep = mat4;
-	
+
 	return matrixData;
 }
 
@@ -68,10 +58,6 @@ MEIRO.Models.T007.prototype.randomMatrix = function()
 MEIRO.Models.T007.prototype.onObject = function()
 {
 	if (!this.playing) return undefined;
-	
-	// координати на мишка
-	this.mouse.x = (controls.human.mousePos.x/window.innerWidth)*2 - 1;
-	this.mouse.y = -(controls.human.mousePos.y/window.innerHeight)*2 + 1;
 
 	this.raycaster.setFromCamera( this.mouse, camera );
 	
@@ -169,9 +155,6 @@ MEIRO.Models.T007.prototype.onAnimate = function(time)
 		
 		this.carouselMusic.volume = speedK;
 	}
-
-	//TWEEN.update();
-	reanimate();
 }
 
 
@@ -218,10 +201,8 @@ MEIRO.Models.T007.prototype.evaluateResult = function()
 		sims.push(sim);
 		match += sim/arenas;
 	}
-
 		
 	this.config.score = match*this.config.max_score;
-
 }
 
 
@@ -229,36 +210,25 @@ MEIRO.Models.T007.prototype.evaluateResult = function()
 // конфигурира сцената според желаната трудност
 MEIRO.Models.T007.prototype.configure = function(difficulty)
 {	
-	this.config = {difficulty: difficulty};
-		
-	var max_score = 0;
-	
 	switch (difficulty)
 	{
 		// ниска трудност
 		case DIFFICULTY_LOW:
 			arenas = 2;
-			//max_score = 0.2;
 			break;
 			
 		// средна трудност
 		case DIFFICULTY_MEDIUM:
 			arenas = 3;
-			//max_score = 0.4;
 			break;
 			
 		// висока трудност
 		case DIFFICULTY_HIGH:
 			arenas = 6;
-			//max_score = 1.0;
 			break;
-			
-		default: console.error('Unknown difficulty level');
 	}
 
 	this.config.arenas = arenas;
 	
 	this.constructMatrices();
-	for (var i=0; i<6; i++) max_score += this.matrixData[i].hard/100;
-
 }
