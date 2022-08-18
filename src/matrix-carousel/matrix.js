@@ -3,35 +3,16 @@
 //
 
 	
-class Matrix extends Group
+class Matrix
 {
 	static allMatrixData;
 	
 	constructor( )
 	{
-		super( suica );
-
 		if( !Matrix.allMatrixData )
 			this.generateAllMatrixData( );
 
-		this.addEventListener( 'click', this.onClick );
-
 	} // Matrix.constructor
-
-
-
-	// handles clicks on the matrix
-	onClick( )
-	{
-		// avoid fake onClicks
-		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
-			
-		// if game is not started, click on the base will start it
-		if( !playground.gameStarted )
-		{
-			playground.newGame( );
-		}
-	} // Carousel.onMatrix
 
 	
 	
@@ -47,15 +28,14 @@ class Matrix extends Group
 		// group 6	Rx Ry Rz		53..58
 		// group 7	C P				59..70
 		
-		var T = 6, 						// translation value
-			S = 2,						// scale value
-			C = 2, 						// orthogonal projection value
-			CO = 8, 					// orthogonal projection value
-			P = 1/4, 					// perspective projection value
-			PO = 7, 					// perspective projection value
+		var T = 3, 						// translation value
+			S = 2.5,					// scale value
+			C = 4, 						// orthogonal projection value
+			P = 1/2, 					// perspective projection value
+			PS = 1/P, 					// perspective scale
 			SN = Math.sin(Math.PI/2),	// rot value
 			CS = Math.cos(Math.PI/2);	// rot value
-			
+	
 		Matrix.allMatrixData = [
 			//0
 			{id:'I', matrix:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]],			step:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]]},
@@ -125,19 +105,19 @@ class Matrix extends Group
 			{id:'Ryz', matrix:[[1,0,0,0],[0,0,-1,0],[0,1,0,0],[0,0,0,1]],		step:[[1,0,0,0],[0,CS,-SN,0],[0,SN,CS,0],[0,0,0,1]]},
 			{id:'Rzy', matrix:[[1,0,0,0],[0,0,1,0],[0,-1,0,0],[0,0,0,1]],		step:[[1,0,0,0],[0,CS,SN,0],[0,-SN,CS,0],[0,0,0,1]]},
 			//59
-			{id:'Cx+', matrix:[[0,0,0,1],[0,1,0,0],[0,0,1,0],[0,0,0,1]],	step:[[0,0,0,C],[0,1,0,0],[0,0,1,0],[0,0,0,1]],		offset:[CO,0,0]},
-			{id:'Cy+', matrix:[[1,0,0,0],[0,0,0,1],[0,0,1,0],[0,0,0,1]],	step:[[1,0,0,0],[0,0,0,C],[0,0,1,0],[0,0,0,1]],		offset:[0,CO,0]},
-			{id:'Cz+', matrix:[[1,0,0,0],[0,1,0,0],[0,0,0,1],[0,0,0,1]],	step:[[1,0,0,0],[0,1,0,0],[0,0,0,C],[0,0,0,1]],		offset:[0,0,CO]},
-			{id:'Cx-', matrix:[[0,0,0,-1],[0,1,0,0],[0,0,1,0],[0,0,0,1]],	step:[[0,0,0,-C],[0,1,0,0],[0,0,1,0],[0,0,0,1]],	offset:[-CO,0,0]},
-			{id:'Cy-', matrix:[[1,0,0,0],[0,0,0,-1],[0,0,1,0],[0,0,0,1]],	step:[[1,0,0,0],[0,0,0,-C],[0,0,1,0],[0,0,0,1]],	offset:[0,-CO,0]},
-			{id:'Cz-', matrix:[[1,0,0,0],[0,1,0,0],[0,0,0,-1],[0,0,0,1]],	step:[[1,0,0,0],[0,1,0,0],[0,0,0,-C],[0,0,0,1]],	offset:[0,0,-CO]},
+			{id:'Cx+', matrix:[[0,0,0,1],[0,1,0,0],[0,0,1,0],[0,0,0,1]],	step:[[0,0,0,C],[0,1,0,0],[0,0,1,0],[0,0,0,1]]},
+			{id:'Cy+', matrix:[[1,0,0,0],[0,0,0,1],[0,0,1,0],[0,0,0,1]],	step:[[1,0,0,0],[0,0,0,C],[0,0,1,0],[0,0,0,1]]},
+			{id:'Cz+', matrix:[[1,0,0,0],[0,1,0,0],[0,0,0,1],[0,0,0,1]],	step:[[1,0,0,0],[0,1,0,0],[0,0,0,C],[0,0,0,1]]},
+			{id:'Cx-', matrix:[[0,0,0,-1],[0,1,0,0],[0,0,1,0],[0,0,0,1]],	step:[[0,0,0,-C],[0,1,0,0],[0,0,1,0],[0,0,0,1]]},
+			{id:'Cy-', matrix:[[1,0,0,0],[0,0,0,-1],[0,0,1,0],[0,0,0,1]],	step:[[1,0,0,0],[0,0,0,-C],[0,0,1,0],[0,0,0,1]]},
+			{id:'Cz-', matrix:[[1,0,0,0],[0,1,0,0],[0,0,0,-1],[0,0,0,1]],	step:[[1,0,0,0],[0,1,0,0],[0,0,0,-C],[0,0,0,1]]},
 			//65
-			{id:'Pz+', matrix:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,1,0]],	step:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,P,0]],		offset:[0,0,PO]},
-			{id:'Py+', matrix:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,1,0,0]],	step:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,P,0,0]],		offset:[0,PO,0]},
-			{id:'Px+', matrix:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[1,0,0,0]],	step:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[P,0,0,0]],		offset:[PO,0,0]},
-			{id:'Pz-', matrix:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,-1,0]],	step:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,-P,0]],	offset:[0,0,-PO]},
-			{id:'Py-', matrix:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,-1,0,0]],	step:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,-P,0,0]],	offset:[0,-PO,0]},
-			{id:'Px-', matrix:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[-1,0,0,0]],	step:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[-P,0,0,0]],	offset:[-PO,0,0]},
+			{id:'Pz+', matrix:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,1,0]],	step:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,P,PS]]},
+			{id:'Py+', matrix:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,1,0,0]],	step:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,P,0,PS]]},
+			{id:'Px+', matrix:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[1,0,0,0]],	step:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[P,0,0,PS]]},
+			{id:'Pz-', matrix:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,-1,0]],	step:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,-P,PS]]},
+			{id:'Py-', matrix:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,-1,0,0]],	step:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,-P,0,PS]]},
+			{id:'Px-', matrix:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[-1,0,0,0]],	step:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[-P,0,0,PS]]},
 			//71
 			//.....
 		];
@@ -148,6 +128,52 @@ class Matrix extends Group
 		}
 
 	} // Matrix.generateMatrixData
+	
+
+	static setMatrix( object, idx, k )
+	{
+		// extract matrix with index idx lerped from indentity by k
+		//		if k=0 return identity
+		//		if 0<k<1 return lert(identity,matrix)
+		//		if k=1 return the matrix
+		
+		var matrix = [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]], // identity
+			target = Matrix.allMatrixData[idx].step, 	// target matrix
+			offset = Matrix.allMatrixData[idx].offset;	// position offset
+
+		var matrixType = Matrix.allMatrixData[idx].id[0];
+		
+		// for projection matrixes do not go to k=1!!!
+		if( matrixType == 'C' ) k = Math.min( k, 0.99 );
+		if( matrixType == 'P' ) k = Math.min( k, 0.99 );
+		
+		// rotations need rescaling
+		var rescale = matrixType=='R';
+
+		for( var x=0; x<4; x++ )
+		{
+			var len = 0;
+			for( var y=0; y<4; y++ )
+			{
+				matrix[x][y] = THREE.MathUtils.lerp( matrix[x][y], target[x][y], k );
+				if (rescale) len += matrix[x][y]*matrix[x][y];
+			}
+			if (rescale) 
+			{
+				len = Math.sqrt(len);
+				for( var y=0; y<4; y++ )
+					matrix[x][y] /= len;
+			}
+		}
+		
+		object.threejs.matrixAutoUpdate = false;
+		object.threejs.matrix.set(
+				...matrix[0],
+				...matrix[1],
+				...matrix[2],
+				...matrix[3]
+			);
+	}
 	
 	
 } // class Matrix

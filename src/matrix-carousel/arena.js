@@ -46,16 +46,44 @@ class Arena extends Group
 		this.matrixImage.context.textAlign = 'center';
 		this.matrixImage.context.scale( H, 1 );
 
+		var identity = Matrix.allMatrixData[0].matrix;
+		
+		var color, font;
+		
 		for( var i=0; i<4; i++ )
 			for( var j=0; j<4; j++ )
 			{
-				var color = matrixData.matrix[i][j] ? 'black' : 'lightgray',
-					font = matrixData.matrix[i][j] ? 'bold 18px Arial' : 'normal 15px Arial';
+				var value = matrixData.matrix[i][j],
+					x = S/2/H+S/5*(j-1.5)/H,
+					y = 0.43*S-S/6*(i-1.5);
+				
+				if( value == 0.5 )
+				{	// 1/2
+					color = 'crimson';
+					font = 'bold 24px Arial';
+					value = '½';
+					y -= 2;
+				}
+				else if( value != identity[i][j] )
+				{	// different from identity
+					color = 'crimson';
+					font = 'bold 18px Arial';
+				}
+				else if( value != 0 )
+				{	// non zero
+					color = 'black';
+					font = 'bold 18px Arial';
+				}
+				else
+				{	// zero
+					color = 'lightgray';
+					font = 'normal 15px Arial';
+				}
 				
 				this.matrixImage.fillText(
-					S/2/H+S/5*(j-1.5)/H, // x
-					( 0.43*S-S/6*(i-1.5)), // y
-					matrixData.matrix[i][j], // text
+					x,
+					y,
+					value, // text
 					color,
 					font );
 			}

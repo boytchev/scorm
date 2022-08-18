@@ -127,10 +127,10 @@ class Carousel extends Group
 				x = Arena.DISTANCE * Math.cos( angle ),
 				z = Arena.DISTANCE * Math.sin( angle );
 			
-			var cosys = new CoSys( );
+			var cosys = new CoSys( random(1,71)|0 );
 				cosys.center = [x, Carousel.BRANCH_POS[1], z];
 				cosys.spinH = -i/6 * 360;
-			
+
 			this.cosys.push( cosys );
 			this.add( cosys );
 		}
@@ -139,11 +139,12 @@ class Carousel extends Group
 	
 	
 	
-	update( dT )
+	update( t, dT )
 	{
 		this.spinH += 50*dT;
 		for( var cosys of this.cosys )
 		{
+			cosys.update( t, dT );
 			cosys.swingOutward( 30+30*Math.sin( this.spinH/20) );
 			//cosys.swingForward( 45*Math.sin( this.spinH/2) );
 		}

@@ -10,13 +10,20 @@ class CoSys extends Group
 	static ARROW_SIZE = [0.4, 1];
 	static LABEL_SIZE = 2;
 	static AXIS_COLOR = 'Tomato';
+	static CUBE_SIZE = 4;
+	static CUBE_SPEED = 0.3;
 	
-	constructor( )
+	constructor( idx )
 	{
 		super( suica );
 
+		this.idx = idx; // matrix index
+
+console.log(idx,Matrix.allMatrixData[idx].id);
+		
 		this.rope = this.constructRope( );
 		this.cosys = this.constructCoSys( );
+		this.cube = this.constructCube( );
 		
 		this.ropeGroup = group();
 			this.ropeGroup.spinH = 90;
@@ -116,6 +123,37 @@ class CoSys extends Group
 	
 	
 	
+	
+	constructCube( )
+	{
+		var cubeGroup = group( );
+		
+		var material = new THREE.MeshPhysicalMaterial( {
+						sheen: 2,
+						sheenColor: 'Crimson',
+						sheenRoughness: 0.2,
+						color: 'Wheat',
+						transparent: true,
+						side: THREE.DoubleSide,
+						emissive: 'orange',
+						emissiveIntensity: 0.7,
+						opacity: 0.7,
+					} );
+					
+		var box = cube( [0,0,0], CoSys.CUBE_SIZE );
+			its.threejs.material = material;
+		
+		var edges = cube( [0,0,0], CoSys.CUBE_SIZE, 'brown' );
+			its.wireframe = true;
+		
+		cubeGroup.add( box, edges );
+			
+		this.cosys.add( cubeGroup );
+		return cubeGroup;
+	} // CoSys.constructCube
+	
+	
+	
 	swingForward( angle )
 	{
 		this.spinV = angle;
@@ -127,6 +165,16 @@ class CoSys extends Group
 	{
 		this.ropeGroup.spinV = 180-angle;
 	} // CoSys.swingOutward
+	
+	
+	
+	update( t, dT )
+	{
+		var k = 2*( (CoSys.CUBE_SPEED*t)%1)-0.5; // -0.5 .. +1.5
+			k = THREE.MathUtils.clamp( k, 0, 1 );
+		
+		Matrix.setMatrix( this.cube, this.idx, k );
+	}
 	
 } // class CoSys
 

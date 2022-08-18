@@ -1,21 +1,9 @@
-// 1138 -> 514 (45%)
+// 1138 -> 264 (23%)
 
 MEIRO.Models.T007.prototype.initialize = function()
 {
 	this.matrixData = [];
-	
-	this.DIGIT_SIZE = 0.3;
-	
-	this.SYSTEM_HEIGHT = 7;
-	this.SYSTEM_SCALE = 0.15;
-	this.SYSTEM_LENGTH = 5; // length of thread
-	
-	this.FRAME_WIDTH = 0.1;
-	
-	this.systems = [];
-	//this.arenas = [];
 
-	//this.labels = [];
 	this.carouselSpeed = 0;
 	this.carouselSpin = random(1,5);
 	this.carouselUp = 0;
@@ -40,179 +28,6 @@ MEIRO.Models.T007.prototype.initialize = function()
 }
 
 
-	
-MEIRO.Models.T007.prototype.generateCoordSystem = function(x,y,z)
-{
-	var W = 0.3;	// width of axes	
-	var L = 10;		// length of axes
-	var S = 8;		// letter scale
-	var coordSystem = new THREE.Group();
-//	var material = new THREE.MeshBasicMaterial({color:'cornflowerblue'});
-	var material = new THREE.MeshStandardMaterial({color:'orange'});
-
-	// arrows
-	var geometry = new THREE.CylinderBufferGeometry(W/2,W,L,6/*,1,true*/);
-	// y+
-	var arrow = new THREE.Mesh( geometry, material );
-	arrow.position.y = L/2;
-	coordSystem.add( arrow );
-	// y-
-	var arrow = new THREE.Mesh( geometry, material );
-	arrow.position.y = -L/2;
-	arrow.rotation.x = Math.PI;
-	coordSystem.add( arrow );
-	// x+
-	var arrow = new THREE.Mesh( geometry, material );
-	arrow.position.x = L/2;
-	arrow.rotation.z = -Math.PI/2;
-	coordSystem.add( arrow );
-	// x-
-	var arrow = new THREE.Mesh( geometry, material );
-	arrow.position.x = -L/2;
-	arrow.rotation.z = Math.PI/2;
-	coordSystem.add( arrow );
-	// z+
-	var arrow = new THREE.Mesh( geometry, material );
-	arrow.position.z = L/2;
-	arrow.rotation.x = Math.PI/2;
-	coordSystem.add( arrow );
-	// z-
-	var arrow = new THREE.Mesh( geometry, material );
-	arrow.position.z = -L/2;
-	arrow.rotation.x = -Math.PI/2;
-	coordSystem.add( arrow );
-
-	// labels
-	// x
-	MEIRO.PRIMITIVE.GEOMETRY.X.center();
-	MEIRO.PRIMITIVE.GEOMETRY.Y.center();
-	MEIRO.PRIMITIVE.GEOMETRY.Z.center();
-	
-	var label = new THREE.Mesh(MEIRO.PRIMITIVE.GEOMETRY.X, material);
-	label.scale.set( S,S,4*S );
-	label.position.set(L,0,0);
-	label.rotation.x = -Math.PI/2;
-	label.rotation.z = -Math.PI/2;
-	coordSystem.add( label );
-	//this.labels.push( label );
-
-	var label = new THREE.Mesh(MEIRO.PRIMITIVE.GEOMETRY.Y, material);
-	label.scale.set( S,S,4*S );
-	label.position.set(0,L,0);
-	coordSystem.add( label );
-	//this.labels.push( label );
-
-	var label = new THREE.Mesh(MEIRO.PRIMITIVE.GEOMETRY.Z, material);
-	label.scale.set( S,S,4*S );
-	label.position.set(0,0,L);
-	label.rotation.x = -Math.PI/2;
-	coordSystem.add( label );
-	//this.labels.push( label );
-	
-	// cube
-	var materialFront = new THREE.MeshStandardMaterial({
-		color: 'pink',
-		metalness: 0.4,
-		transparent: true,
-		opacity: 0.7,
-		emissive: 'orange',
-		emissiveIntensity: 0.5,
-		side: THREE.FrontSide,
-	});
-	var materialBack = materialFront.clone();
-	materialBack.side = THREE.BackSide;
-	
-	coordSystem.cube = new THREE.Group();
-	coordSystem.cube.matrixAutoUpdate = false;
-	
-	var cube = new THREE.Mesh( new THREE.BoxGeometry(8,8,8), materialBack );
-	cube.geometry.translate(x,y,z);
-	coordSystem.cube.add( cube );
-	var cube = new THREE.Mesh( cube.geometry, materialFront );
-	coordSystem.cube.add( cube );
-	var edges = new THREE.EdgesGeometry( cube.geometry );
-	var cube = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 'saddlebrown' } ) );
-	coordSystem.cube.add( cube );
-	coordSystem.add( coordSystem.cube );
-	
-	coordSystem.scale.set( this.SYSTEM_SCALE, this.SYSTEM_SCALE, this.SYSTEM_SCALE );
-	return coordSystem;
-}
-
-
-MEIRO.Models.T007.prototype.constructMatrices = function()
-{
-	this.matrixData = [];
-	for (var i=0; i<6; i++)
-	{
-		var matrixData = this.randomMatrix();
-		this.matrixData.push( matrixData );
-	}
-}
-
-
-
-MEIRO.Models.T007.prototype.constructSystems = function()
-{
-	var alphaMap = MEIRO.loadTexture( "textures/007_rope_alpha.jpg",1,7 );
-	alphaMap.rotation = 0.018;
-	
-	var geometry = new THREE.ConeBufferGeometry(0.07,this.SYSTEM_LENGTH,12,1,true);
-	var materialBack = new THREE.MeshBasicMaterial({
-		color:'navy',
-		alphaMap: alphaMap,
-		transparent: true,
-		side: THREE.BackSide,
-	});
-	var materialFront = new THREE.MeshBasicMaterial({
-		color:'navy',
-		alphaMap: alphaMap,
-		transparent: true,
-		side: THREE.FrontSide,
-	});
-	
-	var angle = 0;
-	var dAngle = 2*Math.PI/6;
-	for (var i=0; i<6; i++,angle+=dAngle)
-	{
-		var matrixData = this.matrixData[i];
-		
-		var system = new THREE.Group();
-		{
-			// coord system
-			var coords = this.generateCoordSystem(...matrixData.offset);
-			switch (this.config.difficulty)
-			{
-				case 0:
-					break;
-				case 1:
-					coords.rotation.set( Math.PI/2*random(0,1),Math.PI/2*random(0,1),0*Math.PI/2*random(0,1),'ZXY' );
-					break;
-				case 2:
-					coords.rotation.set( Math.PI/2*random(0,3),Math.PI/2*random(0,3),Math.PI/2*random(0,3),'ZXY' );
-					break;
-			}
-			coords.position.y = -this.SYSTEM_LENGTH;
-			system.add( coords );
-			
-			// rope
-			var rope = new THREE.Mesh( geometry, materialBack );
-			rope.rotation.x = Math.PI;
-			rope.position.y = -this.SYSTEM_LENGTH/2;
-			system.add( rope );
-
-			var rope = rope.clone();
-			rope.material = materialFront;
-			system.add( rope );
-		}
-		system.position.set( this.ARENA_DISTANCE*Math.cos(angle), this.BASE_HEIGHT+this.SYSTEM_HEIGHT, this.ARENA_DISTANCE*Math.sin(angle) );
-		system.yRot = -angle;
-			
-		this.carousel.add( system );
-		this.systems.push( system );
-	}
-}
-
 
 MEIRO.Models.T007.prototype.randomMatrix = function()
 {
@@ -236,8 +51,6 @@ MEIRO.Models.T007.prototype.randomMatrix = function()
 	if (randomIndex>=59) hard++;
 	if (randomIndex>=65) hard++;
 	matrixData.hard = hard;
-//console.log('randomIndex=',randomIndex,'hard=',hard);
-	if (!matrixData.offset) matrixData.offset=[0,0,0];
 	
 	var mat4 = new THREE.Matrix4();
 	mat4.set(
@@ -296,20 +109,6 @@ MEIRO.Models.T007.prototype.onAnimate = function(time)
 	
 	if (this.playing)
 	{
-		if (time-this.lastTime>=1000)
-		{
-			var dTime =  Math.floor((time-this.startTime)/1000);
-			var s = dTime%60;
-			var m = Math.floor(dTime/60)%60;
-			var h = Math.floor(dTime/60/60);
-			var string = (m<10?0:'')+m+':'+(s<10?0:'')+s;
-			if (h) string = h+':'+string;
-			this.buttonTimer.setText(string);
-			this.lastTime = time;
-		}
-		
-		//for (var i=0; i<this.labels.length; i++)
-		//	this.labels[i].rotation.y = i+rpm(time,12);
 
 		if (this.speedUp)
 			this.carouselSpeed = THREE.Math.lerp(this.carouselSpeed,0.005,0.005);
@@ -366,38 +165,6 @@ MEIRO.Models.T007.prototype.onAnimate = function(time)
 				this.carouselUp,
 				'YXZ');
 				
-			//animate the cube;
-			var k = (time/3000+i*Math.sin(i))%2;
-			k = THREE.Math.clamp(k-0.5,0.001,0.999);
-			
-			var rescale = this.matrixData[i].id[0]=='R';
-			//if (this.animaitonStep%this.animaitonSteps==0)
-			//	this.systems[i].children[0].cube.matrix.identity();
-			//else
-			//	this.systems[i].children[0].cube.matrix.multiply(this.systems[i].matrixStep);
-			//this.animaitonStep++;
-			var matrix = [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]];
-			for (var x=0; x<4; x++)
-			{
-				var len = 0;
-				for (var y=0; y<4; y++)
-				{
-					matrix[x][y] = THREE.Math.lerp(matrix[x][y],this.matrixData[i].step[x][y],k);
-					if (rescale) len += matrix[x][y]*matrix[x][y];
-				}
-				if (rescale) 
-				{
-					len = Math.sqrt(len);
-					for (var y=0; y<4; y++)
-						matrix[x][y] /= len;
-				}
-			}
-			this.systems[i].children[0].cube.matrix.set(
-				...matrix[0],
-				...matrix[1],
-				...matrix[2],
-				...matrix[3]
-			);
 		}
 		
 		this.carouselMusic.volume = speedK;
@@ -413,10 +180,6 @@ MEIRO.Models.T007.prototype.evaluateResult = function()
 {	
 	var match = 0;
 		
-	//var S=[];
-	//for (var i=0; i<6; i++)
-	//	S.push(this.matrixData[Math.round(this.carouselSpin+i)%6].id);
-
 	function similarity(a,b)
 	{
 		if (a==b) return 1; // complete match
@@ -450,7 +213,7 @@ MEIRO.Models.T007.prototype.evaluateResult = function()
 		var index = i*dArena
 		var s1 = this.matrixData[index].id;
 		var s2 = this.matrixData[Math.round(this.carouselSpin+i*dArena)%6].id;
-//		console.log(s1,s2);
+
 		var sim = similarity(s1,s2);
 		sims.push(sim);
 		match += sim/arenas;
@@ -459,19 +222,6 @@ MEIRO.Models.T007.prototype.evaluateResult = function()
 		
 	this.config.score = match*this.config.max_score;
 
-	this.config.time =  Math.floor((animationLoop.time-this.startTime)/1000);
-	
-//	console.log('score=',this.config.score);
-	this.info = '';
-	this.info += '<h1 style="text-align:center;">Матричната въртележка &ndash; '+Math.round(1000*this.config.score)/10+' от '+Math.round(100*this.config.max_score)+' точки</span></h1>';
-	this.info += '<p>В задачата трябва да се определят правилните трансформации на '+arenas+' матрици. '
-	for (var i=0; i<arenas; i++)
-	{
-		this.info += ' '+(['Първата','Другата','Третата','Следващата','Петата','Последата'])[i];
-		this.info += ' матрица съвпада на '+Math.floor(100*sims[i])+'%.';
-	}
-	this.info += '</p>';
-//	console.log('evaluation=',this.config.score*match);
 }
 
 
