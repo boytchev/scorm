@@ -177,4 +177,3 @@ console.log(idx,Matrix.allMatrixData[idx].id);
 	}
 	
 } // class CoSys
-

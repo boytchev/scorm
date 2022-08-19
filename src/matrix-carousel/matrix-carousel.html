@@ -26,7 +26,7 @@
 </head>
 
 <body>
-	<suica fullwindow fullscreen background="linen" ontime="update"> <!-- onpointermove="onPointerMove"-->
+	<suica fullwindow fullscreen background="linen" ontime="update" onPointerUp="onPointerUp"> <!-- onpointermove="onPointerMove"-->
 		<orbit id="orb" distance="70" altitude="0" maxPolarAngle="1.55" maxDistance="100" minDistance="15" enablePan="false">
 		
 		<div class="hud corner top left"></div>
@@ -64,6 +64,12 @@
 
 		window.addEventListener( 'resize', playground.resize );
 				
+		function onPointerUp( event )
+		{
+			playground?.carousel.stopSpinning( );
+		}
+		
+		
 		<!-- function onPointerMove( event ) -->
 		<!-- { -->
 			<!-- if( findObject( event ) ) -->

@@ -11,17 +11,25 @@ class Carousel extends Group
 	static BRANCH_SIZE = [2, Arena.DISTANCE+0.25, 6];
 	static BRANCH_POS = [0,Carousel.PILLAR_HEIGHT,0];
 	static END_SIZE = [2.5, 0.8];
+	static SPEED = 300;
+	static ACCELERATION_TIME = 1500;
+	static DEACCELERATION_TIME = 1000;
+	static OUTWARD_ANGLE = 70;
 	
 	constructor( )
 	{
 		super( suica );
 
 		this.cosys = [];
+		this.speed = 0;
 
+		this.spinTween = null;
+		
 		this.constructPillar( );
 		this.constructCoSys( );
 		
 		this.addEventListener( 'click', this.onClick );
+		this.addEventListener( 'pointerdown', this.startSpinning );
 
 	} // Carousel.constructor
 
@@ -38,6 +46,7 @@ class Carousel extends Group
 		{
 			playground.newGame( );
 		}
+		
 	} // Carousel.onClick
 
 	
@@ -139,54 +148,43 @@ class Carousel extends Group
 	
 	
 	
+	// start carousel spinning
+	startSpinning( )
+	{
+		if( this.spinTween )
+			this.spinTween.stop( );
+		
+		this.spinTween = new TWEEN.Tween( this )
+			.to( {speed:Carousel.SPEED}, Carousel.ACCELERATION_TIME )
+			.easing( TWEEN.Easing.Sinusoidal.InOut )
+			.start( );
+	} // Carousel.startSpinning
+
+
+
+	// stop carousel spinning
+	stopSpinning( )
+	{
+		if( this.spinTween )
+			this.spinTween.stop( );
+		
+		this.spinTween = new TWEEN.Tween( this )
+			.to( {speed:0}, Carousel.DEACCELERATION_TIME )
+			.easing( TWEEN.Easing.Sinusoidal.InOut )
+			.start( );
+	} // Carousel.stopSpinning
+
+
+
 	update( t, dT )
 	{
-		this.spinH += 50*dT;
+		this.spinH += this.speed*dT;
 		for( var cosys of this.cosys )
 		{
-			cosys.update( t, dT );
-			cosys.swingOutward( 30+30*Math.sin( this.spinH/20) );
+			// cosys.update( t, dT );
+			cosys.swingOutward( Carousel.OUTWARD_ANGLE * (this.speed/Carousel.SPEED)**2 );
 			//cosys.swingForward( 45*Math.sin( this.spinH/2) );
 		}
 	}
 } // class Carousel
-
-
-//
-//	assume chunk size 1024 -> 10 bits per coordinate
-//
-//	bits in 32-bit integer:
-//
-//	00zzzzzz zzzzyyyy yyyyyyxx xxxxxxxx
-//
-
-// function getVoxel( x, y, z )
-// {
-	// return (z<<20) + (y<<10) + x;
-// }
-
-// function getPos( voxel )
-// {
-	// var x = voxel & 0x3FF;
-	// var y = (voxel>>10) & 0x3FF;
-	// var z = voxel>>20;
-	
-	// return [x,y,z];
-// }
-
-// testing
-
-// console.log( getPos( getVoxel(0,0,0) ) );
-// console.log( getPos( getVoxel(1,2,3) ) );
-// console.log( getPos( getVoxel(100,259,381) ) );
-// console.log( getPos( getVoxel(1023,1022,1021) ) );
-
-
-
-
-
-
-
-
-
 
