@@ -1,4 +1,4 @@
-// 1138 -> 234 (21%)
+// 1138 -> 183 (16%)
 
 MEIRO.Models.T007.prototype.initialize = function()
 {
@@ -7,12 +7,6 @@ MEIRO.Models.T007.prototype.initialize = function()
 	this.carouselUp = 0;
 	this.carouselBack = 0;
 	
-	this.animationSteps = 90;
-	this.animationStep = 0;
-
-	this.speedUp = false;
-	this.animateTime = 0;
-	this.stopTime = -1000000;
 	this.scaleVibro = 0;
 	
 	this.carouselMusic = new Audio('sounds/carousel.mp3');
@@ -55,30 +49,8 @@ MEIRO.Models.T007.prototype.randomMatrix = function()
 
 
 
-MEIRO.Models.T007.prototype.onObject = function()
-{
-	if (!this.playing) return undefined;
-
-	this.raycaster.setFromCamera( this.mouse, camera );
-	
-	var intersects = this.raycaster.intersectObject( this.pillar );
-	if (intersects.length)
-	{	
-		this.clicks++;
-		this.speedUp = true;
-		this.carouselMusic.play();
-		return this.carousel;
-	}
-
-	return undefined;
-}
-
-
-
 MEIRO.Models.T007.prototype.onDragEnd = function()
 {
-	this.speedUp = false;
-	this.stopTime = animationLoop.time;
 	this.scaleVibro = this.carouselSpeed*500;
 	this.swingSqueak.volume = 0;
 	this.swingSqueak.currentTime = 0;
@@ -90,22 +62,8 @@ MEIRO.Models.T007.prototype.onDragEnd = function()
 // аниматор на модела
 MEIRO.Models.T007.prototype.onAnimate = function(time)
 {	
-	var deltaTime = this.animateTime?time-this.animateTime:0;
-	this.animateTime = time;
-	
 	if (this.playing)
 	{
-
-		if (this.speedUp)
-			this.carouselSpeed = THREE.Math.lerp(this.carouselSpeed,0.005,0.005);
-		else
-			this.carouselSpeed = THREE.Math.lerp(this.carouselSpeed,0,0.05);
-		
-		var speedK = this.carouselSpeed/0.005;
-		
-		this.carouselSpin += this.carouselSpeed*deltaTime;
-		this.carousel.rotation.y = this.carouselSpin*2*Math.PI/6;
-		
 		if (this.carouselSpin>6) this.carouselSpin -= 6;
 		if (!this.speedUp)
 		{
@@ -142,15 +100,6 @@ MEIRO.Models.T007.prototype.onAnimate = function(time)
 				targetCarouselTwist = this.systems[i].yRot + this.scaleVibro*vibro*Math.sin(rpm(time-this.stopTime+i,20+2*i));
 				
 			}
-			this.carouselBack = THREE.Math.lerp(this.carouselBack ,targetCarouselBack,0.01);
-			this.carouselUp   = THREE.Math.lerp(this.carouselUp   ,targetCarouselUp,0.01);
-
-			this.systems[i].rotation.set(
-				this.carouselBack,
-				THREE.Math.lerp(this.systems[i].rotation.y,targetCarouselTwist,0.03),
-				this.carouselUp,
-				'YXZ');
-				
 		}
 		
 		this.carouselMusic.volume = speedK;
