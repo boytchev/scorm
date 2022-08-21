@@ -1,14 +1,7 @@
-// 1138 -> 183 (16%)
+// 1138 -> 157 (14%)
 
 MEIRO.Models.T007.prototype.initialize = function()
 {
-	this.carouselSpeed = 0;
-	this.carouselSpin = random(1,5);
-	this.carouselUp = 0;
-	this.carouselBack = 0;
-	
-	this.scaleVibro = 0;
-	
 	this.carouselMusic = new Audio('sounds/carousel.mp3');
 	this.carouselMusic.loop = true;
 	this.carouselMusic.volume = 0;
@@ -64,12 +57,6 @@ MEIRO.Models.T007.prototype.onAnimate = function(time)
 {	
 	if (this.playing)
 	{
-		if (this.carouselSpin>6) this.carouselSpin -= 6;
-		if (!this.speedUp)
-		{
-			this.carouselSpin = THREE.Math.lerp(this.carouselSpin,Math.round(this.carouselSpin+0.25),0.01);
-		}
-		
 		if (this.speedUp)
 			this.swingSqueak.volume = 0;
 		else
@@ -79,26 +66,13 @@ MEIRO.Models.T007.prototype.onAnimate = function(time)
 		
 		for (var i=0; i<this.systems.length; i++)
 		{
-			var targetCarouselBack = 0;
-			var targetCarouselUp = 0;
-			var targetCarouselTwist = 0;
-			
 			if (this.speedUp)
-			{ 
-				if (0.2<speedK && speedK<0.8)
-					targetCarouselBack = -1*Math.pow(Math.sin(i/12+(speedK-0.2)/0.6*Math.PI),2);
-				else
-					targetCarouselBack = 0;
-				targetCarouselUp   = 1.5*speedK;
-				targetCarouselTwist = this.systems[i].yRot;
-			}
+			{ ... }
 			else
 			{
 				var vibro = Math.pow(0.999,(time-this.stopTime)/3);
 				targetCarouselBack = 0.6*this.scaleVibro*vibro*Math.sin(rpm(time-this.stopTime+i,40-4*i));
-				targetCarouselUp   = -0.3*this.scaleVibro*vibro*Math.cos(rpm(time-this.stopTime-i,42+4*i));
-				targetCarouselTwist = this.systems[i].yRot + this.scaleVibro*vibro*Math.sin(rpm(time-this.stopTime+i,20+2*i));
-				
+				targetCarouselUp   = -0.3*this.scaleVibro*vibro*Math.cos(rpm(time-this.stopTime-i,42+4*i));				
 			}
 		}
 		
