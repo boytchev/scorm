@@ -12,19 +12,18 @@ class Carousel extends Group
 	static BRANCH_POS = [0,Carousel.PILLAR_HEIGHT,0];
 	static END_SIZE = [2.5, 0.8];
 	static SPEED = 300;
-	static MIN_SPEED = 60;
 	static ACCELERATION_TIME = 1500;
 	static DEACCELERATION_TIME = 500;
 	static OUTWARD_ANGLE = 70;
 	static VIBRO_TIME = 3000;
 	static VIBRO_ANGLE = Carousel.SPEED/30;
-	static VIBRO_TIME_ANGLE = 25;
+	static VIBRO_TIME_ANGLE = 15;
 	
 	// phases
 	static STOPPED = 0;		// the carousel is still
 	static SPINNING = 1;	// the carousel is accellerating or spinning at max speed
 	static STOPPING = 2;	// the carousel is decelerating
-	static ADJUSTING = 3;	// the carousel is waiting for exact position in order to stop
+
 	
 	constructor( )
 	{
@@ -38,6 +37,7 @@ class Carousel extends Group
 		this.vibroSize = 0;
 
 		this.spinTween = null;
+		this.vibroTween = null;
 		this.phase = Carousel.STOPPED;
 		
 		this.constructPillar( );
@@ -170,6 +170,8 @@ class Carousel extends Group
 		
 		if( this.spinTween )
 			this.spinTween.stop( );
+		if( this.vibroTween )
+			this.vibroTween.stop( );
 		
 		// this.vibroTime = this.vibroTime % (2*Math.PI);
 		
@@ -194,50 +196,25 @@ class Carousel extends Group
 		if( this.spinTween )
 			this.spinTween.stop( );
 		
-		// vibro is the tiny swing when the carousel is stopped
-//		this.vibroTime = this.vibroTime % (2*Math.PI);
+		// calculate actual stopping position
+		var finalH = 60*Math.floor( this.spinH/60 ) + 60*( Math.round(this.speed/100) );
+
+		this.vibroTime = 0;
+		
+		this.vibroTween = new TWEEN.Tween( this )
+			.to( {vibroSize:0, vibroTime: Carousel.VIBRO_TIME_ANGLE*random(0.8,1.2)}, Carousel.VIBRO_TIME )
+			.easing( TWEEN.Easing.Quadratic.Out );
 
 		this.spinTween = new TWEEN.Tween( this )
-			.to( {speed:Carousel.MIN_SPEED}, Carousel.DEACCELERATION_TIME )
-			.easing( TWEEN.Easing.Sinusoidal.In )
-			.onComplete( this.adjustSpinning )
+			.to( {spinH:finalH, speed:0}, 10*(finalH-this.spinH) )
+			.easing( TWEEN.Easing.Sinusoidal.Out )
+			.onComplete( this.phase = Carousel.STOPPED )
 			.start( );
 
-		// vibro
-//		var vibroTween = new TWEEN.Tween( this )
-//			.to( {vibroSize:0, vibroTime: Carousel.VIBRO_TIME_ANGLE*random(0.8,1.2)}, Carousel.VIBRO_TIME )
-//			.easing( TWEEN.Easing.Quadratic.Out )
-//			.start( );
+		// setTimeout(
+			// ()=>this.vibroTween.start(),
+			// 200+200*this.speed/Carousel.SPEED );
 			
-//		this.spinTween.chain( vibroTween );
-			
-		
-	} // Carousel.stopSpinning
-
-
-
-	// adjust carousel spinning
-	adjustSpinning( )
-	{
-		this.phase = Carousel.ADJUSTING;
-
-console.log('adjusting');
-
-		// this.spinTween = new TWEEN.Tween( this )
-			// .to( {speed:Carousel.MIN_SPEED}, Carousel.DEACCELERATION_TIME )
-			// .easing( TWEEN.Easing.Sinusoidal.In )
-			// .onComplete( function(obj){obj.phase = Carousel.ADJUSTING} )
-			// .start( );
-
-		// vibro
-//		var vibroTween = new TWEEN.Tween( this )
-//			.to( {vibroSize:0, vibroTime: Carousel.VIBRO_TIME_ANGLE*random(0.8,1.2)}, Carousel.VIBRO_TIME )
-//			.easing( TWEEN.Easing.Quadratic.Out )
-//			.start( );
-			
-//		this.spinTween.chain( vibroTween );
-			
-		
 	} // Carousel.stopSpinning
 
 
@@ -246,8 +223,14 @@ console.log('adjusting');
 
 	update( t, dT )
 	{
+		//console.log('vibroSize',this.vibroSize.toFixed(1));
 		// process spinning
-		// if( this.phase != Carousel.STOPPED )
+		if( this.phase == Carousel.SPINNING )
+		{
+			// when stopping spinH is controlled by a tween
+			// but when spinning, it is controlled here
+			this.spinH = (this.spinH+this.speed*dT) % 360;
+		}
 		// {
 			// stopping → adjusting
 			// if( this.phase == Carousel.ADJUSTING )
@@ -265,7 +248,6 @@ console.log('adjusting');
 			// }
 			// else
 		// }
-		this.spinH = (this.spinH+this.speed*dT) % 360;
 		
 		// if( speed<0.2*Carousel.SPEED && !this.starting )
 		// {
@@ -302,7 +284,7 @@ console.log('adjusting');
 		for( var cosys of this.cosys )
 		{	
 			//cosys.update( t, dT );
-			cosys.swingOutward( Carousel.OUTWARD_ANGLE * (this.speed/Carousel.SPEED)**2 );
+			cosys.swingOutward( Carousel.OUTWARD_ANGLE * (this.speed/Carousel.SPEED)**3 );
 			cosys.swingForward( this.vibroSize*Math.sin(this.vibroTime) );
 		}
 	}
