@@ -197,8 +197,9 @@ class Carousel extends Group
 			this.spinTween.stop( );
 		
 		// calculate actual stopping position
-		var finalH = 60*Math.floor( this.spinH/60 ) + 60*( Math.round(this.speed/100) );
-
+		var finalH = 60*Math.floor( this.spinH/60 ) + 60*( Math.round(this.speed/150) );
+		if( finalH < this.spinH ) finalH += 60;
+		
 		this.vibroTime = 0;
 		
 		this.vibroTween = new TWEEN.Tween( this )
