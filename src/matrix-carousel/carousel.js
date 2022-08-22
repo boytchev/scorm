@@ -13,10 +13,10 @@ class Carousel extends Group
 	static END_SIZE = [2.5, 0.8];
 	static SPEED = 300;
 	static ACCELERATION_TIME = 1500;
-	static DEACCELERATION_TIME = 500;
+//	static DEACCELERATION_TIME = 500;
 	static OUTWARD_ANGLE = 70;
-	static VIBRO_TIME = 3000;
-	static VIBRO_ANGLE = Carousel.SPEED/30;
+//	static VIBRO_TIME = 1000;
+	static VIBRO_ANGLE = Carousel.SPEED/40;
 	static VIBRO_TIME_ANGLE = 15;
 	
 	// phases
@@ -173,13 +173,6 @@ class Carousel extends Group
 		if( this.vibroTween )
 			this.vibroTween.stop( );
 		
-		// this.vibroTime = this.vibroTime % (2*Math.PI);
-		
-		// new TWEEN.Tween( this )
-			// .to( {vibroTime:2*Math.PI}, Carousel.ACCELERATION_TIME/3 )
-			// .easing( TWEEN.Easing.Linear.None )
-			// .start( );
-		
 		this.spinTween = new TWEEN.Tween( this )
 			.to( {speed:Carousel.SPEED, vibroSize:Carousel.VIBRO_ANGLE, }, Carousel.ACCELERATION_TIME )
 			.easing( TWEEN.Easing.Sinusoidal.InOut )
@@ -197,25 +190,23 @@ class Carousel extends Group
 			this.spinTween.stop( );
 		
 		// calculate actual stopping position
-		var finalH = 60*Math.floor( this.spinH/60 ) + 60*( Math.round(this.speed/150) );
-		if( finalH < this.spinH ) finalH += 60;
+		var finalH = 60*Math.ceil( this.spinH/60 ) + 60*( Math.round(this.speed/200) );
+		
+		var time = 10*(finalH-this.spinH);
 		
 		this.vibroTime = 0;
 		
-		this.vibroTween = new TWEEN.Tween( this )
-			.to( {vibroSize:0, vibroTime: Carousel.VIBRO_TIME_ANGLE*random(0.8,1.2)}, Carousel.VIBRO_TIME )
-			.easing( TWEEN.Easing.Quadratic.Out );
-
 		this.spinTween = new TWEEN.Tween( this )
-			.to( {spinH:finalH, speed:0}, 10*(finalH-this.spinH) )
-			.easing( TWEEN.Easing.Sinusoidal.Out )
+			.to( {spinH:finalH, speed:0}, time )
+			.easing( TWEEN.Easing.Quadratic.Out )
 			.onComplete( this.phase = Carousel.STOPPED )
 			.start( );
 
-		// setTimeout(
-			// ()=>this.vibroTween.start(),
-			// 200+200*this.speed/Carousel.SPEED );
-			
+		this.vibroTween = new TWEEN.Tween( this )
+			.to( {vibroSize:0, vibroTime: Carousel.VIBRO_TIME_ANGLE*random(0.8,1.2)}, 3*time )
+			.easing( TWEEN.Easing.Quadratic.InOut )
+			.start( );
+
 	} // Carousel.stopSpinning
 
 
@@ -232,54 +223,6 @@ class Carousel extends Group
 			// but when spinning, it is controlled here
 			this.spinH = (this.spinH+this.speed*dT) % 360;
 		}
-		// {
-			// stopping → adjusting
-			// if( this.phase == Carousel.ADJUSTING )
-			// {
-				// var oldPos = Math.floor( this.spinH/60 );
-				// var newPos = Math.floor( (this.spinH+this.speed*dT)/60 );
-				// if( oldPos == newPos )
-					// this.spinH = (this.spinH+this.speed*dT) % 360; // keep spinning
-				// else
-				// {
-					// this.spinH = 60 * Math.round( this.spinH/60 ); // go to exact position
-					// this.speed = 0;
-					// this.phase = Carousel.STOPPED;
-				// }
-			// }
-			// else
-		// }
-		
-		// if( speed<0.2*Carousel.SPEED && !this.starting )
-		// {
-			// var step = this.spinH%60;
-			// if( step>=30 )
-				// speed = 0.1*Carousel.SPEED;
-			// else
-			// if( step>1 )
-				// speed = -0.2*Carousel.SPEED;
-		// }
-		
-
-		// if speed is slow, and if position is no aligned, spin slightlu the carousel
-		/*
-		if( this.speed<0.01*Carousel.SPEED && !this.starting && this.spinH%60>1 )
-		{
-			var targetSpinH = 60*Math.floor(this.spinH/60);
-			if( this.spinH%60 > 25 )
-				targetSpinH += 60;
-
-			this.spinH = THREE.MathUtils.lerp( this.spinH, targetSpinH, 3*dT );
-			// if( this.spinH < targetSpinH )
-			// {
-				// this.spinH = Math.min( targetSpinH, this.spinH+20*dT );  // 10 degrees/second
-			// }
-			// else
-			// {
-				// this.spinH = Math.max( targetSpinH, this.spinH-20*dT );  // 10 degrees/second
-			// }
-		}
-		*/
 		
 		
 		for( var cosys of this.cosys )

@@ -1,4 +1,4 @@
-// 1138 -> 157 (14%)
+// 1138 -> 146 (13%)
 
 MEIRO.Models.T007.prototype.initialize = function()
 {
@@ -64,18 +64,7 @@ MEIRO.Models.T007.prototype.onAnimate = function(time)
 			this.swingSqueak.volume = Math.pow(0.998,(time-this.stopTime)/3)/2;
 		}
 		
-		for (var i=0; i<this.systems.length; i++)
-		{
-			if (this.speedUp)
-			{ ... }
-			else
-			{
-				var vibro = Math.pow(0.999,(time-this.stopTime)/3);
-				targetCarouselBack = 0.6*this.scaleVibro*vibro*Math.sin(rpm(time-this.stopTime+i,40-4*i));
-				targetCarouselUp   = -0.3*this.scaleVibro*vibro*Math.cos(rpm(time-this.stopTime-i,42+4*i));				
-			}
-		}
-		
+	
 		this.carouselMusic.volume = speedK;
 	}
 }

@@ -157,6 +157,8 @@ console.log(idx,Matrix.allMatrixData[idx].id);
 	swingForward( angle )
 	{
 		this.spinV = angle;
+		this.ropeGroup.spinT = 0.5*angle;
+
 	} // CoSys.swingForward
 
 
