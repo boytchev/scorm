@@ -21,7 +21,6 @@ class Base extends Group
 		this.constructArenas();
 		
 		this.addEventListener( 'click', this.onClick );
-		this.addEventListener( 'pointerdown', this.onPointerDown );
 
 		this.y = Base.POS_Y;
 		
@@ -42,12 +41,6 @@ class Base extends Group
 		}
 	} // Base.onClick
 
-	
-	
-	onPointerDown( )
-	{
-		playground?.carousel.startSpinning( );
-	}
 	
 	
 	// construct the base

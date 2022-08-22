@@ -18,8 +18,6 @@ class CoSys extends Group
 		super( suica );
 
 		this.idx = idx; // matrix index
-
-console.log(idx,Matrix.allMatrixData[idx].id);
 		
 		this.rope = this.constructRope( );
 		this.cosys = this.constructCoSys( );
@@ -34,6 +32,7 @@ console.log(idx,Matrix.allMatrixData[idx].id);
 
 		this.add( this.ropeGroup );
 
+		this.size = 0;
 	} // Arena.constructor
 
 
@@ -101,22 +100,22 @@ console.log(idx,Matrix.allMatrixData[idx].id);
 		cosys.add( arrow );
 		
 		// construct labels
-		var label;
+		this.labels = [];
 
-		label = point( [pos+1.5,0,0], CoSys.LABEL_SIZE, 'white');
-		label.image = drawing( 15 );
-		label.image.fillText( 0, 0, 'X', CoSys.AXIS_COLOR, 'bold 20px Arial' );
-		cosys.add( label );
+		this.labels.push( point( [pos+1.5,0,0], 0*CoSys.LABEL_SIZE, 'white') );
+			its.image = drawing( 15 );
+			its.image.fillText( 0, 0, 'X', CoSys.AXIS_COLOR, 'bold 20px Arial' );
+		cosys.add( its );
 		
-		label = point( [0,pos+1.5,0], CoSys.LABEL_SIZE, 'white');
-		label.image = drawing( 15 );
-		label.image.fillText( 0, 0, 'Y', CoSys.AXIS_COLOR, 'bold 20px Arial' );
-		cosys.add( label );
+		this.labels.push( point( [0,pos+1.5,0], 0*CoSys.LABEL_SIZE, 'white') );
+			its.image = drawing( 15 );
+			its.image.fillText( 0, 0, 'Y', CoSys.AXIS_COLOR, 'bold 20px Arial' );
+		cosys.add( its );
 		
-		label = point( [0,0,pos+1.5], CoSys.LABEL_SIZE, 'white');
-		label.image = drawing( 15 );
-		label.image.fillText( 0, 0, 'Z', CoSys.AXIS_COLOR, 'bold 20px Arial' );
-		cosys.add( label );
+		this.labels.push( point( [0,0,pos+1.5], 0*CoSys.LABEL_SIZE, 'white') );
+			its.image = drawing( 15 );
+			its.image.fillText( 0, 0, 'Z', CoSys.AXIS_COLOR, 'bold 20px Arial' );
+		cosys.add( its );
 
 		return cosys;
 	} // CoSys.constructCoSys

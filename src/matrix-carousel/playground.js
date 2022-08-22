@@ -15,6 +15,7 @@ class Playground extends ScormPlayground
 		new Matrix( );
 		this.carousel = new Carousel( );
 		this.base = new Base( this );
+		new Button( );
 		
 		this.resize( );
 
@@ -34,7 +35,7 @@ class Playground extends ScormPlayground
 	{
 		super.newGame( );
 
-		// ...
+		this.carousel.newGame( );
 
 	} // Playground.newGame
 
@@ -44,7 +45,7 @@ class Playground extends ScormPlayground
 	canEndGame( )
 	{
 		// ...
-		return false;
+		return true;
 	} // Playground.canEndGame
 	
 	
@@ -67,7 +68,7 @@ class Playground extends ScormPlayground
 	{
 		super.endGame( );
 		
-		// ...
+		this.carousel.endGame( );
 		
 	} // Playground.endGame
 	

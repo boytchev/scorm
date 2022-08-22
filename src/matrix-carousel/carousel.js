@@ -18,6 +18,9 @@ class Carousel extends Group
 //	static VIBRO_TIME = 1000;
 	static VIBRO_ANGLE = Carousel.SPEED/40;
 	static VIBRO_TIME_ANGLE = 15;
+	static NEW_GAME_TIME = 1000;
+	static END_GAME_TIME = 300;
+	static GAME_DELAY_TIME = 200;
 	
 	// phases
 	static STOPPED = 0;		// the carousel is still
@@ -44,7 +47,7 @@ class Carousel extends Group
 		this.constructCoSys( );
 		
 		this.addEventListener( 'click', this.onClick );
-		this.addEventListener( 'pointerdown', this.startSpinning );
+		this.addEventListener( 'pointerdown', this.onPointerDown );
 
 	} // Carousel.constructor
 
@@ -65,6 +68,13 @@ class Carousel extends Group
 	} // Carousel.onClick
 
 	
+	onPointerDown( )
+	{
+		if( playground.gameStarted )
+		{
+			this.startSpinning( );
+		}
+	}
 	
 	// construct the pillar
 	constructPillar( )
@@ -151,7 +161,7 @@ class Carousel extends Group
 				x = Arena.DISTANCE * Math.cos( angle ),
 				z = Arena.DISTANCE * Math.sin( angle );
 			
-			var cosys = new CoSys( random(1,71)|0 );
+			var cosys = new CoSys( 0 );
 				cosys.center = [x, Carousel.BRANCH_POS[1], z];
 				cosys.spinH = -i/6 * 360;
 
@@ -208,6 +218,50 @@ class Carousel extends Group
 			.start( );
 
 	} // Carousel.stopSpinning
+	
+	
+	
+	
+	newGame( )
+	{
+console.log('---');
+		for( var cosys of this.cosys )
+		{	
+			cosys.idx = random(1,71)|0;
+console.log(cosys.idx,Matrix.allMatrixData[cosys.idx].id);
+
+
+			new TWEEN.Tween( cosys )
+				.to( {}, random(0, Carousel.GAME_DELAY_TIME ) )
+				.chain(
+					new TWEEN.Tween( cosys )
+						.to( {size:1}, Carousel.NEW_GAME_TIME )
+						.easing( TWEEN.Easing.Bounce.Out )
+						.onUpdate( (obj)=>{
+							for( var label of obj.labels ) label.size = CoSys.LABEL_SIZE*obj.size;
+						} )
+				)
+				.start();
+		}
+	} // Carousel.newGame
+
+
+
+
+	endGame( )
+	{
+		for( var cosys of this.cosys )
+		{	
+			new TWEEN.Tween( cosys )
+				.to( {size:0}, Carousel.END_GAME_TIME )
+				.delay( random(0, CoSys.GAME_DELAY_TIME ) )
+				.easing( TWEEN.Easing.Quadratic.In )
+				.onUpdate( (obj)=>{
+					for( var label of obj.labels ) label.size = CoSys.LABEL_SIZE*obj.size;
+				} )
+				.start( );
+		}
+	} // Carousel.endGame
 
 
 
@@ -227,7 +281,7 @@ class Carousel extends Group
 		
 		for( var cosys of this.cosys )
 		{	
-			//cosys.update( t, dT );
+			cosys.update( t, dT );
 			cosys.swingOutward( Carousel.OUTWARD_ANGLE * (this.speed/Carousel.SPEED)**3 );
 			cosys.swingForward( this.vibroSize*Math.sin(this.vibroTime) );
 		}
