@@ -46,18 +46,19 @@ class Carousel extends Group
 		this.constructPillar( );
 		this.constructCoSys( );
 		
-		this.addEventListener( 'click', this.onClick );
-		this.addEventListener( 'pointerdown', this.onPointerDown );
+//		this.addEventListener( 'pointerdown', this.onPointerDown );
 
 	} // Carousel.constructor
 
 
-
+/*
 	// handles clicks on the base
 	onClick( )
 	{
 		// avoid fake onClicks
+		//console.log(Playground.POINTER_USED, playground.pointerMovement);
 		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+		if( Playground.POINTER_USED ) return;
 			
 		// if game is not started, click on the base will start it
 		if( !playground.gameStarted )
@@ -67,14 +68,17 @@ class Carousel extends Group
 		
 	} // Carousel.onClick
 
-	
+
 	onPointerDown( )
 	{
 		if( playground.gameStarted )
 		{
+			//console.log(Playground.POINTER_USED, playground.pointerMovement);
+			if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 			this.startSpinning( );
 		}
 	}
+*/
 	
 	// construct the pillar
 	constructPillar( )
@@ -149,6 +153,8 @@ class Carousel extends Group
 		
 		this.add( pillar, top );
 		
+		this.pillar = pillar;
+		this.pillarTop = top;
 	} // Carousel.constructPillar
 
 

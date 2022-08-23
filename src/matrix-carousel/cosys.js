@@ -33,7 +33,8 @@ class CoSys extends Group
 		this.add( this.ropeGroup );
 
 		this.size = 0;
-	} // Arena.constructor
+		this.addEventListener( 'pointerdown', this.onPointerDown );
+	} // CoSys.constructor
 
 
 	
@@ -171,10 +172,23 @@ class CoSys extends Group
 	
 	update( t, dT )
 	{
-		var k = 2*( (CoSys.CUBE_SPEED*t)%1)-0.5; // -0.5 .. +1.5
+		var k = 2*( (CoSys.CUBE_SPEED*t + Math.sin(this.idx))%1)-0.5; // -0.5 .. +1.5
 			k = THREE.MathUtils.clamp( k, 0, 1 );
 		
 		Matrix.setMatrix( this.cube, this.idx, k );
 	}
+
+
+	onPointerDown( )
+	{
+		console.log('spinnnn');
+		if( playground.gameStarted )
+		{
+			//console.log(Playground.POINTER_USED, playground.pointerMovement);
+			if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+			playground.carousel.startSpinning( );
+		}
+	}
+
 	
 } // class CoSys

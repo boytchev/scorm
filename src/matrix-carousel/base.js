@@ -20,26 +20,11 @@ class Base extends Group
 		this.constructBase();
 		this.constructArenas();
 		
-		this.addEventListener( 'click', this.onClick );
+		//this.addEventListener( 'click', this.onClick );
 
 		this.y = Base.POS_Y;
 		
 	} // Base.constructor
-
-
-
-	// handles clicks on the base
-	onClick( )
-	{
-		// avoid fake onClicks
-		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
-			
-		// if game is not started, click on the base will start it
-		if( !playground.gameStarted )
-		{
-			playground.newGame( );
-		}
-	} // Base.onClick
 
 	
 	

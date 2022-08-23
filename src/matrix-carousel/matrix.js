@@ -29,7 +29,7 @@ class Matrix
 		// group 7	C P				59..70
 		
 		var T = 3, 						// translation value
-			S = 2.5,					// scale value
+			S = 2.3,					// scale value
 			C = 4, 						// orthogonal projection value
 			P = 1/2, 					// perspective projection value
 			PS = 1/P, 					// perspective scale

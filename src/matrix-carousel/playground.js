@@ -7,6 +7,8 @@
 class Playground extends ScormPlayground
 {
 	static POINTS_SPEED = 2000;
+	static POINTER_MOVEMENT = 5;
+	static POINTER_USED = false; // true when the pointer is used by orbit controls
 	
 	constructor( )
 	{
@@ -19,6 +21,11 @@ class Playground extends ScormPlayground
 		
 		this.resize( );
 
+		this.pointerMovement = 0;
+		
+		orb.addEventListener( 'start', () => {Playground.POINTER_USED=true} );
+		orb.addEventListener( 'end', () => {Playground.POINTER_USED=false} );
+		
 		this.translate( [
 			{id: 'txt-caption',
 				en: 'Matrix carousel',

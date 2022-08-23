@@ -27,7 +27,7 @@
 </head>
 
 <body>
-	<suica fullwindow fullscreen background="linen" ontime="update" onPointerUp="onPointerUp"> <!-- onpointermove="onPointerMove"-->
+	<suica fullwindow fullscreen background="linen" ontime="update" onPointerUp="onPointerUp" onpointermove="onPointerMove" onpointerdown="onPointerDown" >
 		<orbit id="orb" distance="70" altitude="0" maxPolarAngle="1.55" maxDistance="100" minDistance="15" enablePan="false">
 		
 		<div class="hud corner top left"></div>
@@ -78,6 +78,52 @@
 			<!-- else -->
 				<!-- event.target.style.cursor = 'default'; -->
 		<!-- } -->
+		function onPointerMove( event )
+		{
+			playground.pointerMovement += Math.abs( event.movementX ) + Math.abs( event.movementY );
+			
+			var obj;
+			
+			if( playground.gameStarted )
+			{
+				obj = findObject( event, [playground.carousel.pillar, playground.carousel.pillarTop, ...playground.carousel.cosys] );
+				if( obj instanceof Cube )
+					event.target.style.cursor = 'ew-resize';
+				else
+					event.target.style.cursor = 'default';
+			}
+			else
+			{
+				var obj = findObject( event );
+				if( obj )
+					event.target.style.cursor = 'pointer';
+				else
+					event.target.style.cursor = 'default';
+			}
+		}
+		
+		function onPointerDown( event )
+		{
+			if( playground )
+			{
+				playground.pointerMovement = 0;
+				
+				if( playground.gameStarted )
+				{
+					// if the game is started, click on cosys will spin it
+
+					var obj = findObject( event, [playground.carousel.pillar, playground.carousel.pillarTop, ...playground.carousel.cosys] );
+					if( obj instanceof Cube )
+						playground.carousel.startSpinning( );
+				}
+				else
+				{
+					// if game is not started, click on an object will start it
+					if( findObject(event) )
+						playground.newGame( );
+				}
+			}
+		}		
 		
 	</script>
 	
