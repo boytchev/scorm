@@ -40,6 +40,7 @@ class Playground extends ScormPlayground
 	// starts a new game by selecting new color hues
 	newGame( )
 	{
+		this.clickSound.play( );
 		super.newGame( );
 
 		this.carousel.newGame( );
@@ -73,6 +74,7 @@ class Playground extends ScormPlayground
 	// ends the current game - evaluate results, update data
 	endGame( )
 	{
+		this.clackSound.play( );
 		super.endGame( );
 		
 		this.carousel.endGame( );
@@ -93,11 +95,12 @@ class Playground extends ScormPlayground
 	// load all sounds
 	loadSounds( )
 	{
-		//this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1, 4 );
-		//this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
+		console.log('loading sounds');
+		this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1, 4 );
+		this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
 		//this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.2, 1, true );
 		
-		//this.soundEffects.push( this.clickSound, this.clackSound );
+		this.soundEffects.push( this.clickSound, this.clackSound );
 		//this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
 	
