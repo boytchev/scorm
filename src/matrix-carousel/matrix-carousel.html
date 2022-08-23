@@ -119,8 +119,11 @@
 				else
 				{
 					// if game is not started, click on an object will start it
-					if( findObject(event) )
+					if( findObject(event,[playground.base]) )
+					{
+//					console.log('html',findObject(event,[playground.carousel,playground.base]));
 						playground.newGame( );
+					}
 				}
 			}
 		}		

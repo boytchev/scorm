@@ -40,7 +40,8 @@ class Playground extends ScormPlayground
 	// starts a new game by selecting new color hues
 	newGame( )
 	{
-		this.clickSound.play( );
+		console.log('clickSound.play');
+		this.clickSound?.play( );
 		super.newGame( );
 
 		this.carousel.newGame( );
@@ -52,8 +53,7 @@ class Playground extends ScormPlayground
 	// check whether a game can end
 	canEndGame( )
 	{
-		// ...
-		return true;
+		return this.carousel.phase == Carousel.STOPPED;
 	} // Playground.canEndGame
 	
 	
@@ -74,6 +74,7 @@ class Playground extends ScormPlayground
 	// ends the current game - evaluate results, update data
 	endGame( )
 	{
+		console.log('clackSound.play');
 		this.clackSound.play( );
 		super.endGame( );
 		
@@ -95,12 +96,13 @@ class Playground extends ScormPlayground
 	// load all sounds
 	loadSounds( )
 	{
-		console.log('loading sounds');
-		this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1, 4 );
+		this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1 );
 		this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
+		this.carouselSound = new PlaygroundAudio( 'sounds/carousel.mp3', 0.1 );
+		this.swingSound = new PlaygroundAudio( 'sounds/swing_squeak.mp3', 0.1 );
 		//this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.2, 1, true );
 		
-		this.soundEffects.push( this.clickSound, this.clackSound );
+		this.soundEffects.push( this.clickSound, this.clackSound, this.carouselSound, this.swingSound );
 		//this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
 	

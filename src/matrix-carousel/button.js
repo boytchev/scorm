@@ -42,6 +42,8 @@ class Button extends Group
 				.yoyo( true )
 				.start( );
 
+//console.log('button.js');
+
 		// if game is not started, click on the button will start it
 		if( playground.gameStarted )
 		{

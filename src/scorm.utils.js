@@ -61,7 +61,7 @@ class PlaygroundAudio
 	setVolume( volume )
 	{
 		this.volume = volume;
-		this.audio[this.index].setVolume( volume );
+		this.audio[this.index]?.setVolume( volume );
 	}
 	
 	play( )

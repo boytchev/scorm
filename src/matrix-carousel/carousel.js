@@ -183,6 +183,11 @@ class Carousel extends Group
 	startSpinning( )
 	{
 		this.phase = Carousel.SPINNING;
+
+		playground.carouselSound.setVolume( 0 );
+		console.log('carouselSound.play');
+		playground.carouselSound.play( );
+		playground.swingSound.stop( );
 		
 		if( this.spinTween )
 			this.spinTween.stop( );
@@ -200,6 +205,8 @@ class Carousel extends Group
 	// stop carousel spinning
 	stopSpinning( )
 	{
+		if( this.phase == Carousel.STOPPED ) return;
+		
 		this.phase = Carousel.STOPPING;
 
 		if( this.spinTween )
@@ -215,7 +222,11 @@ class Carousel extends Group
 		this.spinTween = new TWEEN.Tween( this )
 			.to( {spinH:finalH, speed:0}, time )
 			.easing( TWEEN.Easing.Quadratic.Out )
-			.onComplete( this.phase = Carousel.STOPPED )
+			.onComplete( (obj)=>{
+					obj.phase = Carousel.STOPPED;
+					playground.carouselSound.setVolume( 0 );
+					playground.carouselSound.stop( );
+				} )
 			.start( );
 
 		this.vibroTween = new TWEEN.Tween( this )
@@ -223,6 +234,10 @@ class Carousel extends Group
 			.easing( TWEEN.Easing.Quadratic.InOut )
 			.start( );
 
+		console.log('swingSound.play');
+		playground.swingSound?.stop( );
+		playground.swingSound?.play( );
+		
 	} // Carousel.stopSpinning
 	
 	
@@ -284,6 +299,8 @@ console.log(cosys.idx,Matrix.allMatrixData[cosys.idx].id);
 			this.spinH = (this.spinH+this.speed*dT) % 360;
 		}
 		
+		playground.carouselSound?.setVolume( 0.1*this.speed/Carousel.SPEED );
+		playground.swingSound?.setVolume( 0.2*this.vibroSize/Carousel.VIBRO_ANGLE );
 		
 		for( var cosys of this.cosys )
 		{	
