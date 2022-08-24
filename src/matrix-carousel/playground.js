@@ -98,12 +98,12 @@ class Playground extends ScormPlayground
 	{
 		this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1 );
 		this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
-		this.carouselSound = new PlaygroundAudio( 'sounds/carousel.mp3', 0.1 );
-		this.swingSound = new PlaygroundAudio( 'sounds/swing_squeak.mp3', 0.1 );
-		//this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.2, 1, true );
+		this.carouselSound = new PlaygroundAudio( 'sounds/carousel.mp3', 0.08 );
+		this.swingSound = new PlaygroundAudio( 'sounds/swing_squeak.mp3', 0.03 );
+		this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.05, 1, true );
 		
 		this.soundEffects.push( this.clickSound, this.clackSound, this.carouselSound, this.swingSound );
-		//this.soundMelody.push( this.backgroundMelody );
+		this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
 	
 	
