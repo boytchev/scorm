@@ -60,14 +60,14 @@ When the application is run from a LMS, the LMS may utilize its own data policy,
 
 ### Credits
 
-This application uses a background music from [FreeSound](https://freesound.org):
+This application uses a background soundscape from [FreeSound](https://freesound.org):
 
 - "[Fairground Ambience](https://freesound.org/people/HECKFRICKER/sounds/635159/)" by [HECKFRICKER](https://freesound.org/people/HECKFRICKER/) licensed under [CC 0 License](http://creativecommons.org/publicdomain/zero/1.0/),
 
-sound effects from [???](??):
+sound effects from [FreeSound](https://freesound.org):
 
-- **TODO** carousel music
-- **TODO** swing music
+- "[Carousel Brighton](https://freesound.org/people/OneTwo_BER/sounds/474195/)" by [OneTwo_BER](https://freesound.org/people/OneTwo_BER/) licensed under [CC 0 License](http://creativecommons.org/publicdomain/zero/1.0/),
+- "[Swing](https://freesound.org/people/karlis.stigis/sounds/168640/)" by [karlis.stigis](https://freesound.org/people/karlis.stigis/) licensed under [CC 0 License](http://creativecommons.org/publicdomain/zero/1.0/),
 
 and from [Mixkit](https://mixkit.co/):
 
