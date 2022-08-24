@@ -40,5 +40,6 @@ This SCO is used for experiments with SCORM 1.2-complient LMS. It shows the list
 
 Under development.
 
+[ <!-- markdown-link-check-disable -->[More info](src/matrix-carousel/index.html)<!-- markdown-link-check-enable --> ] [ [Run online](src/matrix-carousel/matrix-carousel.html) ] [ [Download](bin/matrix-carousel.zip) ]
 
 <small>{{site.time | date: "%B, %Y"}}</small>

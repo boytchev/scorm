@@ -28,7 +28,7 @@ class PlaygroundAudio
 		this.audio = [];
 		this.index = 0;
 		this.volume = volume;
-
+		
 		if( !PlaygroundAudio.audioListener )
 			PlaygroundAudio.audioListener = new THREE.AudioListener();
 		
