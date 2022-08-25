@@ -50,12 +50,6 @@ class Arena extends Group
 	
 	regenerateTexture( opacity=1 )
 	{
-if( i==0 )
-console.log(opacity);
-	
-		var S = Arena.S,	// canvas size
-			H = 1.25;		// horizontal scale
-
 		this.matrixImage.context.globalAlpha = 1;
 		this.matrixImage.clear( 'white' );	
 
