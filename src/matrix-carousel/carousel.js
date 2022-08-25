@@ -226,6 +226,7 @@ class Carousel extends Group
 					obj.phase = Carousel.STOPPED;
 					playground.carouselSound.setVolume( 0 );
 					playground.carouselSound.stop( );
+playground.evaluateGame( );
 				} )
 			.start( );
 
@@ -243,19 +244,10 @@ class Carousel extends Group
 	
 	
 	
-	newGame( )
+	showCoSys( )
 	{
-console.log('---');
-		for( var i in this.cosys )
+		for( var cosys of this.cosys )
 		{	
-			var cosys = this.cosys[i];
-			
-			cosys.idx = random(1,71)|0;
-			playground.base.arenas[i].setMatrix( cosys.idx );
-			
-console.log(cosys.idx,Matrix.allMatrixData[cosys.idx].id);
-
-
 			new TWEEN.Tween( cosys )
 				.to( {}, random(0, Carousel.GAME_DELAY_TIME ) )
 				.chain(
@@ -274,7 +266,7 @@ console.log(cosys.idx,Matrix.allMatrixData[cosys.idx].id);
 
 
 
-	endGame( )
+	hideCoSys( )
 	{
 		for( var cosys of this.cosys )
 		{	

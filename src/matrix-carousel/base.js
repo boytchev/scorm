@@ -84,7 +84,7 @@ class Base extends Group
 		}	
 		base.threejs.geometry.computeVertexNormals()		
 		
-		// black top surface
+		// top surface
 		var top = polygon( 240, [0,Base.BASE_HEIGHT,0], Base.BASE_SIZE, 'black' );
 			its.spinV = 90;
 			its.threejs.material.polygonOffset = true;

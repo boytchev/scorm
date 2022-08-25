@@ -43,7 +43,7 @@ class Arena extends Group
 	setMatrix( idx )
 	{
 		this.matrixIdx = idx;
-		this.matrixData = Matrix.allMatrixData[idx].matrix;
+		this.matrixData = Matrix.allMatrixData[idx]?.matrix;
 	}
 	
 	
@@ -60,24 +60,20 @@ class Arena extends Group
 		
 		var color, font;
 		
+		// this.matrixImage.fillText(
+			// Arena.S/2,
+			// 10,
+			// this.matrixIdx, // text
+			// 'cornflowerblue',
+			// 'bold 60px Arial' );
 
+		if( matrixData )
 		for( var i=0; i<4; i++ )
 			for( var j=0; j<4; j++ )
 			{
 				var value = matrixData[i][j],
 					x = Arena.S/2/Arena.H+Arena.S/5*(j-1.5)/Arena.H,
 					y = 0.43*Arena.S-Arena.S/6*(i-1.5);
-
-				// draw a middle dot
-				// color = 'black';
-				// font = 'bold 18px Arial';
-				// this.matrixImage.context.globalAlpha = 1-opacity;
-				// this.matrixImage.fillText(
-					// x,
-					// y,
-					// '·',
-					// color,
-					// font );
 
 
 				// draw the actual digit

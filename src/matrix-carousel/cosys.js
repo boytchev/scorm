@@ -66,9 +66,6 @@ class CoSys extends Group
 	{
 		var cosys = group();
 			cosys.y = CoSys.ROPE_SIZE[1];
-			cosys.spinH = random( [0,90,180,270] );
-			cosys.spinV = random( [0,90,180,270] );
-			cosys.spinS = random( [0,90,180,270] );
 			
 		var pos = CoSys.AXIS_SIZE[1]/2;
 		
