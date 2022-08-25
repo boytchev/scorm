@@ -131,7 +131,7 @@ class Base extends Group
 			this.arenas.push( new Arena(i) );
 		}
 	}
-	
+
 	
 } // class Base
 

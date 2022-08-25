@@ -246,9 +246,13 @@ class Carousel extends Group
 	newGame( )
 	{
 console.log('---');
-		for( var cosys of this.cosys )
+		for( var i in this.cosys )
 		{	
+			var cosys = this.cosys[i];
+			
 			cosys.idx = random(1,71)|0;
+			playground.base.arenas[i].setMatrix( cosys.idx );
+			
 console.log(cosys.idx,Matrix.allMatrixData[cosys.idx].id);
 
 
@@ -260,6 +264,7 @@ console.log(cosys.idx,Matrix.allMatrixData[cosys.idx].id);
 						.easing( TWEEN.Easing.Bounce.Out )
 						.onUpdate( (obj)=>{
 							for( var label of obj.labels ) label.size = CoSys.LABEL_SIZE*obj.size;
+							for( var arena of playground.base.arenas ) arena.regenerateTexture( obj.size );
 						} )
 				)
 				.start();
@@ -279,6 +284,7 @@ console.log(cosys.idx,Matrix.allMatrixData[cosys.idx].id);
 				.easing( TWEEN.Easing.Quadratic.In )
 				.onUpdate( (obj)=>{
 					for( var label of obj.labels ) label.size = CoSys.LABEL_SIZE*obj.size;
+					for( var arena of playground.base.arenas ) arena.regenerateTexture( obj.size );
 				} )
 				.start( );
 		}
