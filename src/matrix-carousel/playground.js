@@ -44,16 +44,27 @@ class Playground extends ScormPlayground
 		this.clickSound?.play( );
 		super.newGame( );
 
-		var spinComplexity = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0, 3) );
+		var minGroup, maxGroup, removeCount, spinComplexity, fakeCount;
 		
-		// set matrix range
-		var minGroup = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0, 7) ),
-			maxGroup = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0, 9) );
-		
+		if( this.difficulty<=10 ) minGroup = 0, maxGroup = 0, spinComplexity = 0, removeCount = 5, fakeCount = 0;
+		else
+		if( this.difficulty<=30 ) minGroup = 1, maxGroup = 1, spinComplexity = 0, removeCount = 4, fakeCount = 0;
+		else
+		if( this.difficulty<=45 ) minGroup = 1, maxGroup = 2, spinComplexity = 1, removeCount = 2, fakeCount = 0;
+		else
+		if( this.difficulty<=60 ) minGroup = 3, maxGroup = 3, spinComplexity = 0, removeCount = 3, fakeCount = 0;
+		else
+		if( this.difficulty<=70 ) minGroup = 3, maxGroup = 4, spinComplexity = 1, removeCount = 2, fakeCount = 0;
+		else
+		if( this.difficulty<=85 ) minGroup = 5, maxGroup = 6, spinComplexity = 2, removeCount = 1, fakeCount = 1;
+		else
+		if( this.difficulty<=95 ) minGroup = 7, maxGroup = 7, spinComplexity = 1, removeCount = 1, fakeCount = 1;
+		else
+                                  minGroup = 5, maxGroup = 9, spinComplexity = 3, removeCount = 0, fakeCount = 2;
+			
 		var minIndex = Matrix.allGroups[ minGroup ].min,
-			maxIndex = Matrix.allGroups[ maxGroup ].max,
-			count = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 5, 0 );
-console.log(minGroup,'...',maxGroup);
+			maxIndex = Matrix.allGroups[ maxGroup ].max;
+
 		
 		// define top and bottom matrices to be the same
 //console.log('---');
@@ -66,13 +77,26 @@ console.log(minGroup,'...',maxGroup);
 			botIdx[i] = idx;
 //console.log(topIdx[i],Matrix.allMatrixData[topIdx[i]]?.id);
 		}
-		while( count > 0 )
+		
+		// remove elements from the top
+		while( removeCount > 0 )
 		{
 			let i = random( [0,1,2,3,4,5] );
-			if( topIdx[i] >= 0 )
+			if( topIdx[i] >= 0 ) // valid index is removed
 			{
 				topIdx[i] = -1;
-				count--;
+				removeCount--;
+			}
+		}
+		
+		// fakes matrices at the bottom
+		while( fakeCount > 0 )
+		{
+			let i = random( [0,1,2,3,4,5] );
+			if( topIdx[i] >= 0 ) // kept top index is used for faking bottom
+			{
+				botIdx[i] = random(minIndex,maxIndex) | 0;
+				fakeCount--;
 			}
 		}
 		
@@ -85,7 +109,8 @@ console.log(minGroup,'...',maxGroup);
 			var cosys = this.carousel.cosys[i];
 			
 			cosys.idx = topIdx[i];
-			cosys.visible = cosys.idx >= 0;
+			cosys.cube.visible = cosys.idx >= 0;
+			cosys.cosys.visible = cosys.idx >= 0;
 			
 			cosys.cosys.spinH = 0;
 			cosys.cosys.spinV = 180;
@@ -159,7 +184,7 @@ console.log(minGroup,'...',maxGroup);
 		
 		var score = match[0] / Math.max( ...match );
 
-		console.log('score',score);
+		console.log('match',match[0], 'from', Math.max( ...match ), '=> score',score);
 		
 		return score * points;
 
