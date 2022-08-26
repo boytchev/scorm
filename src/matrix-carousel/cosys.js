@@ -188,4 +188,18 @@ class CoSys extends Group
 	}
 
 	
+	
+	mark( )
+	{
+		this.cube.groupElements[0].color = 'crimson';
+	}
+
+	
+	
+	unmark( )
+	{
+		this.cube.groupElements[0].color = 'wheat';
+	}
+	
+	
 } // class CoSys

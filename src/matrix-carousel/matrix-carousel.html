@@ -86,8 +86,9 @@
 			
 			if( playground.gameStarted )
 			{
+//				console.log(findObjects( event, [playground.carousel.pillar, playground.carousel.pillarTop, ...playground.carousel.cosys] ));
 				obj = findObject( event, [playground.carousel.pillar, playground.carousel.pillarTop, ...playground.carousel.cosys] );
-				if( obj instanceof Cube )
+				if( !(obj instanceof Tube) )
 					event.target.style.cursor = 'ew-resize';
 				else
 					event.target.style.cursor = 'default';
@@ -114,7 +115,18 @@
 
 					var obj = findObject( event, [playground.carousel.pillar, playground.carousel.pillarTop, ...playground.carousel.cosys] );
 					if( obj instanceof Cube )
+					{
+						// find which cosys contains the selected cube
+						for( var cosys of playground.carousel.cosys )
+						{
+							if( cosys.cube.groupElements.indexOf( obj ) >= 0 )
+							{
+								cosys.mark( );
+							}
+						}
+						//obj.mark( );
 						playground.carousel.startSpinning( );
+					}
 				}
 				else
 				{

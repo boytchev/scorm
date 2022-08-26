@@ -185,7 +185,7 @@ class Carousel extends Group
 		this.phase = Carousel.SPINNING;
 
 		playground.carouselSound.setVolume( 0 );
-		console.log('carouselSound.play');
+//		console.log('carouselSound.play');
 		playground.carouselSound.play( );
 		playground.swingSound.stop( );
 		
@@ -226,6 +226,7 @@ class Carousel extends Group
 					obj.phase = Carousel.STOPPED;
 					playground.carouselSound.setVolume( 0 );
 					playground.carouselSound.stop( );
+					for( var cosys of obj.cosys ) cosys.unmark( );
 playground.evaluateGame( );
 				} )
 			.start( );
@@ -235,7 +236,7 @@ playground.evaluateGame( );
 			.easing( TWEEN.Easing.Quadratic.InOut )
 			.start( );
 
-		console.log('swingSound.play');
+//		console.log('swingSound.play');
 		playground.swingSound?.stop( );
 		playground.swingSound?.play( );
 		

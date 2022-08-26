@@ -40,6 +40,8 @@ class Playground extends ScormPlayground
 	// starts a new game by selecting new color hues
 	newGame( )
 	{
+//this.totalScore = 90;
+
 //		console.log('clickSound.play');
 		this.clickSound?.play( );
 		super.newGame( );
@@ -74,6 +76,8 @@ class Playground extends ScormPlayground
 		{
 			let idx = random(minIndex,maxIndex) | 0;
 			topIdx[i] = idx;
+			if( i>0 && maxGroup==0 )
+				idx = Math.floor( random(0,Matrix.allMatrixData.length) );
 			botIdx[i] = idx;
 //console.log(topIdx[i],Matrix.allMatrixData[topIdx[i]]?.id);
 		}
@@ -100,10 +104,19 @@ class Playground extends ScormPlayground
 			}
 		}
 		
-		// rotate the bottom indices 1..5 times
-		for( let i=0; i<random([1,2,3,4,5]); i++ )
-			botIdx.unshift( botIdx.pop() );
-  
+		// rotate the carousel integer number of swings
+		// if the result is a match, spin again; and one more if needed
+		this.carousel.spinH += 60*Math.round(random(60,300)/60);
+		var score = this.evaluateScore( ),
+			n = 5;
+		while( score>0.9 && n>0)
+		{
+			//console.log( 'score=',score,'randomize',this.carousel.spinH );
+			this.carousel.spinH = (this.carousel.spinH + 60*Math.round(random(60,300)/60))%360;
+			n--;
+			score = this.evaluateScore( );
+		}
+		
 		for( let i in this.carousel.cosys )
 		{	
 			var cosys = this.carousel.cosys[i];
@@ -141,11 +154,9 @@ class Playground extends ScormPlayground
 	
 	
 	
-	// returns the score of the current game
-	evaluateGame( )
+	// returns the pure score [0..1] of the current game
+	evaluateScore( )
 	{
-		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
-		
 		var bots = [],
 			tops = [];
 		for( let i=0; i<6; i++ )
@@ -178,13 +189,20 @@ class Playground extends ScormPlayground
 				match[shift] += Matrix.type(tops[i])==Matrix.type(bots[j]) ? 0.10 : 0;
 			}
 		}
-//		console.log('bots',bots);
-//		console.log('tops',tops);
-//		console.log('match',match);
 		
-		var score = match[0] / Math.max( ...match );
+//		console.log('match',match[0].toFixed(2), 'from', Math.max( ...match ).toFixed(2), '=> score',score.toFixed(4));
+		return match[0] / Math.max( ...match );
 
-		console.log('match',match[0], 'from', Math.max( ...match ), '=> score',score);
+
+	} // Playground.evaluateScore
+	
+	
+	
+	// returns the score of the current game
+	evaluateGame( )
+	{
+		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 ),
+			score = this.evaluateScore( );
 		
 		return score * points;
 
@@ -195,7 +213,7 @@ class Playground extends ScormPlayground
 	// ends the current game - evaluate results, update data
 	endGame( )
 	{
-		console.log('clackSound.play');
+//		console.log('clackSound.play');
 		this.clackSound.play( );
 		super.endGame( );
 		
@@ -221,7 +239,7 @@ class Playground extends ScormPlayground
 		this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
 		this.carouselSound = new PlaygroundAudio( 'sounds/carousel.mp3', 0.08 );
 		this.swingSound = new PlaygroundAudio( 'sounds/swing_squeak.mp3', 0.03 );
-		this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.05, 1, true );
+		this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.05, 1, true, true );
 		
 		this.soundEffects.push( this.clickSound, this.clackSound, this.carouselSound, this.swingSound );
 		this.soundMelody.push( this.backgroundMelody );

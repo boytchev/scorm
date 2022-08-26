@@ -23,7 +23,7 @@ class PlaygroundAudio
 {
 	static audioListener;
 	
-	constructor( audioFile, volume, count=1, autoPlay=false )
+	constructor( audioFile, volume, count=1, autoPlay=false, loop=false )
 	{
 		this.audio = [];
 		this.index = 0;
@@ -39,6 +39,7 @@ class PlaygroundAudio
 				that.audio.push( new THREE.Audio( PlaygroundAudio.audioListener ) );
 				that.audio[i].setBuffer( buffer );
 				that.audio[i].setVolume( 0 );
+				that.audio[i].setLoop( loop );
 			}
 			playground.setSound( );
 			if( autoPlay && playground.getSound()=='on' ) that.audio[0].play( );
