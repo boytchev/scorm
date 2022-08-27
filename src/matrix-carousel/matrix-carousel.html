@@ -71,6 +71,30 @@
 		}
 		
 		
+		function findCube( event )
+		{
+			
+			var objects = findObjects( event, [playground.carousel.pillar, playground.carousel.pillarTop, ...playground.carousel.cubes] );
+
+			// scan the objects to identify a possible cube
+			for( var object of objects )
+			{
+				if( object instanceof Tube ) return null; // tube is the central pillar
+				if( object instanceof Cube )
+				{
+					for( var cosys of playground.carousel.cosys )
+					{
+						if( cosys.cube.groupElements.indexOf( object ) >= 0 && cosys.cube.visible )
+						{
+							//console.log('found',cosys.id, random(0,1000)|0);
+							return cosys;
+						}
+					}
+				}
+			}
+			return null;
+		}
+		
 		<!-- function onPointerMove( event ) -->
 		<!-- { -->
 			<!-- if( findObject( event ) ) -->
@@ -79,24 +103,21 @@
 				<!-- event.target.style.cursor = 'default'; -->
 		<!-- } -->
 		function onPointerMove( event )
-		{
+		{		
 			playground.pointerMovement += Math.abs( event.movementX ) + Math.abs( event.movementY );
 			
 			var obj;
 			
 			if( playground.gameStarted )
-			{
-//				console.log(findObjects( event, [playground.carousel.pillar, playground.carousel.pillarTop, ...playground.carousel.cosys] ));
-				obj = findObject( event, [playground.carousel.pillar, playground.carousel.pillarTop, ...playground.carousel.cosys] );
-				if( !(obj instanceof Tube) )
+			{	
+				if( findCube( event ) )
 					event.target.style.cursor = 'ew-resize';
 				else
 					event.target.style.cursor = 'default';
 			}
 			else
 			{
-				var obj = findObject( event );
-				if( obj )
+				if( findObject( event ) )
 					event.target.style.cursor = 'pointer';
 				else
 					event.target.style.cursor = 'default';
@@ -113,28 +134,11 @@
 				{
 					// if the game is started, click on cosys will spin it
 
-					var obj = findObject( event, [playground.carousel.pillar, playground.carousel.pillarTop, ...playground.carousel.cosys] );
-					if( obj instanceof Cube )
+					var obj = findCube( event );
+					if( obj )
 					{
-						// find which cosys contains the selected cube
-						for( var cosys of playground.carousel.cosys )
-						{
-							if( cosys.cube.groupElements.indexOf( obj ) >= 0 )
-							{
-								cosys.mark( );
-							}
-						}
-						//obj.mark( );
+						obj.mark( );
 						playground.carousel.startSpinning( );
-					}
-				}
-				else
-				{
-					// if game is not started, click on an object will start it
-					if( findObject(event,[playground.base,playground.carousel.pillar]) )
-					{
-//					console.log('html',findObject(event,[playground.carousel,playground.base]));
-						playground.newGame( );
 					}
 				}
 			}

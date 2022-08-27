@@ -40,49 +40,44 @@ class Playground extends ScormPlayground
 	// starts a new game by selecting new color hues
 	newGame( )
 	{
+//console.log('newGame');
 //this.totalScore = 90;
-
+//console.log('new game',this.difficulty);
 //		console.log('clickSound.play');
 		this.clickSound?.play( );
 		super.newGame( );
 
-		var minGroup, maxGroup, removeCount, spinComplexity, fakeCount;
+		var n; // difficulty case
 		
-		if( this.difficulty<=10 ) minGroup = 0, maxGroup = 0, spinComplexity = 0, removeCount = 5, fakeCount = 0;
-		else
-		if( this.difficulty<=30 ) minGroup = 1, maxGroup = 1, spinComplexity = 0, removeCount = 4, fakeCount = 0;
-		else
-		if( this.difficulty<=45 ) minGroup = 1, maxGroup = 2, spinComplexity = 1, removeCount = 2, fakeCount = 0;
-		else
-		if( this.difficulty<=60 ) minGroup = 3, maxGroup = 3, spinComplexity = 0, removeCount = 3, fakeCount = 0;
-		else
-		if( this.difficulty<=70 ) minGroup = 3, maxGroup = 4, spinComplexity = 1, removeCount = 2, fakeCount = 0;
-		else
-		if( this.difficulty<=85 ) minGroup = 5, maxGroup = 6, spinComplexity = 2, removeCount = 1, fakeCount = 1;
-		else
-		if( this.difficulty<=95 ) minGroup = 7, maxGroup = 7, spinComplexity = 1, removeCount = 1, fakeCount = 1;
-		else
-                                  minGroup = 5, maxGroup = 9, spinComplexity = 3, removeCount = 0, fakeCount = 2;
-			
-		var minIndex = Matrix.allGroups[ minGroup ].min,
-			maxIndex = Matrix.allGroups[ maxGroup ].max;
+		const PERCENTS 		= [ 10, 35, 50, 65, 80, 95, 97, 200 ]; // compared against this.difficulty
+		const MIN_GROUPS 	= [  0,  1,  2,  3,  8,  3,  3,   3 ]; // minimal group of matrices to use
+		const MAX_GROUPS 	= [  0,  1,  2,  3,  9,  9,  9,   9 ]; // maximal grou of matrices to use
+		const COUNTS		= [  2,  3,  6,  6,  6,  6,  6,   6 ]; // number of cosys to display
+		const FAKES			= [  4,  0,  0,  0,  0,  0,  1,   2 ]; // number of wrong matrices
+		const SPINS			= [  0,  0,  0,  0,  0,  1,  2,   3 ]; // cmplexity of spin orientation
+		for( n=0; n<6; n++ )
+		{
+			if( this.difficulty <= PERCENTS[n] ) break;
+		}
+
+		var minIndex = Matrix.allGroups[ MIN_GROUPS[n] ].min,
+			maxIndex = Matrix.allGroups[ MAX_GROUPS[n] ].max;
 
 		
-		// define top and bottom matrices to be the same
-//console.log('---');
+		// define top and bottom matrices (complete match)
 		var topIdx = [],
 			botIdx = [];
 		for( let i=0; i<6; i++ )
 		{
 			let idx = random(minIndex,maxIndex) | 0;
 			topIdx[i] = idx;
-			if( i>0 && maxGroup==0 )
-				idx = Math.floor( random(0,Matrix.allMatrixData.length) );
 			botIdx[i] = idx;
-//console.log(topIdx[i],Matrix.allMatrixData[topIdx[i]]?.id);
 		}
 		
+		// in any case, for first level (n=0) set two identity matrices
+		
 		// remove elements from the top
+		var removeCount = 6 - COUNTS[n];
 		while( removeCount > 0 )
 		{
 			let i = random( [0,1,2,3,4,5] );
@@ -94,12 +89,19 @@ class Playground extends ScormPlayground
 		}
 		
 		// fakes matrices at the bottom
+		var fakeCount = FAKES[n];
+//		console.log('fakeCount',fakeCount,n);
 		while( fakeCount > 0 )
 		{
 			let i = random( [0,1,2,3,4,5] );
-			if( topIdx[i] >= 0 ) // kept top index is used for faking bottom
+			if( n>0 && topIdx[i]>=0 ) // faking bottom only if there is top
 			{
 				botIdx[i] = random(minIndex,maxIndex) | 0;
+				fakeCount--;
+			}
+			if( n==0 && topIdx[i]<0 ) // faking bottom only if there is no top
+			{
+				botIdx[i] = random(Matrix.allGroups[1].min,Matrix.allGroups[3].max) | 0;
 				fakeCount--;
 			}
 		}
@@ -111,7 +113,6 @@ class Playground extends ScormPlayground
 			n = 5;
 		while( score>0.9 && n>0)
 		{
-			//console.log( 'score=',score,'randomize',this.carousel.spinH );
 			this.carousel.spinH = (this.carousel.spinH + 60*Math.round(random(60,300)/60))%360;
 			n--;
 			score = this.evaluateScore( );
@@ -124,12 +125,14 @@ class Playground extends ScormPlayground
 			cosys.idx = topIdx[i];
 			cosys.cube.visible = cosys.idx >= 0;
 			cosys.cosys.visible = cosys.idx >= 0;
+			cosys.cube.size = cosys.idx >= 0 ? 1 : 0;
+			cosys.cosys.size = cosys.idx >= 0 ? 1 : 0;
 			
 			cosys.cosys.spinH = 0;
 			cosys.cosys.spinV = 180;
 			cosys.cosys.spinS = 0;
 			
-			switch( spinComplexity )
+			switch( SPINS[n] )
 			{
 				case 3: cosys.cosys.spinS = random( [0,90,180,270] ); // no break
 				case 2: cosys.cosys.spinV = random( [0,90,180,270] ); // no break
@@ -213,7 +216,7 @@ class Playground extends ScormPlayground
 	// ends the current game - evaluate results, update data
 	endGame( )
 	{
-//		console.log('clackSound.play');
+//console.log('endGame');
 		this.clackSound.play( );
 		super.endGame( );
 		
@@ -238,7 +241,7 @@ class Playground extends ScormPlayground
 		this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1 );
 		this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
 		this.carouselSound = new PlaygroundAudio( 'sounds/carousel.mp3', 0.08 );
-		this.swingSound = new PlaygroundAudio( 'sounds/swing_squeak.mp3', 0.03 );
+		this.swingSound = new PlaygroundAudio( 'sounds/swing_squeak.mp3', 0.02 );
 		this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.05, 1, true, true );
 		
 		this.soundEffects.push( this.clickSound, this.clackSound, this.carouselSound, this.swingSound );

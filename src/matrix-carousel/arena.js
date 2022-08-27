@@ -112,7 +112,13 @@ class Arena extends Group
 			}
 
 		this.matrixImage.context.globalAlpha = 1-opacity;
-		this.matrixImage.clear( 'black' );	
+		this.matrixImage.clear( rgb(0x4a,0x3f,0x31) );	
+
+		this.matrixImage.context.globalAlpha = 1;
+		this.matrixImage.context.scale( 1/Arena.H, 1 );
+		this.matrixImage.arc( Arena.S/2, Arena.S/2, Arena.S/2 );
+		this.matrixImage.stroke( 'tan', 8 );
+		this.matrixImage.context.scale( Arena.H, 1 );
 
 		this.arena.threejs.material.map.needsUpdate = true;
 		

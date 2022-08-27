@@ -25,8 +25,7 @@ class CoSys extends Group
 		
 		this.ropeGroup = group();
 			this.ropeGroup.spinH = 90;
-		
-		this.ropeGroup.add( this.rope, this.cosys );
+			this.ropeGroup.add( this.rope, this.cosys );
 
 		this.swingOutward( 0 );
 
@@ -141,6 +140,9 @@ class CoSys extends Group
 			its.threejs.material = material;
 		
 		var edges = cube( [0,0,0], CoSys.CUBE_SIZE, 'brown' );
+			its.wireframe = true;
+		
+		this.originalEdges = cube( [0,0,0], CoSys.CUBE_SIZE, 'brown' );
 			its.wireframe = true;
 		
 		cubeGroup.add( box, edges );

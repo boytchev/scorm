@@ -20,7 +20,7 @@ class Base extends Group
 		this.constructBase();
 		this.constructArenas();
 		
-		//this.addEventListener( 'click', this.onClick );
+		this.addEventListener( 'click', this.onClick );
 
 		this.y = Base.POS_Y;
 		
@@ -80,7 +80,6 @@ class Base extends Group
 			}
 			
 			uv.setY( i, Math.pow(y,1.5) );
-			
 		}	
 		base.threejs.geometry.computeVertexNormals()		
 		
@@ -132,6 +131,19 @@ class Base extends Group
 		}
 	}
 
+
+	// handles clicks on the base
+	onClick( )
+	{
+		// avoid fake onClicks
+		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+
+		if( !playground.gameStarted )
+		{
+			playground.newGame( );
+		}
+	} // Base.onClick
+	
 	
 } // class Base
 

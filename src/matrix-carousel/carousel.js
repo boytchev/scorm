@@ -33,6 +33,7 @@ class Carousel extends Group
 		super( suica );
 
 		this.cosys = [];
+		this.cubes = [];
 		this.speed = 0;
 		this.speed = 0;
 		this.maxSpeed = 0; // recorded
@@ -46,40 +47,11 @@ class Carousel extends Group
 		this.constructPillar( );
 		this.constructCoSys( );
 		
-//		this.addEventListener( 'pointerdown', this.onPointerDown );
+		this.addEventListener( 'click', this.onClick );
 
 	} // Carousel.constructor
 
 
-/*
-	// handles clicks on the base
-	onClick( )
-	{
-		// avoid fake onClicks
-		//console.log(Playground.POINTER_USED, playground.pointerMovement);
-		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
-		if( Playground.POINTER_USED ) return;
-			
-		// if game is not started, click on the base will start it
-		if( !playground.gameStarted )
-		{
-			playground.newGame( );
-		}
-		
-	} // Carousel.onClick
-
-
-	onPointerDown( )
-	{
-		if( playground.gameStarted )
-		{
-			//console.log(Playground.POINTER_USED, playground.pointerMovement);
-			if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
-			this.startSpinning( );
-		}
-	}
-*/
-	
 	// construct the pillar
 	constructPillar( )
 	{
@@ -172,6 +144,7 @@ class Carousel extends Group
 				cosys.spinH = -i/6 * 360;
 
 			this.cosys.push( cosys );
+			this.cubes.push( cosys.cube );
 			this.add( cosys );
 		}
 		
@@ -227,7 +200,6 @@ class Carousel extends Group
 					playground.carouselSound.setVolume( 0 );
 					playground.carouselSound.stop( );
 					for( var cosys of obj.cosys ) cosys.unmark( );
-playground.evaluateGame( );
 				} )
 			.start( );
 
@@ -286,7 +258,21 @@ playground.evaluateGame( );
 
 
 
+	// handles clicks on the carousel
+	onClick( )
+	{
+//		console.log('carousel.onclick');
+		// avoid fake onClicks
+		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 
+		if( !playground.gameStarted )
+		{
+			playground.newGame( );
+		}
+	} // Carousel.onClick
+	
+	
+	
 	update( t, dT )
 	{
 		//console.log('vibroSize',this.vibroSize.toFixed(1));
