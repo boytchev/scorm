@@ -200,6 +200,7 @@ class Carousel extends Group
 					playground.carouselSound.setVolume( 0 );
 					playground.carouselSound.stop( );
 					for( var cosys of obj.cosys ) cosys.unmark( );
+console.log( playground.evaluateScore().toFixed(2) );
 				} )
 			.start( );
 

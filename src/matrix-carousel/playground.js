@@ -17,7 +17,7 @@ class Playground extends ScormPlayground
 		new Matrix( );
 		this.carousel = new Carousel( );
 		this.base = new Base( this );
-		new Button( );
+		this.button = new Button( );
 		
 		this.resize( );
 
@@ -106,17 +106,9 @@ class Playground extends ScormPlayground
 			}
 		}
 		
+
 		// rotate the carousel integer number of swings
-		// if the result is a match, spin again; and one more if needed
-		this.carousel.spinH += 60*Math.round(random(60,300)/60);
-		var score = this.evaluateScore( ),
-			n = 5;
-		while( score>0.9 && n>0)
-		{
-			this.carousel.spinH = (this.carousel.spinH + 60*Math.round(random(60,300)/60))%360;
-			n--;
-			score = this.evaluateScore( );
-		}
+		this.carousel.spinH = 60 * random( [0,1,2,3,4,5] );
 		
 		for( let i in this.carousel.cosys )
 		{	
@@ -130,14 +122,15 @@ class Playground extends ScormPlayground
 			
 			cosys.cosys.spinH = 0;
 			cosys.cosys.spinV = 180;
-			cosys.cosys.spinS = 0;
+			cosys.cosys.spinT = 0;
 			
 			switch( SPINS[n] )
 			{
-				case 3: cosys.cosys.spinS = random( [0,90,180,270] ); // no break
+				case 3: cosys.cosys.spinT = random( [0,90,180,270] ); // no break
 				case 2: cosys.cosys.spinV = random( [0,90,180,270] ); // no break
 				case 1: cosys.cosys.spinH = random( [0,90,180,270] ); // no break
 			}
+cosys.cosys.spinT += 90/4;
 
 			playground.base.arenas[i].setMatrix( botIdx[i] );
 		}	
@@ -158,14 +151,15 @@ class Playground extends ScormPlayground
 	
 	
 	// returns the pure score [0..1] of the current game
-	evaluateScore( )
+	evaluateScore(  )
 	{
-		var bots = [],
-			tops = [];
+		var tops = [],
+			bots = [];
+			
 		for( let i=0; i<6; i++ )
 		{
-			bots[i] = this.base.arenas[i].matrixIdx;
 			tops[i] = this.carousel.cosys[(i + Math.round(this.carousel.spinH/60))%6].idx;
+			bots[i] = this.base.arenas[i].matrixIdx;
 		}
 
 		// collect array ot matches:

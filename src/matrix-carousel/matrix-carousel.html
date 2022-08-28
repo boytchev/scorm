@@ -113,7 +113,12 @@
 				if( findCube( event ) )
 					event.target.style.cursor = 'ew-resize';
 				else
-					event.target.style.cursor = 'default';
+				{
+					if( findObject( event, [playground.button] ) )
+						event.target.style.cursor = 'pointer';
+					else
+						event.target.style.cursor = 'default';
+				}
 			}
 			else
 			{

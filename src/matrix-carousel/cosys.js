@@ -142,9 +142,6 @@ class CoSys extends Group
 		var edges = cube( [0,0,0], CoSys.CUBE_SIZE, 'brown' );
 			its.wireframe = true;
 		
-		this.originalEdges = cube( [0,0,0], CoSys.CUBE_SIZE, 'brown' );
-			its.wireframe = true;
-		
 		cubeGroup.add( box, edges );
 			
 		this.cosys.add( cubeGroup );
