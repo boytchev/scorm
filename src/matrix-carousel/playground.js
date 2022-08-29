@@ -14,7 +14,7 @@ class Playground extends ScormPlayground
 	{
 		super( );
 		
-		new Matrix( );
+		//new Matrix( );
 		this.carousel = new Carousel( );
 		this.base = new Base( this );
 		this.button = new Button( );

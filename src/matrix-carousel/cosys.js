@@ -171,7 +171,7 @@ class CoSys extends Group
 		var k = 2*( (CoSys.CUBE_SPEED*t + Math.sin(this.idx))%1)-0.5; // -0.5 .. +1.5
 			k = THREE.MathUtils.clamp( k, 0, 1 );
 		
-		Matrix.setMatrix( this.cube, this.idx, k );
+		Matrix.lerp( this.cube, this.idx, k );
 	}
 
 

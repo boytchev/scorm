@@ -127,7 +127,7 @@ class Base extends Group
 	{
 		for( var i=0; i<6; i++ )
 		{
-			this.arenas.push( new Arena(i) );
+			this.arenas.push( new Arena( i ) );
 		}
 	}
 

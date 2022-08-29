@@ -7,16 +7,7 @@ class Matrix
 {
 	static allMatrixData;
 	static allGroups = [];
-	
-	constructor( )
-	{
-		if( !Matrix.allMatrixData )
-			this.generateAllMatrixData( );
-
-	} // Matrix.constructor
-
-	
-	
+		
 	// generate a list of all possible matrices
 	generateAllMatrixData( )
 	{
@@ -132,7 +123,6 @@ class Matrix
 		for( var i=0; i<Matrix.allMatrixData.length; i++ )
 		{
 			var data = Matrix.allMatrixData[i];
-			//if (!data.offset) data.offset = [0, 0, 0]; 	<-- is it needed?
 			
 			if( group != data.group )
 			{
@@ -142,24 +132,26 @@ class Matrix
 			
 			Matrix.allGroups[group].max = i;
 		}
-		//console.log( Matrix.allGroups );
 
 	} // Matrix.generateMatrixData
 	
 
+	// get matrix group
 	static group( idx )
 	{
 		return Matrix.allMatrixData[idx].group;
-	}
+	} // Matrix.group
 	
-	
+
+	// get matrix type (first character of its id)
 	static type( idx )
 	{
 		return Matrix.allMatrixData[idx].id[0];
-	}
+	} // Matrix.type
 	
-	
-	static setMatrix( object, idx, k )
+
+	// lerp from identity to matrix idx
+	static lerp( object, idx, k )
 	{
 		// extract matrix with index idx lerped from indentity by k
 		//		if k=0 return identity
@@ -171,7 +163,7 @@ class Matrix
 		var matrix = [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]], // identity
 			target = Matrix.allMatrixData[idx].step; 	// target matrix
 
-		var matrixType = Matrix.allMatrixData[idx].id[0];
+		var matrixType = Matrix.type( idx );
 		
 		// for projection matrixes do not go to k=1!!!
 		if( matrixType == 'C' ) k = Math.min( k, 0.99 );
@@ -180,6 +172,8 @@ class Matrix
 		// rotations need rescaling
 		var rescale = matrixType=='R';
 
+		// do the actual lerp
+		// (and scaling if needed)
 		for( var x=0; x<4; x++ )
 		{
 			var len = 0;
@@ -196,6 +190,7 @@ class Matrix
 			}
 		}
 		
+		// update manually object's matrix
 		object.threejs.matrixAutoUpdate = false;
 		object.threejs.matrix.set(
 				...matrix[0],
@@ -203,8 +198,11 @@ class Matrix
 				...matrix[2],
 				...matrix[3]
 			);
-	}
-	
+	} // Matrix.lerp	
 	
 } // class Matrix
 
+
+
+
+new Matrix().generateAllMatrixData( );
