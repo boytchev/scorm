@@ -40,10 +40,6 @@ class Playground extends ScormPlayground
 	// starts a new game by selecting new color hues
 	newGame( )
 	{
-//console.log('newGame');
-//this.totalScore = 90;
-//console.log('new game',this.difficulty);
-//		console.log('clickSound.play');
 		this.clickSound?.play( );
 		super.newGame( );
 
@@ -130,11 +126,11 @@ class Playground extends ScormPlayground
 				case 2: cosys.cosys.spinV = random( [0,90,180,270] ); // no break
 				case 1: cosys.cosys.spinH = random( [0,90,180,270] ); // no break
 			}
-cosys.cosys.spinT += 90/4;
+
+			cosys.cosys.spinT += 90/4;
 
 			playground.base.arenas[i].setMatrix( botIdx[i] );
 		}	
-
 
 		this.carousel.showCoSys( );
 
@@ -187,9 +183,7 @@ cosys.cosys.spinT += 90/4;
 			}
 		}
 		
-//		console.log('match',match[0].toFixed(2), 'from', Math.max( ...match ).toFixed(2), '=> score',score.toFixed(4));
 		return match[0] / Math.max( ...match );
-
 
 	} // Playground.evaluateScore
 	
@@ -210,7 +204,6 @@ cosys.cosys.spinT += 90/4;
 	// ends the current game - evaluate results, update data
 	endGame( )
 	{
-//console.log('endGame');
 		this.clackSound.play( );
 		super.endGame( );
 		
@@ -242,10 +235,11 @@ cosys.cosys.spinT += 90/4;
 		this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
 	
+
 	
 	update( t, dT )
 	{
 		this.carousel.update( t, dT );
-	}
+	} // Playground.update
 
 } // class Playground

@@ -83,25 +83,15 @@
 				if( object instanceof Cube )
 				{
 					for( var cosys of playground.carousel.cosys )
-					{
 						if( cosys.cube.groupElements.indexOf( object ) >= 0 && cosys.cube.visible )
-						{
-							//console.log('found',cosys.id, random(0,1000)|0);
 							return cosys;
-						}
-					}
 				}
 			}
 			return null;
 		}
+
 		
-		<!-- function onPointerMove( event ) -->
-		<!-- { -->
-			<!-- if( findObject( event ) ) -->
-				<!-- event.target.style.cursor = 'pointer'; -->
-			<!-- else -->
-				<!-- event.target.style.cursor = 'default'; -->
-		<!-- } -->
+
 		function onPointerMove( event )
 		{		
 			playground.pointerMovement += Math.abs( event.movementX ) + Math.abs( event.movementY );
@@ -128,6 +118,8 @@
 					event.target.style.cursor = 'default';
 			}
 		}
+
+
 		
 		function onPointerDown( event )
 		{
@@ -137,7 +129,7 @@
 				
 				if( playground.gameStarted )
 				{
-					// if the game is started, click on cosys will spin it
+					// if the game is started, click on cosys cube will spin it
 
 					var obj = findCube( event );
 					if( obj )

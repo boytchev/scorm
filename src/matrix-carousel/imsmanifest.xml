@@ -56,9 +56,14 @@ The XSD files for SCORM 1.2 are not strictly valid and may cause errors in some 
 			<file href="matrix-carousel.html"/>
 			
 			<!-- modules -->
-			<!--file href="plate.js"/-->
 			<file href="styles.css"/>
 			<file href="playground.js"/>
+			<file href="arena.js"/>
+			<file href="base.js"/>
+			<file href="button.js"/>
+			<file href="carousel.js"/>
+			<file href="cosys.js"/>
+			<file href="matrix.js"/>
 
 			<!-- libraries -->
 			<file href="libs/scorm.utils.js"/>
@@ -67,13 +72,23 @@ The XSD files for SCORM 1.2 are not strictly valid and may cause errors in some 
 			
 			<!-- images -->
 			<file href="images/logo.png"/>
+			<file href="images/sound-fx.png"/>
 			<file href="images/sound-on.png"/>
 			<file href="images/sound-off.png"/>
+			<file href="images/base_ao.jpg"/>
+			<file href="images/floor_shadow_alpha.jpg"/>
+			<file href="images/metal_plate.jpg"/>
+			<file href="images/metal_plate_normal.jpg"/>
+			<file href="images/metric_plate_normal.jpg"/>
+			<file href="images/pillar.jpg"/>
+			<file href="images/rope_alpha.jpg"/>
 			
 			<!-- sounds -->
-			<!--file href="sounds/background.mp3"/-->
+			<file href="sounds/background.mp3"/>
 			<file href="sounds/click.mp3"/>
-			<!--file href="sounds/clack.mp3"/-->
+			<file href="sounds/clack.mp3"/>
+			<file href="sounds/carousel.mp3"/>
+			<file href="sounds/swing_squeak.mp3"/>
 
 			<!-- SCORM related definitions -->
 			<file href="adlcp_rootv1p2.xsd"/>
