@@ -122,7 +122,7 @@ class Base extends Group
 	} // Base.constructBase
 	
 	
-	// arenas - the white circles
+	// arenas
 	constructArenas( )
 	{
 		for( var i=0; i<6; i++ )

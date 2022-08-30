@@ -15,16 +15,13 @@ class Button extends Group
 
 		var y = Base.POS_Y + Base.BASE_HEIGHT + Carousel.PILLAR_HEIGHT + 0.8;
 		
-//		this.basePlate = sphere( [0,y,0], [Button.SIZE+1,1], 'black' );
 		this.colorPlate = sphere( [0,y,0], [Button.SIZE,2], 'goldenrod' );
 	
-//		this.y = -Base.PILLAR_SIZE[1]+Base.POS_Y;
-		
 		this.addEventListener( 'click', this.onClick );
 		this.addEventListener( 'pointerenter', this.onMark );
 		this.addEventListener( 'pointerleave', this.onUnmark );
 		
-		this.add( /*this.basePlate, */this.colorPlate );
+		this.add( this.colorPlate );
 	} // Button.constructor
 
 
@@ -35,14 +32,14 @@ class Button extends Group
 		// avoid fake onClicks
 		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 
+		this.height = 1;
+		
 		new TWEEN.Tween( this )
-				.to( {height:0.98}, Button.YOYO_SPEED )
+				.to( {height:0.99}, Button.YOYO_SPEED )
 				.easing( TWEEN.Easing.Cubic.Out )
 				.repeat( 1 )
 				.yoyo( true )
 				.start( );
-
-//console.log('button.js');
 
 		// if game is not started, click on the button will start it
 		if( playground.gameStarted )
