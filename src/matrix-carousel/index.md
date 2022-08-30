@@ -31,7 +31,7 @@ When the application is started it shows an empty carousel. When a challenge is 
 
 Here are a few hints: Pick the matrix (or transformation) that is easiest to you and spin the carousel until it is matched. Then check the rest of the matrices. If there are several instances of the same transformation, make sure you pair well each transformation to its matrix. Beware of fake matrices &ndash; there are matrices for which there is no transformation on the carousel. Sometimes it is faster to map the type of the matrix, i.e. translation vs translation and rotation vs rotation, and afterwards to verify whether the axes are paired too.
 
-The following example demonstrates two rotation transformations around Y axes above two rotation matrices. The left pair is wrong, because the matrix corresponds to rotation around the X axis. The right pair is correct as they are both rotation about the Y axis and in the correct direction. 
+The following example demonstrates two rotation transformations around Y axes above two rotation matrices. The left pair is wrong, because the matrix corresponds to rotation around the X axis. The right pair is correct as its both rotations are aroud the Y axes and they are in the same direction (note: direction of cube rotation is not shown in the snapshot).
 <br>
 <br>
 <img src="docs/example.jpg" width="500">
