@@ -1,7 +1,7 @@
 &nbsp;
 # Matrix carousel
 
-**TODO** The [Euler characteristic](https://en.wikipedia.org/wiki/Euler_characteristic) is a number **&#967;** that describes the overall 3D shape regardless of how it is deformed. This number is calculated by **&#967;=V−E+F** where **V** is the number of vertices, **E** is the number of shapes and **F** is the number of faces. In its simplest form, this number can be expressed as **&#967;=2-2T**, where **T** is the number of tunnels. Thus, a cube and a sphere have both **&#967;=2**, while a torus has **&#967;=0**, because **T=1**. Another way to calculate the Euler characteristic is by the [Euler-Poincaré formula](https://pages.mtu.edu/~shene/COURSES/cs3621/NOTES/model/euler.html).
+The [swing carousel](https://en.wikipedia.org/wiki/Swing_ride) is an amusement ride with seats hanging from a spinning top. This application features a carousel with geometrical transformations and matrices. The basic geometrical transformations can be represented with [transformation matrices](https://en.wikipedia.org/wiki/Transformation_matrix). 
 
 Click on the image to start the application.
 
@@ -9,24 +9,32 @@ Click on the image to start the application.
 
 Alternatively, here are versions in [English](matrix-carousel.html?lang=en), [Bulgarian](matrix-carousel.html?lang=bg) and [Japanese](matrix-carousel.html?lang=jp).
 
+Examples of transformation matrices:
+
+| Matrix  | Transformation | Description |
+| ------- | :------------: | ----------- |
+| <img src="docs/identity.png"> | Identity | The identity transformation matrix keeps the geometrical object the same: (*x*,*y*,*z*)→(*x*,*y*,*z*) |
+| <img src="docs/scaling.png"> | Scaling | The scaling transformation matrix scales the geometrical object. The example matrix expands the object twice along its X axis: (*x*,*y*,*z*)→(2*x*,*y*,*z*) |
+| <img src="docs/translation.png"> | Translation | The translation transformation matrix translates the geometrical object. The example matrix moves the object 1 unit along its X axis: (*x*,*y*,*z*)→(*x*+1,*y*,*z*) |
+| <img src="docs/rotation.png"> | Rotation | The rotation transformation matrix rotates the geometrical object around one of its axes. The example shown here is for rotation of 90&deg; around the object's Z axis: (*x*,*y*,*z*)→(-*y*,*x*,*z*) |
+| <img src="docs/orthographic.png"> | Orthographic projection | The orthographic projection matrix projects the geometrical object onto a plane. The distance to the plane does not affect the projection. The example shown here is for orthographic projection to plane at *x*=1 and perpendicular to object's X axis: (*x*,*y*,*z*)→(1,*y*,*z*) |
+| <img src="docs/perspective.png"> | Perspective projection | The perspective projection matrix projects the geometrical object onto a plane. The distance to the plane affects the projection. The example shown here is for perspective projection to plane at *x*=1 and perpendicular to object's X axis: (*x*,*y*,*z*)→(1,*y*/*x*,*z*/*x*) |
+
+
 ### How to play
 
-**TODO** When the application is started it shows a grill with a small cube. When a challenge is started this cube grows into a randomly generated 3D [polyhedron](https://en.wikipedia.org/wiki/Polyhedron). Its Euler characteristic must be calculated. The level of difficulty determins how complex the object is and how fast the grill is spinning it. The goal is to reach score 100. 
+When the application is started it shows an empty carousel. When a challenge is started the carousel has cubes instead of seats. Every cube is animated according to some geometrical transformation. Below the cubes there are matrices. The carousel must be rotated and stopped so that cubes are right above their corresponding matrices. The level of difficulty determines how complex the transformation is and how many fake matrices are used. The goal is to reach score 100. 
 
-- **TODO** **Starting**: Click anywhere on the gril.
-- **TODO** **Playing**:  Slide the slider to mark the Euler characteristic. If you need to select out of range value, select the closest available value, i.e. select `+6` for 6 or any larger value; or `-6` for 06 or any smaller value.
-- **TODO** **Ending**: Click on the central big button to end the challenge.
+- **Starting**: Click anywhere on the carousel.
+- **Playing**:  Press on a cube and hold the pointer to continuously spin the carousel. If you need to spin the carousel just one step at a time, click on a cube. 
+- **Ending**: Click on the big button on the top of the carousel to end the challenge.
 
-**TODO** Here are a few hints: Using **&#967;=V−E+F** might be cumbersom, and it is applicable only to simple 3D shapes. An easier approach is to use **&#967;=2-2T**, where the difficulty is to find the number of tunels **T**. The reason for this difficulty is that topological tunnels are not the same as our everyday interpretation of a 'tunnel':
+Here are a few hints: Pick the matrix (or transformation) that is easiest to you and spin the carousel until it is matched. Then check the rest of the matrices. If there are several instances of the same transformation, make sure you pair well each transformation to its matrix. Beware of fake matrices &ndash; there are matrices for which there is no transformation on the carousel. Sometimes it is faster to map the type of the matrix, i.e. translation vs translation and rotation vs rotation, and afterwards to verify whether the axes are paired too.
 
-**TODO** <img src="docs/tunnels.png">
-
+The following example demonstrates two rotation transformations around Y axes above two rotation matrices. The left pair is wrong, because the matrix corresponds to rotation around the X axis. The right pair is correct as they are both rotation about the Y axis and in the correct direction. 
 <br>
 <br>
-**TODO** The following 3D examples demontrate a few objects generated by the application. The first object has no tunnels, so **&#967;=0**. The second object has **&#967;=4**, because it is composed of 2 separate objects, each having **&#967;=2**. The third object has one tunnel, so **&#967;=0**. And the last object has **&#967;=-4**, because there are three tunnels. 
-<br>
-<br>
-**TODO** <img src="docs/examples.jpg">
+<img src="docs/example.jpg" width="500">
 
 
 
@@ -56,7 +64,7 @@ When the application is run from a LMS, the LMS may utilize its own data policy,
 
 ### Disclaimer
 
-**TODO** The application shows constantly spinning object that is the attraction focus. This may cause dizziness in people prone to [vertigo](https://en.wikipedia.org/wiki/Vertigo).
+The application shows a lot of tiny objects. Concentration on details for an extended period of time may cause fatigue.
 
 ### Credits
 
