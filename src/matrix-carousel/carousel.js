@@ -13,9 +13,7 @@ class Carousel extends Group
 	static END_SIZE = [2.5, 0.8];
 	static SPEED = 300;
 	static ACCELERATION_TIME = 1500;
-//	static DEACCELERATION_TIME = 500;
 	static OUTWARD_ANGLE = 70;
-//	static VIBRO_TIME = 1000;
 	static VIBRO_ANGLE = Carousel.SPEED/40;
 	static VIBRO_TIME_ANGLE = 15;
 	static NEW_GAME_TIME = 1000;
@@ -35,8 +33,6 @@ class Carousel extends Group
 		this.cosys = [];
 		this.cubes = [];
 		this.speed = 0;
-		this.speed = 0;
-		this.maxSpeed = 0; // recorded
 		this.vibroTime = 0;
 		this.vibroSize = 0;
 
@@ -50,6 +46,7 @@ class Carousel extends Group
 		this.addEventListener( 'click', this.onClick );
 
 	} // Carousel.constructor
+
 
 
 	// construct the pillar
@@ -158,7 +155,6 @@ class Carousel extends Group
 		this.phase = Carousel.SPINNING;
 
 		playground.carouselSound.setVolume( 0 );
-//		console.log('carouselSound.play');
 		playground.carouselSound.play( );
 		playground.swingSound.stop( );
 		
@@ -209,12 +205,10 @@ console.log( playground.evaluateScore().toFixed(2) );
 			.easing( TWEEN.Easing.Quadratic.InOut )
 			.start( );
 
-//		console.log('swingSound.play');
 		playground.swingSound?.stop( );
 		playground.swingSound?.play( );
 		
 	} // Carousel.stopSpinning
-	
 	
 	
 	
@@ -235,8 +229,7 @@ console.log( playground.evaluateScore().toFixed(2) );
 				)
 				.start();
 		}
-	} // Carousel.newGame
-
+	} // Carousel.showCoSys
 
 
 
@@ -254,15 +247,13 @@ console.log( playground.evaluateScore().toFixed(2) );
 				} )
 				.start( );
 		}
-	} // Carousel.endGame
-
+	} // Carousel.hideCoSys
 
 
 
 	// handles clicks on the carousel
 	onClick( )
 	{
-//		console.log('carousel.onclick');
 		// avoid fake onClicks
 		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 
@@ -276,7 +267,6 @@ console.log( playground.evaluateScore().toFixed(2) );
 	
 	update( t, dT )
 	{
-		//console.log('vibroSize',this.vibroSize.toFixed(1));
 		// process spinning
 		if( this.phase == Carousel.SPINNING )
 		{
@@ -294,6 +284,7 @@ console.log( playground.evaluateScore().toFixed(2) );
 			cosys.swingOutward( Carousel.OUTWARD_ANGLE * (this.speed/Carousel.SPEED)**3 );
 			cosys.swingForward( this.vibroSize*Math.sin(this.vibroTime) );
 		}
-	}
+	} // Carousel.update
+	
 } // class Carousel
 

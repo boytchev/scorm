@@ -9,7 +9,6 @@ class CoSys extends Group
 	static AXIS_SIZE = [0.1, 10];
 	static ARROW_SIZE = [0.4, 1];
 	static LABEL_SIZE = 2;
-	static AXIS_COLOR = 'Tomato';
 	static CUBE_SIZE = 4;
 	static CUBE_SPEED = 0.3;
 	
@@ -19,13 +18,13 @@ class CoSys extends Group
 
 		this.idx = idx; // matrix index
 		
-		this.rope = this.constructRope( );
+		var rope = this.constructRope( );
 		this.cosys = this.constructCoSys( );
 		this.cube = this.constructCube( );
 		
 		this.ropeGroup = group();
 			this.ropeGroup.spinH = 90;
-			this.ropeGroup.add( this.rope, this.cosys );
+			this.ropeGroup.add( rope, this.cosys );
 
 		this.swingOutward( 0 );
 
@@ -69,7 +68,7 @@ class CoSys extends Group
 		var pos = CoSys.AXIS_SIZE[1]/2;
 		
 		// construct axes
-		var axis = prism( 6, [0,-pos,0], CoSys.AXIS_SIZE, CoSys.AXIS_COLOR );
+		var axis = prism( 6, [0,-pos,0], CoSys.AXIS_SIZE, 'Tomato' );
 		cosys.add( axis );
 
 		axis = axis.clone;
@@ -83,7 +82,7 @@ class CoSys extends Group
 		cosys.add( axis );
 
 		// arrows
-		var arrow = pyramid( 6, [0,pos,0], CoSys.ARROW_SIZE, CoSys.AXIS_COLOR );
+		var arrow = pyramid( 6, [0,pos,0], CoSys.ARROW_SIZE, 'Tomato' );
 		cosys.add( arrow );
 		
 		arrow = arrow.clone;
@@ -101,17 +100,17 @@ class CoSys extends Group
 
 		this.labels.push( point( [pos+1.5,0,0], 0*CoSys.LABEL_SIZE, 'white') );
 			its.image = drawing( 15 );
-			its.image.fillText( 0, 0, 'X', CoSys.AXIS_COLOR, 'bold 20px Arial' );
+			its.image.fillText( 0, 0, 'X', 'Tomato', 'bold 20px Arial' );
 		cosys.add( its );
 		
 		this.labels.push( point( [0,pos+1.5,0], 0*CoSys.LABEL_SIZE, 'white') );
 			its.image = drawing( 15 );
-			its.image.fillText( 0, 0, 'Y', CoSys.AXIS_COLOR, 'bold 20px Arial' );
+			its.image.fillText( 0, 0, 'Y', 'Tomato', 'bold 20px Arial' );
 		cosys.add( its );
 		
 		this.labels.push( point( [0,0,pos+1.5], 0*CoSys.LABEL_SIZE, 'white') );
 			its.image = drawing( 15 );
-			its.image.fillText( 0, 0, 'Z', CoSys.AXIS_COLOR, 'bold 20px Arial' );
+			its.image.fillText( 0, 0, 'Z', 'Tomato', 'bold 20px Arial' );
 		cosys.add( its );
 
 		return cosys;
@@ -172,33 +171,32 @@ class CoSys extends Group
 			k = THREE.MathUtils.clamp( k, 0, 1 );
 		
 		Matrix.lerp( this.cube, this.idx, k );
-	}
+	} // CoSys.update
+
 
 
 	onPointerDown( )
 	{
-		console.log('spinnnn');
 		if( playground.gameStarted )
 		{
-			//console.log(Playground.POINTER_USED, playground.pointerMovement);
 			if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 			playground.carousel.startSpinning( );
 		}
-	}
+	} // CoSys.onPointerDown
 
 	
 	
 	mark( )
 	{
 		this.cube.groupElements[0].color = 'crimson';
-	}
+	} // CoSys.mark
 
 	
 	
 	unmark( )
 	{
 		this.cube.groupElements[0].color = 'wheat';
-	}
+	} // CoSys.unmark
 	
 	
 } // class CoSys
