@@ -38,7 +38,7 @@ This SCO is used for experiments with SCORM 1.2-complient LMS. It shows the list
 
 ## Matrix carousel
 
-Under development.
+<a href="src/matrix-carousel/matrix-carousel.html"><img src="src/matrix-carousel/docs/snapshot.jpg" width="200" style="float:right; border-radius: 0.5em; border-bottom: 0.3em BurlyWood solid;"></a> Graphical transformations are riding a swing carousel. Spin the carousel so that each transformation matches its matrix.
 
 [ <!-- markdown-link-check-disable -->[More info](src/matrix-carousel/index.html)<!-- markdown-link-check-enable --> ] [ [Run online](src/matrix-carousel/matrix-carousel.html) ] [ [Download](bin/matrix-carousel.zip) ]
 
