@@ -21,61 +21,74 @@ function update( t, dT )
 
 class PlaygroundAudio
 {
-	static audioListener;
+//	static audioListener;
 	
-	constructor( audioFile, volume, count=1, autoPlay=false )
+	constructor( audioFile, volume, count=1, autoplay=false, loop=false )
 	{
 		this.audio = [];
 		this.index = 0;
-		this.volume = volume;
+//		this.volume = volume;
 		
-		if( !PlaygroundAudio.audioListener )
-			PlaygroundAudio.audioListener = new THREE.AudioListener();
-		
-		var that = this;
-		new THREE.AudioLoader().load( audioFile, function( buffer ) {
-			for( var i=0; i<count; i++ )
-			{
-				that.audio.push( new THREE.Audio( PlaygroundAudio.audioListener ) );
-				that.audio[i].setBuffer( buffer );
-				that.audio[i].setVolume( 0 );
-			}
-			playground.setSound( );
-			if( autoPlay && playground.getSound()=='on' ) that.audio[0].play( );
-		});
+		for( var i=0; i<count; i++ )
+		{
+			this.audio[i] = new Audio( audioFile );
+			this.audio[i].autoplay = autoplay;
+			this.audio[i].loop = loop;
+			this.audio[i].volume = volume;
+			this.audio[i].pause( );
+
+			this.audio[i].addEventListener( 'canplaythrough', this.onLoaded );
 			
+//			console.log( 'LOADING', audioFile.split('/').pop() );
+		}
 	}
+
+
+	onLoaded( event )
+	{
+//		console.log( 'READY', event.path[0].src.split('/').pop() );
+		playground.setSound( );
+	}
+	
 	
 	mute( )
 	{
 		for( var audio of this.audio )
-			audio.setVolume( 0 );
+			audio.muted = true;
 	}
 	
 	unmute( )
 	{
 		for( var audio of this.audio )
-			audio.setVolume( this.volume );
+			audio.muted = false;
 	}
 	
 	setVolume( volume )
 	{
-		this.volume = volume;
-		this.audio[this.index].setVolume( volume );
+//		this.volume = volume;
+		this.audio[this.index].volume = volume;
 	}
 	
 	play( )
 	{
-		if( playground.getSound()=='off' ) return;
+//		console.log( 'ATTEMPT', this.audio[this.index].src.split('/').pop() );
+		if( playground.userInteracted == false ) return;
+		if( playground.getSound() == 'off' ) return;
 		
 		this.index = (this.index+1) % this.audio.length;
-		this.audio[ this.index ]?.play( );
+
+		// https://www.w3schools.com/jsref/prop_audio_readystate.asp
+		if( this.audio[this.index].readyState >= 4/*HAVE_ENOUGH_DATA*/ )
+		{
+//			console.log( 'PLAY', this.audio[this.index].src.split('/').pop() );
+			this.audio[this.index].play( );
+		}
 	}
 	
 	stop( )
 	{
 		for( var audio of this.audio )
-			if( audio.isPlaying ) audio.stop( );
+			audio.pause( );
 	}
 }
 
@@ -100,15 +113,17 @@ class ScormPlayground
 		this.scoreHistory = [];
 		
 		this.redrawScoreHistory( );
-		
+
 		this.soundMelody = [];
 		this.soundEffects = [];
+		
+		this.userInteracted = false; // used for audio play
 		
 		scorm.setValue( 'cmi.core.lesson_status', 'incomplete' );
 
 		element( 'sound-on-off' ).addEventListener( 'click', this.toggleSound );
 
-		window.addEventListener( 'click', this.onGlobalClick );
+		window.addEventListener( 'pointerdown', this.onGlobalClick );
 
 		setInterval( update4PerSecond, 1000 );
 		
@@ -166,8 +181,13 @@ class ScormPlayground
 
 	onGlobalClick( )
 	{
-		window.removeEventListener( 'click', playground.onGlobalClick );
-		playground.loadSounds( );
+//		console.log('USER');
+		if( playground )
+		{
+			window.removeEventListener( 'pointerdown', playground.onGlobalClick );
+			playground.userInteracted = true;
+			playground.setSound( );
+		}
 	}
 
 
@@ -360,10 +380,10 @@ class ScormPlayground
 	
 	
 	// abstract method loadSounds
-	loadSounds( )
-	{
-		throw 'abstract method';
-	} // ScormPlayground.loadSounds
+//	loadSounds( )
+//	{
+//		throw 'abstract method';
+//	} // ScormPlayground.loadSounds
 
 	
 	
@@ -445,21 +465,17 @@ class ScormPlayground
 		{
 			case 'fx':
 				localStorage.setItem( 'sound', 'on' );
-				elem.src = ScormPlayground.ICON_SOUND_ON;
-				playground.unmute( true );
 				break;
 			case 'off':
 				localStorage.setItem( 'sound', 'fx' );
-				elem.src = ScormPlayground.ICON_SOUND_FX;
-				playground.unmute( false );
 				break;
 			case 'on':
 			default:
 				localStorage.setItem( 'sound', 'off' );
-				elem.src = ScormPlayground.ICON_SOUND_OFF;
-				playground.mute( );
 				break;
 		}
+		
+		playground.setSound( );
 	}
 	
 } // class ScormPlayground
