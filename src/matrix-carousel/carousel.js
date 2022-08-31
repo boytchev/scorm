@@ -274,8 +274,8 @@ class Carousel extends Group
 			this.spinH = (this.spinH+this.speed*dT) % 360;
 		}
 		
-		playground.carouselSound?.setVolume( 0.1*this.speed/Carousel.SPEED );
-		playground.swingSound?.setVolume( 0.2*this.vibroSize/Carousel.VIBRO_ANGLE );
+		playground.carouselSound?.setVolume( Playground.CAROUSEL_VOLUME*this.speed/Carousel.SPEED );
+		playground.swingSound?.setVolume( Playground.SWING_VOLUME*this.vibroSize/Carousel.VIBRO_ANGLE );
 		
 		for( var cosys of this.cosys )
 		{	

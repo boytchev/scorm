@@ -10,11 +10,15 @@ class Playground extends ScormPlayground
 	static POINTER_MOVEMENT = 5;
 	static POINTER_USED = false; // true when the pointer is used by orbit controls
 	
+	static CAROUSEL_VOLUME = 0.07;
+	static SWING_VOLUME = 0.05;
+	
 	constructor( )
 	{
 		super( );
+
+		this.loadSounds( );
 		
-		//new Matrix( );
 		this.carousel = new Carousel( );
 		this.base = new Base( this );
 		this.button = new Button( );
@@ -227,8 +231,8 @@ class Playground extends ScormPlayground
 	{
 		this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1 );
 		this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
-		this.carouselSound = new PlaygroundAudio( 'sounds/carousel.mp3', 0.08 );
-		this.swingSound = new PlaygroundAudio( 'sounds/swing_squeak.mp3', 0.02 );
+		this.carouselSound = new PlaygroundAudio( 'sounds/carousel.mp3', Playground.CAROUSEL_VOLUME );
+		this.swingSound = new PlaygroundAudio( 'sounds/swing_squeak.mp3', Playground.SWING_VOLUME );
 		this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.05, 1, true, true );
 		
 		this.soundEffects.push( this.clickSound, this.clackSound, this.carouselSound, this.swingSound );
