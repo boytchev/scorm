@@ -64,7 +64,7 @@ When the application is run from a LMS, the LMS may utilize its own data policy,
 
 ### Disclaimer
 
-The application shows a lot of tiny objects. Concentration on details for an extended period of time may cause fatigue.
+The matrices represented in the application do not correspond literally to the animated geometrical transformations. For example, rotation is shown as gradual rotation of 90&deg;, while its matrix rotates at 90&deg; in a single step.
 
 ### Credits
 
