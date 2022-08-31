@@ -116,6 +116,7 @@ class ScormPlayground
 
 		this.soundMelody = [];
 		this.soundEffects = [];
+		this.loadSounds( );
 		
 		this.userInteracted = false; // used for audio play
 		
@@ -380,10 +381,10 @@ class ScormPlayground
 	
 	
 	// abstract method loadSounds
-//	loadSounds( )
-//	{
-//		throw 'abstract method';
-//	} // ScormPlayground.loadSounds
+	loadSounds( )
+	{
+		throw 'abstract method';
+	} // ScormPlayground.loadSounds
 
 	
 	

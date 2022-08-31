@@ -34,8 +34,8 @@ class Button extends Group
 
 		this.height = 1;
 		
-		new TWEEN.Tween( this )
-				.to( {height:0.99}, Button.YOYO_SPEED )
+		new TWEEN.Tween( this.colorPlate )
+				.to( {height:0.7, y:this.colorPlate.y+0.3, width:Button.SIZE*0.9, depth:Button.SIZE*0.9}, Button.YOYO_SPEED )
 				.easing( TWEEN.Easing.Cubic.Out )
 				.repeat( 1 )
 				.yoyo( true )
