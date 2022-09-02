@@ -28,8 +28,8 @@ class Arena extends Group
 			its.spinV = -90;
 			its.spinH = 90-index*60;
 			its.threejs.material.polygonOffset = true;
-			its.threejs.material.polygonOffsetFactor = -2;
-			its.threejs.material.polygonOffsetUnits = -2;
+			its.threejs.material.polygonOffsetFactor = -4;
+			its.threejs.material.polygonOffsetUnits = -4;
 			
 		this.add( this.arena );
 		
