@@ -14,6 +14,8 @@ class Playground extends ScormPlayground
 		
 		this.resize( );
 
+		new Ring;
+		
 		this.translate( [
 			{id: 'txt-caption',
 				en: 'Normal rays',

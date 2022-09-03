@@ -13,7 +13,7 @@
 	<link rel="shortcut icon" type="image/png" href="logo.png"/>
 	<link rel="stylesheet" href="examples.css">
 	
-	<script src="suica.js"></script>
+	<script src="libs/suica.js"></script>
 </head>
 
 <body>
@@ -30,13 +30,23 @@
 		function modify( time )
 		{
 			var points = [ [], [], [], [], [] ];
-			for( var i=-2; i<=2; i++ )
-				for( var j=-2; j<=2; j++ )
+			for( var i=-2; i<2.1; i++ )
+				for( var j=-2; j<2.1; j++ )
+				{
+					if( (i-2)*(i+2)*(j-2)*(j+2) == 0 )
+					
 					points[j+2][i+2] = [
-						20*i + 10*Math.cos(time-j),
-						35*Math.sin(4*time+i+2*Math.sin(1.2*time+j))/(1+Math.abs(i)+Math.abs(j)),
-						20*j + 10*Math.cos(1.6*time+i)
+						20*i,
+						0,
+						20*j
 					];
+					else
+					points[j+2][i+2] = [
+						20*i,
+						5+15*Math.sin(4*time+i+2*Math.sin(1.2*time+j))/(1+Math.abs(i)+Math.abs(j)),
+						20*j
+					];
+				}
 			s.curve = points;
 		}
 	</script>
