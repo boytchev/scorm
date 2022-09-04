@@ -45,7 +45,7 @@ class Playground extends ScormPlayground
 	canEndGame( )
 	{
 		// ...
-		return false;
+		return true;
 	} // Playground.canEndGame
 	
 	
@@ -68,6 +68,7 @@ class Playground extends ScormPlayground
 	{
 		super.endGame( );
 		
+		this.membrane.hide( );
 		// ...
 		
 	} // Playground.endGame

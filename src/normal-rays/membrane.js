@@ -160,6 +160,21 @@ class Membrane extends Group
 	} // Membrane.inflate
 	
 	
+	hide(  )
+	{
+		// animate surface disappearance
+		new TWEEN.Tween( this.surface )
+			.to( {depth:0.01}, Membrane.SHOW_SPEED )
+			.easing( TWEEN.Easing.Elastic.Out )
+			.start( );
+		new TWEEN.Tween( this.surface.threejs.material )
+			.to( {opacity:0.5}, Membrane.SHOW_SPEED )
+			.easing( TWEEN.Easing.Elastic.Out )
+			.start( );
+
+	} // Membrane.inflate
+	
+	
 	
 	update( t, dT )
 	{

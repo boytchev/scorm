@@ -8,14 +8,20 @@ class Ring extends Group
 	static SIZE = 20;
 	static CLAMP_SIZE = 19.7;
 	static WIDTH = 1.5;
+	static POINTER_USED = false;
 	
 	constructor( )
 	{
 		super( suica );
 
-		this.constructRing( );
+		this.ring = this.constructRing( );
 		
 		this.addEventListener( 'click', this.onClick );
+		this.addEventListener( 'pointerenter', this.onPointerEnter );
+		this.addEventListener( 'pointerleave', this.onPointerLeave );
+
+		orb.addEventListener( 'start', () => Ring.POINTER_USED=true  );
+		orb.addEventListener( 'end', () => Ring.POINTER_USED=false );
 
 	} // Ring.constructor
 
@@ -26,13 +32,50 @@ class Ring extends Group
 	{
 		// avoid fake onClicks
 		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+		if( Ring.POINTER_USED ) return;
 			
 		// if game is not started, click on the ring will start it
-		if( !playground.gameStarted )
+		if( playground.gameStarted )
+		{
+			if( playground.canEndGame() )
+			{
+				playground.endGame( );
+			}
+		}
+		else
 		{
 			playground.newGame( );
 		}
 	} // Ring.onClick
+	
+	
+	
+	// handles activating the ring
+	onPointerEnter( event )
+	{
+		// avoid fake onClicks
+		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+		if( Ring.POINTER_USED ) return;
+			
+		this.ring.color = 'orange';
+		this.ring.threejs.material.emissiveIntensity = 0.5;
+		
+		event.target.style.cursor = 'pointer';
+	} // Ring.onPointerEnter
+	
+	
+	// handles deactivating the ring
+	onPointerLeave( event )
+	{
+		// avoid fake onClicks
+		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+		if( Ring.POINTER_USED ) return;
+			
+		this.ring.color = 'white';
+		this.ring.threejs.material.emissiveIntensity = 0;
+
+		event.target.style.cursor = 'default';
+	} // Ring.onPointerEnter
 	
 	
 	
@@ -58,6 +101,8 @@ class Ring extends Group
 			map: map,
 			normalMap: normalMap,
 			normalScale: new THREE.Vector2( 0.5, 0.5 ),
+			emissive: 'orange',
+			emissiveIntensity: 0,
 		} );	
 
 		var ring = tube( [0,0,0], ringCurve, Ring.WIDTH, [121,20] );
@@ -80,6 +125,8 @@ class Ring extends Group
 		
 		
 		this.add( ring );
+		
+		return ring;
 	} // Ring.constructBase
 
 } // class Ring
