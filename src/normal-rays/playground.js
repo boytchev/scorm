@@ -16,6 +16,8 @@ class Playground extends ScormPlayground
 
 		new Ring;
 		
+		this.membrane = new Membrane;
+		
 		this.translate( [
 			{id: 'txt-caption',
 				en: 'Normal rays',
@@ -32,6 +34,7 @@ class Playground extends ScormPlayground
 	{
 		super.newGame( );
 
+		this.membrane.show( );
 		// ...
 
 	} // Playground.newGame
@@ -97,5 +100,6 @@ class Playground extends ScormPlayground
 	update( t, dT )
 	{
 		// ...
+		this.membrane.update( t, dT );
 	}
 } // class Playground
