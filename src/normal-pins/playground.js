@@ -15,14 +15,15 @@ class Playground extends ScormPlayground
 		this.resize( );
 
 		this.ring = new Ring;
+		this.pins = [new Pin(),new Pin(),new Pin(),new Pin()];
 		
 		this.membrane = new Membrane;
 		
 		this.translate( [
 			{id: 'txt-caption',
-				en: 'Normal rays',
-				bg: 'Нормални лъчи',
-				jp: '法線光線'},
+				en: 'Normal pins',
+				bg: 'Нормални карфици',
+				jp: '法線ピン'},
 		] );
 		
 	} // Playground.constructor
@@ -35,6 +36,8 @@ class Playground extends ScormPlayground
 		super.newGame( );
 
 		this.membrane.show( );
+		for( var pin of this.pins ) pin.randomize( );
+		
 		// ...
 
 	} // Playground.newGame

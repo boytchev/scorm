@@ -7,6 +7,8 @@ class Membrane extends Group
 {
 	
 	static GRID = 10;
+	static VERTICES = 100;
+	
 	static NON_FLAT = 0.7; // ratio
 	static SHOW_SPEED = 1200;
 	static HIDE_SPEED = 500;
@@ -78,7 +80,7 @@ class Membrane extends Group
 		}
 
 
-		var surf = surface( [0,0,0], this.points, [200,200] );
+		var surf = surface( [0,0,0], this.points, Membrane.VERTICES );
 
 		its.threejs.material = new THREE.MeshPhysicalMaterial( {
 				color: 'white',
@@ -104,7 +106,7 @@ class Membrane extends Group
 
 	randomize( )
 	{
-		var scale = THREE.MathUtils.mapLinear( playground?.difficulty || 0, 0, 100, 0.1, 2.5 );
+		var scale = THREE.MathUtils.mapLinear( playground?.difficulty || 0, 0, 100, 0.5, 2 );
 		
 		// randomize control points
 		for( var n in this.pi )
