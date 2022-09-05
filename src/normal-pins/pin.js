@@ -14,6 +14,7 @@ class Pin extends Group
 	{
 		super( suica );
 
+		this.pinHeads = [];
 		this.constructPin( );
 		this.spinV = 90;
 		
@@ -49,8 +50,11 @@ class Pin extends Group
 		// avoid fake onClicks
 		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 		if( Ring.POINTER_USED ) return;
-			
-		this.size = [2,2,2];
+		
+		for( var head of this.pinHeads )
+			head.size = [2,2,2];
+		
+		playground.dragPin = this;
 		
 		event.target.style.cursor = 'move';
 	} // Ring.onPointerEnter
@@ -60,11 +64,14 @@ class Pin extends Group
 	onPointerLeave( event )
 	{
 		// avoid fake onClicks
-		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
-		if( Ring.POINTER_USED ) return;
+//		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+//		if( Ring.POINTER_USED ) return;
 			
-		this.size = [1,1,1];
+		for( var head of this.pinHeads )
+			head.size = [1,1,1];
 
+		playground.dragPin = null;
+		
 		event.target.style.cursor = 'default';
 	} // Ring.onPointerEnter
 	
@@ -89,15 +96,21 @@ class Pin extends Group
 		var head2 = sphere( [0,-Pin.LENGTH,0], Pin.HEAD_SIZE, 'crimson' );
 		
 		this.add( body, head1, head2 );
+		this.pinHeads.push( head1, head2 );
+		
 	} // Pin.constructPin
 
 
 
-	randomize( )
+	hide( )
 	{
-		var u = random( 0.25, 0.75 ),
-			v = random( 0.25, 0.75 );
-
+		this.visible = false;
+	}
+	
+	
+	
+	show( u, v )
+	{
 		this.center = playground.membrane.surface.curve( u, v );
 		this.visible = true;
 		

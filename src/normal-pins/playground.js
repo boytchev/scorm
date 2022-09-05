@@ -16,6 +16,7 @@ class Playground extends ScormPlayground
 
 		this.ring = new Ring;
 		this.pins = [new Pin(),new Pin(),new Pin(),new Pin()];
+		this.dragPin = null;
 		
 		this.membrane = new Membrane;
 		
@@ -36,7 +37,20 @@ class Playground extends ScormPlayground
 		super.newGame( );
 
 		this.membrane.show( );
-		for( var pin of this.pins ) pin.randomize( );
+		
+		// number of pins
+		var n = Math.round( THREE.MathUtils.mapLinear( this.difficulty**5, 10**5, 100**5, 1, 4 )),
+			angle = random( 0, 2*Math.PI ),
+			dist;
+			
+		for( var i=0; i<n; i++ )
+		{
+			dist = random( 0.1, 0.30 );
+			angle += 2*Math.PI/n;
+
+			this.pins[i].show( 0.5+dist*Math.sin(angle), 0.5+dist*Math.cos(angle) );
+		}
+		
 		
 		// ...
 
@@ -72,6 +86,10 @@ class Playground extends ScormPlayground
 		super.endGame( );
 		
 		this.membrane.hide( );
+
+		// hide all pins
+		for( var pin of this.pins ) pin.hide( );
+		
 		// ...
 		
 	} // Playground.endGame
