@@ -7,7 +7,7 @@ class Ring extends Group
 {
 	static SIZE = 20;
 	static CLAMP_SIZE = 19.7;
-	static WIDTH = 1.5;
+	static WIDTH = 2;
 	static POINTER_USED = false;
 	
 	constructor( )
@@ -92,8 +92,8 @@ class Ring extends Group
 		}
 		
 		// main body of the base
-		var map = ScormUtils.image( 'metal_plate.jpg', 56, 4 ),
-			normalMap = ScormUtils.image( 'metal_plate_normal.jpg', 56, 4 );
+		var map = ScormUtils.image( 'metal_plate.jpg', 56, 8 ),
+			normalMap = ScormUtils.image( 'metal_plate_normal.jpg', 56, 8 );
 		var material = new THREE.MeshStandardMaterial( {
 			color: 'white',
 			metalness: 0.1,

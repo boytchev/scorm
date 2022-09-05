@@ -14,7 +14,7 @@ class Playground extends ScormPlayground
 		
 		this.resize( );
 
-		new Ring;
+		this.ring = new Ring;
 		
 		this.membrane = new Membrane;
 		
@@ -57,7 +57,7 @@ class Playground extends ScormPlayground
 		
 		// ...
 		
-		return 0 * points;
+		return 1 * points;
 
 	} // Playground.evaluateGame
 	

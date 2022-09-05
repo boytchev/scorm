@@ -8,9 +8,10 @@ class Membrane extends Group
 	
 	static GRID = 10;
 	static NON_FLAT = 0.7; // ratio
-	static SHOW_SPEED = 1000;
+	static SHOW_SPEED = 1200;
 	static HIDE_SPEED = 500;
-	static BUMP_HEIGHT = 15;
+	static VIBRO_SPEED = 50;
+	static BUMP_HEIGHT = 10;
 	
 	constructor( )
 	{
@@ -20,19 +21,12 @@ class Membrane extends Group
 		this.pj = [];
 		this.pd = [];
 		this.points = [];
-		
+
 		this.surface = this.constructSurface( );
-		this.init( 10 );
-		
+		this.randomize( );
+
 		this.add( this.surface );
 
-// for( var i=0; i<10; i++ )
-// {
-	// var s = cone( this.surface.curve(random(0,1),random(0,1)), [0.2,10], 'black' );
-	// s.spinV = 90;
-	// this.add( s );
-// }
-	
 		this.addEventListener( 'click', this.onClick );
 
 	} // Membrane.constructor
@@ -44,6 +38,7 @@ class Membrane extends Group
 	{
 		// avoid fake onClicks
 		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+		if( Ring.POINTER_USED ) return;
 			
 		// if game is not started, click on the ring will start it
 		if( !playground.gameStarted )
@@ -83,22 +78,20 @@ class Membrane extends Group
 		}
 
 
-		var surf = surface( [0,0,0], this.points, [150,150] );
+		var surf = surface( [0,0,0], this.points, [200,200] );
 
 		its.threejs.material = new THREE.MeshPhysicalMaterial( {
-				color: 'tan',		// black
-				// clearcoat: 0,
-				// clearcoatRoughness: 0.2,
+				color: 'white',
+				clearcoat: 2,
+				clearcoatRoughness: 1,
 				roughness: 1,
 				metalness: 0,
 				bumpMap: image('images/tile.png'),
-				bumpScale: 0.5,
+				bumpScale: 0.1,
 				sheen: 0,	// 1.5
 				sheenColor: 'white',
-				sheenRoughness: 0.3,
+				sheenRoughness: 0.1,
 				side: THREE.DoubleSide,
-				transparent: true,
-				opacity: 0.5,
 		});
 
 
@@ -109,9 +102,9 @@ class Membrane extends Group
 
 
 
-	init( difficulty )
+	randomize( )
 	{
-		var k = THREE.MathUtils.mapLinear( difficulty, 10, 100, 0, 1 );
+		var scale = THREE.MathUtils.mapLinear( playground?.difficulty || 0, 0, 100, 0.1, 2.5 );
 		
 		// randomize control points
 		for( var n in this.pi )
@@ -119,15 +112,11 @@ class Membrane extends Group
 			var i = this.pi[n],
 				j = this.pj[n];
 
-			this.points[i][j][2] = Membrane.BUMP_HEIGHT * random(-1,1);
+			this.points[i][j][2] = scale * Membrane.BUMP_HEIGHT * random(-1,1);
 		}
 
-		// set material
-		this.surface.threejs.material.color.setRGB( 1-k, 1-k, 1-k );
-		this.surface.threejs.material.sheen = 1.5*k;
-
 		// make the surface flat
-		this.surface.depth = 0.01;
+		this.surface.depth = 0.0001;
 		
 		// regenerate surface
 		this.surface.curve = this.points;
@@ -137,47 +126,104 @@ class Membrane extends Group
 			uv = this.surface.threejs.geometry.getAttribute( 'uv' );
 		for( var i=0; i<pos.count; i++ )
 		{
-			uv.setXY( i, 2*pos.getX( i ), 2*pos.getY( i ) );
-		}
+			uv.setXY( i, 3*pos.getX( i ), 3*pos.getY( i ) );
+		}	
+	} // Membrane.randomize
+
+	
+	
+	vibrate( k )
+	{
+		if( k <= 0 ) return 0;
+		if( k >= 1 ) return 0;
 		
-	}
+		return Math.sin( 10*Math.PI*k ) * Math.exp( -5*k );
+	} // Membrane.vibrate
+
 	
 	
 	show(  )
 	{
-		this.init( playground.difficulty );
+		this.randomize( );
 
-		// animate surface appearance
+		// vibrate
+		new TWEEN.Tween( this )
+			.to( {z:1}, Membrane.VIBRATE_SPEED )
+			.easing( this.vibrate )
+			.onUpdate( obj => playground.ring.z = obj.z )
+			.start( );
+		
+		// animate surface geometry
 		new TWEEN.Tween( this.surface )
 			.to( {depth:1}, Membrane.SHOW_SPEED )
 			.easing( TWEEN.Easing.Elastic.Out )
 			.start( );
-		new TWEEN.Tween( this.surface.threejs.material )
-			.to( {opacity:1}, Membrane.SHOW_SPEED )
-			.easing( TWEEN.Easing.Elastic.Out )
+				
+		var that = this,
+			mat = this.surface.threejs.material; // current material
+
+		// animate surface color
+		var color = hsl(random(0,360), 20, 100);
+		new TWEEN.Tween( mat.color )
+			.to( color, Membrane.SHOW_SPEED/2 )
+			.easing( TWEEN.Easing.Linear.None )
 			.start( );
 
-	} // Membrane.inflate
+		// target properties
+		var k;
+		if( random(0,1)**0.5 > playground.difficulty/100 )
+			k = random( 0, 0.1 )
+		else
+			k = random( 0.7, 0.85 );
+			
+		new TWEEN.Tween( mat )
+			.to( {sheen:0.5*k, metalness:0.85*k, roughness:1-0.85*k }, Membrane.SHOW_SPEED/2 )
+			.easing( TWEEN.Easing.Linear.None )
+			.start( );
+
+	} // Membrane.show
+
 	
 	
 	hide(  )
 	{
-		// animate surface disappearance
-		new TWEEN.Tween( this.surface )
-			.to( {depth:0.01}, Membrane.SHOW_SPEED )
-			.easing( TWEEN.Easing.Elastic.Out )
+		// vibrate
+		new TWEEN.Tween( this )
+			.to( {z:1}, Membrane.VIBRATE_SPEED )
+			.easing( this.vibrate )
+			.onUpdate( obj => playground.ring.z = obj.z )
 			.start( );
-		new TWEEN.Tween( this.surface.threejs.material )
-			.to( {opacity:0.5}, Membrane.SHOW_SPEED )
+		
+		// animate surface geometry
+		new TWEEN.Tween( this.surface )
+			.to( {depth:0.0001}, Membrane.SHOW_SPEED )
 			.easing( TWEEN.Easing.Elastic.Out )
 			.start( );
 
-	} // Membrane.inflate
+		// target properties
+		var that = this,
+			mat = this.surface.threejs.material; // current material
+
+		// animate surface material
+		new TWEEN.Tween( {r:mat.color.r, g:mat.color.g, b:mat.color.b, s:mat.sheen, m:mat.metalness, f:mat.roughness} )
+			.to( {r:1, g:1, b:1, s:0, m:0, f:1 }, Membrane.SHOW_SPEED/2 )
+			.easing( TWEEN.Easing.Linear.None )
+			.onUpdate( obj => {
+				mat.color.setRGB( obj.r, obj.g, obj.b );
+				mat.sheen = obj.s;
+				mat.metalness = obj.m;
+				mat.roughness = obj.f;
+			})
+			.start( );
+
+	} // Membrane.hide
 	
 	
 	
 	update( t, dT )
 	{
+		// vibrate ring
+
 		return;
 	/*	
 		this.surface.depth = 1+1*Math.sin(3*t)*Math.cos(3.3*t)*Math.cos(4.1*t);
