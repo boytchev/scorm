@@ -15,7 +15,7 @@ these should remain static. Other schema prefixes are allowed, but can limit int
 
 The XSD files for SCORM 1.2 are not strictly valid and may cause errors in some XML validators.
 -->
-<manifest identifier="suica-normal-rays" version="1"
+<manifest identifier="suica-normal-pins" version="1"
          xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
          xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -50,10 +50,10 @@ The XSD files for SCORM 1.2 are not strictly valid and may cause errors in some 
   adlcp:scormtype attribute
   -->
 	<resources>
-		<resource identifier="resource_1" type="webcontent" adlcp:scormtype="sco" href="normal-rays.html">
+		<resource identifier="resource_1" type="webcontent" adlcp:scormtype="sco" href="normal-pins.html">
 		
 			<!-- main file -->
-			<file href="normal-rays.html"/>
+			<file href="normal-pins.html"/>
 			
 			<!-- modules -->
 			<!--file href="plate.js"/-->

@@ -5,7 +5,7 @@ SET ZIP=..\..\misc\7z\7z
 CD src
 @rem inside: GitHub\scorm\src\
 ECHO.
-FOR /D %%F in ("normal-rays") DO (CALL :BuildOne "%%~F")
+FOR /D %%F in ("normal-pins") DO (CALL :BuildOne "%%~F")
 CD ..
 EXIT /B
 
