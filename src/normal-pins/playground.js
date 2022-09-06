@@ -92,12 +92,13 @@ this.debugLine.to = [
 	evaluateGame( )
 	{
 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
-		var maxAngle = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 90, 30 ),
-			minAngle = 10;
+		var maxAngle = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 60, 30 ),
+			minAngle = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 20, 10 );
 		
 			
 		var score = 0;
-		
+	
+console.log('-------------');	
 		for( var pin of this.pins ) if( pin.visible )
 		{
 			// get pin vector
@@ -116,17 +117,15 @@ this.debugLine.to = [
 			
 			
 			var subScore = THREE.MathUtils.mapLinear( angle, minAngle, maxAngle, 1, 0 );
-			console.log('angle',angle|0, 'maxAngle', maxAngle);
-			
-				subScore = THREE.MathUtils.clamp( subScore, 0, 1 )**2;
+				subScore = THREE.MathUtils.clamp( subScore, 0, 1 )**0.75;
 				
-			console.log('angle',angle|0, 'subScore', subScore);
+		console.log(angle|0,'in','['+(minAngle|0)+'..'+(maxAngle|0)+'] ->', subScore.toFixed(2));
 			
 			score += subScore/this.n;
 		// line( this.center, [this.center[0]+n.x,this.center[1]+n.y,this.center[2]+n.z], 'crimson' );
 		}
 
-		console.log('score', score);
+//		console.log('score', score.toFixed(2));
 		
 		return score * points;
 

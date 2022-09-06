@@ -85,7 +85,7 @@ class Membrane extends Group
 		its.threejs.material = new THREE.MeshPhysicalMaterial( {
 				color: 'white',
 				clearcoat: 2,
-				clearcoatRoughness: 1,
+				clearcoatRoughness: 0.5,
 				roughness: 1,
 				metalness: 0,
 				bumpMap: image('images/tile.png'),
@@ -106,7 +106,7 @@ class Membrane extends Group
 
 	randomize( )
 	{
-		var scale = THREE.MathUtils.mapLinear( playground?.difficulty || 0, 0, 100, 0.5, 2 );
+		var scale = THREE.MathUtils.mapLinear( playground?.difficulty || 0, 10, 100, 0.2, 2 );
 		
 		// randomize control points
 		for( var n in this.pi )
