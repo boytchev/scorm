@@ -203,8 +203,8 @@ class Membrane extends Group
 			.start( );
 
 		// target properties
-		var that = this,
-			mat = this.surface.threejs.material; // current material
+//		var that = this,
+//			mat = this.surface.threejs.material; // current material
 
 		// animate surface material
 		// new TWEEN.Tween( {r:mat.color.r, g:mat.color.g, b:mat.color.b, s:mat.sheen, m:mat.metalness, f:mat.roughness} )
