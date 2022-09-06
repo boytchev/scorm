@@ -54,8 +54,9 @@ class Ring extends Group
 	onPointerEnter( event )
 	{
 		// avoid fake onClicks
-		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+//		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 		if( Ring.POINTER_USED ) return;
+		if( playground.dragPin ) return;
 			
 		this.ring.color = 'orange';
 		this.ring.threejs.material.emissiveIntensity = 0.5;
@@ -68,8 +69,9 @@ class Ring extends Group
 	onPointerLeave( event )
 	{
 		// avoid fake onClicks
-		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+//		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 		if( Ring.POINTER_USED ) return;
+		if( playground.dragPin ) return;
 			
 		this.ring.color = 'white';
 		this.ring.threejs.material.emissiveIntensity = 0;

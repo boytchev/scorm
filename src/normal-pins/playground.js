@@ -7,6 +7,7 @@
 class Playground extends ScormPlayground
 {
 	static POINTS_SPEED = 2000;
+	static POINTER_MOVEMENT = 5;
 	
 	constructor( )
 	{
@@ -19,7 +20,9 @@ class Playground extends ScormPlayground
 		this.dragPin = null;
 		
 		this.membrane = new Membrane;
-		
+
+		this.toucher = this.constructToucher( );
+
 		this.translate( [
 			{id: 'txt-caption',
 				en: 'Normal pins',
@@ -117,6 +120,23 @@ class Playground extends ScormPlayground
 	} // Playground.loadSounds
 	
 	
+	// construct toucher sphere
+	constructToucher( )
+	{
+		var material = new THREE.MeshBasicMaterial( {
+				color: 'crimson',
+				side: THREE.DoubleSide,
+//				transparent: true,
+//				opacity: 0.2
+		});
+
+		var toucher = square( [0,0,0], 100 );
+			its.threejs.material = material;
+			its.visible = false;
+			
+		return toucher;
+	}
+
 	
 	// update the playground
 	update( t, dT )

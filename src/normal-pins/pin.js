@@ -15,12 +15,15 @@ class Pin extends Group
 		super( suica );
 
 		this.pinHeads = [];
+		this.dragPinHead = null;
+		
 		this.constructPin( );
 		this.spinV = 90;
 		
 		this.addEventListener( 'click', this.onClick );
 		this.addEventListener( 'pointerenter', this.onPointerEnter );
 		this.addEventListener( 'pointerleave', this.onPointerLeave );
+		this.addEventListener( 'pointerdown', this.onPointerDown );
 
 		this.visible = false;
 		
@@ -28,23 +31,48 @@ class Pin extends Group
 
 
 
-	// handles clicks on the ring
+	// handles clicks on the pin
 	onClick( )
 	{
 		// avoid fake onClicks
 		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 		if( Ring.POINTER_USED ) return;
 			
-		// if game is not started, click on the ring will start it
+		// if game is not started, click on the pin will start it
 		if( !playground.gameStarted )
 		{
 			playground.newGame( );
 		}
-	} // Ring.onClick
+	} // Pin.onClick
 	
 	
 	
-	// handles activating the ring
+	// handles clicks on the pin
+	onPointerDown( event )
+	{
+		if( playground.gameStarted )
+		{
+			this.dragPinHead = findObject( event, this.pinHeads );
+			if( !this.dragPinHead ) console.error( 'empty head' );
+
+			for( var head of this.pinHeads )
+				head.size = [2,2,2];
+
+			playground.dragPin = this;
+			playground.toucher.center = this.dragPinHead.objectPosition();
+			playground.toucher.spinH = degrees( orb.getAzimuthalAngle() );
+			playground.toucher.spinV = degrees( orb.getPolarAngle() )+90;
+
+			orb.enableRotate = false;
+			orb.enablePan = false;
+			
+			event.target.style.cursor = 'move';
+		}
+	} // Pin.onPointerDown
+	
+	
+	
+	// mark a pin
 	onPointerEnter( event )
 	{
 		// avoid fake onClicks
@@ -54,26 +82,127 @@ class Pin extends Group
 		for( var head of this.pinHeads )
 			head.size = [2,2,2];
 		
-		playground.dragPin = this;
-		
 		event.target.style.cursor = 'move';
 	} // Ring.onPointerEnter
 	
 	
-	// handles deactivating the ring
+	// unmark a pin
 	onPointerLeave( event )
 	{
-		// avoid fake onClicks
-//		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
-//		if( Ring.POINTER_USED ) return;
-			
+		if( playground.dragPin ) return;
+		
+		for( var head of this.pinHeads )
+			head.size = [1,1,1];
+		
+		event.target.style.cursor = 'default';
+	} // Ring.onPointerLeave
+	
+	
+	// deactivate a pin (called from top level html)
+	onPointerUp( )
+	{
 		for( var head of this.pinHeads )
 			head.size = [1,1,1];
 
 		playground.dragPin = null;
 		
+		orb.enableRotate = true;
+		orb.enablePan = true;
+		
 		event.target.style.cursor = 'default';
-	} // Ring.onPointerEnter
+	} // Pin.onPointerUp
+	
+	
+	
+	// drag a pin (called from top level html)
+	onPointerMove( event )
+	{
+		var obj = findObject( event, [playground.toucher] );
+		if( obj )
+		{
+			var pos = obj.intersectData.point;
+			var target = [pos.x, pos.y, pos.z];
+			var center = this.center;
+			var vec = [target[0]-center[0], target[1]-center[1], target[2]-center[2]];
+			
+			// calculate spinV and spinH
+			var spinH = degrees( Math.atan2(vec[2],vec[0]) );
+			var spinV = degrees( Math.atan2((vec[0]**2+vec[2]**2)**0.5,vec[1]) );
+
+			this.spinH = 90-spinH;
+			this.spinV = spinV;
+			return;
+		}
+
+return;		
+		// var obj = findObject( event, [playground.membrane] );
+		// if( obj )
+		// {
+			// var pos = obj.intersectData.point;
+			// this.center = [pos.x, pos.y, pos.z];
+		// }
+		
+		
+		var canvas = event.target;
+		
+		// get pixel position withing the Suica canvas
+		var rect = canvas.getBoundingClientRect(),
+			pixelX = Math.floor( event.clientX - rect.left ),
+			pixelY = Math.floor( event.clientY - rect.top );
+
+		var that = this;
+		
+		// calculate distance^2 at spins H and V from the pin head to the cursor position (in screen coordinates)
+		function distanceSqr( h, v )
+		{
+			that.spin = [h, v, 0];
+
+			var scrPos = that.screenPosition( that.dragPinHead );
+			
+			return (scrPos[0]-pixelX)**2 + (scrPos[1]-pixelY)**2;
+		}
+		
+		// original spin
+		var baseH = this.spinH,
+			baseV = this.spinV,
+			baseD = distanceSqr( baseH, baseV );
+		
+		var k = 0.5;
+		for( var step=10; step>1; step=step*k )
+		{
+			k = 0.5;
+			
+			var bestH = baseH,
+				bestV = baseV,
+				bestD = baseD;
+			
+			var testH, testV, testD;
+			
+			for( var dH=-1; dH<=1; dH++ )
+			for( var dV=-1; dV<=1; dV++ )
+			{
+				testH = baseH + dH*step;
+				testV = baseV + dV*step;
+				testD = distanceSqr( testH, testV );
+				if( testD < bestD )
+				{
+					bestH = testH;
+					bestV = testV;
+					bestD = testD;
+					k = 0.9;
+				}
+			}
+		}
+
+		this.spin = [bestH, bestV];
+		
+		
+		for( var head of this.pinHeads )
+			head.size = [2,2,2];
+
+	} // Ring.onPointerMove
+	
+	
 	
 	
 	
@@ -115,13 +244,13 @@ class Pin extends Group
 		this.visible = true;
 		
 		
-		var p = new THREE.Vector3( ...this.center ),
-			pu = new THREE.Vector3( ...playground.membrane.surface.curve( u+0.001, v ) ) . sub( p ),
-			pv = new THREE.Vector3( ...playground.membrane.surface.curve( u, v+0.001 ) ) . sub( p );
+		// var p = new THREE.Vector3( ...this.center ),
+			// pu = new THREE.Vector3( ...playground.membrane.surface.curve( u+0.001, v ) ) . sub( p ),
+			// pv = new THREE.Vector3( ...playground.membrane.surface.curve( u, v+0.001 ) ) . sub( p );
 			
-		var n = new THREE.Vector3() . crossVectors( pu, pv ) . setLength( Pin.LENGTH/2 );
+		// var n = new THREE.Vector3() . crossVectors( pu, pv ) . setLength( Pin.LENGTH/2 );
 		
-		line( this.center, [this.center[0]+n.x,this.center[1]+n.y,this.center[2]+n.z], 'crimson' );
+		// line( this.center, [this.center[0]+n.x,this.center[1]+n.y,this.center[2]+n.z], 'crimson' );
 		
 	} // Pin.randomize
 } // class Pin
