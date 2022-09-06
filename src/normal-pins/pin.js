@@ -7,8 +7,8 @@ class Pin extends Group
 {
 	static LENGTH = 10;
 	static HEAD_SIZE = 1;
-	static WIDTH = 0.1;
-	static TIP_WIDTH = 0.05;
+	static WIDTH = 0.15;
+	static TIP_WIDTH = 0.02;
 	
 	constructor( )
 	{
@@ -16,6 +16,10 @@ class Pin extends Group
 
 		this.pinHeads = [];
 		this.dragPinHead = null;
+
+		// pin coordinates over surface (u,v in [0,1])
+		this.u = 0;
+		this.v = 0;
 		
 		this.constructPin( );
 		this.spinV = 90;
@@ -144,7 +148,7 @@ class Pin extends Group
 	constructPin( )
 	{
 		var material = new THREE.MeshPhongMaterial( {
-				color: 'dimgray',
+				color: 'crimson',
 				shininess: 150
 		});
 		
@@ -168,24 +172,18 @@ class Pin extends Group
 	hide( )
 	{
 		this.visible = false;
-	}
+	} // Pin.hide
 	
 	
 	
 	show( u, v )
 	{
+		this.u = u;
+		this.v = v;
+		this.spin = [0,90,0];
 		this.center = playground.membrane.surface.curve( u, v );
 		this.visible = true;
-		
-		
-		// var p = new THREE.Vector3( ...this.center ),
-			// pu = new THREE.Vector3( ...playground.membrane.surface.curve( u+0.001, v ) ) . sub( p ),
-			// pv = new THREE.Vector3( ...playground.membrane.surface.curve( u, v+0.001 ) ) . sub( p );
-			
-		// var n = new THREE.Vector3() . crossVectors( pu, pv ) . setLength( Pin.LENGTH/2 );
-		
-		// line( this.center, [this.center[0]+n.x,this.center[1]+n.y,this.center[2]+n.z], 'crimson' );
-		
-	} // Pin.randomize
+	} // Pin.show
+	
 } // class Pin
 

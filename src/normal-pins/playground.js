@@ -15,9 +15,12 @@ class Playground extends ScormPlayground
 		
 		this.resize( );
 
+		this.n = 0; // number of active pins
 		this.ring = new Ring;
 		this.pins = [new Pin(),new Pin(),new Pin(),new Pin()];
 		this.dragPin = null;
+		
+		this.debugLine = line( [0,0,0], [0,0,0] );
 		
 		this.membrane = new Membrane;
 
@@ -42,18 +45,33 @@ class Playground extends ScormPlayground
 		this.membrane.show( );
 		
 		// number of pins
-		var n = Math.round( THREE.MathUtils.mapLinear( this.difficulty**5, 10**5, 100**5, 1, 4 )),
-			angle = random( 0, 2*Math.PI ),
+		this.n = Math.round( THREE.MathUtils.mapLinear( this.difficulty**5, 10**5, 100**5, 1, 4 ));
+		
+		var	angle = random( 0, 2*Math.PI ),
 			dist;
 			
-		for( var i=0; i<n; i++ )
+		for( var i=0; i<this.n; i++ )
 		{
 			dist = random( 0.1, 0.30 );
-			angle += 2*Math.PI/n;
+			angle += 2*Math.PI/this.n;
 
 			this.pins[i].show( 0.5+dist*Math.sin(angle), 0.5+dist*Math.cos(angle) );
 		}
-		
+
+var pin = this.pins[0];		
+var pinPos = new THREE.Vector3(...pin.center);
+var uVector = new THREE.Vector3( ...playground.membrane.surface.curve( pin.u+0.001, pin.v ) ) . sub( pinPos ),
+	vVector = new THREE.Vector3( ...playground.membrane.surface.curve( pin.u, pin.v+0.001 ) ) . sub( pinPos ),
+	norVector = new THREE.Vector3() . crossVectors( uVector, vVector ) . normalize();
+this.debugLine.from = [
+	pin.center[0]+20*norVector.x,
+	pin.center[1]+20*norVector.y,
+	pin.center[2]+20*norVector.z ];
+this.debugLine.to = [
+	pin.center[0]-20*norVector.x,
+	pin.center[1]-20*norVector.y,
+	pin.center[2]-20*norVector.z ];
+
 		
 		// ...
 
@@ -74,10 +92,43 @@ class Playground extends ScormPlayground
 	evaluateGame( )
 	{
 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
+		var maxAngle = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 90, 30 ),
+			minAngle = 10;
 		
-		// ...
+			
+		var score = 0;
 		
-		return 1 * points;
+		for( var pin of this.pins ) if( pin.visible )
+		{
+			// get pin vector
+			var pinPos = new THREE.Vector3( ...pin.center ),
+				pinHeadPos = new THREE.Vector3( ...pin.pinHeads[0].objectPosition() ),
+				pinVector = new THREE.Vector3() . subVectors(pinHeadPos,pinPos) . normalize();
+				
+			// get normal vector
+			var uVector = new THREE.Vector3( ...playground.membrane.surface.curve( pin.u+0.001, pin.v ) ) . sub( pinPos ),
+				vVector = new THREE.Vector3( ...playground.membrane.surface.curve( pin.u, pin.v+0.001 ) ) . sub( pinPos ),
+				norVector = new THREE.Vector3() . crossVectors( uVector, vVector ) . normalize();
+		
+			// get angle between vectors in degrees
+			var angle = degrees( pinVector.angleTo( norVector ) );
+				if( angle > 90 ) angle = 180-angle;
+			
+			
+			var subScore = THREE.MathUtils.mapLinear( angle, minAngle, maxAngle, 1, 0 );
+			console.log('angle',angle|0, 'maxAngle', maxAngle);
+			
+				subScore = THREE.MathUtils.clamp( subScore, 0, 1 )**2;
+				
+			console.log('angle',angle|0, 'subScore', subScore);
+			
+			score += subScore/this.n;
+		// line( this.center, [this.center[0]+n.x,this.center[1]+n.y,this.center[2]+n.z], 'crimson' );
+		}
+
+		console.log('score', score);
+		
+		return score * points;
 
 	} // Playground.evaluateGame
 	
@@ -126,8 +177,6 @@ class Playground extends ScormPlayground
 		var material = new THREE.MeshBasicMaterial( {
 				color: 'crimson',
 				side: THREE.DoubleSide,
-//				transparent: true,
-//				opacity: 0.2
 		});
 
 		var toucher = square( [0,0,0], 100 );

@@ -89,7 +89,7 @@ class Membrane extends Group
 				roughness: 1,
 				metalness: 0,
 				bumpMap: image('images/tile.png'),
-				bumpScale: 0.1,
+				bumpScale: 0.8,
 				sheen: 0,	// 1.5
 				sheenColor: 'white',
 				sheenRoughness: 0.1,
@@ -128,7 +128,7 @@ class Membrane extends Group
 			uv = this.surface.threejs.geometry.getAttribute( 'uv' );
 		for( var i=0; i<pos.count; i++ )
 		{
-			uv.setXY( i, 3*pos.getX( i ), 3*pos.getY( i ) );
+			uv.setXY( i, 2*pos.getX( i ), 2*pos.getY( i ) );
 		}	
 	} // Membrane.randomize
 
@@ -179,7 +179,7 @@ class Membrane extends Group
 			k = random( 0.7, 0.85 );
 			
 		new TWEEN.Tween( mat )
-			.to( {sheen:0.5*k, metalness:0.85*k, roughness:1-0.85*k }, Membrane.SHOW_SPEED/2 )
+			.to( {sheen:0.5*k, metalness:0.85*k, roughness:1-0.85*k, bumpScale:0.8-0.75*k }, Membrane.SHOW_SPEED/2 )
 			.easing( TWEEN.Easing.Linear.None )
 			.start( );
 
@@ -207,16 +207,16 @@ class Membrane extends Group
 			mat = this.surface.threejs.material; // current material
 
 		// animate surface material
-		new TWEEN.Tween( {r:mat.color.r, g:mat.color.g, b:mat.color.b, s:mat.sheen, m:mat.metalness, f:mat.roughness} )
-			.to( {r:1, g:1, b:1, s:0, m:0, f:1 }, Membrane.SHOW_SPEED/2 )
-			.easing( TWEEN.Easing.Linear.None )
-			.onUpdate( obj => {
-				mat.color.setRGB( obj.r, obj.g, obj.b );
-				mat.sheen = obj.s;
-				mat.metalness = obj.m;
-				mat.roughness = obj.f;
-			})
-			.start( );
+		// new TWEEN.Tween( {r:mat.color.r, g:mat.color.g, b:mat.color.b, s:mat.sheen, m:mat.metalness, f:mat.roughness} )
+			// .to( {r:1, g:1, b:1, s:0, m:0, f:1 }, Membrane.SHOW_SPEED/2 )
+			// .easing( TWEEN.Easing.Linear.None )
+			// .onUpdate( obj => {
+				// mat.color.setRGB( obj.r, obj.g, obj.b );
+				// mat.sheen = obj.s;
+				// mat.metalness = obj.m;
+				// mat.roughness = obj.f;
+			// })
+			// .start( );
 
 	} // Membrane.hide
 	
