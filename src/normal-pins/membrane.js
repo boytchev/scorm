@@ -84,17 +84,16 @@ class Membrane extends Group
 
 		its.threejs.material = new THREE.MeshPhysicalMaterial( {
 				color: 'white',
-				clearcoat: 2,
-				clearcoatRoughness: 0.5,
 				roughness: 1,
 				metalness: 0,
 				bumpMap: image('images/tile.png'),
 				bumpScale: 0.8,
-				sheen: 0,	// 1.5
+				sheen: 0,
 				sheenColor: 'white',
-				sheenRoughness: 0.1,
+				sheenRoughness: 0.15,
 				side: THREE.DoubleSide,
 		});
+		its.threejs.receiveShadow = true;
 
 
 		
@@ -106,7 +105,8 @@ class Membrane extends Group
 
 	randomize( )
 	{
-		var scale = THREE.MathUtils.mapLinear( playground?.difficulty || 0, 10, 100, 0.2, 2 );
+		var scale = THREE.MathUtils.mapLinear( playground?.difficulty || 0, 10, 100, 1, 1.5 ),
+			threshold = (playground?.difficulty/100)**0.5;
 		
 		// randomize control points
 		for( var n in this.pi )
@@ -114,7 +114,10 @@ class Membrane extends Group
 			var i = this.pi[n],
 				j = this.pj[n];
 
-			this.points[i][j][2] = scale * Membrane.BUMP_HEIGHT * random(-1,1);
+			if( random(0,1) > threshold )
+				this.points[i][j][2] = 0;
+			else
+				this.points[i][j][2] = scale * Membrane.BUMP_HEIGHT * random(-1,1);
 		}
 
 		// make the surface flat
@@ -165,7 +168,7 @@ class Membrane extends Group
 			mat = this.surface.threejs.material; // current material
 
 		// animate surface color
-		var color = hsl(random(0,360), 20, 100);
+		var color = hsl(0, 20, 100);
 		new TWEEN.Tween( mat.color )
 			.to( color, Membrane.SHOW_SPEED/2 )
 			.easing( TWEEN.Easing.Linear.None )
@@ -174,9 +177,17 @@ class Membrane extends Group
 		// target properties
 		var k;
 		if( random(0,1)**0.5 > playground.difficulty/100 )
-			k = random( 0, 0.1 )
+		{	
+			k = random( 0, 0.1 );
+			playground.shadowLightA.castShadow = true;
+			playground.shadowLightB.castShadow = true;
+		}
 		else
+		{
 			k = random( 0.7, 0.85 );
+			playground.shadowLightA.castShadow = false;
+			playground.shadowLightB.castShadow = false;
+		}
 			
 		new TWEEN.Tween( mat )
 			.to( {sheen:0.5*k, metalness:0.85*k, roughness:1-0.85*k, bumpScale:0.8-0.75*k }, Membrane.SHOW_SPEED/2 )
@@ -201,22 +212,6 @@ class Membrane extends Group
 			.to( {depth:0.0001}, Membrane.SHOW_SPEED )
 			.easing( TWEEN.Easing.Elastic.Out )
 			.start( );
-
-		// target properties
-//		var that = this,
-//			mat = this.surface.threejs.material; // current material
-
-		// animate surface material
-		// new TWEEN.Tween( {r:mat.color.r, g:mat.color.g, b:mat.color.b, s:mat.sheen, m:mat.metalness, f:mat.roughness} )
-			// .to( {r:1, g:1, b:1, s:0, m:0, f:1 }, Membrane.SHOW_SPEED/2 )
-			// .easing( TWEEN.Easing.Linear.None )
-			// .onUpdate( obj => {
-				// mat.color.setRGB( obj.r, obj.g, obj.b );
-				// mat.sheen = obj.s;
-				// mat.metalness = obj.m;
-				// mat.roughness = obj.f;
-			// })
-			// .start( );
 
 	} // Membrane.hide
 	

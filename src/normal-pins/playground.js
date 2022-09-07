@@ -15,6 +15,8 @@ class Playground extends ScormPlayground
 		
 		this.resize( );
 
+		this.supportShadows( );
+			
 		this.n = 0; // number of active pins
 		this.ring = new Ring;
 		this.pins = [new Pin(),new Pin(),new Pin(),new Pin()];
@@ -49,7 +51,6 @@ class Playground extends ScormPlayground
 		
 		var	angle = random( 0, 2*Math.PI ),
 			dist;
-			
 		for( var i=0; i<this.n; i++ )
 		{
 			dist = random( 0.1, 0.30 );
@@ -58,22 +59,7 @@ class Playground extends ScormPlayground
 			this.pins[i].show( 0.5+dist*Math.sin(angle), 0.5+dist*Math.cos(angle) );
 		}
 
-var pin = this.pins[0];		
-var pinPos = new THREE.Vector3(...pin.center);
-var uVector = new THREE.Vector3( ...playground.membrane.surface.curve( pin.u+0.001, pin.v ) ) . sub( pinPos ),
-	vVector = new THREE.Vector3( ...playground.membrane.surface.curve( pin.u, pin.v+0.001 ) ) . sub( pinPos ),
-	norVector = new THREE.Vector3() . crossVectors( uVector, vVector ) . normalize();
-this.debugLine.from = [
-	pin.center[0]+20*norVector.x,
-	pin.center[1]+20*norVector.y,
-	pin.center[2]+20*norVector.z ];
-this.debugLine.to = [
-	pin.center[0]-20*norVector.x,
-	pin.center[1]-20*norVector.y,
-	pin.center[2]-20*norVector.z ];
-
-		
-		// ...
+		this.clickSound.play( );
 
 	} // Playground.newGame
 
@@ -138,6 +124,7 @@ console.log('-------------');
 	{
 		super.endGame( );
 		
+		this.clackSound.play( );
 		this.membrane.hide( );
 
 		// hide all pins
@@ -161,11 +148,11 @@ console.log('-------------');
 	// load all sounds
 	loadSounds( )
 	{
-		//this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1, 4 );
-		//this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
+		this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1, 4 );
+		this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
 		//this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.2, 1, true );
 		
-		//this.soundEffects.push( this.clickSound, this.clackSound );
+		this.soundEffects.push( this.clickSound, this.clackSound );
 		//this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
 	
@@ -185,7 +172,44 @@ console.log('-------------');
 		return toucher;
 	}
 
-	
+
+	// adds support for shadows
+	supportShadows( )
+	{
+		suica0.renderer.shadowMap.enabled = true;
+		suica0.renderer.shadowMap.type = THREE.VSMShadowMap;//PCFSoftShadowMap;
+
+		suica0.light.intensity = 0.25;
+		
+		// first light with shadow
+		this.shadowLightA = new THREE.DirectionalLight( 'white', 0.25 );
+		this.shadowLightA.position.set( 0, 0, 50 );
+		this.shadowLightA.target = suica0.scene;
+		this.shadowLightA.castShadow = true;
+
+		var shadow = this.shadowLightA.shadow;
+			shadow.mapSize.width = 4*512;
+			shadow.mapSize.height = 4*512;
+			shadow.camera.near = 20;
+			shadow.camera.far = 70;
+			shadow.camera.left = -30;
+			shadow.camera.right = 30;
+			shadow.camera.bottom = -30;
+			shadow.camera.top = 30;		
+			shadow.bias = -0.001;
+			shadow.radius = 2;
+
+		// second light reusing the same shadow
+		this.shadowLightB = new THREE.DirectionalLight( 'white', 0.25 );
+		this.shadowLightB.position.set( 0, 0, -50 );
+		this.shadowLightB.target = suica0.scene;
+		this.shadowLightB.castShadow = true;
+		this.shadowLightB.shadow = shadow; // reusing
+		
+		suica0.scene.add( this.shadowLightA, this.shadowLightB );
+	}
+
+
 	// update the playground
 	update( t, dT )
 	{

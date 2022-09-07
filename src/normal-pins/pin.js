@@ -30,6 +30,7 @@ class Pin extends Group
 		this.addEventListener( 'pointerdown', this.onPointerDown );
 
 		this.visible = false;
+		this.threejs.castShadow = true;
 		
 	} // Ring.constructor
 
@@ -158,9 +159,12 @@ class Pin extends Group
 							[0,Pin.LENGTH,0,Pin.WIDTH]]),
 						1, [2,8] );
 			its.threejs.material = material;
+			its.threejs.castShadow = true;
 					
 		var head1 = sphere( [0,Pin.LENGTH,0], Pin.HEAD_SIZE, 'crimson' );
+			its.threejs.castShadow = true;
 		var head2 = sphere( [0,-Pin.LENGTH,0], Pin.HEAD_SIZE, 'crimson' );
+			its.threejs.castShadow = true;
 		
 		this.add( body, head1, head2 );
 		this.pinHeads.push( head1, head2 );
