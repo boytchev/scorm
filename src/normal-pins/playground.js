@@ -84,7 +84,7 @@ class Playground extends ScormPlayground
 			
 		var score = 0;
 	
-console.log('-------------');	
+//console.log('-------------');	
 		for( var pin of this.pins ) if( pin.visible )
 		{
 			// get pin vector
@@ -105,7 +105,7 @@ console.log('-------------');
 			var subScore = THREE.MathUtils.mapLinear( angle, minAngle, maxAngle, 1, 0 );
 				subScore = THREE.MathUtils.clamp( subScore, 0, 1 )**0.75;
 				
-		console.log(angle|0,'in','['+(minAngle|0)+'..'+(maxAngle|0)+'] ->', subScore.toFixed(2));
+//		console.log(angle|0,'in','['+(minAngle|0)+'..'+(maxAngle|0)+'] ->', subScore.toFixed(2));
 			
 			score += subScore/this.n;
 		// line( this.center, [this.center[0]+n.x,this.center[1]+n.y,this.center[2]+n.z], 'crimson' );
@@ -150,10 +150,10 @@ console.log('-------------');
 	{
 		this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1, 4 );
 		this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
-		//this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.2, 1, true );
+		this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.2, 1, true );
 		
 		this.soundEffects.push( this.clickSound, this.clackSound );
-		//this.soundMelody.push( this.backgroundMelody );
+		this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
 	
 	
@@ -177,6 +177,7 @@ console.log('-------------');
 	supportShadows( )
 	{
 		suica0.renderer.shadowMap.enabled = true;
+		// use the default shadow, because others make problems to mobiles
 		//suica0.renderer.shadowMap.type = THREE.PCFSoftShadowMap;//VSMShadowMap;
 
 		suica0.light.intensity = 0.25;
@@ -215,6 +216,5 @@ console.log('-------------');
 	update( t, dT )
 	{
 		// ...
-		this.membrane.update( t, dT );
 	}
 } // class Playground

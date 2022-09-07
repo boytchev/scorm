@@ -215,18 +215,5 @@ class Membrane extends Group
 	} // Membrane.hide
 	
 	
-	
-	update( t, dT )
-	{
-		// vibrate ring
-
-		return;
-	/*	
-		this.surface.depth = 1+1*Math.sin(3*t)*Math.cos(3.3*t)*Math.cos(4.1*t);
-	
-	t=t/2;
-		*/
-	} // Membrane.update
-	
 } // class Membrane
 
