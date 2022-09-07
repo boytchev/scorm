@@ -45,9 +45,9 @@ This SCO is used for experiments with SCORM 1.2-complient LMS. It shows the list
 
 ## Normal pins
 
-Under development
+<a href="src/normal-pins/normal-pins.html"><img src="src/normal-pins/docs/snapshot.jpg" width="200" style="float:right; border-radius: 0.5em; border-bottom: 0.3em BurlyWood solid;"></a> Arrange a set of pins on a pincushion so that they are as close to the normal vectors (at the pinpoints) as it is reasonably possible.
 
-[ <!-- markdown-link-check-disable -->More info<!-- markdown-link-check-enable --> ] [ [Run online](src/normal-pins/normal-pins.html) ] [ Download ]
+[ <!-- markdown-link-check-disable -->[More info](src/normal-pins/index.html)<!-- markdown-link-check-enable --> ] [ [Run online](src/normal-pins/normal-pins.html) ] [ [Download](bin/normal-pins.zip) ]
 
 
 <small>{{site.time | date: "%B, %Y"}}</small>
