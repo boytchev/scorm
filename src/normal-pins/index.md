@@ -57,7 +57,7 @@ The application uses relatively small interactive elements. It might be easier t
 
 This application uses a background music from [SoundCloud](https://soundcloud.com):
 
-- "[Might & Magic](https://soundcloud.com/serpentsoundstudios/might-magic)" by [Alexander Nakarada](www.serpentsoundstudios.com) licensed under [CC BY 4.0 License](https://creativecommons.org/licenses/by/4.0/),
+- "[Might & Magic](https://soundcloud.com/serpentsoundstudios/might-magic)" by [Alexander Nakarada](https://soundcloud.com/serpentsoundstudios) (<!-- markdown-link-check-disable -->[www.serpentsoundstudios.com](https://www.serpentsoundstudios.com/)<!-- markdown-link-check-enable -->) licensed under [CC BY 4.0 License](https://creativecommons.org/licenses/by/4.0/),
 
 and sound effects from [Mixkit](https://mixkit.co/):
 
