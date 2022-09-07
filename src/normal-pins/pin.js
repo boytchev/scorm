@@ -58,7 +58,7 @@ class Pin extends Group
 		if( playground.gameStarted )
 		{
 			this.dragPinHead = findObject( event, this.pinHeads );
-			if( !this.dragPinHead ) console.error( 'empty head' );
+			if( !this.dragPinHead ) return;
 
 			for( var head of this.pinHeads )
 				head.size = [2,2,2];
@@ -81,7 +81,7 @@ class Pin extends Group
 	onPointerEnter( event )
 	{
 		// avoid fake onClicks
-		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+		//if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 		if( Ring.POINTER_USED ) return;
 		
 		for( var head of this.pinHeads )

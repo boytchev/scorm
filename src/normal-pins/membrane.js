@@ -32,9 +32,8 @@ class Membrane extends Group
 		this.addEventListener( 'click', this.onClick );
 
 	} // Membrane.constructor
-
-
-
+	
+	
 	// handles clicks on the membrane
 	onClick( )
 	{

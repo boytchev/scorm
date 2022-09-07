@@ -82,6 +82,15 @@
 			playground.pointerMovement += Math.abs( event.movementX ) + Math.abs( event.movementY );
 			
 			playground.dragPin?.onPointerMove( event );
+			
+			if( !playground.gameStarted )
+			{
+				var obj = findObject( event, [playground.ring, playground.membrane] );
+				if( obj )
+					event.target.style.cursor = 'pointer';
+				else
+					event.target.style.cursor = 'default';
+			}
 		}
 		
 	</script>

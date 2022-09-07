@@ -42,6 +42,7 @@ class Playground extends ScormPlayground
 	// starts a new game by selecting new color hues
 	newGame( )
 	{
+		this.clickSound.play( );
 		super.newGame( );
 
 		this.membrane.show( );
@@ -59,7 +60,6 @@ class Playground extends ScormPlayground
 			this.pins[i].show( 0.5+dist*Math.sin(angle), 0.5+dist*Math.cos(angle) );
 		}
 
-		this.clickSound.play( );
 
 	} // Playground.newGame
 
@@ -122,9 +122,9 @@ console.log('-------------');
 	// ends the current game - evaluate results, update data
 	endGame( )
 	{
+		this.clackSound.play( );
 		super.endGame( );
 		
-		this.clackSound.play( );
 		this.membrane.hide( );
 
 		// hide all pins
