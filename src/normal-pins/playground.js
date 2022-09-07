@@ -176,7 +176,7 @@ console.log('-------------');
 	// adds support for shadows
 	supportShadows( )
 	{
-		//suica0.renderer.shadowMap.enabled = true;
+		suica0.renderer.shadowMap.enabled = true;
 		suica0.renderer.shadowMap.type = THREE.PCFSoftShadowMap;//VSMShadowMap;
 
 		suica0.light.intensity = 0.25;
@@ -197,6 +197,7 @@ console.log('-------------');
 			shadow.camera.bottom = -30;
 			shadow.camera.top = 30;		
 			shadow.bias = -0.001;
+			shadow.bias = -0.1;
 			shadow.radius = 2;
 
 		// second light reusing the same shadow
