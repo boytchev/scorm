@@ -197,7 +197,7 @@ console.log('-------------');
 			shadow.camera.bottom = -30;
 			shadow.camera.top = 30;		
 			shadow.bias = -0.001;
-			shadow.bias = -0.1;
+			shadow.bias = -0.01;
 			shadow.radius = 2;
 
 		// second light reusing the same shadow
