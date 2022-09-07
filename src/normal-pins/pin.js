@@ -6,9 +6,10 @@
 class Pin extends Group
 {
 	static LENGTH = 10;
-	static HEAD_SIZE = 1;
-	static WIDTH = 0.15;
-	static TIP_WIDTH = 0.02;
+	static SMALL_HEAD_SIZE = 2;
+	static BIG_HEAD_SIZE = 3;
+	static WIDTH = 0.2;
+	static TIP_WIDTH = 0.03;
 	
 	constructor( )
 	{
@@ -52,6 +53,15 @@ class Pin extends Group
 	
 	
 	
+	// set pin head size
+	setPinHeadSize( size )
+	{
+		for( var head of this.pinHeads )
+			head.size = [size, size, size];
+	}
+	
+	
+	
 	// handles clicks on the pin
 	onPointerDown( event )
 	{
@@ -60,8 +70,7 @@ class Pin extends Group
 			this.dragPinHead = findObject( event, this.pinHeads );
 			if( !this.dragPinHead ) return;
 
-			for( var head of this.pinHeads )
-				head.size = [2,2,2];
+			this.setPinHeadSize( Pin.BIG_HEAD_SIZE );
 
 			playground.dragPin = this;
 			playground.toucher.center = this.dragPinHead.objectPosition();
@@ -84,8 +93,7 @@ class Pin extends Group
 		//if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 		if( Ring.POINTER_USED ) return;
 		
-		for( var head of this.pinHeads )
-			head.size = [2,2,2];
+		this.setPinHeadSize( Pin.BIG_HEAD_SIZE );
 		
 		event.target.style.cursor = 'move';
 	} // Ring.onPointerEnter
@@ -96,8 +104,7 @@ class Pin extends Group
 	{
 		if( playground.dragPin ) return;
 		
-		for( var head of this.pinHeads )
-			head.size = [1,1,1];
+		this.setPinHeadSize( Pin.SMALL_HEAD_SIZE );
 		
 		event.target.style.cursor = 'default';
 	} // Ring.onPointerLeave
@@ -106,8 +113,7 @@ class Pin extends Group
 	// deactivate a pin (called from top level html)
 	onPointerUp( )
 	{
-		for( var head of this.pinHeads )
-			head.size = [1,1,1];
+		this.setPinHeadSize( Pin.SMALL_HEAD_SIZE );
 
 		playground.dragPin = null;
 		
@@ -161,9 +167,9 @@ class Pin extends Group
 			its.threejs.material = material;
 			its.threejs.castShadow = true;
 					
-		var head1 = sphere( [0,Pin.LENGTH,0], Pin.HEAD_SIZE, 'crimson' );
+		var head1 = sphere( [0,Pin.LENGTH,0], Pin.SMALL_HEAD_SIZE, 'crimson' );
 			its.threejs.castShadow = true;
-		var head2 = sphere( [0,-Pin.LENGTH,0], Pin.HEAD_SIZE, 'crimson' );
+		var head2 = sphere( [0,-Pin.LENGTH,0], Pin.SMALL_HEAD_SIZE, 'crimson' );
 			its.threejs.castShadow = true;
 		
 		this.add( body, head1, head2 );

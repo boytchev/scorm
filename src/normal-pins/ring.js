@@ -39,7 +39,15 @@ class Ring extends Group
 		{
 			if( playground.canEndGame() )
 			{
+				this.ring.color = 'orange';
+				this.ring.threejs.material.emissiveIntensity = 0.5;
 				playground.endGame( );
+				
+				var that = this;
+				setTimeout( function(){
+					that.ring.color = 'white';
+					that.ring.threejs.material.emissiveIntensity = 0;
+				}, 50 );
 			}
 		}
 		else
