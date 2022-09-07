@@ -176,7 +176,7 @@ console.log('-------------');
 	// adds support for shadows
 	supportShadows( )
 	{
-		suica0.renderer.shadowMap.enabled = true;
+		//suica0.renderer.shadowMap.enabled = true;
 		suica0.renderer.shadowMap.type = THREE.PCFSoftShadowMap;//VSMShadowMap;
 
 		suica0.light.intensity = 0.25;
