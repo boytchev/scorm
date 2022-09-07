@@ -47,6 +47,7 @@ This SCO is used for experiments with SCORM 1.2-complient LMS. It shows the list
 
 Under development
 
+[ <!-- markdown-link-check-disable -->More info<!-- markdown-link-check-enable --> ] [ [Run online](src/normal-pins/normal-pins.html) ] [ Download ]
 
 
 <small>{{site.time | date: "%B, %Y"}}</small>
