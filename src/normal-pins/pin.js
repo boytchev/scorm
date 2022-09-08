@@ -198,6 +198,7 @@ class Pin extends Group
 		this.spin = [0,90,0];
 		this.center = playground.membrane.surface.curve( u, v );
 		this.visible = true;
+		this.originalZ = this.center[2];
 	} // Pin.show
 	
 } // class Pin

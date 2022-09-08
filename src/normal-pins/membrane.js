@@ -150,6 +150,17 @@ class Membrane extends Group
 
 	
 
+	// move objects depending on vibration
+	setVibroZ( z )
+	{
+		playground.ring.z = z;
+		playground.membrane.z = z;
+		for( var pin of playground.pins )
+			pin.z = pin.originalZ+z;
+	}
+	
+	
+	
 	// transforms the surface from 2D into 3D
 	show(  )
 	{
@@ -159,8 +170,8 @@ class Membrane extends Group
 		new TWEEN.Tween( this )
 			.to( {z:1}, Membrane.VIBRATE_SPEED )
 			.easing( this.vibrate )
-			.onUpdate( obj => playground.ring.z = obj.z )
-			.onComplete( obj => playground.ring.z = obj.z = 0 )
+			.onUpdate( obj => obj.setVibroZ(obj.z) )
+			.onComplete( obj => obj.setVibroZ(0) )
 			.start( );
 		
 		// animate surface geometry
@@ -210,8 +221,8 @@ class Membrane extends Group
 		new TWEEN.Tween( this )
 			.to( {z:1}, Membrane.VIBRATE_SPEED )
 			.easing( this.vibrate )
-			.onUpdate( obj => playground.ring.z = obj.z )
-			.onComplete( obj => playground.ring.z = obj.z = 0 )
+			.onUpdate( obj => obj.setVibroZ(obj.z) )
+			.onComplete( obj => obj.setVibroZ(0) )
 			.start( );
 		
 		// animate surface geometry
