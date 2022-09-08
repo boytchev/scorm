@@ -61,8 +61,6 @@ class Ring extends Group
 	// handles activating the ring
 	onPointerEnter( event )
 	{
-		// avoid fake onClicks
-//		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 		if( Ring.POINTER_USED ) return;
 		if( playground.dragPin ) return;
 			
@@ -72,12 +70,11 @@ class Ring extends Group
 		event.target.style.cursor = 'pointer';
 	} // Ring.onPointerEnter
 	
+
 	
 	// handles deactivating the ring
 	onPointerLeave( event )
 	{
-		// avoid fake onClicks
-//		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 		if( Ring.POINTER_USED ) return;
 		if( playground.dragPin ) return;
 			
@@ -85,7 +82,7 @@ class Ring extends Group
 		this.ring.threejs.material.emissiveIntensity = 0;
 
 		event.target.style.cursor = 'default';
-	} // Ring.onPointerEnter
+	} // Ring.onPointerLeave
 	
 	
 	

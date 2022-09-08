@@ -11,6 +11,7 @@ class Pin extends Group
 	static WIDTH = 0.2;
 	static TIP_WIDTH = 0.03;
 	
+	
 	constructor( )
 	{
 		super( suica );
@@ -33,7 +34,7 @@ class Pin extends Group
 		this.visible = false;
 		this.threejs.castShadow = true;
 		
-	} // Ring.constructor
+	} // Pin.constructor
 
 
 
@@ -90,13 +91,13 @@ class Pin extends Group
 	onPointerEnter( event )
 	{
 		// avoid fake onClicks
-		//if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 		if( Ring.POINTER_USED ) return;
 		
 		this.setPinHeadSize( Pin.BIG_HEAD_SIZE );
 		
 		event.target.style.cursor = 'move';
-	} // Ring.onPointerEnter
+	} // Pin.onPointerEnter
+	
 	
 	
 	// unmark a pin
@@ -107,7 +108,8 @@ class Pin extends Group
 		this.setPinHeadSize( Pin.SMALL_HEAD_SIZE );
 		
 		event.target.style.cursor = 'default';
-	} // Ring.onPointerLeave
+	} // Pin.onPointerLeave
+
 	
 	
 	// deactivate a pin (called from top level html)
@@ -145,13 +147,11 @@ class Pin extends Group
 			return;
 		}
 
-	} // Ring.onPointerMove
+	} // Pin.onPointerMove
 	
 	
 	
-	
-	
-	// construct the ring
+	// construct the pin
 	constructPin( )
 	{
 		var material = new THREE.MeshPhongMaterial( {
@@ -179,6 +179,7 @@ class Pin extends Group
 
 
 
+	// hide the pin when the surface is 2D
 	hide( )
 	{
 		this.visible = false;
@@ -186,6 +187,7 @@ class Pin extends Group
 	
 	
 	
+	// show the pin when the surface is 3D
 	show( u, v )
 	{
 		this.u = u;

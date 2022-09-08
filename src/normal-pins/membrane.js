@@ -15,6 +15,7 @@ class Membrane extends Group
 	static VIBRO_SPEED = 50;
 	static BUMP_HEIGHT = 10;
 	
+	
 	constructor( )
 	{
 		super( suica );
@@ -34,6 +35,7 @@ class Membrane extends Group
 	} // Membrane.constructor
 	
 	
+	
 	// handles clicks on the membrane
 	onClick( )
 	{
@@ -50,7 +52,7 @@ class Membrane extends Group
 	
 	
 	
-	// construct the ring
+	// construct the surface
 	constructSurface( )
 	{
 		for( let i=0; i<Membrane.GRID; i++ )
@@ -102,6 +104,7 @@ class Membrane extends Group
 
 
 
+	// generate a new coordinates of surface's control points
 	randomize( )
 	{
 		var scale = THREE.MathUtils.mapLinear( playground?.difficulty || 0, 10, 100, 1, 1.5 ),
@@ -135,7 +138,8 @@ class Membrane extends Group
 	} // Membrane.randomize
 
 	
-	
+
+	// ease function for vibration, used in show() and hide()
 	vibrate( k )
 	{
 		if( k <= 0 ) return 0;
@@ -145,7 +149,8 @@ class Membrane extends Group
 	} // Membrane.vibrate
 
 	
-	
+
+	// transforms the surface from 2D into 3D
 	show(  )
 	{
 		this.randomize( );
@@ -196,7 +201,8 @@ class Membrane extends Group
 	} // Membrane.show
 
 	
-	
+
+	// transforms the surface from 3D into 2D	
 	hide(  )
 	{
 		// vibrate

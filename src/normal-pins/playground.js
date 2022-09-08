@@ -9,6 +9,7 @@ class Playground extends ScormPlayground
 	static POINTS_SPEED = 2000;
 	static POINTER_MOVEMENT = 5;
 	
+	
 	constructor( )
 	{
 		super( );
@@ -59,8 +60,6 @@ class Playground extends ScormPlayground
 
 			this.pins[i].show( 0.5+dist*Math.sin(angle), 0.5+dist*Math.cos(angle) );
 		}
-
-
 	} // Playground.newGame
 
 
@@ -68,7 +67,6 @@ class Playground extends ScormPlayground
 	// check whether a game can end
 	canEndGame( )
 	{
-		// ...
 		return true;
 	} // Playground.canEndGame
 	
@@ -81,10 +79,8 @@ class Playground extends ScormPlayground
 		var maxAngle = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 60, 30 ),
 			minAngle = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 20, 10 );
 		
-			
 		var score = 0;
 	
-//console.log('-------------');	
 		for( var pin of this.pins ) if( pin.visible )
 		{
 			// get pin vector
@@ -105,14 +101,9 @@ class Playground extends ScormPlayground
 			var subScore = THREE.MathUtils.mapLinear( angle, minAngle, maxAngle, 1, 0 );
 				subScore = THREE.MathUtils.clamp( subScore, 0, 1 )**0.75;
 				
-//		console.log(angle|0,'in','['+(minAngle|0)+'..'+(maxAngle|0)+'] ->', subScore.toFixed(2));
-			
 			score += subScore/this.n;
-		// line( this.center, [this.center[0]+n.x,this.center[1]+n.y,this.center[2]+n.z], 'crimson' );
 		}
 
-//		console.log('score', score.toFixed(2));
-		
 		return score * points;
 
 	} // Playground.evaluateGame
@@ -129,8 +120,6 @@ class Playground extends ScormPlayground
 
 		// hide all pins
 		for( var pin of this.pins ) pin.hide( );
-		
-		// ...
 		
 	} // Playground.endGame
 	
@@ -157,11 +146,12 @@ class Playground extends ScormPlayground
 	} // Playground.loadSounds
 	
 	
-	// construct toucher sphere
+	
+	// construct toucher plane - toucher is an invisible plane,
+	// always facing  the screen, used to manage pin dragging
 	constructToucher( )
 	{
 		var material = new THREE.MeshBasicMaterial( {
-				color: 'crimson',
 				side: THREE.DoubleSide,
 		});
 
@@ -170,13 +160,15 @@ class Playground extends ScormPlayground
 			its.visible = false;
 			
 		return toucher;
-	}
+	} // Playground.constructToucher
+
 
 
 	// adds support for shadows
 	supportShadows( )
 	{
 		suica0.renderer.shadowMap.enabled = true;
+
 		// use the default shadow, because others make problems to mobiles
 		//suica0.renderer.shadowMap.type = THREE.PCFSoftShadowMap;//VSMShadowMap;
 
@@ -209,7 +201,7 @@ class Playground extends ScormPlayground
 		this.shadowLightB.shadow = shadow; // reusing
 		
 		suica0.scene.add( this.shadowLightA, this.shadowLightB );
-	}
+	} // Playground.supportShadows
 
 
 	// update the playground
@@ -217,4 +209,5 @@ class Playground extends ScormPlayground
 	{
 		// ...
 	}
+	
 } // class Playground
