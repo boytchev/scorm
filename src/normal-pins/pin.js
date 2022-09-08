@@ -8,8 +8,8 @@ class Pin extends Group
 	static LENGTH = 10;
 	static SMALL_HEAD_SIZE = 2;
 	static BIG_HEAD_SIZE = 3;
-	static WIDTH = 0.2;
-	static TIP_WIDTH = 0.03;
+	static WIDTH = 0.15;
+	static TIP_WIDTH = 0.05;
 	
 	
 	constructor( )
@@ -154,28 +154,36 @@ class Pin extends Group
 	// construct the pin
 	constructPin( )
 	{
-		var material = new THREE.MeshPhongMaterial( {
-				color: 'crimson',
-				shininess: 150
+		var bodyMaterial = new THREE.MeshPhysicalMaterial( {
+				clearcoat: 1,
+				clearcoatRoughness: 0.3,
+				color: 'white',
+				metalness: 0.2,
+				roughness: 0.6,
 		});
-		
-		var body = tube( [0,0,0], spline([
+
+		this.body = tube( [0,0,0], spline([
 							[0,-Pin.LENGTH,0,Pin.WIDTH],
-							//[0,-1,0,0.01],
 							[0,0,0,Pin.TIP_WIDTH],
-							//[0,0,0,5],
-							//[0,1,0,0.01],
 							[0,Pin.LENGTH,0,Pin.WIDTH]]),
-						1, [22,8] );
-			its.threejs.material = material;
+						1, [2,8] );
+			its.threejs.material = bodyMaterial;
 			its.threejs.castShadow = true;
 					
-		var head1 = sphere( [0,Pin.LENGTH,0], Pin.SMALL_HEAD_SIZE, 'crimson' );
+		var headMaterial = new THREE.MeshPhysicalMaterial( {
+				color: 'crimson',
+				roughness: 0.5,
+				metalness: 0.5,
+		});
+
+		var head1 = sphere( [0,Pin.LENGTH,0], Pin.SMALL_HEAD_SIZE );
+			its.threejs.material = headMaterial;
 			its.threejs.castShadow = true;
-		var head2 = sphere( [0,-Pin.LENGTH,0], Pin.SMALL_HEAD_SIZE, 'crimson' );
+		var head2 = sphere( [0,-Pin.LENGTH,0], Pin.SMALL_HEAD_SIZE );
+			its.threejs.material = headMaterial;
 			its.threejs.castShadow = true;
 		
-		this.add( body, head1, head2 );
+		this.add( this.body, head1, head2 );
 		this.pinHeads.push( head1, head2 );
 		
 	} // Pin.constructPin
@@ -199,6 +207,10 @@ class Pin extends Group
 		this.center = playground.membrane.surface.curve( u, v );
 		this.visible = true;
 		this.originalZ = this.center[2];
+		
+		var hue = random(0,1);
+		this.pinHeads[0].threejs.material.color.setHSL( hue, 1, 0.5 );
+		this.pinHeads[1].threejs.material.color.setHSL( hue, 1, 0.5 );
 	} // Pin.show
 	
 } // class Pin
