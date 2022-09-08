@@ -161,9 +161,12 @@ class Pin extends Group
 		
 		var body = tube( [0,0,0], spline([
 							[0,-Pin.LENGTH,0,Pin.WIDTH],
+							//[0,-1,0,0.01],
 							[0,0,0,Pin.TIP_WIDTH],
+							//[0,0,0,5],
+							//[0,1,0,0.01],
 							[0,Pin.LENGTH,0,Pin.WIDTH]]),
-						1, [2,8] );
+						1, [22,8] );
 			its.threejs.material = material;
 			its.threejs.castShadow = true;
 					

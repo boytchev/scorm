@@ -160,6 +160,7 @@ class Membrane extends Group
 			.to( {z:1}, Membrane.VIBRATE_SPEED )
 			.easing( this.vibrate )
 			.onUpdate( obj => playground.ring.z = obj.z )
+			.onComplete( obj => playground.ring.z = obj.z = 0 )
 			.start( );
 		
 		// animate surface geometry
@@ -210,6 +211,7 @@ class Membrane extends Group
 			.to( {z:1}, Membrane.VIBRATE_SPEED )
 			.easing( this.vibrate )
 			.onUpdate( obj => playground.ring.z = obj.z )
+			.onComplete( obj => playground.ring.z = obj.z = 0 )
 			.start( );
 		
 		// animate surface geometry
