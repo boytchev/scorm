@@ -197,7 +197,7 @@ class Membrane extends Group
 			k = random( 0, 0.1 );
 			playground.shadowLightA.castShadow = true;
 			playground.shadowLightB.castShadow = true;
-			for( var pin of playground.pins )
+			for( let pin of playground.pins )
 				pin.body.threejs.material.metalness = 0.8;
 		}
 		else
@@ -205,7 +205,7 @@ class Membrane extends Group
 			k = random( 0.7, 0.85 );
 			playground.shadowLightA.castShadow = false;
 			playground.shadowLightB.castShadow = false;
-			for( var pin of playground.pins )
+			for( let pin of playground.pins )
 				pin.body.threejs.material.metalness = 0.2;
 		}
 			
