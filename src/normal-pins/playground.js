@@ -50,7 +50,7 @@ class Playground extends ScormPlayground
 		
 		// number of pins
 		this.n = Math.round( THREE.MathUtils.mapLinear( this.difficulty**5, 10**5, 100**5, 1, 4 ));
-		
+
 		var	angle = random( 0, 2*Math.PI ),
 			dist;
 		for( var i=0; i<this.n; i++ )
