@@ -15,6 +15,7 @@ class Playground extends ScormPlayground
 		this.resize( );
 
 		new Base( );
+		this.thimble = new Thimble( );
 		
 		this.translate( [
 			{id: 'txt-caption',

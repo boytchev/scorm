@@ -1,73 +1,7 @@
-// 827 -> 583 (70%)
+// 827 -> 439 (53%)
 
-
-
-MEIRO.Models.T005.prototype.initialize = function()
-{
-	this.WELL_RADIUS = 3;
-	this.WELL_HEIGHT = 8;
-
-	this.PLATE_HEIGHT = 0.65;
-
-	this.bumps = [];
-	this.zones = [];
-	this.codes = [];
-	this.plates = [];
-}
-
-	
-
-MEIRO.Models.T005.prototype.construct = function()
-{
-	// допълнителна светлина, прави пода по-красив
-	var light = new THREE.PointLight( 'white', 1.3 );
-	light.position.set( 0, this.WELL_HEIGHT+2, 0 );
-	this.image.add( light );
-
-	this.swithchLight = new THREE.PointLight( 'cornflowerblue', 0 );
-	this.image.add( this.swithchLight );
-}
-	
-	
-	
 MEIRO.Models.T005.prototype.constructWell = function()
 {
-	var textureMap = MEIRO.loadTexture( "textures/Metal_plate_256x256.jpg", 4*this.WELL_RADIUS, 6 );
-	var normalMap = MEIRO.loadTexture( "textures/Metal_plate_256x256_normal.jpg", 4*this.WELL_RADIUS, 6 );
-	var lightMap = MEIRO.loadTexture( "textures/005_well_lightmap.jpg", 4, 1 );
-
-	
-	// generate well profile curve
-	const CURVE_HEIGHT = 0.3*this.WELL_HEIGHT;
-	var N = 30;
-	var points = [];
-	for (var i=0; i<=N; i++ )
-	{
-		var y = i/N*this.WELL_HEIGHT;
-		var x = this.WELL_RADIUS;
-		if (y<=CURVE_HEIGHT)
-		{
-			x = this.WELL_RADIUS*Math.sqrt(1 - Math.pow(1-y/CURVE_HEIGHT,2));
-		}
-		if (i==N)
-			 x = this.WELL_RADIUS+0.2;
-		points.push( new THREE.Vector2(x,y) );
-	}
-
-	// generate well as rotational solid
-	var geometry = new THREE.LatheBufferGeometry( points, 60 );
-	MEIRO.allowLightmap(geometry);
-
-	// generate well mesh
-	var nor = geometry.getAttribute('normal');
-	var pos = geometry.getAttribute('position');
-	var fixNormals = [];
-	for (var i=0; i<pos.count; i++)
-	{
-		if (pos.getZ(i)>=this.WELL_RADIUS-0.001)
-			fixNormals.push(i);
-	}
-
 	// generate bumps points in 3D
 	var bumpsPoints = [];
 	const BUMP_RADIUS = this.WELL_RADIUS+0.8;
@@ -127,24 +61,6 @@ MEIRO.Models.T005.prototype.constructWell = function()
 	var well = new THREE.Mesh( geometry, materialOutside );
 	this.image.add( well );
 	
-//helper = new THREE.VertexNormalsHelper( well, 3, 0xff0000, 1 );
-//this.image.add( helper );
-	
-	var materialInside = new THREE.MeshStandardMaterial( {
-			metalness: 0,
-			map: textureMap,
-			side: THREE.BackSide,
-			emissive: 'cornflowerblue',
-			emissiveIntensity: 0.3,
-			//wireframe: true,
-	});
-	
-	var well = new THREE.Mesh( geometry, materialInside );
-	well.scale.set( 0.97, 1, 0.97 );
-	this.image.add( well );
-
-	//console.log('lines=',this.config.lines);
-	//console.log('bumps=',bumpsPoints.length);
 	
 	// generate bumps connections
 	var scale1 = (this.WELL_RADIUS-0.35)/BUMP_RADIUS;
@@ -181,11 +97,6 @@ MEIRO.Models.T005.prototype.constructWell = function()
 				scale1*bumpsPoints[i+1].z );
 
 		var curve = new THREE.CubicBezierCurve3(v1,v2,v3,v4);
-		//var points = curve.getPoints( 30 );
-
-		//var geometry = new THREE.BufferGeometry().setFromPoints( points );
-		//var curveObject = new THREE.Line( geometry, material );
-		//this.image.add( curveObject );
 		
 		var geometry = new THREE.TubeGeometry( curve, 20, 0.08, 8, false );
 		var mesh = new THREE.Mesh( geometry, materialThread );
@@ -336,22 +247,8 @@ MEIRO.Models.T005.prototype.onAnimate = function(time)
 {	
 	if (this.playing)
 	{
-		if (time-this.lastTime>=1000)
-		{
-			var dTime =  Math.floor((time-this.startTime)/1000);
-			var s = dTime%60;
-			var m = Math.floor(dTime/60)%60;
-			var h = Math.floor(dTime/60/60);
-			var string = (m<10?0:'')+m+':'+(s<10?0:'')+s;
-			if (h) string = h+':'+string;
-			this.buttonTimer.setText(string);
-			this.lastTime = time;
-		}
-		
 		this.swithchLight.intensity *= 0.8;
 	}
-
-	//TWEEN.update();
 	reanimate();
 }
 
@@ -409,13 +306,7 @@ MEIRO.Models.T005.prototype.onExitModel = function(element)
 	
 	that.playing = false;
 	that.evaluateResult();
-	//new TWEEN.Tween({k:1})
-	//	.to({k:EPS},500)
-	//	.easing( TWEEN.Easing.Quadratic.InOut )
-	//	.onUpdate( function(){
-	//		// анимация при деактивиране на модела
-	//	} )
-	//	.start();
+
 	that.sendResult(
 	function(){
 		MEIRO.showInfo(this,
@@ -500,10 +391,6 @@ MEIRO.Models.T005.prototype.configure = function(difficulty)
 		this.constructDigits();
 	}
 	this.config.max_score += 0.1*this.config.crosses;
-	if (!IN_SCORE_STATISTICS)
-	{
-		this.sendStartup();
-	}
 	
 	//console.log('max_score',this.config.max_score);
 }
@@ -511,52 +398,7 @@ MEIRO.Models.T005.prototype.configure = function(difficulty)
 
 MEIRO.Models.T005.prototype.generateBumpsPositions = function()
 {
-	const MAX_BUMPS = 12;
-	const BUMPS_COUNT = this.config.lines*2;
-	var anotherAttempt = true;
-	var attempts = 5;
-	while (anotherAttempt && attempts--)
-	{
-		var used = [];
-		this.bumps = [];
-		
-		for (var i=0; i<BUMPS_COUNT; i++)
-		{
-			 // pick a random bump
-			j = random(0,MAX_BUMPS-1);
-			while (used[j]) j = random(0,MAX_BUMPS-1);
-		
-			used[j] = true;
-			this.bumps[i] = j;
-		}
-		
-		anotherAttempt = false;
-		for (var i=0; i<BUMPS_COUNT && !anotherAttempt; i+=2)
-		{
-			var d = this.bumps[i]-this.bumps[i+1];
-			if (d<0) d+=BUMPS_COUNT;
-			if (d>BUMPS_COUNT/2) d=BUMPS_COUNT-d;
-			if (d<this.config.min_span) anotherAttempt = true;
-		}
-	}
-	
-	this.zones = [];
-	this.zones.push(...this.bumps);
-	this.zones.sort(function (a,b) {return a-b;});
-	this.zones.push(this.zones[0]+12);
-	
-	// random codes
-	this.codes = [];
-	this.codes.push( random(1024,65535).toString(2).substr(2,this.config.lines));
-	for (var i=1; i<this.zones.length-1; i++)
-	{
-		// swich bit corresponding the line pair containing zones[i]
-		var pair = this.bumps.indexOf(this.zones[i])>>1;
-		
-		var code = this.codes[i-1];
-		code = code.substr(0,pair)+((code[pair]=='1')?'0':'1')+code.substr(pair+1);
-		this.codes.push( code );
-	}
+	//...
 	
 	// find number of crosses
 	var line_indexes = [];
@@ -572,11 +414,25 @@ MEIRO.Models.T005.prototype.generateBumpsPositions = function()
 		if (line_indexes[i]!=line_indexes[i+1])
 			this.config.crosses += 1/(line_indexes.length-2);
 	this.config.crosses = 2*this.config.crosses-1;
-	
-	//console.log('bumps',this.bumps);
-	//console.log('zones',this.zones);
-	//console.log('codes',this.codes);
-	//console.log('index',line_indexes);
-	//console.log('cross',Math.round(100*this.config.crosses)+'%');
-	
 }
+
+MEIRO.Models.T005.prototype.initialize = function()
+{
+	this.WELL_RADIUS = 3;
+	this.WELL_HEIGHT = 8;
+
+	this.bumps = [];
+	this.zones = [];
+	this.codes = [];
+	this.plates = [];
+}
+
+	
+
+MEIRO.Models.T005.prototype.construct = function()
+{
+	this.swithchLight = new THREE.PointLight( 'cornflowerblue', 0 );
+	this.image.add( this.swithchLight );
+}
+	
+	

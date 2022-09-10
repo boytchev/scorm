@@ -7,12 +7,17 @@ class Base extends Group
 {
 	static POS_Y = -6;
 	static SIZE = [30,1,30];
-	static THIMBLE_RADIUS = 10;
 	
 	constructor( )
 	{
 		super( suica );
 
+		this.lines = 2;
+		this.bumps = [];
+		this.zones = [];
+		this.codes = [];
+		
+		this.generateBumpsPositions( );
 		this.constructBase( );
 		
 		this.y = Base.POS_Y;
@@ -38,6 +43,46 @@ class Base extends Group
 	
 	
 	
+	// find positions for the bumps
+	generateBumpsPositions( )
+	{
+		// pick bump positions, each two consequitive numbers are one pair
+		this.bumps = [];
+		for( var i=0; i<12; i++ )
+		{
+			this.bumps.push( i );
+			this.bumps.sort( ()=>random(-10,10) );
+		}
+		this.bumps = this.bumps.slice( 0, 2*this.lines );
+		
+		// define zones boundaries, the last zone ends at the first bump + full cycle
+		this.zones = [];
+		this.zones.push( ...this.bumps) ;
+		this.zones.sort( function( a, b ) {return a-b;} );
+		this.zones.push( this.zones[0]+12 );
+	
+		// random bitmask codes
+		this.codes = [];
+		this.codes.push( Math.round(random(1024,65535)).toString(2).substr(2,this.lines));
+		for( var i=1; i<this.zones.length-1; i++ )
+		{
+			// swich bit corresponding the line pair containing zones[i]
+			var pair = this.bumps.indexOf(this.zones[i])>>1;
+			
+			var code = this.codes[i-1];
+			code = code.substr(0,pair)+((code[pair]=='1')?'0':'1')+code.substr(pair+1);
+			this.codes.push( code );
+		}
+
+	
+		console.log( 'bumps',this.bumps );
+		console.log( 'zones',this.zones );
+		console.log( 'codes',this.codes );
+		
+	} // Thimble.generateBumpsPositions
+
+
+
 	// construct the base
 	constructBase( )
 	{
@@ -92,9 +137,9 @@ class Base extends Group
 				var angle = Math.atan2(y,x);
 				var height = 0.2*Math.cos(2*angle)**4;
 				
-				height = height * Math.cos(10*p)**8;
+				height = height * Math.cos(9.5*p)**8;
 				
-				pos.setXYZ( i, x*(1-1.5*height), y*(1-1.5*height), height );
+				pos.setXYZ( i, x*(1-1.1*height), y*(1-1.1*height), height );
 			}
 		}
 		top.threejs.geometry.computeVertexNormals();
