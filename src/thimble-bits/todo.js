@@ -1,67 +1,7 @@
-// 827 -> 439 (53%)
+// 827 -> 379 (46%)
 
 MEIRO.Models.T005.prototype.constructWell = function()
 {
-	// generate bumps points in 3D
-	var bumpsPoints = [];
-	const BUMP_RADIUS = this.WELL_RADIUS+0.8;
-	var y = this.WELL_HEIGHT-1;
-	for (var i=0; i<2*this.config.lines; i++)
-	{
-		var angle = this.bumps[i]/12*Math.PI*2;
-		bumpsPoints.push( new THREE.Vector3(BUMP_RADIUS*Math.cos(angle),y,BUMP_RADIUS*Math.sin(angle)) );
-		if (i%2) y -= this.PLATE_HEIGHT;
-	}
-
-	// add random bumps
-	var y = this.WELL_HEIGHT-1;
-	for (var i=0; i<this.config.extra_bumps; i++)
-	{
-		var angle = random(0,11)/12*Math.PI*2;
-		var y = this.WELL_HEIGHT-1-this.PLATE_HEIGHT*random(0,5);
-		bumpsPoints.push( new THREE.Vector3(BUMP_RADIUS*Math.cos(angle),y,BUMP_RADIUS*Math.sin(angle)) );
-	}
-
-	// makes the bumps
-	var q = new THREE.Vector3(0,0,0);
-	var pos = geometry.getAttribute('position');
-	for (var i=0; i<pos.count; i++)
-	{
-		q.set( pos.getX(i), pos.getY(i), pos.getZ(i) );
-		for (var j=0; j<bumpsPoints.length; j++)
-		{
-			var dist = Math.pow(q.distanceTo(bumpsPoints[j]),4);
-			if (dist<2)
-			{
-				var k = 1-1/dist/dist/50;
-				q.x *= k;
-				q.z *= k;
-			}
-		}
-		pos.setXYZ( i, q.x, q.y, q.z );
-	}
-
-	geometry.computeVertexNormals();
-	for (var i=0; i<fixNormals.length; i++)
-	{
-		nor.setX(fixNormals[i],0);
-	}
-
-	
-	var materialOutside = new THREE.MeshStandardMaterial( {
-			metalness: 0.2,
-			map: textureMap,
-			normalMap: normalMap,
-			side: THREE.FrontSide,
-			//wireframe: true,
-			lightMap: lightMap,
-			lightMapIntensity: -1,
-	});
-	
-	var well = new THREE.Mesh( geometry, materialOutside );
-	this.image.add( well );
-	
-	
 	// generate bumps connections
 	var scale1 = (this.WELL_RADIUS-0.35)/BUMP_RADIUS;
 	var scale2 = (this.WELL_RADIUS-1.2)/BUMP_RADIUS;
