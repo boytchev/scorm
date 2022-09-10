@@ -13,12 +13,16 @@ class Thimble extends Group
 	{
 		super( suica );
 
-		this.lines = 3;
+		this.lines = 6;
 		this.bumps = [];
 		this.zones = [];
 		this.codes = [];
 		
 		this.extra_bumps = 3;
+		
+		this.insideThimble = null;
+		this.outsideThimble = null;
+		this.threads = [];
 		
 		this.generateBumpsPositions( );
 		this.constructThimble( );
@@ -57,6 +61,10 @@ class Thimble extends Group
 		var map = ScormUtils.image( 'metal_plate.jpg', 10/2, 12 ),
 			normalMap = ScormUtils.image( 'metal_plate_normal.jpg' ),
 			lightMap = ScormUtils.image( 'thimble_light.jpg' );
+
+		var threadMap = ScormUtils.image( 'metal_plate.jpg', 10, 2 ),
+			threadNormalMap = ScormUtils.image( 'metal_plate_normal.jpg' );
+
 		var outsideMaterial = new THREE.MeshPhysicalMaterial( {
 			color: 'dimgray',
 			metalness: 0.3,
@@ -82,12 +90,20 @@ class Thimble extends Group
 			normalScale: new THREE.Vector2( 1, 1 ),
 			emissive: 'cornflowerblue',
 			emissiveIntensity: 0.5,
-			// polygonOffset: true,
-			// polygonOffsetUnits: 2,
-			// polygonOffsetFactor: 2,
-			//lightMap: lightMap,
-			//lightMapIntensity: 2,
 			side: THREE.BackSide,
+		} );	
+		var threadMaterial = new THREE.MeshPhysicalMaterial( {
+			color: 'white',
+			clearcoat: 1,
+			clearcoatRoughness: 0.5,
+			metalness: 0.5,
+			roughness: 0.5,
+			map: threadMap,
+			normalMap: threadNormalMap,
+			normalScale: new THREE.Vector2( 1, 1 ),
+			emissive: 'cornflowerblue',
+			emissiveIntensity: 0.5,
+			side: THREE.FrontSide,
 		} );	
 
 
@@ -185,7 +201,52 @@ class Thimble extends Group
 		ScormUtils.addUV2( this.insideThimble );
 
 		this.add( this.insideThimble );
-				
+
+
+
+		// construct threads
+		var scale1  = 0.72,
+			scale1x = 0.65,
+			scale2  = 0.35;
+
+		var v1 = new THREE.Vector3(),
+			v2 = new THREE.Vector3(),
+			v3 = new THREE.Vector3(),
+			v4 = new THREE.Vector3();
+	
+		for( let i=0; i<2*this.lines; i+=2 )
+		{
+			var v1 = [ 	scale1*bumpsPoints[i].x,
+						bumpsPoints[i].y,
+						scale1*bumpsPoints[i].z ],
+				v1x = [	scale1x*bumpsPoints[i].x,
+						bumpsPoints[i].y,
+						scale1x*bumpsPoints[i].z ],
+				// v2 = [	scale2*bumpsPoints[i].x,
+						// bumpsPoints[i].y,
+						// scale2*bumpsPoints[i].z ],
+				// v3 = [	scale2*bumpsPoints[i+1].x,
+						// bumpsPoints[i+1].y,
+						// scale2*bumpsPoints[i+1].z ],
+				v2 = [	(bumpsPoints[i].x+bumpsPoints[i+1].x)/3.5,
+						bumpsPoints[i].y,
+						(bumpsPoints[i].z+bumpsPoints[i+1].z)/3.5 ],
+				v4x = [	scale1x*bumpsPoints[i+1].x,
+						bumpsPoints[i+1].y,
+						scale1x*bumpsPoints[i+1].z ],
+				v4 = [	scale1*bumpsPoints[i+1].x,
+						bumpsPoints[i+1].y,
+						scale1*bumpsPoints[i+1].z ];
+
+			var threadCurve = spline( [v1,v1,v1x,v2/*,v3*/,v4x,v4,v4], false, false );
+
+			var thread = tube( [0,0,0], threadCurve, 0.01, [40,8], Thimble.HEIGHT );
+				its.threejs.material = threadMaterial;
+
+			this.threads.push( thread );
+			this.add( thread );
+		}
+
 	} // Thimble.constructThimble
 
 	
