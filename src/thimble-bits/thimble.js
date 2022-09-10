@@ -58,11 +58,11 @@ class Thimble extends Group
 	constructThimble( )
 	{
 		// main body of the thimble
-		var map = ScormUtils.image( 'metal_plate.jpg', 10/2, 12 ),
+		var map = ScormUtils.image( 'metal_plate.jpg', 10, 12 ),
 			normalMap = ScormUtils.image( 'metal_plate_normal.jpg' ),
 			lightMap = ScormUtils.image( 'thimble_light.jpg' );
 
-		var threadMap = ScormUtils.image( 'metal_plate.jpg', 10, 2 ),
+		var threadMap = ScormUtils.image( 'metal_plate.jpg', 12, 1, 0, 0.5 ),
 			threadNormalMap = ScormUtils.image( 'metal_plate_normal.jpg' );
 
 		var outsideMaterial = new THREE.MeshPhysicalMaterial( {
@@ -71,7 +71,7 @@ class Thimble extends Group
 			roughness: 0.4,
 			map: map,
 			normalMap: normalMap,
-			normalScale: new THREE.Vector2( 1, 1 ),
+			normalScale: new THREE.Vector2( 2, 2 ),
 			// polygonOffset: true,
 			// polygonOffsetUnits: 2,
 			// polygonOffsetFactor: 2,
@@ -90,19 +90,19 @@ class Thimble extends Group
 			normalScale: new THREE.Vector2( 1, 1 ),
 			emissive: 'cornflowerblue',
 			emissiveIntensity: 0.5,
-			side: THREE.BackSide,
+			side: THREE.DoubleSide,
 		} );	
 		var threadMaterial = new THREE.MeshPhysicalMaterial( {
-			color: 'white',
+			color: new THREE.Color( 1.2, 1.2, 1.2 ),
 			clearcoat: 1,
 			clearcoatRoughness: 0.5,
-			metalness: 0.5,
-			roughness: 0.5,
-			map: threadMap,
+			metalness: 0.7,
+			roughness: 0.3,
+//			map: threadMap,
 			normalMap: threadNormalMap,
 			normalScale: new THREE.Vector2( 1, 1 ),
 			emissive: 'cornflowerblue',
-			emissiveIntensity: 0.5,
+			emissiveIntensity: 0.3,
 			side: THREE.FrontSide,
 		} );	
 
@@ -205,7 +205,7 @@ class Thimble extends Group
 
 
 		// construct threads
-		var scale1  = 0.72,
+		var scale1  = 0.74,
 			scale1x = 0.65,
 			scale2  = 0.35;
 
@@ -222,12 +222,6 @@ class Thimble extends Group
 				v1x = [	scale1x*bumpsPoints[i].x,
 						bumpsPoints[i].y,
 						scale1x*bumpsPoints[i].z ],
-				// v2 = [	scale2*bumpsPoints[i].x,
-						// bumpsPoints[i].y,
-						// scale2*bumpsPoints[i].z ],
-				// v3 = [	scale2*bumpsPoints[i+1].x,
-						// bumpsPoints[i+1].y,
-						// scale2*bumpsPoints[i+1].z ],
 				v2 = [	(bumpsPoints[i].x+bumpsPoints[i+1].x)/3.5,
 						bumpsPoints[i].y,
 						(bumpsPoints[i].z+bumpsPoints[i+1].z)/3.5 ],
@@ -238,9 +232,23 @@ class Thimble extends Group
 						bumpsPoints[i+1].y,
 						scale1*bumpsPoints[i+1].z ];
 
-			var threadCurve = spline( [v1,v1,v1x,v2/*,v3*/,v4x,v4,v4], false, false );
+			var threadSpline = spline( [v1,v1,v1x,v2,v4x,v4,v4], false, false );
 
-			var thread = tube( [0,0,0], threadCurve, 0.01, [40,8], Thimble.HEIGHT );
+			function threadCurve( u )
+			{
+				// get x,y,z
+				var p = threadSpline( u );
+			
+				// calculate radius
+				var r = 0.02* (0.6 + 0.4*Math.cos( 2*Math.PI * u ) );
+				
+				p.push( r );
+				
+				return p;
+			}
+			
+			
+			var thread = tube( [0,0,0], threadCurve, 0.01, [40,16], Thimble.HEIGHT );
 				its.threejs.material = threadMaterial;
 
 			this.threads.push( thread );
