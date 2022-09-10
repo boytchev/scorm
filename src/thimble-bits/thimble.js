@@ -98,7 +98,7 @@ class Thimble extends Group
 			clearcoatRoughness: 0.5,
 			metalness: 0.7,
 			roughness: 0.3,
-//			map: threadMap,
+			map: threadMap,
 			normalMap: threadNormalMap,
 			normalScale: new THREE.Vector2( 1, 1 ),
 			emissive: 'cornflowerblue',
@@ -187,7 +187,7 @@ class Thimble extends Group
 			geometry.computeVertexNormals();
 		}
 		// construct the outside thimble
-		this.outsideThimble = tube( [0,0,0], thimbleProfile, 0, [40,120], Thimble.HEIGHT );
+		this.outsideThimble = tube( [0,0,0], thimbleProfile, 0, [60,120], Thimble.HEIGHT );
 			makeBumps( its.threejs.geometry );
 			its.threejs.material = outsideMaterial;
 		ScormUtils.addUV2( this.outsideThimble );
@@ -195,7 +195,7 @@ class Thimble extends Group
 		this.add( this.outsideThimble );
 		
 		// construct the inside thimble
-		this.insideThimble = tube( [0,0,0], thimbleProfile, 0, [40,120], [Thimble.HEIGHT*0.97,Thimble.HEIGHT,Thimble.HEIGHT*0.97] );
+		this.insideThimble = tube( [0,0,0], thimbleProfile, 0, [40,100], [Thimble.HEIGHT*0.97,Thimble.HEIGHT,Thimble.HEIGHT*0.97] );
 			makeBumps( its.threejs.geometry );
 			its.threejs.material = insideMaterial;
 		ScormUtils.addUV2( this.insideThimble );
@@ -206,33 +206,27 @@ class Thimble extends Group
 
 		// construct threads
 		var scale1  = 0.74,
-			scale1x = 0.65,
-			scale2  = 0.35;
+			scale2 = 0.65;
 
-		var v1 = new THREE.Vector3(),
-			v2 = new THREE.Vector3(),
-			v3 = new THREE.Vector3(),
-			v4 = new THREE.Vector3();
-	
 		for( let i=0; i<2*this.lines; i+=2 )
 		{
 			var v1 = [ 	scale1*bumpsPoints[i].x,
 						bumpsPoints[i].y,
 						scale1*bumpsPoints[i].z ],
-				v1x = [	scale1x*bumpsPoints[i].x,
+				v2 = [	scale2*bumpsPoints[i].x,
 						bumpsPoints[i].y,
-						scale1x*bumpsPoints[i].z ],
-				v2 = [	(bumpsPoints[i].x+bumpsPoints[i+1].x)/3.5,
+						scale2*bumpsPoints[i].z ],
+				v3 = [	(bumpsPoints[i].x+bumpsPoints[i+1].x)/3.5,
 						bumpsPoints[i].y,
 						(bumpsPoints[i].z+bumpsPoints[i+1].z)/3.5 ],
-				v4x = [	scale1x*bumpsPoints[i+1].x,
+				v4 = [	scale2*bumpsPoints[i+1].x,
 						bumpsPoints[i+1].y,
-						scale1x*bumpsPoints[i+1].z ],
-				v4 = [	scale1*bumpsPoints[i+1].x,
+						scale2*bumpsPoints[i+1].z ],
+				v5 = [	scale1*bumpsPoints[i+1].x,
 						bumpsPoints[i+1].y,
 						scale1*bumpsPoints[i+1].z ];
 
-			var threadSpline = spline( [v1,v1,v1x,v2,v4x,v4,v4], false, false );
+			var threadSpline = spline( [v1,v1,v2,v3,v4,v5,v5], false, false );
 
 			function threadCurve( u )
 			{

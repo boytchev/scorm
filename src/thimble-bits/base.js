@@ -5,7 +5,7 @@
 	
 class Base extends Group
 {
-	static POS_Y = -6;
+	static POS_Y = -10;
 	static SIZE = [30,1,30];
 	
 	constructor( )
