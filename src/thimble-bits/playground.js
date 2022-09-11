@@ -7,6 +7,7 @@
 class Playground extends ScormPlayground
 {
 	static POINTS_SPEED = 2000;
+	static MAX_BITS = 6;
 	
 	constructor( )
 	{

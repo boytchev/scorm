@@ -1,4 +1,4 @@
-// 827 -> 332 (40%)
+// 827 -> 260 (31%)
 
 MEIRO.Models.T005.prototype.constructDigits = function()
 {
@@ -190,44 +190,6 @@ MEIRO.Models.T005.prototype.evaluateResult = function()
 
 
 
-// превключвател на модела
-MEIRO.Models.T005.prototype.onExitModel = function(element)
-{
-	//MEIRO.Model.prototype.onExit.call(this);
-	
-	var that = this;
-	
-	that.playing = false;
-	that.evaluateResult();
-
-	that.sendResult(
-	function(){
-		MEIRO.showInfo(this,
-				function(){
-//					console.log('on before close info');
-					if (MEIRO.singleRoom)
-					{	
-						window.history.back();
-					}
-				},
-				function(){
-//					console.log('on after close info');
-					if (!MEIRO.singleRoom)
-					{
-						if (controls.buttonMotion) controls.buttonMotion.show();
-						controls.startWalk(true,false);
-					}
-					that.info = that.defaultInfo;
-				}
-		);
-	}
-	);
-	
-	reanimate();
-}
-
-
-
 // конфигурира сцената според желаната трудност
 MEIRO.Models.T005.prototype.configure = function(difficulty)
 {	
@@ -283,44 +245,10 @@ MEIRO.Models.T005.prototype.configure = function(difficulty)
 		this.constructWell();
 		this.constructDigits();
 	}
-	this.config.max_score += 0.1*this.config.crosses;
 	
 	//console.log('max_score',this.config.max_score);
 }
 
-
-MEIRO.Models.T005.prototype.generateBumpsPositions = function()
-{
-	//...
-	
-	// find number of crosses
-	var line_indexes = [];
-	for (var i=0; i<this.zones.length; i++)
-	{
-		// swich bit corresponding the line pair containing zones[i]
-		var pair = this.bumps.indexOf(this.zones[i]%12)>>1;
-		line_indexes.push( pair );
-	}
-	line_indexes.push( line_indexes[0] );
-	this.config.crosses = 0;
-	for (var i=0; i<line_indexes.length-1; i++)
-		if (line_indexes[i]!=line_indexes[i+1])
-			this.config.crosses += 1/(line_indexes.length-2);
-	this.config.crosses = 2*this.config.crosses-1;
-}
-
-MEIRO.Models.T005.prototype.initialize = function()
-{
-	this.WELL_RADIUS = 3;
-	this.WELL_HEIGHT = 8;
-
-	this.bumps = [];
-	this.zones = [];
-	this.codes = [];
-	this.plates = [];
-}
-
-	
 
 MEIRO.Models.T005.prototype.construct = function()
 {
