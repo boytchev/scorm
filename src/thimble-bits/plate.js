@@ -1,48 +1,31 @@
 //
-//	class Thimble( )
+//	class Plate( )
 //
 
 	
-class Thimble extends Group
+class Plate extends Group
 {
-	static RADIUS = 8;
-	static HEIGHT = 25;
-	static FADEOUT_SPEED = 300;
+	static DEPTH = 0.1;
 	
-	constructor( )
+	constructor( idx )
 	{
 		super( suica );
 
-		this.lines = 0;
-		this.extra_bumps = 0;
+		//this.idx = i;
 		
-		this.bumps = [];
-		this.zones = [];
-		this.codes = [];
+		var angle = 2*Math.PI/12 * (idx+0.5),
+			x = Thimble.RADIUS * Math.cos(angle),
+			y = Thimble.HEIGHT - (6/2+0.5)*Tile.HEIGHT + Base.POS_Y,
+			z = Thimble.RADIUS * Math.sin(angle);
 		
-		
-		this.insideThimble = null;
-		this.outsideThimble = null;
-		this.threadMaterial = null;
-		this.threads = [];
-		this.bumpPoints = [];
-		
-		// executed once
-		this.constructThreads( );
-		this.constructThimble( );
-		
-		// executed for every game
-		this.generateBumpsPositions( );
-		this.regenerateThimble( );
-		this.regenerateThreads( )
-		
-		var light = new THREE.SpotLight( 'azure', 1.5, 30, Math.PI/2, 1 );
-			light.position.set( 0, Thimble.HEIGHT, 0 );
-		this.threejs.add( light );
+		this.plate = cube( [x,y,z], [Tile.WIDTH,6*Tile.HEIGHT,Plate.DEPTH], 'white' );
+			its.image = ScormUtils.image( 'rusty_plates.jpg' );
+			its.image.offset.y = random([0,1,2,3,4,5]) * (1/Playground.MAX_BITS);
+			its.spin = 90 - degrees(angle);
 			
 		this.addEventListener( 'click', this.onClick );
 
-		this.y = Base.POS_Y+0.1;
+		this.add( this.plate );
 		
 	} // Thimble.constructor
 
@@ -101,13 +84,13 @@ class Thimble extends Group
 
 		
 		// construct the outside thimble
-		this.outsideThimble = tube( [0,0,0], [[0,0,0], [0,0,0]], 0, [60,120], Thimble.HEIGHT );
+		this.outsideThimble = tube( [0,0,0], [[0,0,0], [0,0,0]], 0, [30,120], Thimble.HEIGHT );
 			its.threejs.material = outsideMaterial;
 
 		this.add( this.outsideThimble );
 		
 		// construct the inside thimble
-		this.insideThimble = tube( [0,0,0], [[0,0,0], [0,0,0]], 0, [60,120], [Thimble.HEIGHT*0.97,Thimble.HEIGHT,Thimble.HEIGHT*0.97] );
+		this.insideThimble = tube( [0,0,0], [[0,0,0], [0,0,0]], 0, [30,120], [Thimble.HEIGHT*0.97,Thimble.HEIGHT,Thimble.HEIGHT*0.97] );
 			its.threejs.material = insideMaterial;
 
 		this.add( this.insideThimble );
@@ -179,8 +162,8 @@ class Thimble extends Group
 		// generate bumps points in 3D
 		this.bumpsPoints = [];
 		
-		var dist = (Thimble.RADIUS+0.5)/Thimble.HEIGHT,
-			y = 1-Tile.HEIGHT/Thimble.HEIGHT,
+		var dist = (Thimble.RADIUS+1)/Thimble.HEIGHT,
+			y = 1-Thimble.PLATE_HEIGHT/Thimble.HEIGHT,
 			angle;
 			
 		// bumps for lines
@@ -192,18 +175,18 @@ class Thimble extends Group
 				y,
 				dist*Math.sin(angle)
 			) );
-			if( i%2 ) y -= Tile.HEIGHT/Thimble.HEIGHT;
+			if( i%2 ) y -= Thimble.PLATE_HEIGHT/Thimble.HEIGHT;
 		}
 
 		// extra bumps
-		y = 1-Tile.HEIGHT/Thimble.HEIGHT;
+		y = 1-Thimble.PLATE_HEIGHT/Thimble.HEIGHT;
 		for( let i=0; i<this.extra_bumps; i++ )
 		{
 			angle = random([0,1,2,3,4,5,6,7,8,9,10,11])/12*Math.PI*2;
 			
 			var pos = new THREE.Vector3(
 				dist*Math.cos(angle),
-				y - Tile.HEIGHT*random([0,1,2,3,4,5])/Thimble.HEIGHT,
+				y - Thimble.PLATE_HEIGHT*random([0,1,2,3,4,5])/Thimble.HEIGHT,
 				dist*Math.sin(angle)
 			);
 
@@ -229,9 +212,9 @@ class Thimble extends Group
 				{
 					dist = q.distanceTo(that.bumpsPoints[j]);
 					//console.log( dist.toFixed(3), 2/Thimble.HEIGHT );
-					if( dist < 0.04*scale**2 )
+					if( dist < 15/Thimble.HEIGHT )
 					{
-						var k = 1-0.000003*scale**2.5/dist**2.5;
+						var k = 1-scale/dist/dist/Thimble.HEIGHT/Thimble.HEIGHT/5;
 						
 						q.x *= k;
 						q.z *= k;
@@ -252,12 +235,12 @@ class Thimble extends Group
 
 		// regenerate the outside thimble
 		this.outsideThimble.curve = thimbleProfile;
-		makeBumps( this.outsideThimble.threejs.geometry, 1, 1 );
+		makeBumps( this.outsideThimble.threejs.geometry, 0.9, 1 );
 		ScormUtils.addUV2( this.outsideThimble );
 
 		// construct the inside thimble
 		this.insideThimble.curve = thimbleProfile;
-		makeBumps( this.insideThimble.threejs.geometry, 2, 1/0.97 );
+		makeBumps( this.insideThimble.threejs.geometry, 1.1, 1/0.97 );
 		ScormUtils.addUV2( this.insideThimble );
 
 	} // Thimble.regenerateThimble
@@ -268,7 +251,7 @@ class Thimble extends Group
 	regenerateThreads( )
 	{
 		// construct threads
-		var scale1  = 0.85,
+		var scale1  = 0.75,
 			scale2 = 0.65;
 
 		for( var i=0; i<Playground.MAX_BITS; i++ )

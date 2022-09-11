@@ -6,6 +6,7 @@
 
 class Playground extends ScormPlayground
 {
+	static POINTER_MOVEMENT = 5;
 	static POINTS_SPEED = 2000;
 	static MAX_BITS = 6;
 	
@@ -18,6 +19,9 @@ class Playground extends ScormPlayground
 		new Base( );
 		new Button( );
 		this.thimble = new Thimble( );
+		this.plates = [];
+		for( var i=0; i<2*Playground.MAX_BITS; i++ )
+			this.plates.push( new Plate(i) );
 		
 		this.translate( [
 			{id: 'txt-caption',
@@ -39,6 +43,8 @@ class Playground extends ScormPlayground
 
 		this.thimble.lines = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 2, 6 ) );
 		this.thimble.extra_bumps = Math.round( THREE.MathUtils.clamp( THREE.MathUtils.mapLinear( this.difficulty, 40, 100, 0, 20 ), 0, 20 ) );
+this.thimble.lines=6;
+this.thimble.extra_bumps=0;
 		this.thimble.regenerate( );
 		
 

@@ -8,7 +8,6 @@ MEIRO.Models.T005.prototype.constructDigits = function()
 	this.mapDigit0 = MEIRO.loadTexture( "textures/005_digit_0.jpg" );
 	this.mapDigitX = MEIRO.loadTexture( "textures/005_digit_none.jpg" );
 
-
 	var geometry = new THREE.CylinderBufferGeometry( this.WELL_RADIUS, this.WELL_RADIUS, this.PLATE_HEIGHT, 6, 1, true, -Math.PI/25, 2*Math.PI/25  );
 
 	var plateGeometry = new THREE.CylinderBufferGeometry( this.WELL_RADIUS, this.WELL_RADIUS, N*this.PLATE_HEIGHT, 6, 1, true, -Math.PI/25, 2*Math.PI/25  );

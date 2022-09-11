@@ -21,10 +21,12 @@
 	<script src="thimble.js"></script>
 	<script src="base.js"></script>
 	<script src="button.js"></script>
+	<script src="plate.js"></script>
+	<script src="tile.js"></script>
 </head>
 
 <body>
-	<suica fullwindow fullscreen background="linen" ontime="update"> <!-- onpointermove="onPointerMove"-->
+	<suica fullwindow fullscreen background="linen" ontime="update" onpointermove="onPointerMove" onpointerdown="onPointerDown"> 
 		<orbit id="orb" distance="70" altitude="0" maxPolarAngle="1.57" maxDistance="150" minDistance="25" enablePan="false">
 		<div class="hud corner top left"></div>
 		<div class="hud corner top right"></div>
@@ -60,15 +62,22 @@
 		var playground = new Playground;
 
 		window.addEventListener( 'resize', playground.resize );
+
 				
-		<!-- function onPointerMove( event ) -->
-		<!-- { -->
-			<!-- if( findObject( event ) ) -->
-				<!-- event.target.style.cursor = 'pointer'; -->
-			<!-- else -->
-				<!-- event.target.style.cursor = 'default'; -->
-		<!-- } -->
+		function onPointerMove( event )
+		{		
+			playground.pointerMovement += Math.abs( event.movementX ) + Math.abs( event.movementY );
+		}
+
 		
+		function onPointerDown( event )
+		{
+			if( playground )
+			{
+				playground.pointerMovement = 0;
+			}
+		}		
+
 	</script>
 	
 </body>
