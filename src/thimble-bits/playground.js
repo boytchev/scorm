@@ -16,6 +16,7 @@ class Playground extends ScormPlayground
 		this.resize( );
 
 		new Base( );
+		new Button( );
 		this.thimble = new Thimble( );
 		
 		this.translate( [
@@ -32,7 +33,14 @@ class Playground extends ScormPlayground
 	// starts a new game by selecting new color hues
 	newGame( )
 	{
+		this.clickSound.play();
+		
 		super.newGame( );
+
+		this.thimble.lines = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 2, 6 ) );
+		this.thimble.extra_bumps = Math.round( THREE.MathUtils.clamp( THREE.MathUtils.mapLinear( this.difficulty, 40, 100, 0, 20 ), 0, 20 ) );
+		this.thimble.regenerate( );
+		
 
 		// ...
 
@@ -44,7 +52,7 @@ class Playground extends ScormPlayground
 	canEndGame( )
 	{
 		// ...
-		return false;
+		return true;
 	} // Playground.canEndGame
 	
 	
@@ -56,7 +64,7 @@ class Playground extends ScormPlayground
 		
 		// ...
 		
-		return 0 * points;
+		return 1 * points;
 
 	} // Playground.evaluateGame
 	
@@ -65,9 +73,13 @@ class Playground extends ScormPlayground
 	// ends the current game - evaluate results, update data
 	endGame( )
 	{
+		this.clackSound.play();
+
 		super.endGame( );
 		
-		// ...
+		this.thimble.lines = 0;
+		this.thimble.extra_bumps = 0;
+		this.thimble.regenerate( );
 		
 	} // Playground.endGame
 	
@@ -85,11 +97,11 @@ class Playground extends ScormPlayground
 	// load all sounds
 	loadSounds( )
 	{
-		//this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1, 4 );
-		//this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
+		this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1, 4 );
+		this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
 		//this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.2, 1, true );
 		
-		//this.soundEffects.push( this.clickSound, this.clackSound );
+		this.soundEffects.push( this.clickSound, this.clackSound );
 		//this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
 	

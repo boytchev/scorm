@@ -8,20 +8,23 @@ class Thimble extends Group
 	static RADIUS = 8;
 	static HEIGHT = 25;
 	static PLATE_HEIGHT = 2.5;
+	static FADEOUT_SPEED = 300;
 	
 	constructor( )
 	{
 		super( suica );
 
-		this.lines = 6;
+		this.lines = 0;
+		this.extra_bumps = 0;
+		
 		this.bumps = [];
 		this.zones = [];
 		this.codes = [];
 		
-		this.extra_bumps = 3;
 		
 		this.insideThimble = null;
 		this.outsideThimble = null;
+		this.threadMaterial = null;
 		this.threads = [];
 		this.bumpPoints = [];
 		
@@ -118,7 +121,7 @@ class Thimble extends Group
 		var map = ScormUtils.image( 'metal_plate.jpg', 4, 1/2, 0, 0.25  ),
 			normalMap = ScormUtils.image( 'metal_plate_normal.jpg' );
 
-		var material = new THREE.MeshPhysicalMaterial( {
+		this.threadMaterial = new THREE.MeshPhysicalMaterial( {
 			color: new THREE.Color( 1.5, 1.5, 1.5 ),
 			clearcoat: 1,
 			clearcoatRoughness: 0.5,
@@ -135,7 +138,7 @@ class Thimble extends Group
 		for( var i=0; i<Playground.MAX_BITS; i++ )
 		{
 			var thread = tube( [0,0,0], [[0,0,0], [0,0,0]], 0.01, [40,16], Thimble.HEIGHT );
-				its.threejs.material = material;
+				its.threejs.material = this.threadMaterial;
 				its.visible = false;
 				
 			this.threads.push( thread );
@@ -352,6 +355,13 @@ class Thimble extends Group
 
 
 
+	regenerate( )
+	{
+		this.generateBumpsPositions( );
+		this.regenerateThimble( );
+		this.regenerateThreads( )
+	} // Thimble.newGame
 
+	
 } // class Thimble
 

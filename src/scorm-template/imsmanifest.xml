@@ -74,7 +74,7 @@ The XSD files for SCORM 1.2 are not strictly valid and may cause errors in some 
 			<!-- sounds -->
 			<!--file href="sounds/background.mp3"/-->
 			<file href="sounds/click.mp3"/>
-			<!--file href="sounds/clack.mp3"/-->
+			<file href="sounds/clack.mp3"/>
 
 			<!-- SCORM related definitions -->
 			<file href="adlcp_rootv1p2.xsd"/>
