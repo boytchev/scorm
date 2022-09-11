@@ -369,6 +369,10 @@ class Thimble extends Group
 		this.generateBumpsPositions( );
 		this.regenerateThimble( );
 		this.regenerateThreads( )
+		
+		for( var plate of playground.plates )
+			plate.regenerate( );
+		
 	} // Thimble.newGame
 
 	
