@@ -21,7 +21,8 @@ class Thimble extends Group
 		this.codes = [];
 		
 		this.plates = [];
-		
+
+		this.userPlateIndex = 0;		
 		
 		this.insideThimble = null;
 		this.outsideThimble = null;
@@ -392,6 +393,8 @@ class Thimble extends Group
 		this.regenerateThimble( );
 		this.regenerateThreads( )
 		
+		this.userPlateIndex = Math.floor( random( 0, this.zones.length ) );
+		
 		// for each zone show one plate
 		for( var i=0; i<this.plates.length; i++ )
 		{
@@ -400,7 +403,7 @@ class Thimble extends Group
 				var to = this.zones[i],
 					from = this.zones[i+1];
 				var idx = Math.floor( random(from,to)/2+random(from,to)/2 );
-				this.plates[i].showAt( idx+0.5 );
+				this.plates[i].showAt( idx+0.5, this.codes[i], i==this.userPlateIndex );
 				this.plates[i].visible = true;
 			}
 			else

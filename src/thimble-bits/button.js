@@ -59,10 +59,11 @@ class Button extends Group
 	
 	
 	// marks the button when the mouse pointer goes over it
-	onMark( )
+	onMark( event )
 	{
 		if( Button.POINTER_USED ) return;
 		this.colorPlate.color = 'gold';
+		event.target.style.cursor = 'pointer';
 	} // Button.onMark
 	
 	
@@ -71,6 +72,7 @@ class Button extends Group
 	onUnmark( )
 	{
 		this.colorPlate.color = 'goldenrod';
+		event.target.style.cursor = 'default';
 	} // Button.onUnmark
 	
 } // class Button

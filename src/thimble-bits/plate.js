@@ -45,20 +45,21 @@ class Plate extends Group
 
 
 	// show plate at position idx and sets its size
-	showAt( idx )
+	showAt( idx, code, userPlate )
 	{
-		
 		var n = playground.thimble.lines;
 
 		var angle = 2*Math.PI/12 * idx,
 			x = Thimble.RADIUS * Math.cos(angle),
-			y = Thimble.HEIGHT - (n/2+0.5)*Tile.HEIGHT + Base.POS_Y,
+			y = Thimble.HEIGHT - (n/2+0.5)*Tile.HEIGHT + Base.POS_Y, 
 			z = Thimble.RADIUS * Math.sin(angle);
 		
 		this.x = x;
 		this.z = z;
-		this.plate.y = y;
+		this.plate.y = y; 
 		this.spin = 90 - degrees(angle);
+
+		this.plate.visible = userPlate;
 		
 		this.plate.height = n * Tile.HEIGHT;
 		this.plate.images = [1, n/Playground.MAX_BITS];		
@@ -66,12 +67,9 @@ class Plate extends Group
 		for( var i=0; i<Playground.MAX_BITS; i++ )
 		{
 			if( i >= n )
-				this.tiles[i].visible = false;
+				this.tiles[i].clearDigit( );
 			else
-			{
-				this.tiles[i].visible = true;
-				//this.tiles[i].y = this.plate.height/2 - Tile.HEIGHT/2 - i*Tile.HEIGHT;
-			}
+				this.tiles[i].setDigit( code[i], userPlate );
 		}
 	} // Plate.newGame
 

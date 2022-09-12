@@ -37,7 +37,7 @@ class Tile extends Group
 			map: Tile.mapDigit1,
 			alphaMap: Tile.mapDigit1,
 			transparent: true,
-			opacity: random( 0.6, 1 ),
+//			opacity: random( 0.6, 1 ),
 		});
 		this.threejs.renderOrder = 1;
 		this.add( this.tile );
@@ -64,29 +64,45 @@ class Tile extends Group
 
 
 
-	// set the digit
-	setDigit( digit )
+	// clear the digit
+	clearDigit( )
 	{
+		this.visible = false;
+	} // Tile.clearDigit
+
+
+	// set the digit
+	setDigit( digit, userPlate )
+	{
+		this.visible = true;
 		this.digit = digit;
-		this.tile.spin = [90, random(-20,20), -90];
-		this.tile.threejs.material.opacity = random( 0.6, 1 );
+		
+		this.tile.spin = [90, random(-10,10)+random(-10,10), -90];
+		
+		var material = this.tile.threejs.material;
+		
+		material.color.set( userPlate ? 'black' : 'white' );
+		
+//		material.opacity = random( 0.6, 1 );
 		
 		switch( digit )
 		{
 			case 0:
-				this.threejs.material.map = Tile.mapDigit0;
-				this.threejs.material.alphaMap = Tile.mapDigit0;
+			case '0':
+				material.map = Tile.mapDigit0;
+				material.alphaMap = Tile.mapDigit0;
 				break;
 			case 1:
-				this.threejs.material.map = Tile.mapDigit1;
-				this.threejs.material.alphaMap = Tile.mapDigit1;
+			case '1':
+				material.map = Tile.mapDigit1;
+				material.alphaMap = Tile.mapDigit1;
 				break;
 			default:
-				this.threejs.material.map = Tile.mapDigitX;
-				this.threejs.material.alphaMap = Tile.mapDigitX;
+				material.map = Tile.mapDigitX;
+				material.alphaMap = Tile.mapDigitX;
 				break;
 		}
-	}
+	} // Tile.setDigit
 	
 	
 } // class Tile
