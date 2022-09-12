@@ -20,6 +20,8 @@ class Thimble extends Group
 		this.zones = [];
 		this.codes = [];
 		
+		this.plates = [];
+		
 		
 		this.insideThimble = null;
 		this.outsideThimble = null;
@@ -30,6 +32,7 @@ class Thimble extends Group
 		// executed once
 		this.constructThreads( );
 		this.constructThimble( );
+		this.constructPlates( );
 		
 		// executed for every game
 		this.generateBumpsPositions( );
@@ -113,6 +116,15 @@ class Thimble extends Group
 		this.add( this.insideThimble );
 
 	} // Thimble.constructThimble
+	
+	
+	
+	// construct the plates
+	constructPlates( )
+	{
+		for( var i=0; i<2*Playground.MAX_BITS; i++ )
+			this.plates.push( new Plate );
+	} // Thimble.constructPlates
 
 	
 	
@@ -219,6 +231,8 @@ class Thimble extends Group
 		var that = this;
 		function makeBumps( geometry, scale, topRimScale )
 		{
+			var subScale = (scale+1)/2;
+			
 			var q = new THREE.Vector3( ),
 				pos = geometry.getAttribute( 'position' );
 			for( let i=0; i<pos.count; i++ )
@@ -227,11 +241,19 @@ class Thimble extends Group
 				//console.log(q.x.toFixed(2), q.y.toFixed(2), q.z.toFixed(2))
 				for( let j=0; j<that.bumpsPoints.length; j++ )
 				{
+					// for bumps on the inner side, if they are not
+					// for lines, but extra bumps, reduce their height
+					var s;
+					if( scale>1 && j>=2*that.lines )
+						s = subScale;
+					else
+						s = scale;
+					
 					dist = q.distanceTo(that.bumpsPoints[j]);
 					//console.log( dist.toFixed(3), 2/Thimble.HEIGHT );
 					if( dist < 0.04*scale**2 )
 					{
-						var k = 1-0.000003*scale**2.5/dist**2.5;
+						var k = 1-0.000003*s**2.5/dist**2.5;
 						
 						q.x *= k;
 						q.z *= k;
@@ -370,9 +392,20 @@ class Thimble extends Group
 		this.regenerateThimble( );
 		this.regenerateThreads( )
 		
-		for( var plate of playground.plates )
-			plate.regenerate( );
-		
+		// for each zone show one plate
+		for( var i=0; i<this.plates.length; i++ )
+		{
+			if( i < this.zones.length-1 )
+			{
+				var to = this.zones[i],
+					from = this.zones[i+1];
+				var idx = Math.floor( random(from,to)/2+random(from,to)/2 );
+				this.plates[i].showAt( idx+0.5 );
+				this.plates[i].visible = true;
+			}
+			else
+				this.plates[i].visible = false;
+		}
 	} // Thimble.newGame
 
 	

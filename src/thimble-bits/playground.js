@@ -19,10 +19,8 @@ class Playground extends ScormPlayground
 		new Base( );
 		new Button( );
 		this.thimble = new Thimble( );
-		this.plates = [];
-		for( var i=0; i<2*Playground.MAX_BITS; i++ )
-			this.plates.push( new Plate(i) );
 		
+
 		this.translate( [
 			{id: 'txt-caption',
 				en: 'Thimble bits',

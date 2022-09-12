@@ -1,44 +1,13 @@
-// 827 -> 260 (31%)
+// 827 -> 199 (24%)
 
 MEIRO.Models.T005.prototype.constructDigits = function()
 {
-	const N = this.config.lines;
-	
-	this.mapDigit1 = MEIRO.loadTexture( "textures/005_digit_1.jpg" );
-	this.mapDigit0 = MEIRO.loadTexture( "textures/005_digit_0.jpg" );
-	this.mapDigitX = MEIRO.loadTexture( "textures/005_digit_none.jpg" );
-
 	var geometry = new THREE.CylinderBufferGeometry( this.WELL_RADIUS, this.WELL_RADIUS, this.PLATE_HEIGHT, 6, 1, true, -Math.PI/25, 2*Math.PI/25  );
 
 	var plateGeometry = new THREE.CylinderBufferGeometry( this.WELL_RADIUS, this.WELL_RADIUS, N*this.PLATE_HEIGHT, 6, 1, true, -Math.PI/25, 2*Math.PI/25  );
 	
-	var plateMap = MEIRO.loadTexture( "textures/005_rusty_plates.jpg", 1, N/6 );
-	var plateMaterial = new THREE.MeshLambertMaterial({
-		map: plateMap,
-		//alphaMap: alphaMap,
-		//transparent: true,
-		polygonOffset: true,
-		polygonOffsetUnits: -1,
-		polygonOffsetFactor: -1,
-	});
-		
 	for (var i=0; i<2*N; i++)
 	{
-		var angle = (this.zones[i]/2+this.zones[i+1]/2)/12-3/12;
-		var user = i==this.config.user_index;
-		var skip = false;
-		if (!user && this.config.skip && Math.random()>0.35)
-		{
-//console.log('userIdx=',this.config.user_index,'skipIdx=',i);
-			skip = true;
-			this.config.skip--;
-			continue;
-		}
-
-		var plate = new THREE.Mesh( plateGeometry, plateMaterial );
-		plate.position.y = this.WELL_HEIGHT-N*this.PLATE_HEIGHT/2-this.PLATE_HEIGHT;
-		plate.rotation.y = -angle*2*Math.PI;
-		this.image.add( plate );
 		
 		for (var j=0; j<N; j++)
 		{
@@ -187,66 +156,6 @@ MEIRO.Models.T005.prototype.evaluateResult = function()
 //	console.log('evaluation=',this.config.score*match);
 }
 
-
-
-// конфигурира сцената според желаната трудност
-MEIRO.Models.T005.prototype.configure = function(difficulty)
-{	
-	this.config = {difficulty: difficulty};
-		
-	var max_score = 0;
-	var lines = 0;
-	var min_span = 0;
-	var extra_bumps = 0;
-	
-	switch (difficulty)
-	{
-		// ниска трудност
-		case DIFFICULTY_LOW:
-			lines = 2;
-			min_span = 3;
-			skip = 1; //all=4, max skip=all-2=2
-			extra_bumps = random(2,4);
-			max_score = 0.1;
-			break;
-			
-		// средна трудност
-		case DIFFICULTY_MEDIUM:
-			lines = 3;
-			min_span = 2;
-			skip = random(2,3); // all=6, max skip=all-2=4
-			extra_bumps = random(4,8);
-			max_score = 0.3;
-			break;
-			
-		// висока трудност
-		case DIFFICULTY_HIGH:
-			lines = random(4,6);
-			min_span = 1;
-			skip = 2*lines-1-1;
-			extra_bumps = random(8,24);
-			max_score = 0.7+(lines-4)*0.1;
-			break;
-			
-		default: console.error('Unknown difficulty level');
-	}
-
-	this.config.lines = lines;
-	this.config.max_score = max_score/*+this.config.crosses*/;
-	this.config.min_span = min_span;
-	this.config.user_index = random(0,2*lines-1);
-	this.config.skip = skip;
-	this.config.extra_bumps = extra_bumps;
-	
-	this.generateBumpsPositions();
-	if (!IN_SCORE_STATISTICS)
-	{
-		this.constructWell();
-		this.constructDigits();
-	}
-	
-	//console.log('max_score',this.config.max_score);
-}
 
 
 MEIRO.Models.T005.prototype.construct = function()
