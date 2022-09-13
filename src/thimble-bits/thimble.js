@@ -6,7 +6,7 @@
 class Thimble extends Group
 {
 	static RADIUS = 8;
-	static HEIGHT = 25;
+	static HEIGHT = 22.5;
 	static FADEOUT_SPEED = 300;
 	
 	constructor( )
@@ -72,8 +72,8 @@ class Thimble extends Group
 	constructThimble( )
 	{
 		// main body of the thimble
-		var map = ScormUtils.image( 'metal_plate.jpg', 10, 12, 1/2, 0 ),
-			normalMap = ScormUtils.image( 'metal_plate_normal.jpg', 10, 12, 1/2, 0 ),
+		var map = ScormUtils.image( 'metal_plate.jpg', 9, 12, 1/2, 0 ),
+			normalMap = ScormUtils.image( 'metal_plate_normal.jpg', 9, 12, 1/2, 0 ),
 			lightMap = ScormUtils.image( 'thimble_light.jpg' );
 
 		var outsideMaterial = new THREE.MeshPhysicalMaterial( {
@@ -112,7 +112,7 @@ class Thimble extends Group
 		this.add( this.outsideThimble );
 		
 		// construct the inside thimble
-		this.insideThimble = tube( [0,0,0], [[0,0,0], [0,0,0]], 0, [60,120], [Thimble.HEIGHT*0.97,Thimble.HEIGHT,Thimble.HEIGHT*0.97] );
+		this.insideThimble = tube( [0,0,0], [[0,0,0], [0,0,0]], 0, [60,120], [Thimble.HEIGHT*0.95,Thimble.HEIGHT,Thimble.HEIGHT*0.95] );
 			its.threejs.material = insideMaterial;
 
 		this.add( this.insideThimble );
@@ -395,6 +395,8 @@ class Thimble extends Group
 		this.regenerateThreads( )
 		
 		this.userZone = Math.floor( random( 0, this.zones.length-1.1 ) );
+
+//console.log('code',this.codes[this.userZone]);
 
 		// first hide all plates
 		for( var plate of this.plates )

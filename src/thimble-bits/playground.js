@@ -40,7 +40,7 @@ class Playground extends ScormPlayground
 		super.newGame( );
 
 		this.thimble.lines = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 2, 6 ) );
-		this.thimble.extraBumps = Math.round( THREE.MathUtils.clamp( THREE.MathUtils.mapLinear( this.difficulty, 40, 100, 0, 20 ), 0, 20 ) );
+		this.thimble.extraBumps = Math.round( THREE.MathUtils.clamp( THREE.MathUtils.mapLinear( this.difficulty, 40, 100, 0, 20 ), 0, 10 ) );
 		this.thimble.shownHints = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 1, 0 );
 
 		this.thimble.regenerate( );
@@ -66,9 +66,22 @@ class Playground extends ScormPlayground
 	{
 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
 		
-		// ...
+		var thimble = playground.thimble,
+			tiles = thimble.plates[thimble.userZone].tiles,
+			code = thimble.codes[thimble.userZone];
+//console.log('target',code);
 		
-		return 1 * points;
+		var score = 0;
+		for( var i=0; i<thimble.lines; i++ )
+		{
+			//console.log('   #'+i,'=',tiles[i].digit);
+			if( tiles[i].digit == code[i] )
+				score += 1/thimble.lines;
+		}
+		// ...
+console.log('score',score);
+		
+		return score * points;
 
 	} // Playground.evaluateGame
 	
@@ -104,10 +117,10 @@ class Playground extends ScormPlayground
 	{
 		this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1, 4 );
 		this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
-		//this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.2, 1, true );
+		this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.2, 1, true );
 		
 		this.soundEffects.push( this.clickSound, this.clackSound );
-		//this.soundMelody.push( this.backgroundMelody );
+		this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
 	
 	
