@@ -40,7 +40,8 @@ class Playground extends ScormPlayground
 		super.newGame( );
 
 		this.thimble.lines = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 2, 6 ) );
-		this.thimble.extra_bumps = Math.round( THREE.MathUtils.clamp( THREE.MathUtils.mapLinear( this.difficulty, 40, 100, 0, 20 ), 0, 20 ) );
+		this.thimble.extraBumps = Math.round( THREE.MathUtils.clamp( THREE.MathUtils.mapLinear( this.difficulty, 40, 100, 0, 20 ), 0, 20 ) );
+		this.thimble.shownHints = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 1, 0 );
 
 		this.thimble.regenerate( );
 		
@@ -81,7 +82,8 @@ class Playground extends ScormPlayground
 		super.endGame( );
 		
 		this.thimble.lines = 0;
-		this.thimble.extra_bumps = 0;
+		this.thimble.extraBumps = 0;
+		this.thimble.shownHints = 0;
 		this.thimble.regenerate( );
 		
 	} // Playground.endGame
@@ -113,6 +115,7 @@ class Playground extends ScormPlayground
 	// update the playground
 	update( t, dT )
 	{
-		// ...
+		if( this.thimble.userPlateIndex >= 0 )
+			this.thimble.plates[ this.thimble.userPlateIndex ].visible = (4*t|0)%3>0;
 	}
 } // class Playground

@@ -14,7 +14,8 @@ class Thimble extends Group
 		super( suica );
 
 		this.lines = 0;
-		this.extra_bumps = 0;
+		this.extraBumps = 0;
+		this.shownHints = 0;
 		
 		this.bumps = [];
 		this.zones = [];
@@ -22,7 +23,7 @@ class Thimble extends Group
 		
 		this.plates = [];
 
-		this.userPlateIndex = 0;		
+		this.userZone = 0;
 		
 		this.insideThimble = null;
 		this.outsideThimble = null;
@@ -71,8 +72,8 @@ class Thimble extends Group
 	constructThimble( )
 	{
 		// main body of the thimble
-		var map = ScormUtils.image( 'metal_plate.jpg', 10, 12 ),
-			normalMap = ScormUtils.image( 'metal_plate_normal.jpg', 10, 12 ),
+		var map = ScormUtils.image( 'metal_plate.jpg', 10, 12, 1/2, 0 ),
+			normalMap = ScormUtils.image( 'metal_plate_normal.jpg', 10, 12, 1/2, 0 ),
 			lightMap = ScormUtils.image( 'thimble_light.jpg' );
 
 		var outsideMaterial = new THREE.MeshPhysicalMaterial( {
@@ -210,7 +211,7 @@ class Thimble extends Group
 
 		// extra bumps
 		y = 1-Tile.HEIGHT/Thimble.HEIGHT;
-		for( let i=0; i<this.extra_bumps; i++ )
+		for( let i=0; i<this.extraBumps; i++ )
 		{
 			angle = random([0,1,2,3,4,5,6,7,8,9,10,11])/12*Math.PI*2;
 			
@@ -393,22 +394,47 @@ class Thimble extends Group
 		this.regenerateThimble( );
 		this.regenerateThreads( )
 		
-		this.userPlateIndex = Math.floor( random( 0, this.zones.length ) );
+		this.userZone = Math.floor( random( 0, this.zones.length-1.1 ) );
+
+		// first hide all plates
+		for( var plate of this.plates )
+			plate.visible = false;
+
+		var toBeShownZones = [];
 		
-		// for each zone show one plate
-		for( var i=0; i<this.plates.length; i++ )
+		// then show one plate per zone
+		for( var i=0; i<this.zones.length-1; i++ )
 		{
-			if( i < this.zones.length-1 )
+			var isUserZone = (i==this.userZone);
+			
+			// if this zone is not the user zone but it has the same
+			// code as the user zone, then do not show this plate
+			if( !isUserZone && this.codes[i]==this.codes[this.userZone] )
+				continue;
+			
+			var to = this.zones[i],
+				from = this.zones[i+1];
+			var idx = Math.floor( random(from,to)/2+random(from,to)/2 );
+			this.plates[i].showAt( idx+0.5, this.codes[i], isUserZone );
+			
+			if( !isUserZone )
 			{
-				var to = this.zones[i],
-					from = this.zones[i+1];
-				var idx = Math.floor( random(from,to)/2+random(from,to)/2 );
-				this.plates[i].showAt( idx+0.5, this.codes[i], i==this.userPlateIndex );
-				this.plates[i].visible = true;
+				toBeShownZones.push( i );
+				toBeShownZones.sort( ()=>random(-10,10) );
 			}
-			else
-				this.plates[i].visible = false;
 		}
+		
+		// show the user zone
+		if( this.userZone >= 0 )
+		{
+			this.plates[this.userZone].visible = true;
+			
+			var showZones = THREE.MathUtils.clamp( this.shownHints*toBeShownZones.length, 1, toBeShownZones.length );
+
+			for( var i=0; i<showZones; i++ )
+				this.plates[toBeShownZones[i]].visible = true;
+		}
+
 	} // Thimble.newGame
 
 	

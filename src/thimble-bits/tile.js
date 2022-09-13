@@ -31,7 +31,7 @@ class Tile extends Group
 		
 		this.addEventListener( 'click', this.onClick );
 
-		this.tile = square( [0,0,Plate.DEPTH], [Tile.WIDTH, Tile.HEIGHT] );
+		this.tile = square( [0,0,0], [Tile.WIDTH, Tile.HEIGHT] );
 		its.threejs.material = new THREE.MeshLambertMaterial({
 			color: 'black',
 			map: Tile.mapDigit1,
@@ -77,11 +77,14 @@ class Tile extends Group
 		this.visible = true;
 		this.digit = digit;
 		
-		this.tile.spin = [90, random(-10,10)+random(-10,10), -90];
+//		this.tile.spin = [90, random(-10,10)+random(-10,10), -90];
 		
 		var material = this.tile.threejs.material;
 		
-		material.color.set( userPlate ? 'black' : 'white' );
+		if( userPlate )
+			material.color.setRGB( 2, 1, 0.5 );
+		else
+			material.color.set( 'lightgray' );
 		
 //		material.opacity = random( 0.6, 1 );
 		
