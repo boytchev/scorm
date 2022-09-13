@@ -50,4 +50,11 @@ This SCO is used for experiments with SCORM 1.2-complient LMS. It shows the list
 [ <!-- markdown-link-check-disable -->[More info](src/normal-pins/index.html)<!-- markdown-link-check-enable --> ] [ [Run online](src/normal-pins/normal-pins.html) ] [ [Download](bin/normal-pins.zip) ]
 
 
+## Thimble bits (UNDER CONSTRUCTION)
+
+<a href="src/thimble-bits/thimble-bits.html"><img src="src/thimble-bits/docs/snapshot.jpg" width="200" style="float:right; border-radius: 0.5em; border-bottom: 0.3em BurlyWood solid;"></a> Knowing at least one bitmask of a zone inside a thimble, set the bitmask of another zone by using the Cohen-Sutherland line splitting algorithm.
+
+[ <!-- markdown-link-check-disable -->[More info](src/thimble-bits/index.html)<!-- markdown-link-check-enable --> ] [ [Run online](src/thimble-bits/thimble-bits.html) ] [ [Download](bin/thimble-bits.zip) ]
+
+
 <small>{{site.time | date: "%B, %Y"}}</small>
