@@ -63,16 +63,16 @@ class Button extends Group
 	{
 		if( Button.POINTER_USED ) return;
 		this.colorPlate.color = 'gold';
-		event.target.style.cursor = 'pointer';
+//		event.target.style.cursor = 'pointer';
 	} // Button.onMark
 	
 	
 	
 	// unmarks the button when the mouse pointer goes out of it
-	onUnmark( )
+	onUnmark( event )
 	{
 		this.colorPlate.color = 'goldenrod';
-		event.target.style.cursor = 'default';
+//		event.target.style.cursor = 'default';
 	} // Button.onUnmark
 	
 } // class Button

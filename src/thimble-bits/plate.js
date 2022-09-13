@@ -18,7 +18,7 @@ class Plate extends Group
 
 		this.tiles = [];
 		for( var i=0; i<Playground.MAX_BITS; i++ )
-			this.tiles.push( new Tile( Base.POS_Y+Thimble.HEIGHT-(i+1)*Tile.HEIGHT+0.08 ) );
+			this.tiles.push( new Tile( i, Base.POS_Y+Thimble.HEIGHT-(i+1)*Tile.HEIGHT+0.08 ) );
 		
 		this.visible = false;
 		
@@ -45,9 +45,22 @@ class Plate extends Group
 
 
 
+	// hides a plate
+	hide( )
+	{
+		this.size = 0; 
+		this.visible = false;
+		for( var tile of this.tiles )
+			tile.clearDigit( );
+	}
+	
+	
+	
 	// show plate at position idx and sets its size
 	showAt( idx, code, userPlate )
 	{
+		this.size = 1; 
+
 		var n = playground.thimble.lines;
 
 		var angle = 2*Math.PI/12 * idx,

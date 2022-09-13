@@ -23,7 +23,7 @@ class Thimble extends Group
 		
 		this.plates = [];
 
-		this.userZone = 0;
+		this.userZone = -1;
 		
 		this.insideThimble = null;
 		this.outsideThimble = null;
@@ -380,9 +380,9 @@ class Thimble extends Group
 		}
 
 	
-		console.log( 'bumps',this.bumps );
-		console.log( 'zones',this.zones );
-		console.log( 'codes',this.codes );
+//		console.log( 'bumps',this.bumps );
+//		console.log( 'zones',this.zones );
+//		console.log( 'codes',this.codes );
 		
 	} // Thimble.generateBumpsPositions
 
@@ -398,7 +398,7 @@ class Thimble extends Group
 
 		// first hide all plates
 		for( var plate of this.plates )
-			plate.visible = false;
+			plate.hide( );
 
 		var toBeShownZones = [];
 		

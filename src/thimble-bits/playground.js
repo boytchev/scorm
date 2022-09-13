@@ -17,7 +17,7 @@ class Playground extends ScormPlayground
 		this.resize( );
 
 		new Base( );
-		new Button( );
+		this.button = new Button( );
 		this.thimble = new Thimble( );
 		
 
@@ -115,7 +115,7 @@ class Playground extends ScormPlayground
 	// update the playground
 	update( t, dT )
 	{
-		if( this.thimble.userPlateIndex >= 0 )
-			this.thimble.plates[ this.thimble.userPlateIndex ].visible = (4*t|0)%3>0;
+		// if( this.thimble.userZone >= 0 )
+			// this.thimble.plates[ this.thimble.userZone ].visible = (4*t|0)%2==1;
 	}
 } // class Playground

@@ -67,6 +67,27 @@
 		function onPointerMove( event )
 		{		
 			playground.pointerMovement += Math.abs( event.movementX ) + Math.abs( event.movementY );
+
+			var obj;
+			event.target.style.cursor = 'default';
+			
+			if( playground.thimble.userZone >= 0 )
+			{
+				obj = findObject( event, playground.thimble.plates[playground.thimble.userZone].tiles );
+				
+				if( obj?.idx < playground.thimble.lines )
+				{
+					event.target.style.cursor = 'pointer';
+					return;
+				}
+			}
+			
+			obj = findObject( event, [playground.button] );
+			if( obj )
+			{
+				event.target.style.cursor = 'pointer';
+				return;
+			}
 		}
 
 		
@@ -75,6 +96,17 @@
 			if( playground )
 			{
 				playground.pointerMovement = 0;
+
+				if( playground.thimble.userZone >= 0 )
+				{
+					obj = findObject( event, playground.thimble.plates[playground.thimble.userZone].tiles );
+					
+					if( obj?.idx < playground.thimble.lines )
+					{
+						playground.clickSound.play( );
+						playground.thimble.plates[playground.thimble.userZone].tiles[obj.idx].toggle();
+					}
+				}
 			}
 		}		
 
