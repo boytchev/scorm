@@ -24,7 +24,7 @@ class Playground extends ScormPlayground
 		this.translate( [
 			{id: 'txt-caption',
 				en: 'Thimble bits',
-				bg: 'Битове на напръстник',
+				bg: 'Битов напръстник',
 				jp: '指ぬきビット'},
 		] );
 		
