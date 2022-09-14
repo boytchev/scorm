@@ -27,7 +27,7 @@
 
 <body>
 	<suica fullwindow fullscreen background="linen" ontime="update" onpointermove="onPointerMove" onpointerdown="onPointerDown"> 
-		<orbit id="orb" distance="70" altitude="0" maxPolarAngle="1.57" maxDistance="150" minDistance="25" enablePan="false">
+		<orbit id="orb" distance="70" altitude="0" maxPolarAngle="1.57" maxDistance="100" minDistance="35" enablePan="false">
 		<div class="hud corner top left"></div>
 		<div class="hud corner top right"></div>
 		<div class="hud corner bottom left"></div>
@@ -71,6 +71,7 @@
 			var obj;
 			event.target.style.cursor = 'default';
 			
+			// if game started (i.e. there is user zone), change the cursor over user tiles
 			if( playground.thimble.userZone >= 0 )
 			{
 				obj = findObject( event, playground.thimble.plates[playground.thimble.userZone].tiles );
@@ -82,13 +83,27 @@
 				}
 			}
 			
-			obj = findObject( event, [playground.button] );
-			if( obj )
+			// if game started change the cursor over the button,
+			// otherwise change it over any object
+			if( playground.gameStarted )
 			{
-				event.target.style.cursor = 'pointer';
-				return;
+				obj = findObject( event, [playground.button] );
+				if( obj )
+				{
+					event.target.style.cursor = 'pointer';
+					return;
+				}
 			}
-		}
+			else
+			{
+				obj = findObject( event );
+				if( obj )
+				{
+					event.target.style.cursor = 'pointer';
+					return;
+				}
+			}
+		} // onPointerMove
 
 		
 		function onPointerDown( event )
@@ -97,6 +112,7 @@
 			{
 				playground.pointerMovement = 0;
 
+				// toggle user tiles
 				if( playground.thimble.userZone >= 0 )
 				{
 					obj = findObject( event, playground.thimble.plates[playground.thimble.userZone].tiles );
@@ -108,7 +124,7 @@
 					}
 				}
 			}
-		}		
+		} // onPointerDown
 
 	</script>
 	

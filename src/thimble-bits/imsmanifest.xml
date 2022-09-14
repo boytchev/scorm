@@ -56,9 +56,13 @@ The XSD files for SCORM 1.2 are not strictly valid and may cause errors in some 
 			<file href="thimble-bits.html"/>
 			
 			<!-- modules -->
-			<!--file href="plate.js"/-->
 			<file href="styles.css"/>
 			<file href="playground.js"/>
+			<file href="base.js"/>
+			<file href="button.js"/>
+			<file href="plate.js"/>
+			<file href="thimble.js"/>
+			<file href="tile.js"/>
 
 			<!-- libraries -->
 			<file href="libs/scorm.utils.js"/>
@@ -70,11 +74,19 @@ The XSD files for SCORM 1.2 are not strictly valid and may cause errors in some 
 			<file href="images/sound-on.png"/>
 			<file href="images/sound-off.png"/>
 			<file href="images/sound-fx.png"/>
+			<file href="images/digit_0.jpg"/>
+			<file href="images/digit_1.jpg"/>
+			<file href="images/digit_none.jpg"/>
+			<file href="images/floor_ao.jpg"/>
+			<file href="images/floor_shadow_alpha.jpg"/>
+			<file href="images/metal_plate.jpg"/>
+			<file href="images/metal_plate_normal.jpg"/>
+			<file href="images/thimble_light.jpg"/>
 			
 			<!-- sounds -->
-			<!--file href="sounds/background.mp3"/-->
+			<file href="sounds/background.mp3"/>
 			<file href="sounds/click.mp3"/>
-			<!--file href="sounds/clack.mp3"/-->
+			<file href="sounds/clack.mp3"/>
 
 			<!-- SCORM related definitions -->
 			<file href="adlcp_rootv1p2.xsd"/>

@@ -63,7 +63,6 @@ class Button extends Group
 	{
 		if( Button.POINTER_USED ) return;
 		this.colorPlate.color = 'gold';
-//		event.target.style.cursor = 'pointer';
 	} // Button.onMark
 	
 	
@@ -72,7 +71,6 @@ class Button extends Group
 	onUnmark( event )
 	{
 		this.colorPlate.color = 'goldenrod';
-//		event.target.style.cursor = 'default';
 	} // Button.onUnmark
 	
 } // class Button

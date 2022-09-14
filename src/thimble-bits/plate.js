@@ -11,11 +11,7 @@ class Plate extends Group
 	{
 		super( suica );
 
-/**/
-		// this.plate = cube( [0,0,0], [Tile.WIDTH,1,Plate.DEPTH], 'white' );
-			// its.image = ScormUtils.image( 'rusty_plates.jpg' );
-			// its.image.offset.y = random([0,1,2,3,4,5]) * (1/Playground.MAX_BITS);
-
+		// plates are just group of tiles
 		this.tiles = [];
 		for( var i=0; i<Playground.MAX_BITS; i++ )
 			this.tiles.push( new Tile( i, Base.POS_Y+Thimble.HEIGHT-(i+1)*Tile.HEIGHT+0.08 ) );
@@ -24,7 +20,7 @@ class Plate extends Group
 		
 		this.addEventListener( 'click', this.onClick );
 
-		this.add( /*this.plate,*/ ...this.tiles );
+		this.add( ...this.tiles );
 
 	} // Plate.constructor
 
@@ -48,11 +44,11 @@ class Plate extends Group
 	// hides a plate
 	hide( )
 	{
-		this.size = 0; 
+		this.size = 0; // to avoid clicks on invisible plates
 		this.visible = false;
 		for( var tile of this.tiles )
 			tile.clearDigit( );
-	}
+	} // Plate.hide
 	
 	
 	
@@ -65,19 +61,12 @@ class Plate extends Group
 
 		var angle = 2*Math.PI/12 * idx,
 			x = Thimble.RADIUS * Math.cos(angle),
-/**///			y = Thimble.HEIGHT - (n/2+0.5)*Tile.HEIGHT + Base.POS_Y, 
 			z = Thimble.RADIUS * Math.sin(angle);
 		
 		this.x = x;
 		this.z = z;
-/**///		this.plate.y = y; 
 		this.spin = 90 - degrees(angle);
 
-/**///		this.plate.visible = userPlate;
-		
-/**///		this.plate.height = n * Tile.HEIGHT;
-/**///		this.plate.images = [1, n/Playground.MAX_BITS];		
-		
 		for( var i=0; i<Playground.MAX_BITS; i++ )
 		{
 			if( i >= n )
@@ -88,7 +77,7 @@ class Plate extends Group
 			else
 				this.tiles[i].setDigit( code[i], userPlate );
 		}
-	} // Plate.newGame
+	} // Plate.showAt
 
 	
 } // class Plate

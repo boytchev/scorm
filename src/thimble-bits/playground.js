@@ -45,9 +45,6 @@ class Playground extends ScormPlayground
 
 		this.thimble.regenerate( );
 		
-
-		// ...
-
 	} // Playground.newGame
 
 
@@ -55,8 +52,18 @@ class Playground extends ScormPlayground
 	// check whether a game can end
 	canEndGame( )
 	{
-		// ...
+		var thimble = playground.thimble,
+			tiles = thimble.plates[thimble.userZone].tiles;
+
+		// all user tiels must be set
+		for( var i=0; i<thimble.lines; i++ )
+		{
+			if( tiles[i].digit=='' )
+				return false;
+		}
+
 		return true;
+
 	} // Playground.canEndGame
 	
 	
@@ -69,17 +76,13 @@ class Playground extends ScormPlayground
 		var thimble = playground.thimble,
 			tiles = thimble.plates[thimble.userZone].tiles,
 			code = thimble.codes[thimble.userZone];
-//console.log('target',code);
 		
 		var score = 0;
 		for( var i=0; i<thimble.lines; i++ )
 		{
-			//console.log('   #'+i,'=',tiles[i].digit);
 			if( tiles[i].digit == code[i] )
 				score += 1/thimble.lines;
 		}
-		// ...
-console.log('score',score);
 		
 		return score * points;
 
@@ -128,7 +131,7 @@ console.log('score',score);
 	// update the playground
 	update( t, dT )
 	{
-		// if( this.thimble.userZone >= 0 )
-			// this.thimble.plates[ this.thimble.userZone ].visible = (4*t|0)%2==1;
-	}
+		// ...
+	} // Playground.update
+	
 } // class Playground

@@ -87,7 +87,7 @@ class Thimble extends Group
 			normalScale: new THREE.Vector2( 1, 1 ),
 			lightMap: lightMap,
 			lightMapIntensity: 2,
-			side: THREE.FrontSide,
+			side: THREE.DoubleSide,
 		} );	
 		
 		var insideMaterial = new THREE.MeshPhysicalMaterial( {
@@ -97,11 +97,9 @@ class Thimble extends Group
 			metalness: 0.1,
 			roughness: 0.2,
 			map: map,
-//			normalMap: normalMap,
-//			normalScale: new THREE.Vector2( 1/2, 2 ),
 			emissive: 'cornflowerblue',
 			emissiveIntensity: 0.5,
-			side: THREE.BackSide,
+			side: THREE.DoubleSide,
 		} );	
 
 		
@@ -187,7 +185,7 @@ class Thimble extends Group
 			
 			return [0, u, 0, r];
 			
-		} // thimbleProfile
+		} // thimbleProfile( u )
 		
 		
 		// generate bumps points in 3D
@@ -240,7 +238,7 @@ class Thimble extends Group
 			for( let i=0; i<pos.count; i++ )
 			{
 				q.set( pos.getX(i), pos.getY(i), pos.getZ(i) );
-				//console.log(q.x.toFixed(2), q.y.toFixed(2), q.z.toFixed(2))
+
 				for( let j=0; j<that.bumpsPoints.length; j++ )
 				{
 					// for bumps on the inner side, if they are not
@@ -252,7 +250,7 @@ class Thimble extends Group
 						s = scale;
 					
 					dist = q.distanceTo(that.bumpsPoints[j]);
-					//console.log( dist.toFixed(3), 2/Thimble.HEIGHT );
+
 					if( dist < 0.04*scale**2 )
 					{
 						var k = 1-0.000003*s**2.5/dist**2.5;
@@ -262,6 +260,7 @@ class Thimble extends Group
 					}
 				}
 				
+				// shape the top rim
 				if( q.y==1 )
 				{
 					q.x *= topRimScale;
@@ -358,7 +357,23 @@ class Thimble extends Group
 			this.bumps.push( i );
 			this.bumps.sort( ()=>random(-10,10) );
 		}
+		
+		
 		this.bumps = this.bumps.slice( 0, 2*this.lines );
+		
+		// scan bumps and try to reduce too small zones
+		for( var i=0; i<2*this.lines-2; i+=2 )
+		{
+			var dist = Math.abs(this.bumps[i]-this.bumps[i+1]);
+				dist = Math.min( dist, 12-dist );
+			if( dist < 3 )
+			{
+				var temp = this.bumps[i],
+					j = Math.round( random( i+2, 2*this.lines-1 ) );
+				this.bumps[i] = this.bumps[j];
+				this.bumps[j] = temp;
+			}
+		}
 		
 		// define zones boundaries, the last zone ends at the first bump + full cycle
 		this.zones = [];
@@ -378,7 +393,6 @@ class Thimble extends Group
 			code = code.substr(0,pair)+((code[pair]=='1')?'0':'1')+code.substr(pair+1);
 			this.codes.push( code );
 		}
-
 	
 //		console.log( 'bumps',this.bumps );
 //		console.log( 'zones',this.zones );
@@ -395,8 +409,6 @@ class Thimble extends Group
 		this.regenerateThreads( )
 		
 		this.userZone = Math.floor( random( 0, this.zones.length-1.1 ) );
-
-//console.log('code',this.codes[this.userZone]);
 
 		// first hide all plates
 		for( var plate of this.plates )
@@ -416,7 +428,7 @@ class Thimble extends Group
 			
 			var to = this.zones[i],
 				from = this.zones[i+1];
-			var idx = Math.floor( random(from,to)/2+random(from,to)/2 );
+			var idx = Math.floor( (random(from,to)+random(from,to)+random(from,to)+random(from,to))/4 );
 			this.plates[i].showAt( idx+0.5, this.codes[i], isUserZone );
 			
 			if( !isUserZone )
@@ -437,7 +449,7 @@ class Thimble extends Group
 				this.plates[toBeShownZones[i]].visible = true;
 		}
 
-	} // Thimble.newGame
+	} // Thimble.regenerate
 
 	
 } // class Thimble

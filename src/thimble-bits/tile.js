@@ -11,8 +11,6 @@ class Tile extends Group
 	static mapDigit1 = null;
 	static mapDigit0 = null;
 	static mapDigitX = null;
-
-	//static allTiles = [];
 	
 	constructor( idx, y )
 	{
@@ -29,15 +27,12 @@ class Tile extends Group
 		this.y = y;
 		this.digit = '';
 		
-/*		this.addEventListener( 'click', this.onClick );*/
-
 		this.tile = square( [0,0,0], [Tile.WIDTH, Tile.HEIGHT] );
 		its.threejs.material = new THREE.MeshLambertMaterial({
 			color: 'black',
 			map: Tile.mapDigit1,
 			alphaMap: Tile.mapDigit1,
 			transparent: true,
-//			opacity: random( 0.6, 1 ),
 		});
 		its.idx = idx;
 		this.threejs.renderOrder = 1;
@@ -45,7 +40,6 @@ class Tile extends Group
 
 		this.visible = false;
 		
-		//Tile.allTiles.push( this );
 	} // Tile.constructor
 
 
@@ -69,9 +63,6 @@ class Tile extends Group
 	clearDigit( )
 	{
 		this.visible = false;
-		// this.tile.removeEventListener( 'pointerenter' );
-		// this.tile.removeEventListener( 'pointerleave' );
-		// this.tile.removeEventListener( 'click' );
 	} // Tile.clearDigit
 
 
@@ -82,27 +73,12 @@ class Tile extends Group
 		this.visible = true;
 		this.digit = digit;
 		
-//		this.tile.spin = [90, random(-10,10)+random(-10,10), -90];
-		
 		var material = this.tile.threejs.material;
 		
 		if( userPlate )
-		{
 			material.color.setRGB( 2, 1, 0.5 );
-			// console.log('addevent');
-			// this.tile.addEventListener( 'pointerenter', this.onPointerEnter );
-			// this.tile.addEventListener( 'pointerleave', this.onPointerLeave );
-			// this.tile.addEventListener( 'click', this.onClick );
-		}
 		else
-		{
 			material.color.set( 'lightgray' );
-			// this.tile.removeEventListener( 'pointerenter' );
-			// this.tile.removeEventListener( 'pointerleave' );
-			// this.tile.removeEventListener( 'click' );
-		}
-		
-//		material.opacity = random( 0.6, 1 );
 		
 		switch( digit )
 		{
@@ -123,6 +99,7 @@ class Tile extends Group
 	
 
 
+	// toggle digit: none->0 and 0<->1
 	toggle( )
 	{
 		var material = this.tile.threejs.material;
@@ -140,27 +117,8 @@ class Tile extends Group
 				material.alphaMap = Tile.mapDigit0;
 				break;
 		}
-	}
+	} // Tile.toggle
 	
-	
-	
-/*
-	// handles clicks on a plate
-	onClick( )
-	{
-		// avoid fake onClicks
-		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
-
-		// if game is not started, click on the button will start it
-		if( playground.gameStarted )
-		{
-		}
-		else
-		{
-			playground.newGame( );
-		}
-	} // Button.onClick
-*/	
 	
 	
 	// marks the button when the mouse pointer goes over it
@@ -169,7 +127,7 @@ class Tile extends Group
 		if( Button.POINTER_USED ) return;
 		this.tile.threejs.material.color.setRGB( 2, 1, 0.5 );
 		event.target.style.cursor = 'pointer';
-	} // Button.onMark
+	} // Tile.onPointerEnter
 	
 	
 	
@@ -178,7 +136,7 @@ class Tile extends Group
 	{
 		this.tile.threejs.material.color.setRGB( 2, 1, 0.5 );
 		event.target.style.cursor = 'default';
-	} // Button.onUnmark
+	} // Tile.onPointerLeave
 	
 } // class Tile
 
