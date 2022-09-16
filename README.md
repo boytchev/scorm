@@ -50,11 +50,19 @@ This SCO is used for experiments with SCORM 1.2-complient LMS. It shows the list
 [ <!-- markdown-link-check-disable -->[More info](src/normal-pins/index.html)<!-- markdown-link-check-enable --> ] [ [Run online](src/normal-pins/normal-pins.html) ] [ [Download](bin/normal-pins.zip) ]
 
 
-## Thimble bits (UNDER CONSTRUCTION)
+## Thimble bits
 
 <a href="src/thimble-bits/thimble-bits.html"><img src="src/thimble-bits/docs/snapshot.jpg" width="200" style="float:right; border-radius: 0.5em; border-bottom: 0.3em BurlyWood solid;"></a> Knowing at least one bitmask of a zone inside a thimble, set the bitmask of another zone by using the Cohen-Sutherland line splitting algorithm.
 
 [ <!-- markdown-link-check-disable -->[More info](src/thimble-bits/index.html)<!-- markdown-link-check-enable --> ] [ [Run online](src/thimble-bits/thimble-bits.html) ] [ [Download](bin/thimble-bits.zip) ]
+
+
+## Aeromaze (UNDER CONSTRUCTION)
+
+<!--a href="src/thimble-bits/thimble-bits.html"><img src="src/thimble-bits/docs/snapshot.jpg" width="200" style="float:right; border-radius: 0.5em; border-bottom: 0.3em BurlyWood solid;"></a--> Controlling a small paper airplane to fly from one position in space to another using a limited set of commands to manage yaw, pitch and roll.
+
+[ More info ] [ Run online ] [ Download ]
+
 
 
 <small>{{site.time | date: "%B, %Y"}}</small>
