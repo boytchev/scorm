@@ -2,42 +2,51 @@
 //	class Maze
 	
 
+// complexity
+//
+//	PLATES	 Ver	 Lin
+//	    3	  81	 180
+//	    5	 275	 690
+//	    7	 637	1680
+//	    9	1215	3294
+//	   11	2057	5676
 
 class Maze extends Group
 {
+	static GRID = 2 + Planet.PLATES>>1;
 	
 	constructor( )
 	{
 		super( suica );
 
-		const n = 4;
-		const s = Planet.SIZE;
-		for( var x = -n; x<=n; x++ )
-		for( var y = -n; y<=n; y++ )
-		for( var z = -n; z<=n; z++ )
+var vertices = 0;
+var lines = 0;
+		
+		for( var x = -Maze.GRID; x<=Maze.GRID; x++ )
+		for( var y = -Maze.GRID; y<=Maze.GRID; y++ )
+		for( var z = -Maze.GRID; z<=Maze.GRID; z++ )
 			if( Maze.allowedTheoretically(x,y,z) )
 			{
-			//	cube([s*x,s*y,s*z],0.2);
+				vertices++;
+				//this.add( cube([x,y,z],0.2) );
 				
-				// if( Maze.allowedTheoretically(x+1,y,z) )
-					// line([s*x,s*y,s*z],[s*x+s,s*y,s*z]);
+				if( Maze.allowedTheoretically(x+1,y,z) )
+					this.add( line([x,y,z],[x+1,y,z]) ), lines++;
+				its.color = 'yellow'
 				
-				// if( Maze.allowedTheoretically(x-1,y,z) )
-					// line([s*x,s*y,s*z],[s*x-s,s*y,s*z]);
+				if( Maze.allowedTheoretically(x,y+1,z) )
+					this.add( line([x,y,z],[x,y+1,z]) ), lines++;
+				its.color = 'yellow'
 				
-				// if( Maze.allowedTheoretically(x,y+1,z) )
-					// line([s*x,s*y,s*z],[s*x,s*y+s,s*z]);
-				
-				// if( Maze.allowedTheoretically(x,y-1,z) )
-					// line([s*x,s*y,s*z],[s*x,s*y-s,s*z]);
-				
-				// if( Maze.allowedTheoretically(x,y,z+1) )
-					// line([s*x,s*y,s*z],[s*x,s*y,s*z+s]);
-				
-				// if( Maze.allowedTheoretically(x,y,z-1) )
-					// line([s*x,s*y,s*z],[s*x,s*y,s*z-s]);
+				if( Maze.allowedTheoretically(x,y,z+1) )
+					this.add( line([x,y,z],[x,y,z+1]) ), lines++;
+				its.color = 'yellow'
 				
 			}
+			
+console.log(vertices,'vertices')
+console.log(lines,'lines')
+		this.size = Planet.GRID_SCALE;
 	} // Maze.constructor
 	
 		
@@ -49,25 +58,16 @@ class Maze extends Group
 		y = y*y;
 		z = z*z;
 	
-		var nn = 4*4;
+		var nn = Maze.GRID*Maze.GRID;
 		
 		if( x > nn ) return false;
 		if( y > nn ) return false;
 		if( z > nn ) return false;
 		
-		if( x+y+z > 20 ) return false;
-		
-		if( x+y+z == 4) return true;
-		
-		
-		if( x > 4 ) return true;
-		if( y > 4 ) return true;
-		if( z > 4 ) return true;
-		
-		// if( x+y > 8 ) return false;
-		// if( x+z > 8 ) return false;
-		// if( y+z > 8 ) return false;
-
-		return false;
+		if( x+y >= 2*nn ) return false;
+		if( x+z >= 2*nn ) return false;
+		if( y+z >= 2*nn ) return false;
+				
+		return true;
 	}
 } // class Maze

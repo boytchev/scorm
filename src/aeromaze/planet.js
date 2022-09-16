@@ -5,11 +5,11 @@
 
 class Planet extends Group
 {
-	static PLATES = 5;
+	static PLATES = 3; // must be odd
 	static SIZE = 2+4/Planet.PLATES;
 	static SCALE = 4;
+	static GRID_SCALE = 2*Planet.SCALE/Planet.PLATES;
 		
-	
 	constructor( )
 	{
 		super( suica );
@@ -45,6 +45,7 @@ class Planet extends Group
 			side: THREE.FrontSide,
 			transparent: true,
 			opacity: 0.5,
+			depthWrite: false,
 		} );	
 		
 		// geometry
