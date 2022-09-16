@@ -5,15 +5,17 @@
 
 class Planet extends Group
 {
-	static SIZE = 3;
+	static PLATES = 5;
+	static SIZE = 2+4/Planet.PLATES;
 	static SCALE = 4;
-	
+		
 	
 	constructor( )
 	{
 		super( suica );
 
-		this.planet = this.constructPlanet( );
+		this.constructPlanet( );
+		
 	} // Planet.constructor
 
 
@@ -22,15 +24,27 @@ class Planet extends Group
 	constructPlanet( )
 	{
 		// material
-		var map = ScormUtils.image( 'metal_plate.jpg', 3/2, 3/2, 1/2, 1/2 ),
-			normalMap = ScormUtils.image( 'metal_plate_normal.jpg' );
-		var material = new THREE.MeshStandardMaterial( {
+		var map = ScormUtils.image( 'metal_plate.jpg', Planet.PLATES/2, Planet.PLATES/2, 1/2, 1/2 ),
+			normalMap = ScormUtils.image( 'metal_plate_normal.jpg' ),
+			alphaMap = ScormUtils.image( 'metal_plate_alpha.jpg', Planet.PLATES/2, Planet.PLATES/2, 1/2, 1/2 );
+		var materialBack = new THREE.MeshStandardMaterial( {
 			color: 'white',
 			metalness: 0,
 			roughness: 0.42,
 			map: map,
 			normalMap: normalMap,
 			normalScale: new THREE.Vector2( 0.5, 0.5 ),
+			side: THREE.BackSide,
+		} );	
+		var materialFront = new THREE.MeshPhysicalMaterial( {
+			color: 'white',
+			metalness: 0,
+			roughness: 0,
+//			map: map,
+			alphaMap: alphaMap,
+			side: THREE.FrontSide,
+			transparent: true,
+			opacity: 0.5,
 		} );	
 		
 		// geometry
@@ -67,24 +81,11 @@ class Planet extends Group
 			[ 1, -1, -S], 
 		]
 
-		var planet = convex( vertices, Planet.SCALE );
-			its.threejs.material = material;
+		this.add( convex( vertices, Planet.SCALE ) );
+			its.threejs.material = materialBack;
 
-		var nor = planet.threejs.geometry.getAttribute( 'normal' ),
-			uv  = planet.threejs.geometry.getAttribute( 'uv' );
-			
-		for( var i=0; i<nor.count; i++ )
-		{
-			var dir = nor.getX(i)**2 + nor.getY(i)**2 + nor.getZ(i)**2;
-			if( dir == 1 ) continue;
-			
-			var u = uv.getX( i ),
-				v = uv.getY( i );
-				
-//			uv.setXY( i, 2*2/3*u, 2*2/3*v );
-		}
-		
-		return planet;
+		this.add( convex( vertices, Planet.SCALE ) );
+			its.threejs.material = materialFront;
 	}
 
 

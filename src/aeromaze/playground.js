@@ -13,6 +13,7 @@ class Playground extends ScormPlayground
 		super( );
 
 		new Planet( );
+		this.maze = new Maze();
 		
 		this.resize( );
 
