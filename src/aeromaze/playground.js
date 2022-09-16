@@ -11,14 +11,16 @@ class Playground extends ScormPlayground
 	constructor( )
 	{
 		super( );
+
+		new Planet( );
 		
 		this.resize( );
 
 		this.translate( [
 			{id: 'txt-caption',
-				en: 'Ink tank',
-				bg: 'Мастилен резервоар',
-				jp: 'インクタンク'},
+				en: 'Aeromaze',
+				bg: 'Аеролабиринт',
+				jp: 'エアロ迷路'},
 		] );
 		
 	} // Playground.constructor
