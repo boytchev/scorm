@@ -1,4 +1,4 @@
-// 1536 -> 942 (61%)
+// 1536 -> 715 (47%)
 
 MEIRO.Models.T009.prototype.initialize = function()
 {
@@ -31,42 +31,16 @@ MEIRO.Models.T009.prototype.initialize = function()
 
 	this.buttonLight = new THREE.PointLight('white',0);
 	this.image.add( this.buttonLight );
-	
-	this.colors = {
-		D: 'gold',
-		U: 'indigo',
-		L: 'deeppink',
-		R: 'cornflowerblue',
-		l: 'limegreen',
-		r: 'chocolate',
-		F: 'white'
-	};
 
 	this.buttonEcho = new Audio('sounds/button-echo.mp3');
 	this.buttonEcho.loop = false;
 	this.buttonEcho.pause();
 	
-	this.wingsFapping = new Audio('sounds/wings-flapping.mp3');
-	this.wingsFapping.loop = true;
-	this.wingsFapping.pause();
-	
 	this.commands = '';
 	this.commandsCount = 0;
 	this.dnaCommands = '';
 
-	this.DNA_HEIGHT = 0.2;
-	this.DNA_ANGLE = 0.16;
-	this.DNA = new THREE.Group();
-	this.DNA.position.set( -this.BOX_DISTANCE, this.BOX_HEIGHT-this.DNA_HEIGHT/2, 0 );
-	this.image.add( this.DNA );
-	
 	this.links = [];
-	
-	this.exiting = false;
-	this.playing = false;
-	this.startTime = 0;
-	this.lastTime = 0;
-	this.clicks = 0;
 }
 
 	
@@ -447,141 +421,6 @@ MEIRO.Models.T009.prototype.generateMaze = function()
 }
 
 
-MEIRO.Models.T009.prototype.constructButterfly = function()
-{
-	var N = this.config.size;
-	const OFS = 1.5;
-	
-	this.butterfly = new THREE.Group();
-	this.maze.add( this.butterfly );
-	
-	this.butterflySub = new THREE.Group();
-	this.butterfly.add( this.butterflySub );
-	
-	var bodyPoints = [0,0,8,3,10,3,11,2,12,3,14,3,15,2,16,3,18,3,19,2,20,3,22,3,23,2,24,3,26,3,27,2,29,3,31,4,36,5,41,4,44,2,45,1,46,2,47,3,49,3,51,1,51,0];
-	var points = [];
-	for (var i=0; i<bodyPoints.length; i+=2)
-		points.push( new THREE.Vector2(bodyPoints[i+1]/10,bodyPoints[i]/10	) );
-
-	var geometry = new THREE.LatheBufferGeometry( points,8 );
-	var pos = geometry.getAttribute('position');
-	for (var i=0; i<pos.count; i++)
-	{
-		var x = pos.getX(i);
-		var y = pos.getY(i);
-		var z = pos.getZ(i);
-		
-		y = y-3.6;
-		x = x-Math.cos(y*1.5)/6;
-		pos.setXYZ(i,x,y,z);
-	}
-	
-	var textureMap = MEIRO.loadTexture( "textures/009_butterfly_body.jpg", 2, 1 );
-	//textureMap.rotation = Math.PI/2;
-	var material = new THREE.MeshBasicMaterial({
-		map: textureMap,
-		color: 'white',
-	});
-	
-	var body = new THREE.Mesh( geometry, material );
-	body.position.x = OFS;
-	this.butterflySub.add( body );
-	
-	// eyes
-	var geometry = new THREE.IcosahedronBufferGeometry(0.2,1);
-	var material = new THREE.MeshStandardMaterial({
-		color: 'cornflowerblue',
-		metalness: 0.8,
-		flatShading: true,
-	});
-	
-	var eye = new THREE.Mesh(geometry,material);
-	eye.position.set(0.05+OFS,1.23,0);
-	eye.scale.set(1.5,1.5,1.8);
-	this.butterflySub.add(eye);
-	// wings
-	var textureMap = MEIRO.loadTexture( "textures/009_butterfly_wings.jpg", 0.95, 0.95 );
-	var alphaMap = MEIRO.loadTexture( "textures/009_butterfly_wings_alpha.jpg" );
-	textureMap.wrapS = THREE.ClampToEdgeWrapping;
-	textureMap.wrapT = THREE.ClampToEdgeWrapping;
-	
-	geometry = new THREE.PlaneBufferGeometry( 6, 6, 4, 4 );
-	
-	geometry.translate(3,-2,0);
-	material = new THREE.MeshBasicMaterial({
-		//color: 'red',
-		map: textureMap,
-		transparent: true,
-		alphaMap: alphaMap,
-		side: THREE.DoubleSide,
-		depthWrite: false,
-	});
-	
-	this.wing1 = new THREE.Mesh( geometry, material );
-	this.wing1.position.x = OFS;
-	this.wing1.position.z = 0.3;
-	//this.wing1.name = 'wing1';
-	this.butterflySub.add( this.wing1 );
-	
-	this.wing2 = new THREE.Mesh( geometry, material );
-	this.wing2.position.x = OFS;
-	this.wing2.position.z = -0.3;
-	//this.wing2.name = 'wing2';
-	this.butterflySub.add( this.wing2 );
-	
-	
-	// antenae
-	var material = new THREE.MeshBasicMaterial({color:0});
-	var geometry = new THREE.BoxBufferGeometry(0.02,2,0.02);
-	geometry.translate(0,1,0);
-	
-	var antena = new THREE.Mesh(geometry,material);
-	antena.position.set( 0.2+OFS, 1.2, 0.2 );
-	antena.rotation.set( 0.5, 0, -0.5);
-	this.butterflySub.add( antena );
-
-	var antena = new THREE.Mesh(geometry,material);
-	antena.position.set( 0.2+OFS, 1.2, -0.2 );
-	antena.rotation.set( -0.5, 0, -0.5);
-	this.butterflySub.add( antena );
-	
-	// legs
-	var leg = new THREE.Mesh(geometry,material);
-	leg.position.set( 0+OFS, 0.1, 0 );
-	leg.rotation.set( 1, 0, 0.75 );
-	this.butterflySub.add( leg );
-	var leg = new THREE.Mesh(geometry,material);
-	leg.position.set( 0+OFS, 0.1, 0 );
-	leg.rotation.set( -1, 0, 0.75 );
-	this.butterflySub.add( leg );
-	var leg = new THREE.Mesh(geometry,material);
-	leg.position.set( 0+OFS, 0, 0 );
-	leg.rotation.set( 1.5, 0, 0.75 );
-	this.butterflySub.add( leg );
-	var leg = new THREE.Mesh(geometry,material);
-	leg.position.set( 0+OFS, 0, 0 );
-	leg.rotation.set( -1.5, 0, 0.75 );
-	this.butterflySub.add( leg );
-	var leg = new THREE.Mesh(geometry,material);
-	leg.position.set( 0+OFS, -0.1, 0 );
-	leg.rotation.set( 2, 0, 0.75 );
-	this.butterflySub.add( leg );
-	var leg = new THREE.Mesh(geometry,material);
-	leg.position.set( 0+OFS, -0.1, 0 );
-	leg.rotation.set( -2, 0, 0.75 );
-	this.butterflySub.add( leg );
-	
-	
-//	this.butterfly.scale.set(1.2,1.2,1.2);
-	this.BUTTERFLY_SIZE *= N/3;
-	this.butterfly.scale.set(this.BUTTERFLY_SIZE,this.BUTTERFLY_SIZE,this.BUTTERFLY_SIZE);
-	this.butterfly.updateMatrix();
-	this.butterfly.matrixAutoUpdate = false;
-	this.butterfly.matrix.multiply(this.mat.D90);
-}
-
-
-
 MEIRO.Models.T009.prototype.randomizeButterflyPosition = function()
 {
 	var N = this.config.size;
@@ -635,13 +474,6 @@ MEIRO.Models.T009.prototype.randomizeButterflyOrientation = function()
 
 
 
-MEIRO.Models.T009.prototype.setButterflyPosition = function(x,y,z)
-{
-	this.butterfly.matrix.setPosition(new THREE.Vector3(2*x,2*y,2*z));
-}
-
-
-
 MEIRO.Models.T009.prototype.hasDirectLink = function(a1,a2)
 {
 	for (var i=0; i<this.links.length; i++)
@@ -651,60 +483,6 @@ MEIRO.Models.T009.prototype.hasDirectLink = function(a1,a2)
 		if (link[0]==a2 && link[1]==a1) return true;
 	}
 	return false;
-}
-
-
-
-MEIRO.Models.T009.prototype.butterflyAction = function()
-{
-	this.butterflySub.position.set( 0,0,0 );
-	if (this.commands=='') return;
-	
-	if (this.commandsCount==0)
-	{
-		this.wingsFapping.pause();
-		
-		this.commands = this.commands.substr(1);
-		if (this.commands=='')
-		{
-			if (this.exiting) this.onExitModel();
-			return;
-		}
-		this.commandsCount = this.STEPSrot;
-		
-		// if moving forward check wether it is possible
-		if (this.commands[0]=='F')
-		{
-			this.commandsCount = this.STEPS;
-		
-			var mat = this.butterfly.matrix.clone();
-			var x1 = Math.round(mat.elements[12]/2); // current position
-			var y1 = Math.round(mat.elements[13]/2);
-			var z1 = Math.round(mat.elements[14]/2);
-			var p1 = 'A'+x1+y1+z1;
-			mat.multiply(this.mat.F90);
-			var x2 = Math.round(mat.elements[12]/2); // new position
-			var y2 = Math.round(mat.elements[13]/2);
-			var z2 = Math.round(mat.elements[14]/2);
-			var p2 = 'A'+x2+y2+z2;
-
-			if (!this.hasDirectLink(p1,p2))
-			{
-				this.commandsCount = 0;
-				return;
-			}
-			
-		}
-		
-		this.wingsFapping.play();
-
-	}
-	
-	this.wingsFapping.volume = 0.5;
-	
-	this.butterflySub.position.set( 0,2*Math.random()-1,2*Math.random()-1 );
-	this.butterfly.matrix.multiply(this.mat[this.commands[0]]);
-	this.commandsCount--;
 }
 
 
@@ -900,12 +678,7 @@ difficulty	0.1-0.2	0.3-0.4	0.7-1.0
 			
 		default: console.error('Unknown difficulty level');
 	}
-/*	console.log(
-		'dist',Math.round(100*distance),
-		//'atts',Math.round(100*attempts),
-		'cmds',Math.round(100*commands),
-		'lnks',Math.round(100*links) );
-*/
+
 	this.config.max_score = Math.round(100*max_score)/100; //this.butterflyFlightDistance;
 //	console.log('max_score',max_score);
 	

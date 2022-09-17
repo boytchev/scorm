@@ -15,10 +15,13 @@ class Playground extends ScormPlayground
 		this.addLightsAndShadows( );
 
 		new Planet( );
-		this.maze = new Maze();
+		this.maze = new Maze( );
 		
-		this.spaceship = new Spaceship();
-		this.spaceshipA = new Spaceship();
+		this.spaceship = new Spaceship( );
+		this.spaceshipA = new Spaceship( );
+		
+		this.platformA = new Platform( ); // from platform
+		this.platformB = new Platform( ); // to platform
 			
 		this.resize( );
 
@@ -47,8 +50,8 @@ class Playground extends ScormPlayground
 				light.position.set( x/11, y/11, z/11 );
 				light.castShadow = true;
 
-				// light.shadow.mapSize.width = 512; // default
-				// light.shadow.mapSize.height = 512; // default
+				light.shadow.mapSize.width = 256;
+				light.shadow.mapSize.height = 256;
 				light.shadow.camera.left = -Planet.SIZE*Planet.SCALE;
 				light.shadow.camera.right = Planet.SIZE*Planet.SCALE;
 				light.shadow.camera.bottom = -Planet.SIZE*Planet.SCALE;
@@ -81,8 +84,14 @@ class Playground extends ScormPlayground
 		super.newGame( );
 
 		// ...
-		this.spaceship.fly(  'FFRF' );
-		this.spaceshipA.fly( '' );
+		this.spaceship.fly(  'UFFDAA' );
+		this.spaceshipA.fly( 'DFFU' );
+		
+		// platforms
+		var sides = [0,1,2,3,4,5].sort( ()=>Math.random()-0.5 );
+		this.platformA.randomize( sides[0] );
+		this.platformB.randomize( sides[1] );
+
 
 	} // Playground.newGame
 

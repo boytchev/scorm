@@ -12,15 +12,11 @@ class Spaceship extends Group
 	{
 		super( suica );
 
-// 3 -> 1
-// 11 ->	0.722
-const s = 3/8 * Planet.GRID_SCALE;
-
 		this.model = model( 'models/' + modelName + '.glb' );
-			its.size = s;
-			its.x = -2*s;
-			its.y = -0.25*s;
-			its.z = -1.5*s;
+			its.size = Planet.SPACESHIP_SCALE;
+			its.x = -2*Planet.SPACESHIP_SCALE;
+			its.y = -0.25*Planet.SPACESHIP_SCALE;
+			its.z = -1.5*Planet.SPACESHIP_SCALE;
 
 		// function to recursively make model element cast shadow
 		function traverse( obj )
@@ -80,7 +76,6 @@ const s = 3/8 * Planet.GRID_SCALE;
 				var px = Planet.GRID_SCALE * Math.round( obj.model.position.x/Planet.GRID_SCALE ),
 					py = Planet.GRID_SCALE * Math.round( obj.model.position.y/Planet.GRID_SCALE ),
 					pz = Planet.GRID_SCALE * Math.round( obj.model.position.z/Planet.GRID_SCALE );
-			console.log(obj.model.position.z,'->',pz)
 				obj.model.position.set( px, py, pz );
 			} );
 	}
