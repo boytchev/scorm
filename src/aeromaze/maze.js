@@ -28,7 +28,7 @@ var lines = 0;
 			if( Maze.allowedTheoretically(x,y,z) )
 			{
 				vertices++;
-				//this.add( cube([x,y,z],0.2) );
+				//this.add( cube([x,y,z],0.1) );
 				// if( Maze.allowedTheoretically(x+1,y,z) )
 					// this.add( line([x,y,z],[x+1,y,z]) ), lines++;
 				// its.color = 'yellow'

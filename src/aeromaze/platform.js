@@ -28,31 +28,39 @@ class Platform extends Group
 	// set the platform on random position
 	randomize( side )
 	{
+		// important:  x|0 truncates towards 0, so 3.9|0=3 and -3.0|0=-3
+		var u = random( -Maze.GRID+0.01, Maze.GRID-0.01 ) | 0,
+			v = random( -Maze.GRID+0.01, Maze.GRID-0.01 ) | 0;
+console.log(u,v,'grid =',Maze.GRID);
+		u *= Planet.GRID_SCALE;
+		v *= Planet.GRID_SCALE;
+		
 		switch( side )
 		{
 			case 0: // bottom
 				this.spin = [0,0,0];
-				this.y = -Platform.DISTANCE;
+				this.center = [u, -Platform.DISTANCE, v];
 				break;
 			case 1: // top
 				this.spin = [0,180,0];
-				this.y = Platform.DISTANCE;
+				this.center = [u, Platform.DISTANCE, v];
 				break;
 			case 2: // left
 				this.spin = [90,90,90];
 				this.x = -Platform.DISTANCE;
+				this.center = [-Platform.DISTANCE, u, v];
 				break;
 			case 3: // right
 				this.spin = [90,-90,90];
-				this.x = Platform.DISTANCE;
+				this.center = [Platform.DISTANCE, u, v];
 				break;
 			case 4: // front
 				this.spin = [0,-90,0];
-				this.z = Platform.DISTANCE;
+				this.center = [u, v, Platform.DISTANCE];
 				break;
 			case 5: // back
 				this.spin = [0,90,0];
-				this.z = -Platform.DISTANCE;
+				this.center = [u, v, -Platform.DISTANCE];
 				break;
 			default:
 				throw 'Unknown side';
