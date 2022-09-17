@@ -29,6 +29,7 @@ class Spaceship extends Group
 		this.model.addEventListener( 'load', obj=>traverse(obj.threejs) );
 
 		this.add( this.model );
+//		this.threejs.castShadow = true;
 		
 	} // Spaceship.constructor
 
@@ -64,19 +65,19 @@ class Spaceship extends Group
 		var lastK = 0;
 		
 		return new TWEEN.Tween( {k:0, model:this.threejs} )
-			.to( {k:Planet.GRID_SCALE}, Spaceship.MOVE_SPEED )
+			.to( {k:1/*Planet.GRID_SCALE*/}, Spaceship.MOVE_SPEED )
 			.easing( TWEEN.Easing.Linear.None )
 			.onUpdate( function(obj){
 				obj.model[method]( sign*(obj.k-lastK) );
 				lastK = obj.k;
 			} )
 			.onComplete( function(obj){
-				obj.model[method]( sign*(Planet.GRID_SCALE-lastK) );
+				obj.model[method]( sign*(1/*Planet.GRID_SCALE*/-lastK) );
 				// fix position
-				var px = Planet.GRID_SCALE * Math.round( obj.model.position.x/Planet.GRID_SCALE ),
-					py = Planet.GRID_SCALE * Math.round( obj.model.position.y/Planet.GRID_SCALE ),
-					pz = Planet.GRID_SCALE * Math.round( obj.model.position.z/Planet.GRID_SCALE );
-				obj.model.position.set( px, py, pz );
+				// var px = Planet.GRID_SCALE * Math.round( obj.model.position.x/Planet.GRID_SCALE ),
+					// py = Planet.GRID_SCALE * Math.round( obj.model.position.y/Planet.GRID_SCALE ),
+					// pz = Planet.GRID_SCALE * Math.round( obj.model.position.z/Planet.GRID_SCALE );
+				// obj.model.position.set( px, py, pz );
 			} );
 	}
 	

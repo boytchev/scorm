@@ -11,18 +11,20 @@ class Planet extends Group
 	//	7	18/7=2.57	4		8/7=1.14	3/7=0.43
 	//	9	22/9=2.44	4		8/9=0.89	3/9=0.33
 	
-	static PLATES = 7; // must be odd
+	static PLATES = 3; // must be odd
 	static SIZE = 2+4/Planet.PLATES;
 	static SCALE = 4;
 	static GRID_SCALE = 2*Planet.SCALE/Planet.PLATES;
-	static SPACESHIP_SCALE = 3/8 * Planet.GRID_SCALE;
-	static PLATFRORM_SCALE = 9/16 * Planet.GRID_SCALE;
+	static SPACESHIP_SCALE = 1/2; //3/8 * Planet.GRID_SCALE;
+	static PLATFRORM_SCALE = 1/2;
 		
 	constructor( )
 	{
 		super( suica );
 
 		this.constructPlanet( );
+		
+		this.threejs.castShadow = true;
 		
 	} // Planet.constructor
 

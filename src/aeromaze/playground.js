@@ -14,7 +14,7 @@ class Playground extends ScormPlayground
 		
 		this.addLightsAndShadows( );
 
-		new Planet( );
+		this.planet = new Planet( );
 		this.maze = new Maze( );
 		
 		this.spaceship = new Spaceship( );
@@ -22,6 +22,10 @@ class Playground extends ScormPlayground
 		
 		this.platformA = new Platform( ); // from platform
 		this.platformB = new Platform( ); // to platform
+	
+		// add the platforms and ships to the planet so they are scaled automatically
+		this.maze.add( this.platformA, this.platformB, this.spaceship, this.spaceshipA );
+//		this.maze.threejs.castShadow = true;
 			
 		this.resize( );
 
@@ -47,17 +51,17 @@ class Playground extends ScormPlayground
 		function addLight( x, y, z )
 		{
 			var light = new THREE.DirectionalLight( 'white', 0.2 );
-				light.position.set( x/11, y/11, z/11 );
+				light.position.set( x, y, z );
 				light.castShadow = true;
 
-				light.shadow.mapSize.width = 256;
-				light.shadow.mapSize.height = 256;
-				light.shadow.camera.left = -Planet.SIZE*Planet.SCALE;
-				light.shadow.camera.right = Planet.SIZE*Planet.SCALE;
-				light.shadow.camera.bottom = -Planet.SIZE*Planet.SCALE;
-				light.shadow.camera.top = Planet.SIZE*Planet.SCALE;
-				light.shadow.camera.near = 10;
-				light.shadow.camera.far = 50;
+				light.shadow.mapSize.width = 512;
+				light.shadow.mapSize.height = 512;
+				light.shadow.camera.left = -10;//-Planet.SIZE*Planet.SCALE;
+				light.shadow.camera.right = 10;//Planet.SIZE*Planet.SCALE;
+				light.shadow.camera.bottom = -10;//-Planet.SIZE*Planet.SCALE;
+				light.shadow.camera.top = 10;//Planet.SIZE*Planet.SCALE;
+				light.shadow.camera.near = 20;
+				light.shadow.camera.far = 100;
 
 			suica0.scene.add( light );
 			
@@ -83,15 +87,22 @@ class Playground extends ScormPlayground
 	{
 		super.newGame( );
 
-		// ...
-		this.spaceship.fly(  'UFFDAA' );
-		this.spaceshipA.fly( 'DFFU' );
-		
 		// platforms
 		var sides = [0,1,2,3,4,5].sort( ()=>Math.random()-0.5 );
 		this.platformA.randomize( sides[0] );
 		this.platformB.randomize( sides[1] );
 
+
+		// ...
+		this.spaceship.center = this.platformA.gridPos;
+		this.spaceship.spin = this.platformA.spin;
+		
+		this.spaceshipA.center = this.platformB.gridPos;
+		this.spaceshipA.spin = this.platformB.spin;
+
+		this.spaceship.fly(  'UFFDAA' );
+//		this.spaceshipA.fly( 'DFFUFUFFFFUAAFLL' );
+		
 
 	} // Playground.newGame
 
