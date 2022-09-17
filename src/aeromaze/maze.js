@@ -30,17 +30,17 @@ var lines = 0;
 				vertices++;
 				//this.add( cube([x,y,z],0.2) );
 				
-				if( Maze.allowedTheoretically(x+1,y,z) )
-					this.add( line([x,y,z],[x+1,y,z]) ), lines++;
-				its.color = 'yellow'
+				// if( Maze.allowedTheoretically(x+1,y,z) )
+					// this.add( line([x,y,z],[x+1,y,z]) ), lines++;
+				// its.color = 'yellow'
 				
-				if( Maze.allowedTheoretically(x,y+1,z) )
-					this.add( line([x,y,z],[x,y+1,z]) ), lines++;
-				its.color = 'yellow'
+				// if( Maze.allowedTheoretically(x,y+1,z) )
+					// this.add( line([x,y,z],[x,y+1,z]) ), lines++;
+				// its.color = 'yellow'
 				
-				if( Maze.allowedTheoretically(x,y,z+1) )
-					this.add( line([x,y,z],[x,y,z+1]) ), lines++;
-				its.color = 'yellow'
+				// if( Maze.allowedTheoretically(x,y,z+1) )
+					// this.add( line([x,y,z],[x,y,z+1]) ), lines++;
+				// its.color = 'yellow'
 				
 			}
 			

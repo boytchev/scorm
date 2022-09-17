@@ -1,5 +1,6 @@
 
 misc/7z
+misc/models
 *.bak
 *.mp4
 src/lms-info/suica.min.js

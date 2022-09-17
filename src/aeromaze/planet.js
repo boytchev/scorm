@@ -28,12 +28,12 @@ class Planet extends Group
 			normalMap = ScormUtils.image( 'metal_plate_normal.jpg' ),
 			alphaMap = ScormUtils.image( 'metal_plate_alpha.jpg', Planet.PLATES/2, Planet.PLATES/2, 1/2, 1/2 );
 		var materialBack = new THREE.MeshStandardMaterial( {
-			color: 'white',
+			color: 'lightgray',//'white',
 			metalness: 0,
-			roughness: 0.42,
+			roughness: 1,//0.42,
 			map: map,
-			normalMap: normalMap,
-			normalScale: new THREE.Vector2( 0.5, 0.5 ),
+//			normalMap: normalMap,
+//			normalScale: new THREE.Vector2( 0.5, 0.5 ),
 			side: THREE.BackSide,
 		} );	
 		var materialFront = new THREE.MeshPhysicalMaterial( {
@@ -84,9 +84,11 @@ class Planet extends Group
 
 		this.add( convex( vertices, Planet.SCALE ) );
 			its.threejs.material = materialBack;
+			its.threejs.receiveShadow = true;
 
 		this.add( convex( vertices, Planet.SCALE ) );
 			its.threejs.material = materialFront;
+			its.threejs.receiveShadow = true;
 	}
 
 
