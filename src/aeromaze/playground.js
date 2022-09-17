@@ -14,18 +14,11 @@ class Playground extends ScormPlayground
 		
 		this.addLightsAndShadows( );
 
-		//Set up shadow properties for the light
-		// light.shadow.mapSize.width = 512; // default
-		// light.shadow.mapSize.height = 512; // default
-		// light.shadow.camera.near = 0.1; // default
-		// light.shadow.camera.far = 50; // default
-
 		new Planet( );
 		this.maze = new Maze();
 		
 		this.spaceship = new Spaceship();
-		this.spaceshipA = new Spaceship('craft_speederB');
-			this.spaceshipA.y = -3;
+		this.spaceshipA = new Spaceship();
 			
 		this.resize( );
 
@@ -51,21 +44,34 @@ class Playground extends ScormPlayground
 		function addLight( x, y, z )
 		{
 			var light = new THREE.DirectionalLight( 'white', 0.2 );
-				light.position.set( x, y, z );
+				light.position.set( x/11, y/11, z/11 );
 				light.castShadow = true;
+
+				// light.shadow.mapSize.width = 512; // default
+				// light.shadow.mapSize.height = 512; // default
+				light.shadow.camera.left = -Planet.SIZE*Planet.SCALE;
+				light.shadow.camera.right = Planet.SIZE*Planet.SCALE;
+				light.shadow.camera.bottom = -Planet.SIZE*Planet.SCALE;
+				light.shadow.camera.top = Planet.SIZE*Planet.SCALE;
+				light.shadow.camera.near = 10;
+				light.shadow.camera.far = 50;
+
 			suica0.scene.add( light );
+			
+			// var helper = new THREE.DirectionalLightHelper( light, 2, 'black' );
+			// suica0.scene.add( helper );
 		}
 		
 		// define 6 lights from 6 directions
 		// all light flow towards (0,0,0)
-		addLight(  100, 0, 0 );
-		addLight( -100, 0, 0 );
+		addLight(  40, 0, 0 );
+		addLight( -40, 0, 0 );
 		
-		addLight( 0,  100, 0 );
-		addLight( 0, -100, 0 );
+		addLight( 0,  40, 0 );
+		addLight( 0, -40, 0 );
 		
-		addLight( 0, 0,  100 );
-		addLight( 0, 0, -100 );
+		addLight( 0, 0,  40 );
+		addLight( 0, 0, -40 );
 	} // Playground.addLightsAndShadows
 	
 
@@ -75,6 +81,8 @@ class Playground extends ScormPlayground
 		super.newGame( );
 
 		// ...
+		this.spaceship.fly(  'FFRF' );
+		this.spaceshipA.fly( '' );
 
 	} // Playground.newGame
 
@@ -139,7 +147,8 @@ class Playground extends ScormPlayground
 	update( t, dT )
 	{
 		// ...
-		this.spaceship.spinH = 50*t;
-		this.spaceship.y = 0.07*Math.sin( 2*t )+0.07*Math.sin( 1.3*t );
+//		if( this.spaceship ) this.spaceship.up(t,dT);//spinH = 250*t;
+//		if( this.spaceshipA ) this.spaceshipA.up(t,dT);//spinH = 250*t;
+		//this.spaceship.y = 0.07*Math.sin( 2*t )+0.07*Math.sin( 1.3*t );
 	}
 } // class Playground

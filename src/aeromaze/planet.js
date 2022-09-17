@@ -5,7 +5,7 @@
 
 class Planet extends Group
 {
-	static PLATES = 3; // must be odd
+	static PLATES = 9; // must be odd
 	static SIZE = 2+4/Planet.PLATES;
 	static SCALE = 4;
 	static GRID_SCALE = 2*Planet.SCALE/Planet.PLATES;
@@ -89,6 +89,8 @@ class Planet extends Group
 		this.add( convex( vertices, Planet.SCALE ) );
 			its.threejs.material = materialFront;
 			its.threejs.receiveShadow = true;
+			
+		this.addEventListener( 'click', this.onClick );
 	}
 
 
