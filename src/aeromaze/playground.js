@@ -11,36 +11,8 @@ class Playground extends ScormPlayground
 	constructor( )
 	{
 		super( );
-
-		// light and shadow
-		suica0.renderer.shadowMap.enabled = true;
-		suica0.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-		var light;
 		
-		light = new THREE.DirectionalLight( 'white', 0.2 );
-		light.position.set( 0, 10, 0 ); //default; light shining from top
-		light.castShadow = true; // default false
-		suica0.scene.add( light );
-		light = new THREE.DirectionalLight( 'white', 0.2 );
-		light.position.set( 0, -10, 0 ); //default; light shining from top
-		light.castShadow = true; // default false
-		suica0.scene.add( light );
-		light = new THREE.DirectionalLight( 'white', 0.2 );
-		light.position.set( 0, 0, 10 ); //default; light shining from top
-		light.castShadow = true; // default false
-		suica0.scene.add( light );
-		light = new THREE.DirectionalLight( 'white', 0.2 );
-		light.position.set( 0, 0, -10 ); //default; light shining from top
-		light.castShadow = true; // default false
-		suica0.scene.add( light );
-		light = new THREE.DirectionalLight( 'white', 0.2 );
-		light.position.set( 10, 0, 0 ); //default; light shining from top
-		light.castShadow = true; // default false
-		suica0.scene.add( light );
-		light = new THREE.DirectionalLight( 'white', 0.2 );
-		light.position.set( -10, 0, 0 ); //default; light shining from top
-		light.castShadow = true; // default false
-		suica0.scene.add( light );
+		this.addLightsAndShadows( );
 
 		//Set up shadow properties for the light
 		// light.shadow.mapSize.width = 512; // default
@@ -51,25 +23,9 @@ class Playground extends ScormPlayground
 		new Planet( );
 		this.maze = new Maze();
 		
-		this.spaceship = group();
-		its.x = 3.5;
-		this.model = model( 'models/craft_speederA.glb' );
-			its.x = -2;
-			its.y = -0.25;
-			its.z = -1.75;
-		this.spaceship.add( this.model );
-		
-		this.model.addEventListener( 'load', function(obj){
-			function traverse( threejsObj )
-			{
-				threejsObj.castShadow = true;
-				for( var i=0; i<threejsObj.children.length; i++ )
-					traverse( threejsObj.children[i] );
-			}
-			
-			traverse( obj.threejs );
-		} );
-			
+		this.spaceship = new Spaceship();
+		this.spaceshipA = new Spaceship('craft_speederB');
+			this.spaceshipA.y = -3;
 			
 		this.resize( );
 
@@ -82,6 +38,35 @@ class Playground extends ScormPlayground
 		
 	} // Playground.constructor
 
+	
+
+
+	// add support for lights and shadows
+	addLightsAndShadows( )
+	{
+		// allow shadows
+		suica0.renderer.shadowMap.enabled = true;
+		suica0.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+		function addLight( x, y, z )
+		{
+			var light = new THREE.DirectionalLight( 'white', 0.2 );
+				light.position.set( x, y, z );
+				light.castShadow = true;
+			suica0.scene.add( light );
+		}
+		
+		// define 6 lights from 6 directions
+		// all light flow towards (0,0,0)
+		addLight(  100, 0, 0 );
+		addLight( -100, 0, 0 );
+		
+		addLight( 0,  100, 0 );
+		addLight( 0, -100, 0 );
+		
+		addLight( 0, 0,  100 );
+		addLight( 0, 0, -100 );
+	} // Playground.addLightsAndShadows
 	
 
 	// starts a new game by selecting new color hues
