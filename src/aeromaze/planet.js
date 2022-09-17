@@ -25,7 +25,7 @@ class Planet extends Group
 	{
 		// material
 		var map = ScormUtils.image( 'metal_plate.jpg', Planet.PLATES/2, Planet.PLATES/2, 1/2, 1/2 ),
-			normalMap = ScormUtils.image( 'metal_plate_normal.jpg' ),
+			//normalMap = ScormUtils.image( 'metal_plate_normal.jpg' ),
 			alphaMap = ScormUtils.image( 'metal_plate_alpha.jpg', Planet.PLATES/2, Planet.PLATES/2, 1/2, 1/2 );
 		var materialBack = new THREE.MeshStandardMaterial( {
 			color: 'lightgray',//'white',
