@@ -1,4 +1,4 @@
-// 1536 -> 715 (47%)
+// 1536 -> 539 (35%)
 
 MEIRO.Models.T009.prototype.initialize = function()
 {
@@ -6,42 +6,17 @@ MEIRO.Models.T009.prototype.initialize = function()
 	
 	random.randomize();
 
-	this.FLOOR_SIZE = 9;
-	
-	this.BASE_SIZE = 7;
-	this.BASE_HEIGHT = 1;
-	
-	this.BUTTERFLY_SIZE = 0.2;
-	//this.BUTTERFLY_SIZE2 = 0.20;
-	this.STEPS = 80;
-	this.STEPSrot = 35;
-	
-	this.TARGET_SIZE = 0.10;
-
 	this.BUTTON_RADIUS = 0.3;
 	this.buttons = new THREE.Group();
 	this.image.add( this.buttons );
 	
-	this.BOX_SIZE = 3.5;
-	this.BOX_HEIGHT = 0.25;
-	this.BOX_GLASS_HEIGHT = 7;
-	this.BOX_DISTANCE = this.BASE_SIZE/2+this.BOX_SIZE/2+1.5;
-	this.BUTTERFLY_DISTANCE = this.BOX_DISTANCE+this.BOX_SIZE/6;
-	this.AXIS_RADIUS = 0.02;
-
 	this.buttonLight = new THREE.PointLight('white',0);
 	this.image.add( this.buttonLight );
 
 	this.buttonEcho = new Audio('sounds/button-echo.mp3');
 	this.buttonEcho.loop = false;
 	this.buttonEcho.pause();
-	
-	this.commands = '';
-	this.commandsCount = 0;
-	this.dnaCommands = '';
-
-	this.links = [];
-}
+	}
 
 	
 
@@ -273,45 +248,6 @@ MEIRO.Models.T009.prototype.reduceMaze = function()
 
 
 
-MEIRO.Models.T009.prototype.isConnectedMaze = function()
-{
-	var left = [];
-	var todo = [];
-	
-	function process(elem)
-	{
-		var idx = left.indexOf(elem);
-		if (idx<0) return; // already processed
-
-		todo.push(left[idx]); // add to todo
-		left.splice(idx,1); // remove from left
-	}
-	
-	for (var i=0; i<this.nodes.length; i++)
-		left.push(this.nodes[i]);
-	
-	process(this.nodes[0]);
-	while (todo.length)
-	{
-		var node = todo[0];
-		//console.log('=======',node);
-		for (var i=0; i<this.links.length; i++)
-		{
-			var link = this.links[i];
-			if (link[0]==node)
-				process(link[1]);
-			else if (link[1]==node)
-				process(link[0]);
-		}
-		todo.splice(0,1); // remove from todo
-		//console.log('left',left);
-		//console.log('todo',todo);
-	}
-	
-	return left.length==0;
-}
-
-
 
 MEIRO.Models.T009.prototype.distanceInMaze = function(from,to)
 {
@@ -421,57 +357,6 @@ MEIRO.Models.T009.prototype.generateMaze = function()
 }
 
 
-MEIRO.Models.T009.prototype.randomizeButterflyPosition = function()
-{
-	var N = this.config.size;
-
-	var p = {};
-	p.x = random(0,N);
-	p.y = random(0,N);
-	p.z = random(0,N);
-	p[(['x','y','z'])[random(0,2)]] = random(0,1)?0:N;
-	
-	// set random position
-	this.butterflyStartPos = new THREE.Vector3(p.x,p.y,p.z);
-	this.butterflyTargetPos = new THREE.Vector3(N-p.x,N-p.y,N-p.z);
-	
-	var butterflyCode = 'A'+p.x+p.y+p.z;
-	this.targetCode = 'A'+(N-p.x)+(N-p.y)+(N-p.z);
-	this.butterflyFlightDistance = this.distanceInMaze(butterflyCode,this.targetCode);
-	
-//	console.log('from',butterflyCode,'to',this.targetCode);
-}
-
-
-
-MEIRO.Models.T009.prototype.randomizeButterflyOrientation = function()
-{
-	this.setButterflyPosition(this.butterflyStartPos.x,this.butterflyStartPos.y,this.butterflyStartPos.z);
-	
-	var N = this.config.size;
-	
-	// set random orientation
-	for (var i=0; i<5; i++)
-	{
-		if (Math.random()<0.5) this.butterfly.matrix.multiply(this.mat.L90);
-		if (Math.random()<0.5) this.butterfly.matrix.multiply(this.mat.D90);
-		if (Math.random()<0.5) this.butterfly.matrix.multiply(this.mat.r90);
-	}
-	
-	// define target
-	var geometry = new THREE.IcosahedronBufferGeometry(this.TARGET_SIZE,1);
-	var material = new THREE.MeshStandardMaterial({
-		color: 'orange',
-		metalness: 0.7,
-		flatShading: true,
-	});
-	
-	var target = new THREE.Mesh( geometry, material );
-	target.position.set(2*this.butterflyTargetPos.x,2*this.butterflyTargetPos.y,2*this.butterflyTargetPos.z);
-	target.scale.set(N,N,N);
-	this.maze.add(target);
-}
-
 
 
 MEIRO.Models.T009.prototype.hasDirectLink = function(a1,a2)
@@ -524,22 +409,6 @@ MEIRO.Models.T009.prototype.onObject = function()
 			this.dnaCommands = '';
 			this.wingsFapping.play();
 		}
-		else
-		{	// definition button
-			this.dnaCommands += obj.name;
-			
-			
-			var dna = new THREE.Mesh(this.dnaGeometry,this.dnaMaterial.clone());
-			dna.material.color.copy(obj.material.color);
-			dna.position.y = (this.DNA.children.length+1)*this.DNA_HEIGHT;
-			dna.rotation.y = this.DNA.children.length*this.DNA_ANGLE;
-			this.DNA.add( dna );
-			if (this.dnaCommands.length>30)
-			{
-				var k = 30/this.dnaCommands.length;
-				this.DNA.scale.set(1,k,1);
-			}
-		}
 		
 		return undefined;
 	}
@@ -565,27 +434,6 @@ MEIRO.Models.T009.prototype.evaluateResult = function()
 	
 	this.config.score = match*this.config.max_score;
 
-	this.config.time =  Math.floor((animationLoop.time-this.startTime)/1000);
-	
-//	console.log('score=',this.config.score);
-	this.info = '';
-	this.info += '<h1 style="text-align:center;">Полетът на пеперудата &ndash; '+Math.round(1000*this.config.score)/10+' от '+Math.round(100*this.config.max_score)+' точки</span></h1>';
-	this.info += '<p>Първоначалната позиция на пеперудата бе отдалечена на '+this.butterflyFlightDistance+' стъпки. ';
-	switch (finalDistance)
-	{
-		case 0:
-			this.info += 'Крайната позиция на пеперудата е точно върху целта. ';
-			break;
-		case 1:
-			this.info += 'Крайната позиция на пеперудата е само на 1 стъпка от целта. ';
-			break;
-		default:
-			this.info += 'Крайната позиция на пеперудата е на '+finalDistance+' стъпки от целта. ';
-			break;
-	}
-	this.info += '</p>';
-	
-//	console.log('evaluation=',this.config.score*match);
 }
 
 
@@ -683,33 +531,9 @@ difficulty	0.1-0.2	0.3-0.4	0.7-1.0
 //	console.log('max_score',max_score);
 	
 	if (!IN_SCORE_STATISTICS)
-	{
-		var stepDist = 2/this.BUTTERFLY_SIZE/this.STEPS*3/size;
-		var fullDist = 2/this.BUTTERFLY_SIZE*3/size;
-		var stepAngle = THREE.Math.degToRad(90/this.STEPSrot);
-		var fullAngle = THREE.Math.degToRad(90);
-		this.mat = {
-			F: new THREE.Matrix4().makeTranslation(0,stepDist,0),
-			L: new THREE.Matrix4().makeRotationX(stepAngle),
-			R: new THREE.Matrix4().makeRotationX(-stepAngle),
-			D: new THREE.Matrix4().makeRotationZ(stepAngle),
-			U: new THREE.Matrix4().makeRotationZ(-stepAngle),
-			l: new THREE.Matrix4().makeRotationY(-stepAngle), // left roll
-			r: new THREE.Matrix4().makeRotationY(stepAngle), // right roll
-			L90: new THREE.Matrix4().makeRotationX(fullAngle),
-			D90: new THREE.Matrix4().makeRotationZ(fullAngle),
-			r90: new THREE.Matrix4().makeRotationY(fullAngle),
-			F90: new THREE.Matrix4().makeTranslation(0,fullDist,0),
-		}
-		
-		this.constructBase();
+	{		
 		this.generateMaze();
-		this.constructButterfly();
 		this.constructGlassBoxModel();
 		this.constructButtons();
-		this.randomizeButterflyOrientation();
-		
-		this.sendStartup();
-		//console.log(renderer.info);
 	}
 }

@@ -29,7 +29,6 @@ class Spaceship extends Group
 		this.model.addEventListener( 'load', obj=>traverse(obj.threejs) );
 
 		this.add( this.model );
-//		this.threejs.castShadow = true;
 		
 	} // Spaceship.constructor
 

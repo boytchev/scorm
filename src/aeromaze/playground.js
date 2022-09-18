@@ -6,6 +6,7 @@
 
 class Playground extends ScormPlayground
 {
+	static POINTER_MOVEMENT = 5;
 	static POINTS_SPEED = 2000;
 	
 	constructor( )
@@ -18,13 +19,14 @@ class Playground extends ScormPlayground
 		this.maze = new Maze( );
 		
 		this.spaceship = new Spaceship( );
-		this.spaceshipA = new Spaceship( );
+//		this.spaceshipA = new Spaceship( );
 		
 		this.platformA = new Platform( ); // from platform
 		this.platformB = new Platform( ); // to platform
 	
 		// add the platforms and ships to the planet so they are scaled automatically
-		this.maze.add( this.platformA, this.platformB, this.spaceship, this.spaceshipA );
+		this.maze.add( this.platformA, this.platformB, this.spaceship );
+		//, this.spaceshipA );
 //		this.maze.threejs.castShadow = true;
 			
 		this.resize( );
@@ -97,11 +99,11 @@ class Playground extends ScormPlayground
 		this.spaceship.center = this.platformA.gridPos;
 		this.spaceship.spin = this.platformA.spin;
 		
-		this.spaceshipA.center = this.platformB.gridPos;
-		this.spaceshipA.spin = this.platformB.spin;
+		// this.spaceshipA.center = this.platformB.gridPos;
+		// this.spaceshipA.spin = this.platformB.spin;
 
-		this.spaceship.fly(  'UFFDAA' );
-//		this.spaceshipA.fly( 'DFFUFUFFFFUAAFLL' );
+		// this.spaceship.fly(  'UFF' );
+		// this.spaceshipA.fly( 'DFFUFUFFFFUAAFLL' );
 		
 
 	} // Playground.newGame
@@ -112,7 +114,7 @@ class Playground extends ScormPlayground
 	canEndGame( )
 	{
 		// ...
-		return false;
+		return true;
 	} // Playground.canEndGame
 	
 	
@@ -124,7 +126,7 @@ class Playground extends ScormPlayground
 		
 		// ...
 		
-		return 0 * points;
+		return 1 * points;
 
 	} // Playground.evaluateGame
 	
@@ -163,10 +165,34 @@ class Playground extends ScormPlayground
 	
 	
 	
+	setPos( label, angle, distScale = 1 )
+	{
+		var dist = 120*distScale,
+			dx = dist*Math.cos(radians(angle)),
+			dy = dist*Math.sin(radians(angle));
+		var elem = element( label );
+		
+		var pos = this.spaceship.screenPosition( );
+		elem.style.left = (pos[0]+dx-elem.clientWidth/2)+'px';
+		elem.style.top = (pos[1]-dy-elem.clientHeight/2)+'px';
+	}
+		
+		
+		
 	// update the playground
 	update( t, dT )
 	{
 		// ...
+		
+		this.setPos( 'lt', 180 );
+		this.setPos( 'rt', 0 );
+		this.setPos( 'up', 90 );
+		this.setPos( 'dn', 270 );
+		this.setPos( 'ac', 135 );
+		this.setPos( 'cw', 45 );
+		this.setPos( 'go1', -45 );
+		this.setPos( 'go2', -135 );
+
 //		if( this.spaceship ) this.spaceship.up(t,dT);//spinH = 250*t;
 //		if( this.spaceshipA ) this.spaceshipA.up(t,dT);//spinH = 250*t;
 		//this.spaceship.y = 0.07*Math.sin( 2*t )+0.07*Math.sin( 1.3*t );

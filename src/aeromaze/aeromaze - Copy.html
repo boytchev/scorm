@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Aeromaze</title>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&display=swap" rel="stylesheet">
+	<link rel="shortcut icon" type="image/png" href="images/logo.png"/>
+	
+	<link rel="stylesheet" href="styles.css">
+
+	
+	<script src="libs/suica.js"></script>
+	<script src="libs/scorm.utils.js"></script>
+</head>
+
+<body>
+	<suica fullwindow background="black">
+		<model
+			src="models/craft_speederA.glb"
+			size="10"
+			center="-20,-2.5,-15"
+			spin="0,0,0"
+		>
+		<lookat from="0,30,100" up="3,1,0">
+	</suica>
+</body>
+</html>

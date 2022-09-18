@@ -113,7 +113,7 @@ class Planet extends Group
 		{
 		}
 		else
-			playground.newGame( 0 );
+			playground.newGame( );
 	} // Planet.onClick
 	
 		
