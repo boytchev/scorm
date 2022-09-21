@@ -95,9 +95,7 @@ class Playground extends ScormPlayground
 		this.platformB.randomize( sides[1] );
 
 
-		// ...
-		this.spaceship.center = this.platformA.gridPos;
-		this.spaceship.spin = this.platformA.spin;
+		this.spaceship.show( );
 		
 		// this.spaceshipA.center = this.platformB.gridPos;
 		// this.spaceshipA.spin = this.platformB.spin;
@@ -165,17 +163,7 @@ class Playground extends ScormPlayground
 	
 	
 	
-	setPos( label, angle, distScale = 1 )
-	{
-		var dist = 120*distScale,
-			dx = dist*Math.cos(radians(angle)),
-			dy = dist*Math.sin(radians(angle));
-		var elem = element( label );
-		
-		var pos = this.spaceship.screenPosition( );
-		elem.style.left = (pos[0]+dx-elem.clientWidth/2)+'px';
-		elem.style.top = (pos[1]-dy-elem.clientHeight/2)+'px';
-	}
+	
 		
 		
 		
@@ -184,15 +172,8 @@ class Playground extends ScormPlayground
 	{
 		// ...
 		
-		this.setPos( 'lt', 180 );
-		this.setPos( 'rt', 0 );
-		this.setPos( 'up', 90 );
-		this.setPos( 'dn', 270 );
-		this.setPos( 'ac', 135 );
-		this.setPos( 'cw', 45 );
-		this.setPos( 'go1', -45 );
-		this.setPos( 'go2', -135 );
-
+		this.spaceship.updateRing( );
+		
 //		if( this.spaceship ) this.spaceship.up(t,dT);//spinH = 250*t;
 //		if( this.spaceshipA ) this.spaceshipA.up(t,dT);//spinH = 250*t;
 		//this.spaceship.y = 0.07*Math.sin( 2*t )+0.07*Math.sin( 1.3*t );

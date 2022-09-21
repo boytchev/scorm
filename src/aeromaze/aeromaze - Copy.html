@@ -20,7 +20,7 @@
 </head>
 
 <body>
-	<suica fullwindow background="black">
+	<suica fullwindow background="black" onpointermove="onPointerMove" onclick="onClick">
 		<model
 			src="models/craft_speederA.glb"
 			size="10"
@@ -29,5 +29,21 @@
 		>
 		<lookat from="0,30,100" up="3,1,0">
 	</suica>
+	<script>
+		function onPointerMove( event )
+		{		
+		console.log('move');
+		}
+
+
+
+		function onClick( event )
+		{
+		console.log('click');
+
+		}
+
+		
+	</script>
 </body>
 </html>

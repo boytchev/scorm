@@ -15,15 +15,25 @@
 	<link rel="stylesheet" href="styles.css">
 
 	<style>
+		.ring {
+			position: absolute;
+			width: 2px;
+			height: 2px;
+			background: yellow;
+			display: none;
+			pointer-events: none;
+		}
 		.command {
-			width: 5em;
-			height: 5em;
+			width: 70px;
+			height: 70px;
 			background: rgba( 255, 255, 255, 0.3 );
 			border: dotted black 1px;
-			border-radius: 5em;
+			border-radius: 70px;
 			text-align: center;
 			padding: 0.25em;
 			position: absolute;
+			pointer-events: auto;
+			user-select: none;
 		}
 		.command:hover {
 			background: rgba( 255, 200, 100, 1 );
@@ -46,21 +56,23 @@
 </head>
 
 <body>
-	<suica fullwindow fullscreen background="linen" ontime="update" onpointermove="onPointerMove">
+	<suica fullwindow fullscreen background="linen" ontime="update" onPointerMove="onPointerMove" onPointerDown="onPointerDown">
 		<orbit id="orb" distance="35" altitude="0" --maxPolarAngle="1.57" maxDistance="35" minDistance="2" enablePan="true">
 		<div class="hud corner top left"></div>
 		<div class="hud corner top right"></div>
 		<div class="hud corner bottom left"></div>
 		<div class="hud corner bottom right"></div>
 		
-		<div id="rt" class="command"><img src="images/right.png"></div>
-		<div id="lt" class="command"><img src="images/left.png"></div>
-		<div id="up" class="command"><img src="images/up.png"></div>
-		<div id="dn" class="command"><img src="images/down.png"></div>
-		<div id="cw" class="command"><img src="images/rollcw.png"></div>
-		<div id="ac" class="command"><img src="images/rollccw.png"></div>
-		<div id="go1" class="command"><img src="images/go.png"></div>
-		<div id="go2" class="command"><img src="images/go.png"></div>
+		<div id="ring" class="ring">
+			<div id="rt" class="command"><img src="images/right.png" draggable="false"></div>
+			<div id="lt" class="command"><img src="images/left.png" draggable="false"></div>
+			<div id="up" class="command"><img src="images/up.png" draggable="false"></div>
+			<div id="dn" class="command"><img src="images/down.png" draggable="false"></div>
+			<div id="cw" class="command"><img src="images/rollcw.png" draggable="false"></div>
+			<div id="ac" class="command"><img src="images/rollccw.png" draggable="false"></div>
+			<div id="fd" class="command"><img src="images/forward.png" draggable="false"></div>
+			<div id="st" class="command"><img src="images/start2.png" draggable="false"></div>
+		</div>
 		
 		<div class="hud top right" style="border: none;">
 			<div id="timer" class="value">00:00:00</div>
@@ -97,6 +109,16 @@
 			playground.pointerMovement += Math.abs( event.movementX ) + Math.abs( event.movementY );
 		}
 
+
+
+		function onPointerDown( event )
+		{
+			var obj = findObject( event, [playground.spaceship] );
+			if( obj )
+			{
+				playground.spaceship.onClicka( );
+			}
+		}
 		<!-- function onPointerMove( event ) -->
 		<!-- { -->
 			<!-- if( findObject( event ) ) -->

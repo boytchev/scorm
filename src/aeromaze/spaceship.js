@@ -7,16 +7,21 @@ class Spaceship extends Group
 {
 	static TURN_SPEED = 300;
 	static MOVE_SPEED = 500;
+
 	
-	constructor( modelName = 'craft_speederA' )
+	
+	constructor( )
 	{
 		super( suica );
 
-		this.model = model( 'models/' + modelName + '.glb' );
+		this.ring = this.generateRing( );
+
+		this.model = model( 'models/craft_speederA.glb' );
 			its.size = Planet.SPACESHIP_SCALE;
 			its.x = -2*Planet.SPACESHIP_SCALE;
 			its.y = -0.25*Planet.SPACESHIP_SCALE;
 			its.z = -1.5*Planet.SPACESHIP_SCALE;
+			
 
 		// function to recursively make model element cast shadow
 		function traverse( obj )
@@ -26,14 +31,60 @@ class Spaceship extends Group
 				traverse( obj.children[i] );
 		}
 
-		this.model.addEventListener( 'load', obj=>traverse(obj.threejs) );
-
+		this.addEventListener( 'load', obj=>traverse(obj.threejs) );
 		this.add( this.model );
-		
+		this.visible = false;
 	} // Spaceship.constructor
 
 
 
+	// generate commands ring
+	generateRing( )
+	{
+		// function setPos( label, angle, distScale = 1 )
+		// {
+			// var dist = 120*distScale,
+				// dx = Math.round( dist*Math.cos(radians(angle)) ),
+				// dy = Math.round( dist*Math.sin(radians(angle)) );
+			// var elem = element( label );
+			
+			// console.log(elem,elem.clientWidth,elem.clientHeight)
+			
+			// elem.style.left = (-80/2+dx)+'px';
+			// elem.style.top = (-80/2-dy)+'px';
+		// }
+
+		// setPos( 'lt', 180 );
+		// setPos( 'rt', 0 );
+		// setPos( 'up', 90 );
+		// setPos( 'dn', 270 );
+		// setPos( 'ac', 135 );
+		// setPos( 'cw', 45 );
+		// setPos( 'go1', -45 );
+		// setPos( 'go2', -135 );
+
+		function setPos( label, dx, dy )
+		{
+			var elem = element( label );
+			
+			elem.style.left = (-80/2+dx)+'px';
+			elem.style.top = (-80/2+dy)+'px';
+		}
+
+		setPos( 'lt', -110,   0 );
+		setPos( 'rt',  110,   0 );
+		setPos( 'up',   0, -110 );
+		setPos( 'dn',   0,  110 );
+		setPos( 'ac', -80, -80 );
+		setPos( 'cw',  80, -80 );
+		setPos( 'fd', -80,  80 );
+		setPos( 'st',  80,  80 );
+
+		return element( 'ring' );
+	} // Spaceship.generateRing
+	
+	
+	
 	// generate a tween for rotation around axis
 	rotateTween( method, sign )
 	{
@@ -134,16 +185,50 @@ class Spaceship extends Group
 	}
 	
 	
-	// handles clicks on a plate
-	onClick( )
+	
+	// move the spaceship to platform A
+	show( )
+	{
+		// use platform's position and orientation
+		this.center = playground.platformA.gridPos;
+		this.spin = playground.platformA.spin;
+		this.visible = true;
+	}
+	
+	
+	
+	// handles clicks on a plate (called from main HTML file)
+	onClicka( )
 	{
 		// if game is not started, click on any plate will start it
 		if( playground.gameStarted )
-		{
+		{	
+	//console.log(this.ring.style.display);
+			// toggle the ring
+			if( this.ring.style.display=='block' )
+				this.ring.style.display = 'none';
+			else
+				this.ring.style.display = 'block';
 		}
 		else
-			playground.newGame( 0 );
+			playground.newGame( );
 	} // Spaceship.onClick
 	
 		
+	
+	// moves the ring to the spaceship
+	updateRing( )
+	{
+		if( this.ring.style.display=='block' )
+		{
+			var pos = this.screenPosition( );
+
+			this.ring.style.left = (pos[0]-this.ring.clientWidth/2)+'px';
+			this.ring.style.top = (pos[1]-this.ring.clientHeight/2)+'px';
+		}
+	} // Spaceship.updateRing
+
+	
 } // class Spaceship
+
+
