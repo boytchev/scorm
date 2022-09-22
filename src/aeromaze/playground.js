@@ -95,7 +95,7 @@ class Playground extends ScormPlayground
 		this.platformB.randomize( sides[1] );
 
 
-		this.spaceship.show( );
+		this.spaceship.goToPlatformA( );
 		
 		// this.spaceshipA.center = this.platformB.gridPos;
 		// this.spaceshipA.spin = this.platformB.spin;
@@ -172,7 +172,7 @@ class Playground extends ScormPlayground
 	{
 		// ...
 		
-		this.spaceship.updateRing( );
+		this.spaceship.update( t, dT );
 		
 //		if( this.spaceship ) this.spaceship.up(t,dT);//spinH = 250*t;
 //		if( this.spaceshipA ) this.spaceshipA.up(t,dT);//spinH = 250*t;

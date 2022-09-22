@@ -107,6 +107,18 @@
 		function onPointerMove( event )
 		{		
 			playground.pointerMovement += Math.abs( event.movementX ) + Math.abs( event.movementY );
+
+			var obj;
+			if( playground.gameStarted )
+			{
+				obj = findObject( event, [playground.spaceship] );
+				event.target.style.cursor = obj ? 'pointer' : 'default';
+			}
+			else
+			{
+				obj = findObject( event, [playground.planet] );
+				event.target.style.cursor = obj ? 'pointer' : 'default';
+			}
 		}
 
 
@@ -116,7 +128,7 @@
 			var obj = findObject( event, [playground.spaceship] );
 			if( obj )
 			{
-				playground.spaceship.onClicka( );
+				playground.spaceship.onClick( );
 			}
 		}
 		<!-- function onPointerMove( event ) -->

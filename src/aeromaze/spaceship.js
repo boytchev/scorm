@@ -7,6 +7,7 @@ class Spaceship extends Group
 {
 	static TURN_SPEED = 300;
 	static MOVE_SPEED = 500;
+	static GOTO_PLATFORM_SPEED = 1000;
 
 	
 	
@@ -33,7 +34,6 @@ class Spaceship extends Group
 
 		this.addEventListener( 'load', obj=>traverse(obj.threejs) );
 		this.add( this.model );
-		this.visible = false;
 	} // Spaceship.constructor
 
 
@@ -187,18 +187,24 @@ class Spaceship extends Group
 	
 	
 	// move the spaceship to platform A
-	show( )
+	goToPlatformA( )
 	{
-		// use platform's position and orientation
-		this.center = playground.platformA.gridPos;
-		this.spin = playground.platformA.spin;
-		this.visible = true;
+		var that = this;
+		
+		new TWEEN.Tween( {center:this.center, spin:this.spin} )
+			.to( {center:playground.platformA.gridPos, spin:playground.platformA.spin}, Spaceship.GOTO_PLATFORM_SPEED )
+			.onUpdate( function( obj ) {
+					that.center = obj.center;
+					that.spin = obj.spin;
+				} )
+			.easing( TWEEN.Easing.Cubic.Out )
+			.start( );
 	}
 	
 	
 	
 	// handles clicks on a plate (called from main HTML file)
-	onClicka( )
+	onClick( )
 	{
 		// if game is not started, click on any plate will start it
 		if( playground.gameStarted )
@@ -216,16 +222,26 @@ class Spaceship extends Group
 	
 		
 	
-	// moves the ring to the spaceship
-	updateRing( )
+	// moves the spaceship and/or its ring of buttons
+	update( t, dT )
 	{
-		if( this.ring.style.display=='block' )
+		if( playground.gameStarted )
 		{
-			var pos = this.screenPosition( );
+			if( this.ring.style.display=='block' )
+			{
+				var pos = this.screenPosition( );
 
-			this.ring.style.left = (pos[0]-this.ring.clientWidth/2)+'px';
-			this.ring.style.top = (pos[1]-this.ring.clientHeight/2)+'px';
+				this.ring.style.left = (pos[0]-this.ring.clientWidth/2)+'px';
+				this.ring.style.top = (pos[1]-this.ring.clientHeight/2)+'px';
+			}
 		}
+		else
+		{
+			// f(x) in [-180,180)
+			function f(x) { x %= 360; return x>=180 ? x-360 : x; }
+			this.spin = [ f(26.9*t), f(23.5*t), f(31.7*t)];
+		}
+		
 	} // Spaceship.updateRing
 
 	
