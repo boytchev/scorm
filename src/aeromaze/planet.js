@@ -11,21 +11,25 @@ class Planet extends Group
 	//	7	18/7=2.57	4		8/7=1.14	3/7=0.43
 	//	9	22/9=2.44	4		8/9=0.89	3/9=0.33
 	
-	static PLATES = 3; // must be odd
-	static SIZE = 2+4/Planet.PLATES;
-	static SCALE = 4;
-	static GRID_SCALE = 2*Planet.SCALE/Planet.PLATES;
-	static SPACESHIP_SCALE = 1/2; //3/8 * Planet.GRID_SCALE;
-	static PLATFRORM_SCALE = 1/2;
-		
-	constructor( )
+	constructor( plates )
 	{
 		super( suica );
 
+		this.PLATES = plates; // must be odd
+		this.SIZE = 2+4/this.PLATES;
+		this.SCALE = 20/3 * this.PLATES / (this.PLATES+2);
+		this.GRID_SCALE = 2*this.SCALE/this.PLATES;
+		//this.SPACESHIP_SCALE = 1/2;
+		//this.PLATFRORM_SCALE = 1/2;
+			
+		this.planetBack = null;
+		this.planetFront = null;
+		
 		this.constructPlanet( );
 		
 		this.threejs.castShadow = true;
 		
+		this.visible = false;
 	} // Planet.constructor
 
 
@@ -34,9 +38,8 @@ class Planet extends Group
 	constructPlanet( )
 	{
 		// material
-		var map = ScormUtils.image( 'metal_plate.jpg', Planet.PLATES/2, Planet.PLATES/2, 1/2, 1/2 ),
-			//normalMap = ScormUtils.image( 'metal_plate_normal.jpg' ),
-			alphaMap = ScormUtils.image( 'metal_plate_alpha.jpg', Planet.PLATES/2, Planet.PLATES/2, 1/2, 1/2 );
+		var map = ScormUtils.image( 'metal_plate.jpg', this.PLATES/2, this.PLATES/2, 1/2, 1/2 ),
+			alphaMap = ScormUtils.image( 'metal_plate_alpha.jpg', this.PLATES/2, this.PLATES/2, 1/2, 1/2 );
 		var materialBack = new THREE.MeshStandardMaterial( {
 			color: 'lightgray',//'white',
 			metalness: 0,
@@ -59,7 +62,7 @@ class Planet extends Group
 		} );	
 		
 		// geometry
-		const S = Planet.SIZE/2;
+		const S = this.SIZE/2;
 		var vertices = [
 			[ S, -1, -1], /* X+ */
 			[ S, -1,  1], 
@@ -92,28 +95,36 @@ class Planet extends Group
 			[ 1, -1, -S], 
 		]
 
-		this.add( convex( vertices, Planet.SCALE ) );
+		this.planetBack = convex( vertices, this.SCALE );
+		this.add( this.planetBack );
 			its.threejs.material = materialBack;
 			its.threejs.receiveShadow = true;
 
-		this.add( convex( vertices, Planet.SCALE ) );
+		this.planetFront = convex( vertices, this.SCALE );
+		this.add( this.planetFront );
 			its.threejs.material = materialFront;
 			its.threejs.receiveShadow = true;
 			
 		this.addEventListener( 'click', this.onClick );
 	}
-
-
+	
+	
+	
 	
 	// handles clicks on a plate
 	onClick( )
 	{
+		if( playground.pointerMovement > Playground.POINTER_MOVEMENT )
+			return;
+		
 		// if game is not started, click on any plate will start it
 		if( playground.gameStarted )
 		{
 		}
 		else
+		{
 			playground.newGame( );
+		}
 	} // Planet.onClick
 	
 		

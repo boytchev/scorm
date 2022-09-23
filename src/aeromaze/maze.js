@@ -13,22 +13,40 @@
 
 class Maze extends Group
 {
-	static GRID = 2 + Planet.PLATES>>1;
-	
-	constructor( )
+/*	static GRID = 2 + Planet.PLATES>>1;
+	*/
+	constructor( planet )
 	{
 		super( suica );
+
+		this.update( planet );
+
+	} // Maze.constructor
+	
+		
+		
+	update( planet )
+	{
+		this.GRID = 2 + planet.PLATES>>1;
+		this.GRID2 = this.GRID ** 2;
+		this.size = planet.GRID_SCALE;
+	} // Maze.update
+	
+	
+	
+	regenerate( )
+	{
 
 var vertices = 0;
 var lines = 0;
 		
-		for( var x = -Maze.GRID; x<=Maze.GRID; x++ )
-		for( var y = -Maze.GRID; y<=Maze.GRID; y++ )
-		for( var z = -Maze.GRID; z<=Maze.GRID; z++ )
-			if( Maze.allowedTheoretically(x,y,z) )
+		for( var x = -this.GRID; x<=this.GRID; x++ )
+		for( var y = -this.GRID; y<=this.GRID; y++ )
+		for( var z = -this.GRID; z<=this.GRID; z++ )
+			if( this.allowedTheoretically(x,y,z) )
 			{
 				vertices++;
-				//this.add( cube([x,y,z],0.1) );
+				this.add( cube([x,y,z],0.1) );
 				// if( Maze.allowedTheoretically(x+1,y,z) )
 					// this.add( line([x,y,z],[x+1,y,z]) ), lines++;
 				// its.color = 'yellow'
@@ -45,28 +63,27 @@ var lines = 0;
 			
 console.log(vertices,'vertices')
 console.log(lines,'lines')
-		this.size = Planet.GRID_SCALE;
-	} // Maze.constructor
+
+	} // Maze.regenerate
 	
-		
+	
+	
 	// return true if grid position [x,y,z] is theoretically allowed
-	
-	static allowedTheoretically( x, y, z )
+	allowedTheoretically( x, y, z )
 	{
 		x = x*x;
 		y = y*y;
 		z = z*z;
 	
-		var nn = Maze.GRID*Maze.GRID;
+		if( x > this.GRID2 ) return false;
+		if( y > this.GRID2 ) return false;
+		if( z > this.GRID2 ) return false;
 		
-		if( x > nn ) return false;
-		if( y > nn ) return false;
-		if( z > nn ) return false;
-		
-		if( x+y >= 2*nn ) return false;
-		if( x+z >= 2*nn ) return false;
-		if( y+z >= 2*nn ) return false;
+		if( x+y >= 2*this.GRID2 ) return false;
+		if( x+z >= 2*this.GRID2 ) return false;
+		if( y+z >= 2*this.GRID2 ) return false;
 				
 		return true;
 	}
+	
 } // class Maze

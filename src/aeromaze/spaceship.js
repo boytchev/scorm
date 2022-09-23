@@ -8,8 +8,9 @@ class Spaceship extends Group
 	static TURN_SPEED = 300;
 	static MOVE_SPEED = 500;
 	static GOTO_PLATFORM_SPEED = 1000;
+	static GOTO_CENTER_SPEED = 500;
 
-	
+	static SCALE = 1/2;
 	
 	constructor( )
 	{
@@ -17,12 +18,13 @@ class Spaceship extends Group
 
 		this.ring = this.generateRing( );
 
+		this.flightCommands = '';
+		
 		this.model = model( 'models/craft_speederA.glb' );
-			its.size = Planet.SPACESHIP_SCALE;
-			its.x = -2*Planet.SPACESHIP_SCALE;
-			its.y = -0.25*Planet.SPACESHIP_SCALE;
-			its.z = -1.5*Planet.SPACESHIP_SCALE;
-			
+			its.size = Spaceship.SCALE;
+			its.x = -2*Spaceship.SCALE;
+			its.y = -0.25*Spaceship.SCALE;
+			its.z = -1.5*Spaceship.SCALE;
 
 		// function to recursively make model element cast shadow
 		function traverse( obj )
@@ -63,22 +65,28 @@ class Spaceship extends Group
 		// setPos( 'go1', -45 );
 		// setPos( 'go2', -135 );
 
-		function setPos( label, dx, dy )
+		var that = this;
+		
+		function setPos( label, command, dx, dy )
 		{
-			var elem = element( label );
+			var elem = element( label ),
+				imgElem = elem.getElementsByTagName( 'img' )[0];
 			
 			elem.style.left = (-80/2+dx)+'px';
 			elem.style.top = (-80/2+dy)+'px';
+
+			imgElem.command = command;
+			imgElem.addEventListener( 'click', that.command );
 		}
 
-		setPos( 'lt', -110,   0 );
-		setPos( 'rt',  110,   0 );
-		setPos( 'up',   0, -110 );
-		setPos( 'dn',   0,  110 );
-		setPos( 'ac', -80, -80 );
-		setPos( 'cw',  80, -80 );
-		setPos( 'fd', -80,  80 );
-		setPos( 'st',  80,  80 );
+		setPos( 'lt', 'L', -110,    0 );
+		setPos( 'rt', 'R',  110,    0 );
+		setPos( 'up', 'U',    0, -110 );
+		setPos( 'dn', 'D',    0,  110 );
+		setPos( 'ac', 'A',  -80,  -80 );
+		setPos( 'cw', 'C',   80,  -80 );
+		setPos( 'fd', 'F',  -80,   80 );
+		setPos( 'st', '!',   80,   80 );
 
 		return element( 'ring' );
 	} // Spaceship.generateRing
@@ -134,12 +142,12 @@ class Spaceship extends Group
 	
 	
 	// perform fly commands
-	fly( commands )
+	fly( )
 	{
 		var firstTween = null,
 			lastTween = null;
 			
-		for( var ch of commands )
+		for( var ch of this.flightCommands )
 		{
 			var tween;
 			
@@ -182,17 +190,52 @@ class Spaceship extends Group
 		}
 		
 		firstTween?.start( );
+		this.flightCommands = '';
 	}
+	
+	
+	
+	// adds a new command
+	command( event )
+	{
+//		console.dir( event.target );
+		var spaceship = playground.spaceship,
+			command = event.target.command;
+
+		if( command == '!' )
+			spaceship.fly( );
+		else
+			spaceship.flightCommands += command;
+	} // Spaceship.command
 	
 	
 	
 	// move the spaceship to platform A
 	goToPlatformA( )
 	{
+		this.flightCommands = '';
+
 		var that = this;
 		
 		new TWEEN.Tween( {center:this.center, spin:this.spin} )
-			.to( {center:playground.platformA.gridPos, spin:playground.platformA.spin}, Spaceship.GOTO_PLATFORM_SPEED )
+			.to( {center:playground.platformA.center, spin:playground.platformA.spin}, Spaceship.GOTO_PLATFORM_SPEED )
+			.onUpdate( function( obj ) {
+					that.center = obj.center;
+					that.spin = obj.spin;
+				} )
+			.easing( TWEEN.Easing.Cubic.Out )
+			.start( );
+	}
+	
+	
+	
+	// move the spaceship to the center
+	goToCenter( )
+	{
+		var that = this;
+		
+		new TWEEN.Tween( {center:this.center, spin:this.spin} )
+			.to( {center:[0,0,0], spin:[0,0,0]}, Spaceship.GOTO_CENTER_SPEED )
 			.onUpdate( function( obj ) {
 					that.center = obj.center;
 					that.spin = obj.spin;
@@ -239,7 +282,7 @@ class Spaceship extends Group
 		{
 			// f(x) in [-180,180)
 			function f(x) { x %= 360; return x>=180 ? x-360 : x; }
-			this.spin = [ f(26.9*t), f(23.5*t), f(31.7*t)];
+			this.spin = [ f(this.spinH+26.9*dT), f(this.spinV+23.5*dT), f(this.spinT+31.7*dT)];
 		}
 		
 	} // Spaceship.updateRing

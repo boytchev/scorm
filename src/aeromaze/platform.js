@@ -5,17 +5,18 @@
 
 class Platform extends Group
 {
-	static DISTANCE = Planet.PLATES/2+1;
 	
-	constructor( )
+	static SCALE = 1/2;
+	
+	constructor( planet )
 	{
 		super( suica );
 
 		this.model = model( 'models/platform_large.glb' );
-			its.size = Planet.PLATFRORM_SCALE;
-			its.x = -2*Planet.PLATFRORM_SCALE;
-			its.y = 0;
-			its.z = -1.5*Planet.PLATFRORM_SCALE;
+			its.size = Platform.SCALE;
+			its.x = -2*Platform.SCALE;
+			its.y = -0.5;
+			its.z = -1.5*Platform.SCALE;
 
 		// function to recursively make model element cast shadow
 		function traverse( obj )
@@ -36,45 +37,40 @@ class Platform extends Group
 
 
 	// set the platform on random position
-	randomize( side )
+	randomize( planet, side )
 	{
+		var maze = playground.maze;
+		
 		// important:  x|0 truncates towards 0, so 3.9|0=3 and -3.0|0=-3
-		var u = random( -Maze.GRID+0.01, Maze.GRID-0.01 ) | 0,
-			v = random( -Maze.GRID+0.01, Maze.GRID-0.01 ) | 0,
-			d = 1 + (Planet.PLATES>>1);
+		var u = random( -maze.GRID+0.01, maze.GRID-0.01 ) | 0,
+			v = random( -maze.GRID+0.01, maze.GRID-0.01 ) | 0,
+			d = 1 + (planet.PLATES>>1);
 		
 		switch( side )
 		{
 			case 0: // bottom
 				this.spin = [0,0,0];
-				this.center = [u, -Platform.DISTANCE, v];
-				this.gridPos = [u, -d, v];
+				this.center = [u, -d, v];
 				break;
 			case 1: // top
 				this.spin = [0,180,0];
-				this.center = [u, Platform.DISTANCE, v];
-				this.gridPos = [u, d, v];
+				this.center = [u, d, v];
 				break;
 			case 2: // left
 				this.spin = [90,90,90];
-				this.x = -Platform.DISTANCE;
-				this.center = [-Platform.DISTANCE, u, v];
-				this.gridPos = [-d, u, v];
+				this.center = [-d, u, v];
 				break;
 			case 3: // right
 				this.spin = [90,-90,90];
-				this.center = [Platform.DISTANCE, u, v];
-				this.gridPos = [d, u, v];
+				this.center = [d, u, v];
 				break;
 			case 4: // front
 				this.spin = [0,-90,0];
-				this.center = [u, v, Platform.DISTANCE];
-				this.gridPos = [u, v, d];
+				this.center = [u, v, d];
 				break;
 			case 5: // back
 				this.spin = [0,90,0];
-				this.center = [u, v, -Platform.DISTANCE];
-				this.gridPos = [u, v, -d];
+				this.center = [u, v, -d];
 				break;
 			default:
 				throw 'Unknown side';
@@ -98,4 +94,11 @@ class Platform extends Group
 	} // Platform.onClick
 	
 		
+		
+	// update sizes
+	update( planet )
+	{
+		this.DISTANCE = planet.PLATES/2+1;
+	}
+	
 } // class Platform

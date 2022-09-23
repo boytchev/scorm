@@ -8,27 +8,37 @@ class Playground extends ScormPlayground
 {
 	static POINTER_MOVEMENT = 5;
 	static POINTS_SPEED = 2000;
+	static POINTER_USED = false;
 	
 	constructor( )
 	{
 		super( );
 		
+		this.pointerMovement = 0;
 		this.addLightsAndShadows( );
 
-		this.planet = new Planet( );
-		this.maze = new Maze( );
-		
+		this.planets = [
+			new Planet( 3 ),
+			new Planet( 5 ),
+			new Planet( 7 ),
+			new Planet( 9 )
+		]
+		this.planet = this.planets[0];
+		this.planet.visible = true;
+
+		this.maze = new Maze( this.planet );
 		this.spaceship = new Spaceship( );
-//		this.spaceshipA = new Spaceship( );
 		
-		this.platformA = new Platform( ); // from platform
-		this.platformB = new Platform( ); // to platform
+		this.platformA = new Platform( this.planet ); // from platform
+		this.platformB = new Platform( this.planet ); // to platform
 	
 		// add the platforms and ships to the planet so they are scaled automatically
 		this.maze.add( this.platformA, this.platformB, this.spaceship );
-		//, this.spaceshipA );
-//		this.maze.threejs.castShadow = true;
-			
+		this.maze.threejs.castShadow = true;
+
+		orb.addEventListener( 'start', () => Playground.POINTER_USED=true  );
+		orb.addEventListener( 'end', () => Playground.POINTER_USED=false );
+
 		this.resize( );
 
 		this.translate( [
@@ -89,19 +99,27 @@ class Playground extends ScormPlayground
 	{
 		super.newGame( );
 
+		this.planet.visible = false;
+		this.planet = this.planets[ Math.round(THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, 3 )) ];
+		this.planet.visible = true;
+		
+		this.maze.update( this.planet );
+		this.platformA.update( this.planet );
+		this.platformB.update( this.planet );
+
+		
 		// platforms
 		var sides = [0,1,2,3,4,5].sort( ()=>Math.random()-0.5 );
-		this.platformA.randomize( sides[0] );
-		this.platformB.randomize( sides[1] );
+		this.platformA.randomize( this.planet, sides[0] );
+		this.platformB.randomize( this.planet, sides[1] );
 
 
 		this.spaceship.goToPlatformA( );
 		
-		// this.spaceshipA.center = this.platformB.gridPos;
-		// this.spaceshipA.spin = this.platformB.spin;
+		this.maze.regenerate( );
+		
 
-		// this.spaceship.fly(  'UFF' );
-		// this.spaceshipA.fly( 'DFFUFUFFFFUAAFLL' );
+		//this.spaceship.fly( 'FFUFDFF' );
 		
 
 	} // Playground.newGame
@@ -134,6 +152,12 @@ class Playground extends ScormPlayground
 	endGame( )
 	{
 		super.endGame( );
+
+		this.platformA.visible = false;
+		this.platformB.visible = false;
+		
+		this.spaceship.ring.style.display = 'none';
+		this.spaceship.goToCenter( );
 		
 		// ...
 		
@@ -173,6 +197,7 @@ class Playground extends ScormPlayground
 		// ...
 		
 		this.spaceship.update( t, dT );
+
 		
 //		if( this.spaceship ) this.spaceship.up(t,dT);//spinH = 250*t;
 //		if( this.spaceshipA ) this.spaceshipA.up(t,dT);//spinH = 250*t;
