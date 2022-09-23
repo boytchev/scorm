@@ -34,9 +34,41 @@ class Maze extends Group
 	
 	
 	
+	// creates a route between two points
+	addRoute( from, to )
+	{
+		// mangle order of coordintes
+		var coords = [0,1,2].sort((a,b)=>random(-1,1));
+		
+		for( var i in coords )
+		{
+			// if equal coordinates - exit
+			if( from[i] == to[i] )
+				continue;
+			
+			// find a mid point
+			var mid = [...from];
+				mid[i] = to[i];
+
+			if( !this.allowedTheoretically( mid ) )
+				continue;
+			
+			// add a route to the mid point
+			this.add( line( from, mid ) )
+			
+			// continue to the target
+			this.addRoute( mid, to );
+			break;
+		}
+	} // Maze.addRoute
+	
+	
+	
+	
 	regenerate( )
 	{
-
+		this.addRoute( playground.platformA.center, playground.platformB.center );
+/*
 var vertices = 0;
 var lines = 0;
 		
@@ -63,17 +95,17 @@ var lines = 0;
 			
 console.log(vertices,'vertices')
 console.log(lines,'lines')
-
+*/
 	} // Maze.regenerate
 	
 	
 	
 	// return true if grid position [x,y,z] is theoretically allowed
-	allowedTheoretically( x, y, z )
+	allowedTheoretically( pos )
 	{
-		x = x*x;
-		y = y*y;
-		z = z*z;
+		var x = pos[0] ** 2,
+			y = pos[1] ** 2,
+			z = pos[2] ** 2;
 	
 		if( x > this.GRID2 ) return false;
 		if( y > this.GRID2 ) return false;

@@ -144,6 +144,8 @@ class Spaceship extends Group
 	// perform fly commands
 	fly( )
 	{
+		this.ring.style.display = 'none';
+
 		var firstTween = null,
 			lastTween = null;
 			
