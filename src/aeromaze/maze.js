@@ -40,7 +40,7 @@ class Maze extends Group
 		// mangle order of coordintes
 		var coords = [0,1,2].sort((a,b)=>random(-1,1));
 		
-		for( var i in coords )
+		for( var i=0; i<coords.length; i++ )
 		{
 			// if equal coordinates - exit
 			if( from[i] == to[i] )
