@@ -19,6 +19,7 @@ class Spaceship extends Group
 		this.ring = this.generateRing( );
 
 		this.flightCommands = '';
+		this.updateStartIcon = true;
 		
 		this.model = model( 'models/craft_speederA.glb' );
 			its.size = Spaceship.SCALE;
@@ -259,7 +260,15 @@ class Spaceship extends Group
 			if( this.ring.style.display=='block' )
 				this.ring.style.display = 'none';
 			else
+			{
+				if( this.updateStartIcon )
+				{
+					element( 'sticon' ).src = `images/start_${playground.getLanguage()}.png`;
+					this.updateStartIcon = false;
+				}
+
 				this.ring.style.display = 'block';
+			}
 		}
 		else
 			playground.newGame( );
