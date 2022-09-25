@@ -103,7 +103,7 @@ class Maze extends Group
 	
 	regenerate( midPointsCount = 0 )
 	{
-		var x, y, z;
+		//var x, y, z;
 		
 		var platformA = playground.platformA,
 			platformB = playground.platformB;
@@ -218,13 +218,13 @@ console.log(lines)
 				var a = forbidden[i],
 					b = forbidden[i+1];
 					
-				fail = a.x==b.x && a.x==x & a.y==b.y && a.y==y && Math.min(a.z,b.z)<=z && z<=Math.max(a.z,b.z);
+				fail = a.x==b.x && a.x==x && a.y==b.y && a.y==y && Math.min(a.z,b.z)<=z && z<=Math.max(a.z,b.z);
 				if( fail ) break;
 					
-				fail = a.x==b.x && a.x==x & a.z==b.z && a.z==z && Math.min(a.y,b.y)<=y && y<=Math.max(a.y,b.y);
+				fail = a.x==b.x && a.x==x && a.z==b.z && a.z==z && Math.min(a.y,b.y)<=y && y<=Math.max(a.y,b.y);
 				if( fail ) break;
 					
-				fail = a.y==b.y && a.y==y & a.z==b.z && a.z==z && Math.min(a.x,b.x)<=x && x<=Math.max(a.x,b.x);
+				fail = a.y==b.y && a.y==y && a.z==b.z && a.z==z && Math.min(a.x,b.x)<=x && x<=Math.max(a.x,b.x);
 				if( fail ) break;
 			}
 			if( fail ) continue;
