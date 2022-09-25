@@ -116,7 +116,7 @@ class Playground extends ScormPlayground
 
 		this.spaceship.goToPlatformA( );
 		
-		this.maze.regenerate( );
+		this.maze.regenerate( 2 );
 		
 
 		//this.spaceship.fly( 'FFUFDFF' );
