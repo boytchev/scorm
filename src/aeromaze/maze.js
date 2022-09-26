@@ -2,15 +2,6 @@
 //	class Maze
 	
 
-// complexity
-//
-//	PLATES	 Ver	 Lin
-//	    3	  81	 180
-//	    5	 275	 690
-//	    7	 637	1680
-//	    9	1215	3294
-//	   11	2057	5676
-
 class Maze extends Group
 {
 /*	static GRID = 2 + Planet.PLATES>>1;
@@ -19,13 +10,16 @@ class Maze extends Group
 	{
 		super( suica );
 
-		this.lines = [];
+		this.points = [];	// list of vertices of the route
+		this.lines = [];		// list of line segments of the route
+		
 		this.update( planet );
 
 	} // Maze.constructor
 	
 		
-		
+
+	// update maze size & grid size depending on the planet
 	update( planet )
 	{
 		this.GRID = 2 + planet.PLATES>>1;
@@ -35,7 +29,9 @@ class Maze extends Group
 	
 	
 	
-	// creates a route between two points
+	// creates a direct route between two points
+	// the route may have up to 3 segments - one
+	// for each coordinate that is different
 	addRoute( from, to )
 	{
 		// mangle order of coordintes
@@ -47,104 +43,127 @@ class Maze extends Group
 			if( from[i] == to[i] )
 				continue;
 			
-			// find a mid point
-			var mid = [...from];
-				mid[i] = to[i];
+			// find a corner point
+			var corner = [...from];
+				corner[i] = to[i];
 
-			if( !this.allowedTheoretically( mid ) )
+			if( !this.allowed( corner ) )
 				continue;
 			
-			// add a route to the mid point
-			this.lines.push( [from, mid] );
+			// add a line
+			this.lines.push( [from, corner] );
+			
+			// add points along the line
+			var dist = corner[i]-from[i],
+				step = Math.sign( dist ); // must be 1 or -1, never 0
+				
+			for( var t=0; t<Math.abs(dist); t++ )
+			{
+				var mid = [...from];
+					mid[i] += step*t;
+					
+				this.points.push( mid );
+			}
 			
 			// continue to the target
-			this.addRoute( mid, to );
-			break;
+			return this.addRoute( corner, to );
 		}
+		
+		this.points.push( to );
+		
 	} // Maze.addRoute
 	
 	
 	
 	// return the number of different coordinates
-	diff( a, b )
-	{
-		return (a[0]==b[0]?0:1) + (a[1]==b[1]?0:1) + (a[2]==b[2]?0:1);
-	} // Maze.diff
+	// diff( a, b )
+	// {
+		// return (a[0]==b[0]?0:1) + (a[1]==b[1]?0:1) + (a[2]==b[2]?0:1);
+	// } // Maze.diff
 	
 	
 
 	// return the number of different coordinates
-	lerp( a, b )
-	{
-		const k = 0.98;
+	// lerp( a, b )
+	// {
+		// const k = 0.96;
 		
-		return [
-			a[0]*k + (1-k)*b[0],
-			a[1]*k + (1-k)*b[1],
-			a[2]*k + (1-k)*b[2]
-		];
-	} // Maze.lerp
+		// return [
+			// a[0]*k + (1-k)*b[0],
+			// a[1]*k + (1-k)*b[1],
+			// a[2]*k + (1-k)*b[2]
+		// ];
+	// } // Maze.lerp
 	
 	
 
 	// dump segments
-	dump( )
-	{
-		for( var i = 0; i<this.lines.length; i++ )
-		{
-			var a = this.lines[i][0],
-				b = this.lines[i][1];
+	// dump( )
+	// {
+		// for( var i = 0; i<this.lines.length; i++ )
+		// {
+			// var a = this.lines[i][0],
+				// b = this.lines[i][1];
 				
-			console.log( `${i}.\t`, `[${a.join(',')}]-[${b.join(',')}]`, `len=${Math.abs(a[0]-b[0])+Math.abs(a[1]-b[1])+Math.abs(a[2]-b[2])}` );
-		}
-	}
+			// console.log( `${i}.\t`, `[${a.join(',')}]-[${b.join(',')}]`, `len=${Math.abs(a[0]-b[0])+Math.abs(a[1]-b[1])+Math.abs(a[2]-b[2])}` );
+		// }
+	// }
 	
 	
 	
-	regenerate( midPointsCount = 0 )
+	regenerate( midPointsCount = 0, randomRoutesCount = 0 )
 	{
-		//var x, y, z;
-		
 		var platformA = playground.platformA,
 			platformB = playground.platformB;
 
-		this.lines = [];
 		
-//		this.addRoute( platformA.center, platformB.center );
+		this.midPoints = [];
+		this.lines = []; 
+		
+//		console.log('from',platformA.center);
+		
+		// pick midpoints and put them between platforms A and B
+		//this.midPoints.push( platformA.center );
+		
+		var from = [...platformA.center],
+			to = [...platformB.center];
+
+		// create some middle points
+		for( let i=0; i<midPointsCount; i++ )
+		{
+			var via = this.findVertex( this.points );
+			
+			this.addRoute( from, via );
+			from = via;
+		}
+		this.addRoute( from, to );
+		//this.points.push( to );
+
+//		console.log('  to',platformB.center);
+		
+		// add random routes
+		for( let i=0; i<randomRoutesCount; i++ )
+		{
+			from = random( this.points );
+			to = this.findVertex( this.points );
+			this.addRoute( from, to );
+			//this.points.push( to );
+		}
+
+		for( var i = 0; i<this.lines.length; i++ )
+		{
+			this.add( line( 
+				this.lines[i][0], this.lines[i][1]
+				) );
+		}
+		
+		for( var i = 0; i<this.points.length; i++ )
+		{
+			this.add( point( this.points[i], 2/playground.planet.SCALE ) );
+		}
 		
 //		console.log( 'initial segments', this.lines.length );
 //		this.dump( );
-		
-		var midPoints = []; // list of middle points
-		
-		console.log('from',platformA.center);
-		
-		// pick midpoints and put them between platforms A and B
-		midPoints.push( platformA.center );
-		midPoints.push( platformB.center );
-		for( let i=0; i<midPointsCount; i++ )
-		{
-			var vertex = this.findVertex( midPoints );
-		console.log(' mid',vertex);
-			midPoints.pop(); // remove B
-			midPoints.push( vertex ); // add new point
-			midPoints.push( platformB.center ); // add again B
-		}
-		
-		console.log('  to',platformB.center);
-		
-		// create a route through all midpoints
-		for( let i=1; i<midPoints.length; i++ )
-			this.addRoute( midPoints[i-1], midPoints[i] );
-
-		for( var i = 0; i<this.lines.length; i++ )
-			this.add( line( 
-				this.lerp(this.lines[i][0], this.lines[i][1] ),
-				this.lerp(this.lines[i][1], this.lines[i][0] ),
-				) );
-		
-		console.log( 'initial segments', this.lines.length );
-		this.dump( );
 
 /*
 		var vertices = [];
@@ -153,38 +172,6 @@ class Maze extends Group
 		function hash( x, y, z ) { return `${x},${y},${z}` }
 		function dehash( str ) { return str.split(',') }
 		
-		for( var x = -this.GRID; x<=this.GRID; x++ )
-		for( var y = -this.GRID; y<=this.GRID; y++ )
-		for( var z = -this.GRID; z<=this.GRID; z++ )
-			if( this.allowedTheoretically(x,y,z) )
-			{
-				vertices.push( hash(x,y,z) );
-				//this.add( cube([x,y,z],0.1) );
-				
-				if( this.allowedTheoretically(x+1,y,z) )
-				{
-					lines.push( [hash(x,y,z), hash(x+1,y,z)] );
-					//this.add( line([x,y,z],[x+1,y,z]) );
-				}
-				
-				if( this.allowedTheoretically(x,y+1,z) )
-				{
-					lines.push( [hash(x,y,z), hash(x,y+1,z)] );
-					//this.add( line([x,y,z],[x,y+1,z]) );
-				}
-				
-				if( this.allowedTheoretically(x,y,z+1) )
-				{
-					lines.push( [hash(x,y,z), hash(x,y,z+1)] );
-					//this.add( line([x,y,z],[x,y,z+1]) );
-				}
-			}
-		lines.sort( ()=>random(-1,1) );
-		for( var ln of lines )
-		{
-			this.add( line( dehash(ln[0]), dehash(ln[1]) ) );
-		}
-console.log(lines)
 */
 	} // Maze.regenerate
 	
@@ -201,15 +188,15 @@ console.log(lines)
 			var z = Math.round( random( -this.GRID+1, this.GRID-1) );
 			
 			// if not legal, try again
-			if( !this.allowedTheoretically( [x,y,z] ) ) continue;
+			if( !this.allowed( [x,y,z] ) ) continue;
 			
 			// if it is on any of the forbidden, try again
-			for( var i=0; i<forbidden.length; i++ )
-			{
-				if( forbidden.x==x ||
-					forbidden.y==y ||
-					forbidden.z==z ) continue;
-			}
+			// for( var i=0; i<forbidden.length; i++ )
+			// {
+				// if( forbidden.x==x ||
+					// forbidden.y==y ||
+					// forbidden.z==z ) continue;
+			// }
 
 			// if it is between any two successive forbidden vertices, try again
 			var fail = false;
@@ -236,7 +223,7 @@ console.log(lines)
 	
 	
 	// return true if grid position [x,y,z] is theoretically allowed
-	allowedTheoretically( pos )
+	allowed( pos )
 	{
 		var x = pos[0] ** 2,
 			y = pos[1] ** 2,

@@ -19,6 +19,7 @@ class Playground extends ScormPlayground
 
 		this.planets = [
 			new Planet( 3 ),
+			new Planet( 3 ),
 			new Planet( 5 ),
 			new Planet( 7 ),
 			new Planet( 9 )
@@ -100,7 +101,7 @@ class Playground extends ScormPlayground
 		super.newGame( );
 
 		this.planet.visible = false;
-		this.planet = this.planets[ Math.round(THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, 3 )) ];
+		this.planet = this.planets[ Math.round(THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, this.planets.length-1 )) ];
 		this.planet.visible = true;
 		
 		this.maze.update( this.planet );
@@ -116,7 +117,7 @@ class Playground extends ScormPlayground
 
 		this.spaceship.goToPlatformA( );
 		
-		this.maze.regenerate( 2 );
+		this.maze.regenerate( 1, 5 );
 		
 
 		//this.spaceship.fly( 'FFUFDFF' );
