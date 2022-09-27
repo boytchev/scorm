@@ -1,24 +1,5 @@
-// 1536 -> 539 (35%)
+// 1536 -> 310
 
-MEIRO.Models.T009.prototype.initialize = function()
-{
-	if (SCORE_STATISTICS) this.configureStats();
-	
-	random.randomize();
-
-	this.BUTTON_RADIUS = 0.3;
-	this.buttons = new THREE.Group();
-	this.image.add( this.buttons );
-	
-	this.buttonLight = new THREE.PointLight('white',0);
-	this.image.add( this.buttonLight );
-
-	this.buttonEcho = new Audio('sounds/button-echo.mp3');
-	this.buttonEcho.loop = false;
-	this.buttonEcho.pause();
-	}
-
-	
 
 MEIRO.Models.T009.prototype.constructButtons = function()
 {
@@ -202,161 +183,6 @@ MEIRO.Models.T009.prototype.constructGlassBoxModel = function()
 	arrow.rotation.z = Math.PI/2;
 	this.buttons.add( arrow );
 
-	
-	
-MEIRO.Models.T009.prototype.constructMaze = function()
-{
-	var N = this.config.size;
-
-	this.links = [];
-	this.nodes = [];
-	
-	for (var x = 0; x<=N; x++)
-	for (var y = 0; y<=N; y++)
-	for (var z = 0; z<=N; z++)
-	{
-		this.nodes.push('A'+x+y+z);
-		if (x<N) this.links.push(['A'+x+y+z,'A'+(x+1)+y+z,'z',2*x+1,2*y,2*z]);
-		if (y<N) this.links.push(['A'+x+y+z,'A'+x+(y+1)+z,'y',2*x,2*y+1,2*z]);
-		if (z<N) this.links.push(['A'+x+y+z,'A'+x+y+(z+1),'x',2*x,2*y,2*z+1]);
-	}
-
-}
-
-
-
-MEIRO.Models.T009.prototype.reduceMaze = function()
-{
-	var reduceAttempts = Math.round(this.links.length*(1-this.config.links));
-	for (var i=0; i<reduceAttempts; i++)
-	{
-		var n = random(0,this.links.length-1);
-		var old = this.links[n];
-		//console.log('try to remove',old);
-		this.links[n] = '';
-		if (this.isConnectedMaze())
-		{
-			//console.log('OK to remove');
-		}
-		else
-		{
-			//console.log('FAILED to remove');
-			this.links[n] = old;
-		}
-	}
-}
-
-
-
-
-MEIRO.Models.T009.prototype.distanceInMaze = function(from,to)
-{
-	if (from==to) return 0;
-	
-	var left = [];
-	var todo = [];
-	
-	function process(elem)
-	{
-		var idx = left.indexOf(elem);
-		if (idx<0) return; // already processed
-
-		todo.push(left[idx]); // add to todo
-		left.splice(idx,1); // remove from left
-	}
-	
-	for (var i=0; i<this.nodes.length; i++)
-		left.push(this.nodes[i]);
-	
-	var distance = 1;
-	process(from);
-	todo.push('+');
-	while (todo.length)
-	{
-		var node = todo[0];
-		if (node=='+')
-		{
-			if (todo.length==1) return -1;
-			todo.splice(0,1); // remove from todo
-			todo.push('+');
-			distance++;
-			continue;
-		}
-		
-		for (var i=0; i<this.links.length; i++)
-		{
-			var link = this.links[i];
-			if (link[0]==node)
-			{
-				if (link[1]==to) return distance;
-				process(link[1]);
-			}
-			else if (link[1]==node)
-			{
-				if (link[0]==to) return distance;
-				process(link[0]);
-			}
-		}
-		todo.splice(0,1); // remove from todo
-	}
-	
-	return distance;
-}
-
-
-
-MEIRO.Models.T009.prototype.generateMaze = function()
-{
-	var N = this.config.size;
-
-	// tube part
-	var geometry = new THREE.CylinderBufferGeometry( 0.02*N/3, 0.02*N/3, 2.05, 4, 4 );
-	var pos = geometry.getAttribute('position');
-	for (var i=0; i<pos.count; i++)
-	{
-		x = pos.getX(i);
-		y = pos.getY(i);
-		z = pos.getZ(i);
-		if (y<-0.9 || y>0.9)
-		{
-			x *= 3;
-			z *= 3;
-		}
-		else
-			y *= 1.5;
-		if (x*x+z*z<0.0001)
-			y *= 1.02;
-		pos.setXYZ(i,x,y,z);
-	}
-	
-	geometry.rotateY(Math.PI/4);
-	
-
-	this.maze = new THREE.Group();
-	this.maze.position.set(-3,this.BASE_HEIGHT+1,-3);
-	this.maze.scale.set(3/N,3/N,3/N);
-	this.image.add( this.maze );
-	
-
-	// links
-	var material = new THREE.MeshBasicMaterial({
-		color: 'black',
-	});
-	for (var i=0; i<this.links.length; i++) if (this.links[i])
-	{
-		var dir = this.links[i][2];
-		var x = this.links[i][3];
-		var y = this.links[i][4];
-		var z = this.links[i][5];
-
-		var cube = new THREE.Mesh( geometry, material );
-		cube.position.set(x,y,z);
-		cube.rotation[dir] = Math.PI/2;
-		this.maze.add( cube );
-	}
-}
-
-
 
 
 MEIRO.Models.T009.prototype.hasDirectLink = function(a1,a2)
@@ -369,53 +195,6 @@ MEIRO.Models.T009.prototype.hasDirectLink = function(a1,a2)
 	}
 	return false;
 }
-
-
-
-MEIRO.Models.T009.prototype.onObject = function()
-{
-	if (!this.playing) return undefined;
-	
-	// координати на мишка
-	this.mouse.x = (controls.human.mousePos.x/window.innerWidth)*2 - 1;
-	this.mouse.y = -(controls.human.mousePos.y/window.innerHeight)*2 + 1;
-
-	this.raycaster.setFromCamera( this.mouse, camera );
-	
-	var intersects = this.raycaster.intersectObjects( [this.base,this.baseTop,this.buttons], true );
-	
-	if (intersects.length)
-	{
-		this.clicks++;
-		
-		var obj = intersects[0].object;
-		if (!obj.name) return undefined;
-
-		this.buttonLight.intensity = 2;
-		this.buttonLight.color = obj.name=='F'?new THREE.Color('white'):obj.material.color;
-		var p = intersects[0].point;
-		p = this.image.worldToLocal(p);
-		this.buttonLight.position.copy(p);
-
-		this.buttonEcho.currentTime = 0;
-		this.buttonEcho.play();
-		
-		if (obj.name=='x')
-		{	// activation button
-			obj.scale.y = 0.1;
-			//this.butterfly.matrix = this.originalMatrix.clone();
-			this.commands = ' '+this.dnaCommands;
-			this.commandsCount = 0;
-			this.dnaCommands = '';
-			this.wingsFapping.play();
-		}
-		
-		return undefined;
-	}
-	
-	return undefined;
-}
-
 
 
 
@@ -527,13 +306,5 @@ difficulty	0.1-0.2	0.3-0.4	0.7-1.0
 		default: console.error('Unknown difficulty level');
 	}
 
-	this.config.max_score = Math.round(100*max_score)/100; //this.butterflyFlightDistance;
-//	console.log('max_score',max_score);
-	
-	if (!IN_SCORE_STATISTICS)
-	{		
-		this.generateMaze();
-		this.constructGlassBoxModel();
-		this.constructButtons();
-	}
+	this.config.max_score = Math.round(100*max_score)/100; 
 }

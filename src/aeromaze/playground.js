@@ -18,7 +18,7 @@ class Playground extends ScormPlayground
 		this.addLightsAndShadows( );
 
 		this.planets = [
-			new Planet( 3 ),
+			new Planet( 5 ),
 			new Planet( 3 ),
 			new Planet( 5 ),
 			new Planet( 7 ),
@@ -117,7 +117,7 @@ class Playground extends ScormPlayground
 
 		this.spaceship.goToPlatformA( );
 		
-		this.maze.regenerate( 1, 5 );
+		this.maze.regenerate( 5, 1 );
 		
 
 		//this.spaceship.fly( 'FFUFDFF' );

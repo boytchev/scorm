@@ -10,8 +10,11 @@ class Maze extends Group
 	{
 		super( suica );
 
+		this.pointIdx = 0;
+		this.lineIdx = 0;
+		
 		this.points = [];	// list of vertices of the route
-		this.lines = [];		// list of line segments of the route
+		this.lines = [];	// list of line segments of the route
 		
 		this.update( planet );
 
@@ -51,7 +54,7 @@ class Maze extends Group
 				continue;
 			
 			// add a line
-			this.lines.push( [from, corner] );
+			this.addLine( from, corner );
 			
 			// add points along the line
 			var dist = corner[i]-from[i],
@@ -62,52 +65,115 @@ class Maze extends Group
 				var mid = [...from];
 					mid[i] += step*t;
 					
-				this.points.push( mid );
+				this.addPoint( mid );
 			}
 			
 			// continue to the target
 			return this.addRoute( corner, to );
 		}
 		
-		this.points.push( to );
+		this.addPoint( to );
 		
 	} // Maze.addRoute
-	
-	
-	
-	// return the number of different coordinates
-	// diff( a, b )
-	// {
-		// return (a[0]==b[0]?0:1) + (a[1]==b[1]?0:1) + (a[2]==b[2]?0:1);
-	// } // Maze.diff
-	
-	
 
-	// return the number of different coordinates
-	// lerp( a, b )
-	// {
-		// const k = 0.96;
+	
+	
+	// clear all points but do not forget them
+	clearPoints( )
+	{
+		this.pointIdx = 0;
+		for( let i=0; i<this.points.length; i++ )
+			this.points[i].visible = false;
+	} // Maze.clearPoints
+	
+	
+	
+	// reuse or create a point
+	addPoint( center )
+	{
+		if( this.pointIdx >= this.points.length )
+		{
+			// create
+			var newPoint = point( center, 2/playground.planet.SCALE );
+			this.points.push( newPoint );
+			this.add( newPoint );
+		}
+		else
+		{	// reuse
+			this.points[ this.pointIdx ].center = center;
+			this.points[ this.pointIdx ].visible = true;
+		}
 		
-		// return [
-			// a[0]*k + (1-k)*b[0],
-			// a[1]*k + (1-k)*b[1],
-			// a[2]*k + (1-k)*b[2]
-		// ];
-	// } // Maze.lerp
+		this.pointIdx++;
+	} // Maze.addPoint
+	
+	
+	
+	// clear all lines but do not forget them
+	clearLines( )
+	{
+		this.lineIdx = 0;
+		for( let i=0; i<this.lines.length; i++ )
+			this.lines[i].visible = false;
+	} // Maze.clearPoints
+	
+	
+	
+	// reuse or create a line
+	addLine( from, to )
+	{
+		var newLine;
+		
+		if( this.lineIdx >= this.lines.length )
+		{
+			// create
+			newLine = line( from, to );
+			this.lines.push( newLine );
+			this.add( newLine );
+		}
+		else
+		{	// reuse
+			newLine = this.lines[ this.lineIdx ];
+			newLine.from = from;
+			newLine.to = to;
+			newLine.visible = true;
+		}
+		
+		newLine.min = [];
+		newLine.max = [];
+		for( var i=0; i<3; i++ )
+		{
+			newLine.min[i] = Math.min( from[i], to[i] );
+			newLine.max[i] = Math.max( from[i], to[i] );
+		}
+
+		this.lineIdx++;
+	} // Maze.addLine
 	
 	
 
-	// dump segments
-	// dump( )
-	// {
-		// for( var i = 0; i<this.lines.length; i++ )
-		// {
-			// var a = this.lines[i][0],
-				// b = this.lines[i][1];
-				
-			// console.log( `${i}.\t`, `[${a.join(',')}]-[${b.join(',')}]`, `len=${Math.abs(a[0]-b[0])+Math.abs(a[1]-b[1])+Math.abs(a[2]-b[2])}` );
-		// }
-	// }
+	// find whether pos is on any line
+	onTrack( pos, epsilon )
+	{
+		var ax = pos[0],// / playground.maze.size,
+			ay = pos[1],// / playground.maze.size,
+			az = pos[2];// / playground.maze.size;
+		
+//		console.log('can be at',[ax,ay,az]);
+		
+		// check whether pos belonga to a line
+		for( var i=0; i<this.lineIdx; i++ )
+		{
+			var line = this.lines[i];
+//			console.log('  line',i,' min',line.min,'max',line.max);
+			if( 
+				line.min[0]-epsilon<=ax && ax<=line.max[0]+epsilon &&
+				line.min[1]-epsilon<=ay && ay<=line.max[1]+epsilon &&
+				line.min[2]-epsilon<=az && az<=line.max[2]+epsilon    ) return true;
+		}
+		
+		return false;
+	} // Maze.existsLine
 	
 	
 	
@@ -117,13 +183,12 @@ class Maze extends Group
 			platformB = playground.platformB;
 
 		
-		this.midPoints = [];
-		this.lines = []; 
+		// hide all points and lines
+		this.clearPoints( )
+		for( let i=0; i<this.lines.length; i++ )
+			this.lines[i].visible = false;
+		this.lineIdx = 0;
 		
-//		console.log('from',platformA.center);
-		
-		// pick midpoints and put them between platforms A and B
-		//this.midPoints.push( platformA.center );
 		
 		var from = [...platformA.center],
 			to = [...platformB.center];
@@ -131,7 +196,7 @@ class Maze extends Group
 		// create some middle points
 		for( let i=0; i<midPointsCount; i++ )
 		{
-			var via = this.findVertex( this.points );
+			var via = this.findVertex( );
 			
 			this.addRoute( from, via );
 			from = via;
@@ -144,41 +209,21 @@ class Maze extends Group
 		// add random routes
 		for( let i=0; i<randomRoutesCount; i++ )
 		{
-			from = random( this.points );
-			to = this.findVertex( this.points );
+			from = random( this.points ).center;
+			to = this.findVertex( );
 			this.addRoute( from, to );
-			//this.points.push( to );
 		}
 
-		for( var i = 0; i<this.lines.length; i++ )
-		{
-			this.add( line( 
-				this.lines[i][0], this.lines[i][1]
-				) );
-		}
-		
-		for( var i = 0; i<this.points.length; i++ )
-		{
-			this.add( point( this.points[i], 2/playground.planet.SCALE ) );
-		}
 		
 //		console.log( 'initial segments', this.lines.length );
 //		this.dump( );
 
-/*
-		var vertices = [];
-		var lines = [];
-
-		function hash( x, y, z ) { return `${x},${y},${z}` }
-		function dehash( str ) { return str.split(',') }
-		
-*/
 	} // Maze.regenerate
 	
 	
 	
 	// pick a vertex that is not forbidden
-	findVertex( forbidden )
+	findVertex( )
 	{
 		while( true )
 		{
@@ -200,10 +245,10 @@ class Maze extends Group
 
 			// if it is between any two successive forbidden vertices, try again
 			var fail = false;
-			for( var i=0; i<forbidden.length-1; i++ )
+			for( var i=0; i<this.pointIdx-1; i++ )
 			{
-				var a = forbidden[i],
-					b = forbidden[i+1];
+				var a = this.points[i].center,
+					b = this.points[i+1].center;
 					
 				fail = a.x==b.x && a.x==x && a.y==b.y && a.y==y && Math.min(a.z,b.z)<=z && z<=Math.max(a.z,b.z);
 				if( fail ) break;

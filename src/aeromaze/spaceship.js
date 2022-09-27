@@ -80,14 +80,17 @@ class Spaceship extends Group
 			imgElem.addEventListener( 'click', that.command );
 		}
 
-		setPos( 'lt', 'L', -110,    0 );
-		setPos( 'rt', 'R',  110,    0 );
-		setPos( 'up', 'U',    0, -110 );
-		setPos( 'dn', 'D',    0,  110 );
-		setPos( 'ac', 'A',  -80,  -80 );
-		setPos( 'cw', 'C',   80,  -80 );
-		setPos( 'fd', 'F',  -80,   80 );
-		setPos( 'st', '!',   80,   80 );
+		setPos( 'button_up', 'U',    	   0,  110 );
+		setPos( 'button_down', 'D',  	   0,  220 );
+
+		setPos( 'button_left', 'L',		-110,  110 );
+		setPos( 'button_right', 'R',	 110,  110 );
+		
+		setPos( 'button_roll_left', 'A', -110,  220 );
+		setPos( 'button_roll_right', 'C', 110,  220 );
+		
+		setPos( 'button_forward', 'F',	  -80,   80 );
+		setPos( 'button_start', '!',	   80,   80 );
 
 		return element( 'ring' );
 	} // Spaceship.generateRing
@@ -123,15 +126,26 @@ class Spaceship extends Group
 	{
 		var lastK = 0;
 		
-		return new TWEEN.Tween( {k:0, model:this.threejs} )
+		return new TWEEN.Tween( {k:0, model:this.threejs, spaceship:this} )
 			.to( {k:1/*Planet.GRID_SCALE*/}, Spaceship.MOVE_SPEED )
 			.easing( TWEEN.Easing.Linear.None )
 			.onUpdate( function(obj){
 				obj.model[method]( sign*(obj.k-lastK) );
+				if( !playground.maze.onTrack( obj.spaceship.center, 0.01 ) )
+				{
+					obj.spaceship.x = Math.round( obj.spaceship.x ) + random( -0.05, 0.05);
+					obj.spaceship.y = Math.round( obj.spaceship.y ) + random( -0.05, 0.05);
+					obj.spaceship.z = Math.round( obj.spaceship.z ) + random( -0.05, 0.05);
+				}
 				lastK = obj.k;
 			} )
 			.onComplete( function(obj){
 				obj.model[method]( sign*(1/*Planet.GRID_SCALE*/-lastK) );
+
+				obj.spaceship.x = Math.round( obj.spaceship.x );
+				obj.spaceship.y = Math.round( obj.spaceship.y );
+				obj.spaceship.z = Math.round( obj.spaceship.z );
+
 				// fix position
 				// var px = Planet.GRID_SCALE * Math.round( obj.model.position.x/Planet.GRID_SCALE ),
 					// py = Planet.GRID_SCALE * Math.round( obj.model.position.y/Planet.GRID_SCALE ),
@@ -142,10 +156,34 @@ class Spaceship extends Group
 	
 	
 	
+	// check whether the current position is on a line
+	// if not, then move back to the closest point
+	fixPosition( epsilon )
+	{
+		;
+
+	} // Maze.fixPosition
+	
+	
+	
 	// perform fly commands
 	fly( )
 	{
+		// hide the ring of buttons
 		this.ring.style.display = 'none';
+
+		// reduce the number of left starts
+		var counterElem = element( 'counter_start' ),
+			counter = parseInt( counterElem.innerHTML ) - 1;
+			
+		if( counter == 1 )
+			counterElem.style.display = 'none';
+		else
+		if( counter < 1 )
+		{
+			elem( 'button_start' ).style.display = 'none';
+		}
+		counterElem.innerHTML = counter;
 
 		var firstTween = null,
 			lastTween = null;
@@ -174,7 +212,8 @@ class Spaceship extends Group
 				case 'C': // roll clockwise
 					tween = this.rotateTween( 'rotateZ', -1 );
 					break;
-				case 'F': // fly
+				case 'F': // forward
+					// go forward only if there is a line from to there
 					tween = this.translateTween( 'translateZ', -1 );
 					break;
 				default:
@@ -263,10 +302,10 @@ class Spaceship extends Group
 			{
 				if( this.updateStartIcon )
 				{
-					element( 'sticon' ).src = `images/start_${playground.getLanguage()}.png`;
+					element( 'icon_start' ).src = `images/start_${playground.getLanguage()}.png`;
 					this.updateStartIcon = false;
 				}
-
+								
 				this.ring.style.display = 'block';
 			}
 		}
