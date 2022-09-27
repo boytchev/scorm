@@ -7,6 +7,7 @@ class Spaceship extends Group
 {
 	static TURN_SPEED = 300;
 	static MOVE_SPEED = 500;
+	static END_GAME_SPEED = 1000;
 	static GOTO_PLATFORM_SPEED = 1000;
 	static GOTO_CENTER_SPEED = 500;
 
@@ -173,24 +174,23 @@ class Spaceship extends Group
 		this.ring.style.display = 'none';
 
 		// reduce the number of left starts
-		var counterElem = element( 'counter_start' ),
-			counter = parseInt( counterElem.innerHTML ) - 1;
-			
-		if( counter == 1 )
-			counterElem.style.display = 'none';
+		playground.attempts--;
+					
+		if( playground.attempts == 1 )
+			element( 'counter_start' ).style.display = 'none';
 		else
-		if( counter < 1 )
+		if( playground.attempts < 1 )
 		{
-			elem( 'button_start' ).style.display = 'none';
+			element( 'button_start' ).style.display = 'none';
 		}
-		counterElem.innerHTML = counter;
+		element( 'counter_start' ).innerHTML = playground.attempts;
 
-		var firstTween = null,
+		var tween,
+			firstTween = null,
 			lastTween = null;
 			
 		for( var ch of this.flightCommands )
 		{
-			var tween;
 			
 			switch( ch )
 			{
@@ -231,6 +231,19 @@ class Spaceship extends Group
 			}
 		}
 		
+		// create one empty tween, used only to detect
+		// the end of the chain execution
+		tween = new TWEEN.Tween( {} )
+				.to( {}, 1 )
+				.easing( TWEEN.Easing.Linear.None )
+				.onComplete( function( )
+					{
+						if( playground.canEndGame() )
+							playground.endGame() 
+					} );
+				
+		lastTween.chain( tween );
+		
 		firstTween?.start( );
 		this.flightCommands = '';
 	}
@@ -243,11 +256,17 @@ class Spaceship extends Group
 //		console.dir( event.target );
 		var spaceship = playground.spaceship,
 			command = event.target.command;
-
+			
 		if( command == '!' )
-			spaceship.fly( );
+		{
+			if( spaceship.flightCommands.length > 0 )
+				spaceship.fly( );
+		}
 		else
+		{
 			spaceship.flightCommands += command;
+		}
+
 	} // Spaceship.command
 	
 	

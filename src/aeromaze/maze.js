@@ -101,6 +101,7 @@ class Maze extends Group
 		else
 		{	// reuse
 			this.points[ this.pointIdx ].center = center;
+			this.points[ this.pointIdx ].size = 2/playground.planet.SCALE;
 			this.points[ this.pointIdx ].visible = true;
 		}
 		
@@ -182,13 +183,6 @@ class Maze extends Group
 		var platformA = playground.platformA,
 			platformB = playground.platformB;
 
-		
-		// hide all points and lines
-		this.clearPoints( )
-		for( let i=0; i<this.lines.length; i++ )
-			this.lines[i].visible = false;
-		this.lineIdx = 0;
-		
 		
 		var from = [...platformA.center],
 			to = [...platformB.center];

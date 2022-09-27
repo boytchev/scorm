@@ -9,6 +9,7 @@ class Playground extends ScormPlayground
 	static POINTER_MOVEMENT = 5;
 	static POINTS_SPEED = 2000;
 	static POINTER_USED = false;
+	static NEW_ATTEMPTS = 2;
 	
 	constructor( )
 	{
@@ -17,8 +18,10 @@ class Playground extends ScormPlayground
 		this.pointerMovement = 0;
 		this.addLightsAndShadows( );
 
+		this.attempts = 0;
+		
 		this.planets = [
-			new Planet( 5 ),
+			new Planet( 1 ),
 			new Planet( 3 ),
 			new Planet( 5 ),
 			new Planet( 7 ),
@@ -100,8 +103,15 @@ class Playground extends ScormPlayground
 	{
 		super.newGame( );
 
+		this.attempts += Playground.NEW_ATTEMPTS;
+		
+		// config
+		var planetSize = Math.round(THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, this.planets.length-1 )),
+			midPointsCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, 5 )),
+			randomRoutesCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, 10 ));
+		
 		this.planet.visible = false;
-		this.planet = this.planets[ Math.round(THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, this.planets.length-1 )) ];
+		this.planet = this.planets[ planetSize ];
 		this.planet.visible = true;
 		
 		this.maze.update( this.planet );
@@ -114,10 +124,14 @@ class Playground extends ScormPlayground
 		this.platformA.randomize( this.planet, sides[0] );
 		this.platformB.randomize( this.planet, sides[1] );
 
+		element( 'button_start' ).style.display = 'block';
+		element( 'counter_start' ).innerHTML = this.attempts;
+		element( 'counter_start' ).style.display = this.attempts>1 ? 'block' : 'none';
+		
 
 		this.spaceship.goToPlatformA( );
 		
-		this.maze.regenerate( 5, 1 );
+		this.maze.regenerate( midPointsCount, randomRoutesCount );
 		
 
 		//this.spaceship.fly( 'FFUFDFF' );
@@ -130,8 +144,18 @@ class Playground extends ScormPlayground
 	// check whether a game can end
 	canEndGame( )
 	{
-		// ...
-		return true;
+		// no more attemps, game must end now
+		if( this.attempts == 0 )
+			return true;
+		
+		// if the spaceship is not at platform B
+		// then this is not the end of the game
+		if( this.spaceship.x == this.platformB.x &&
+			this.spaceship.y == this.platformB.y &&
+			this.spaceship.z == this.platformB.z ) return true;
+		
+		return false;
+		
 	} // Playground.canEndGame
 	
 	
@@ -160,6 +184,11 @@ class Playground extends ScormPlayground
 		this.spaceship.ring.style.display = 'none';
 		this.spaceship.goToCenter( );
 		
+		// hide all points and lines
+		this.maze.clearPoints( );
+		this.maze.clearLines( );
+		
+
 		// ...
 		
 	} // Playground.endGame
