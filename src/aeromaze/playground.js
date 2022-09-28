@@ -40,6 +40,8 @@ class Playground extends ScormPlayground
 		this.maze.add( this.platformA, this.platformB, this.spaceship );
 		this.maze.threejs.castShadow = true;
 
+		element( 'icon_start' ).src = `images/start_${this.getLanguage()}.png`;
+
 		orb.addEventListener( 'start', () => Playground.POINTER_USED=true  );
 		orb.addEventListener( 'end', () => Playground.POINTER_USED=false );
 
@@ -105,10 +107,11 @@ class Playground extends ScormPlayground
 
 		this.attempts += Playground.NEW_ATTEMPTS;
 		
+
 		// config
-		var planetSize = Math.round(THREE.MathUtils.mapLinear( this.difficulty**2, 10**2, 100**2, 0, this.planets.length-1 )),
+		var planetSize = Math.round(THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, this.planets.length-1 )),
 			midPointsCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty, 10**1.7, 100**1.7, 0, 10 )),
-			randomRoutesCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty**1.5, 10**1.5, 100**1.5, 0, 10 ));
+			randomRoutesCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty**2, 10**2, 100**2, 0, 20 ));
 		
 		this.planet.visible = false;
 		this.planet = this.planets[ planetSize ];
@@ -124,12 +127,33 @@ class Playground extends ScormPlayground
 		this.platformA.randomize( this.planet, sides[0] );
 		this.platformB.randomize( this.planet, sides[1] );
 
-		element( 'button_start' ).style.display = 'block';
-		element( 'counter_start' ).innerHTML = this.attempts;
-		element( 'counter_start' ).style.display = this.attempts>1 ? 'block' : 'none';
-		
 
+		// commands
+		const COMMANDS = {
+			BASIC:	[ 'LRUDA.', 'LRUD.C' ],
+			EASY:	[ 'LR..AC', '..UDAC' ],
+			MEDIUM:	[ 'LRU.A.', 'LRU..C', 'LR.DA.', 'LR.D.C', 'L.UDA.', 'L.UD.C', '.RUDA.', '.RUD.C', 'L.U.AC', 'L..DAC', '.RU.AC', '.R.DAC' ],
+			HARD:	[ 'L.U...', 'L..D..', '.RU...', '.R.D..', 'L...A.', 'L....C', '.R..A.', '.R...C', '..U.A.', '..U..C', '...DA.', '...D.C' ],
+		};
+		var commands = [];
+
+		if( this.difficulty < 50 )
+			commands = commands.concat( COMMANDS.BASIC );
+		else
+		if( this.difficulty < 70 )
+			commands = commands.concat( COMMANDS.BASIC, COMMANDS.EASY );
+		else
+		if( this.difficulty < 90 )
+			commands = commands.concat( COMMANDS.EASY, COMMANDS.MEDIUM );
+		else
+		if( this.difficulty < 96 )
+			commands = commands.concat( COMMANDS.MEDIUM );
+		else
+			commands = commands.concat( COMMANDS.HARD );
+		
+		this.spaceship.initButtons( random(commands)+'F' );
 		this.spaceship.goToPlatformA( );
+		this.spaceship.ring.style.display = 'block';
 		
 		this.maze.regenerate( midPointsCount, randomRoutesCount );
 		

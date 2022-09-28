@@ -20,7 +20,6 @@ class Spaceship extends Group
 		this.ring = this.generateRing( );
 
 		this.flightCommands = '';
-		this.updateStartIcon = true;
 		
 		this.model = model( 'models/craft_speederA.glb' );
 			its.size = Spaceship.SCALE;
@@ -47,58 +46,87 @@ class Spaceship extends Group
 	// generate commands ring
 	generateRing( )
 	{
-		// function setPos( label, angle, distScale = 1 )
-		// {
-			// var dist = 120*distScale,
-				// dx = Math.round( dist*Math.cos(radians(angle)) ),
-				// dy = Math.round( dist*Math.sin(radians(angle)) );
-			// var elem = element( label );
-			
-			// console.log(elem,elem.clientWidth,elem.clientHeight)
-			
-			// elem.style.left = (-80/2+dx)+'px';
-			// elem.style.top = (-80/2-dy)+'px';
-		// }
-
-		// setPos( 'lt', 180 );
-		// setPos( 'rt', 0 );
-		// setPos( 'up', 90 );
-		// setPos( 'dn', 270 );
-		// setPos( 'ac', 135 );
-		// setPos( 'cw', 45 );
-		// setPos( 'go1', -45 );
-		// setPos( 'go2', -135 );
-
 		var that = this;
 		
-		function setPos( label, command, dx, dy )
+		function setEventHandler( label, command )
 		{
-			var elem = element( label ),
-				imgElem = elem.getElementsByTagName( 'img' )[0];
-			
-			elem.style.left = (-80/2+dx)+'px';
-			elem.style.top = (-80/2-dy)+'px';
-
-			elem.command = command;
-			elem.addEventListener( 'click', that.command );
+			element( label ).command = command;
+			element( label ).addEventListener( 'click', that.command );
 		}
 
-		setPos( 'button_up', 'U',    	   0,   80 );
-		setPos( 'button_down', 'D',  	   0,  -80 );
+		setEventHandler( 'button_up', 'U' );
+		setEventHandler( 'button_down', 'D' );
 
-		setPos( 'button_left', 'L',		 -70,   40 );
-		setPos( 'button_right', 'R',	  70,   40 );
+		setEventHandler( 'button_left', 'L' );
+		setEventHandler( 'button_right', 'R' );
 		
-		setPos( 'button_roll_left', 'A', -70,  -40 );
-		setPos( 'button_roll_right', 'C', 70,  -40 );
+		setEventHandler( 'button_roll_left', 'A' );
+		setEventHandler( 'button_roll_right', 'C' );
 		
-		setPos( 'button_forward', 'F',	   0,    0 );
-		setPos( 'button_start', '!',	  80,   80 );
+		setEventHandler( 'button_forward', 'F' );
+		setEventHandler( 'button_start', '!' );
 
 		return element( 'ring' );
 	} // Spaceship.generateRing
 	
 	
+	
+	// initialize buttons - visibility and position
+	initButtons( commands )
+	{
+		const POS = {
+			U: [  0, 80],
+			D: [  0,-80],
+			L: [-70, 40],
+			R: [ 70, 40],
+			A: [-70,-40],
+			C: [ 70,-40],
+			F: [  0,  0]
+		};
+
+		var lowestCommand = 'U';
+		
+		function setPos( label, command )
+		{
+			var style = element( label ).style;
+			
+			// find a place for the start button
+			if( commands.indexOf(command) > -1 )
+			{
+				style.left = (-80/2+POS[command][0])+'px';
+				style.top = (-80/2-POS[command][1])+'px';
+				style.display = 'block';
+			}
+			else
+			if( command == '!' )
+			{
+				style.left = (-80/2+POS[lowestCommand][0])+'px';
+				style.top = (-80/2-POS[lowestCommand][1])+'px';
+				style.display = 'block';
+			}
+			else
+			{
+				style.display = 'none';
+				if( POS[command][1] <= POS[lowestCommand][1] )
+					lowestCommand = command;
+			}
+		}
+
+		setPos( 'button_up', 'U' );
+		setPos( 'button_down', 'D' );
+
+		setPos( 'button_left', 'L' );
+		setPos( 'button_right', 'R' );
+		
+		setPos( 'button_roll_left', 'A' );
+		setPos( 'button_roll_right', 'C' );
+		
+		setPos( 'button_forward', 'F' );
+		setPos( 'button_start', '!' );
+
+		element( 'counter_start' ).innerHTML = playground.attempts;
+		element( 'counter_start' ).style.display = playground.attempts>1 ? 'block' : 'none';
+	}
 	
 	// generate a tween for rotation around axis
 	rotateTween( method, sign )
@@ -157,11 +185,14 @@ class Spaceship extends Group
 	fly( )
 	{
 		// hide the ring of buttons
-		this.ring.style.display = 'none';
+		//this.ring.style.display = 'none';
 
 		// reduce the number of left starts
 		playground.attempts--;
-					
+
+		if( playground.attempts > 1 )
+			element( 'counter_start' ).style.display = 'block';
+		else
 		if( playground.attempts == 1 )
 			element( 'counter_start' ).style.display = 'none';
 		else
@@ -297,24 +328,7 @@ class Spaceship extends Group
 	onClick( )
 	{
 		// if game is not started, click on any plate will start it
-		if( playground.gameStarted )
-		{	
-	//console.log(this.ring.style.display);
-			// toggle the ring
-			if( this.ring.style.display=='block' )
-				this.ring.style.display = 'none';
-			else
-			{
-				if( this.updateStartIcon )
-				{
-					element( 'icon_start' ).src = `images/start_${playground.getLanguage()}.png`;
-					this.updateStartIcon = false;
-				}
-								
-				this.ring.style.display = 'block';
-			}
-		}
-		else
+		if( !playground.gameStarted )
 			playground.newGame( );
 	} // Spaceship.onClick
 	
@@ -323,17 +337,7 @@ class Spaceship extends Group
 	// moves the spaceship and/or its ring of buttons
 	update( t, dT )
 	{
-		if( playground.gameStarted )
-		{
-			if( this.ring.style.display=='block' )
-			{
-				var pos = this.screenPosition( );
-
-				this.ring.style.left = (pos[0]-this.ring.clientWidth/2)+'px';
-				this.ring.style.top = (pos[1]-this.ring.clientHeight/2)+'px';
-			}
-		}
-		else
+		if( !playground.gameStarted )
 		{
 			// f(x) in [-180,180)
 			function f(x) { x %= 360; return x>=180 ? x-360 : x; }

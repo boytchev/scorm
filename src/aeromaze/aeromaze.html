@@ -38,6 +38,24 @@
 			background: rgba( 255, 200, 100, 0.5 );
 			cursor: pointer;
 		}
+		.move {
+			width: 50px;
+			height: 50px;
+			background: transparent;
+			border: none;
+			font-size: 30px;
+			color: black;
+			text-shadow:
+				1px 0px 1px white,
+			    -1px 0px 1px white,
+				0px 1px 1px white,
+				0px -1px 1px white;
+		}
+		.move:hover {
+			background: transparent;
+			cursor: pointer;
+		}
+		
 		.command img {
 			width: 100%;
 			height: 100%;
@@ -55,6 +73,9 @@
 		}
 		.command:active {
 			background: rgba( 255, 200, 100, 1 );
+		}
+		.move:active {
+			background: transparent;
 		}
 	</style>
 	
@@ -76,7 +97,7 @@
 		<div class="hud corner bottom left"></div>
 		<div class="hud corner bottom right"></div>
 		
-		<div id="ring" class="ring">
+		<div id="ring" class="ring" style="top:50%; left:50%;">
 			<div id="button_right" class="command"><img src="images/right.png" draggable="false"></div>
 			<div id="button_left" class="command"><img src="images/left.png" draggable="false"></div>
 			<div id="button_up" class="command"><img src="images/up.png" draggable="false"></div>
@@ -86,8 +107,20 @@
 			<div id="button_roll_left" class="command"><img src="images/rollccw.png" draggable="false"></div>
 			<div id="button_start" class="command">
 				<img src="images/start_en.png" draggable="false" id="icon_start">
-				<div class="counter" id="counter_start">3</div>
+				<div class="counter" id="counter_start">2</div>
 			</div>
+
+
+			<div class="move command" style="left:-165px; top:-30px;" onclick="panLeft()"><img src="images/pan_left.png" draggable="false"></div>
+			<div class="move command" style="left:107px; top:-30px;" onclick="panRight()"><img src="images/pan_right.png" draggable="false"></div>
+			<div class="move command" style="left:-29px; top:-178px;" onclick="panTop()"><img src="images/pan_top.png" draggable="false"></div>
+			<div class="move command" style="left:-29px; top:120px;" onclick="panBottom()"><img src="images/pan_bottom.png" draggable="false"></div>
+<!--
+			<div class="move command" style="left:-165px; top:-30px;" onclick="panLeft()">⭰</div>
+			<div class="move command" style="left:107px; top:-30px;" onclick="panRight()">⭲</div>
+			<div class="move command" style="left:-29px; top:-178px;" onclick="panTop()">⭱</div>
+			<div class="move command" style="left:-29px; top:120px;" onclick="panBottom()">⭳</div>
+	-->		
 		</div>
 		
 		<div class="hud top right" style="border: none;">
@@ -120,6 +153,43 @@
 
 		window.addEventListener( 'resize', playground.resize );
 				
+			
+		function panLeft( )
+		{
+			element( 'ring' ).style.left = '110px';
+			element( 'ring' ).style.right = '';
+			element( 'ring' ).style.top = '50%';
+			element( 'ring' ).style.bottom = '';
+		}
+		
+		
+		function panRight( )
+		{
+			element( 'ring' ).style.left = '';
+			element( 'ring' ).style.right = '110px';
+			element( 'ring' ).style.top = '50%';
+			element( 'ring' ).style.bottom = '';
+		}
+		
+		
+		function panTop( )
+		{
+			element( 'ring' ).style.left = '50%';
+			element( 'ring' ).style.right = '';
+			element( 'ring' ).style.top = '120px';
+			element( 'ring' ).style.bottom = '';
+		}
+		
+		
+		function panBottom( )
+		{
+			element( 'ring' ).style.left = '50%';
+			element( 'ring' ).style.right = '';
+			element( 'ring' ).style.top = '';
+			element( 'ring' ).style.bottom = '120px';
+		}
+		
+		
 		function onPointerMove( event )
 		{		
 			playground.pointerMovement += Math.abs( event.movementX ) + Math.abs( event.movementY );
@@ -149,13 +219,8 @@
 				playground.spaceship.onClick( );
 			}
 		}
-		<!-- function onPointerMove( event ) -->
-		<!-- { -->
-			<!-- if( findObject( event ) ) -->
-				<!-- event.target.style.cursor = 'pointer'; -->
-			<!-- else -->
-				<!-- event.target.style.cursor = 'default'; -->
-		<!-- } -->
+		
+		panTop();
 		
 	</script>
 	
