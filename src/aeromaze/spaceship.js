@@ -9,7 +9,7 @@ class Spaceship extends Group
 	static MOVE_SPEED = 500;
 	static END_GAME_SPEED = 1000;
 	static GOTO_PLATFORM_SPEED = 1000;
-	static GOTO_CENTER_SPEED = 500;
+	static GOTO_CENTER_SPEED = 1000;
 
 	static SCALE = 1/2;
 	
@@ -311,7 +311,7 @@ class Spaceship extends Group
 	goToCenter( )
 	{
 		var that = this;
-		
+				
 		new TWEEN.Tween( {center:this.center, spin:this.spin} )
 			.to( {center:[0,0,0], spin:[0,0,0]}, Spaceship.GOTO_CENTER_SPEED )
 			.onUpdate( function( obj ) {
