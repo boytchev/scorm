@@ -27,16 +27,18 @@ class Spaceship extends Group
 			its.x = -2*Spaceship.SCALE;
 			its.y = -0.25*Spaceship.SCALE;
 			its.z = -1.5*Spaceship.SCALE;
-
+			
 		// function to recursively make model element cast shadow
 		function traverse( obj )
 		{
 			obj.castShadow = true;
+			if( obj.material ) obj.material.color.multiplyScalar( 0.65 );
+			
 			for( var i=0; i<obj.children.length; i++ )
 				traverse( obj.children[i] );
 		}
 
-		this.addEventListener( 'load', obj=>traverse(obj.threejs) );
+		this.model.addEventListener( 'load', function(obj){traverse(obj.threejs);} );
 		this.add( this.model );
 	} // Spaceship.constructor
 
@@ -75,23 +77,23 @@ class Spaceship extends Group
 				imgElem = elem.getElementsByTagName( 'img' )[0];
 			
 			elem.style.left = (-80/2+dx)+'px';
-			elem.style.top = (-80/2+dy)+'px';
+			elem.style.top = (-80/2-dy)+'px';
 
-			imgElem.command = command;
-			imgElem.addEventListener( 'click', that.command );
+			elem.command = command;
+			elem.addEventListener( 'click', that.command );
 		}
 
-		setPos( 'button_up', 'U',    	   0,  110 );
-		setPos( 'button_down', 'D',  	   0,  220 );
+		setPos( 'button_up', 'U',    	   0,   80 );
+		setPos( 'button_down', 'D',  	   0,  -80 );
 
-		setPos( 'button_left', 'L',		-110,  110 );
-		setPos( 'button_right', 'R',	 110,  110 );
+		setPos( 'button_left', 'L',		 -70,   40 );
+		setPos( 'button_right', 'R',	  70,   40 );
 		
-		setPos( 'button_roll_left', 'A', -110,  220 );
-		setPos( 'button_roll_right', 'C', 110,  220 );
+		setPos( 'button_roll_left', 'A', -70,  -40 );
+		setPos( 'button_roll_right', 'C', 70,  -40 );
 		
-		setPos( 'button_forward', 'F',	  -80,   80 );
-		setPos( 'button_start', '!',	   80,   80 );
+		setPos( 'button_forward', 'F',	   0,    0 );
+		setPos( 'button_start', '!',	  80,   80 );
 
 		return element( 'ring' );
 	} // Spaceship.generateRing
@@ -146,24 +148,8 @@ class Spaceship extends Group
 				obj.spaceship.x = Math.round( obj.spaceship.x );
 				obj.spaceship.y = Math.round( obj.spaceship.y );
 				obj.spaceship.z = Math.round( obj.spaceship.z );
-
-				// fix position
-				// var px = Planet.GRID_SCALE * Math.round( obj.model.position.x/Planet.GRID_SCALE ),
-					// py = Planet.GRID_SCALE * Math.round( obj.model.position.y/Planet.GRID_SCALE ),
-					// pz = Planet.GRID_SCALE * Math.round( obj.model.position.z/Planet.GRID_SCALE );
-				// obj.model.position.set( px, py, pz );
 			} );
 	}
-	
-	
-	
-	// check whether the current position is on a line
-	// if not, then move back to the closest point
-	fixPosition( epsilon )
-	{
-		;
-
-	} // Maze.fixPosition
 	
 	
 	
@@ -253,7 +239,7 @@ class Spaceship extends Group
 	// adds a new command
 	command( event )
 	{
-//		console.dir( event.target );
+		//console.dir( event.target );
 		var spaceship = playground.spaceship,
 			command = event.target.command;
 			

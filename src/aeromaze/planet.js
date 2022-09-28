@@ -27,8 +27,6 @@ class Planet extends Group
 		
 		this.constructPlanet( );
 		
-		this.threejs.castShadow = true;
-		
 		this.visible = false;
 	} // Planet.constructor
 
@@ -41,7 +39,7 @@ class Planet extends Group
 		var map = ScormUtils.image( 'metal_plate.jpg', this.PLATES/2, this.PLATES/2, 1/2, 1/2 ),
 			alphaMap = ScormUtils.image( 'metal_plate_alpha.jpg', this.PLATES/2, this.PLATES/2, 1/2, 1/2 );
 		var materialBack = new THREE.MeshStandardMaterial( {
-			color: 'lightgray',//'white',
+			color: 'gray',//'white',
 			metalness: 0,
 			roughness: 1,//0.42,
 			map: map,

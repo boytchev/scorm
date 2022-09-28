@@ -6,7 +6,7 @@
 class Platform extends Group
 {
 	
-	static SCALE = 1/2;
+	static SCALE = 0.6;
 	
 	constructor( planet )
 	{
@@ -22,6 +22,8 @@ class Platform extends Group
 		function traverse( obj )
 		{
 			obj.receiveShadow = true;
+			if( obj.material ) obj.material.color.multiplyScalar( 0.7 );
+
 			for( var i=0; i<obj.children.length; i++ )
 				traverse( obj.children[i] );
 		}

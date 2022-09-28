@@ -4,6 +4,8 @@
 
 class Maze extends Group
 {
+	static POINT_SIZE = 3;
+	
 /*	static GRID = 2 + Planet.PLATES>>1;
 	*/
 	constructor( planet )
@@ -17,7 +19,7 @@ class Maze extends Group
 		this.lines = [];	// list of line segments of the route
 		
 		this.update( planet );
-
+		
 	} // Maze.constructor
 	
 		
@@ -94,14 +96,15 @@ class Maze extends Group
 		if( this.pointIdx >= this.points.length )
 		{
 			// create
-			var newPoint = point( center, 2/playground.planet.SCALE );
+			var newPoint = point( center, Maze.POINT_SIZE/playground.planet.SCALE );
+				newPoint.threejs.castShadow = true;
 			this.points.push( newPoint );
 			this.add( newPoint );
 		}
 		else
 		{	// reuse
 			this.points[ this.pointIdx ].center = center;
-			this.points[ this.pointIdx ].size = 2/playground.planet.SCALE;
+			this.points[ this.pointIdx ].size = Maze.POINT_SIZE/playground.planet.SCALE;
 			this.points[ this.pointIdx ].visible = true;
 		}
 		
@@ -129,6 +132,7 @@ class Maze extends Group
 		{
 			// create
 			newLine = line( from, to );
+			newLine.threejs.castShadow = true;
 			this.lines.push( newLine );
 			this.add( newLine );
 		}

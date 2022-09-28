@@ -25,7 +25,7 @@ class Playground extends ScormPlayground
 			new Planet( 3 ),
 			new Planet( 5 ),
 			new Planet( 7 ),
-			new Planet( 9 )
+//			new Planet( 9 )
 		]
 		this.planet = this.planets[0];
 		this.planet.visible = true;
@@ -66,7 +66,7 @@ class Playground extends ScormPlayground
 
 		function addLight( x, y, z )
 		{
-			var light = new THREE.DirectionalLight( 'white', 0.2 );
+			var light = new THREE.DirectionalLight( 'white', 0.6 );
 				light.position.set( x, y, z );
 				light.castShadow = true;
 
@@ -76,7 +76,7 @@ class Playground extends ScormPlayground
 				light.shadow.camera.right = 10;//Planet.SIZE*Planet.SCALE;
 				light.shadow.camera.bottom = -10;//-Planet.SIZE*Planet.SCALE;
 				light.shadow.camera.top = 10;//Planet.SIZE*Planet.SCALE;
-				light.shadow.camera.near = 20;
+				light.shadow.camera.near = 1;
 				light.shadow.camera.far = 100;
 
 			suica0.scene.add( light );
@@ -87,14 +87,14 @@ class Playground extends ScormPlayground
 		
 		// define 6 lights from 6 directions
 		// all light flow towards (0,0,0)
-		addLight(  40, 0, 0 );
-		addLight( -40, 0, 0 );
+		addLight(  20, 0, 0 );
+		addLight( -20, 0, 0 );
 		
-		addLight( 0,  40, 0 );
-		addLight( 0, -40, 0 );
+		addLight( 0,  20, 0 );
+		addLight( 0, -20, 0 );
 		
-		addLight( 0, 0,  40 );
-		addLight( 0, 0, -40 );
+		addLight( 0, 0,  20 );
+		addLight( 0, 0, -20 );
 	} // Playground.addLightsAndShadows
 	
 
@@ -106,9 +106,9 @@ class Playground extends ScormPlayground
 		this.attempts += Playground.NEW_ATTEMPTS;
 		
 		// config
-		var planetSize = Math.round(THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, this.planets.length-1 )),
-			midPointsCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, 5 )),
-			randomRoutesCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, 10 ));
+		var planetSize = Math.round(THREE.MathUtils.mapLinear( this.difficulty**2, 10**2, 100**2, 0, this.planets.length-1 )),
+			midPointsCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty, 10**1.7, 100**1.7, 0, 10 )),
+			randomRoutesCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty**1.5, 10**1.5, 100**1.5, 0, 10 ));
 		
 		this.planet.visible = false;
 		this.planet = this.planets[ planetSize ];
