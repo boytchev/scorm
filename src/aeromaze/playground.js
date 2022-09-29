@@ -103,16 +103,20 @@ class Playground extends ScormPlayground
 	// starts a new game by selecting new color hues
 	newGame( )
 	{
+		this.clickSound.play( );
+
 		super.newGame( );
 
 		this.attempts += Playground.NEW_ATTEMPTS;
 		
 
 		// config
-		var planetSize = Math.round(THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, this.planets.length-1 )),
-			midPointsCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty, 10**1.7, 100**1.7, 0, 10 )),
-			randomRoutesCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty**2, 10**2, 100**2, 0, 20 ));
-		
+		var planetSize = Math.round(THREE.MathUtils.mapLinear( this.difficulty**1.5, 10**1.5, 100**1.5, 0, this.planets.length-1 )),
+			midPointsCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty**3, 10**3, 100**3, 0, 3 )),
+			randomRoutesCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty**4, 10**4, 100**4, 0, 7 ));
+console.log(`midPoints=${midPointsCount} randomRoutes=${randomRoutesCount}`);
+// midPointsCount = 5;
+// randomRoutesCount = 0;		
 		this.planet.visible = false;
 		this.planet = this.planets[ planetSize ];
 		this.planet.visible = true;
@@ -130,26 +134,37 @@ class Playground extends ScormPlayground
 
 		// commands
 		const COMMANDS = {
-			BASIC:	[ 'LRUDA.', 'LRUD.C' ],
+			
+			// LR + UD + one roll
+			BASIC:	[ 'LRUD..', 'LRUDA.', 'LRUD.C' ],
+			
+			// (LR or UD) and two rolls
 			EASY:	[ 'LR..AC', '..UDAC' ],
-			MEDIUM:	[ 'LRU.A.', 'LRU..C', 'LR.DA.', 'LR.D.C', 'L.UDA.', 'L.UD.C', '.RUDA.', '.RUD.C', 'L.U.AC', 'L..DAC', '.RU.AC', '.R.DAC' ],
-			HARD:	[ 'L.U...', 'L..D..', '.RU...', '.R.D..', 'L...A.', 'L....C', '.R..A.', '.R...C', '..U.A.', '..U..C', '...DA.', '...D.C' ],
+			
+			// LR + one UD + one roll
+			MEDIUM:	[ 'LRU.A.', 'LRU..C', 'LR.DA.', 'LR.D.C' ],
+
+			// one LR + UD + one roll
+			HARD:	[ 'L.UDA.', 'L.UD.C', '.RUDA.', '.RUD.C', 'L.U.AC', 'L..DAC', '.RU.AC', '.R.DAC' ],
+
+			// only two from two different groups
+			MONSTER:[ 'L.U...', 'L..D..', '.RU...', '.R.D..', 'L...A.', 'L....C', '.R..A.', '.R...C', '..U.A.', '..U..C', '...DA.', '...D.C' ],
 		};
 		var commands = [];
 
-		if( this.difficulty < 50 )
+		if( this.totalScore < 60 )
 			commands = commands.concat( COMMANDS.BASIC );
 		else
-		if( this.difficulty < 70 )
-			commands = commands.concat( COMMANDS.BASIC, COMMANDS.EASY );
+		if( this.difficulty < 85 )
+			commands = commands.concat( COMMANDS.EASY );
 		else
-		if( this.difficulty < 90 )
-			commands = commands.concat( COMMANDS.EASY, COMMANDS.MEDIUM );
-		else
-		if( this.difficulty < 96 )
+		if( this.difficulty < 95 )
 			commands = commands.concat( COMMANDS.MEDIUM );
 		else
+		if( this.difficulty < 99 )
 			commands = commands.concat( COMMANDS.HARD );
+		else
+			commands = commands.concat( COMMANDS.MONSTER );
 		
 		this.spaceship.initButtons( random(commands)+'F' );
 		this.spaceship.goToPlatformA( );
@@ -202,15 +217,17 @@ class Playground extends ScormPlayground
 	{
 		super.endGame( );
 
+		this.clonckSound.play( );
+
 		this.platformA.visible = false;
 		this.platformB.visible = false;
-		
 		this.spaceship.ring.style.display = 'none';
-		this.spaceship.goToCenter( );
-		
+
 		// hide all points and lines
 		this.maze.clearPoints( );
 		this.maze.clearLines( );
+
+		setTimeout( function(){playground.spaceship.goToCenter( );}, 10 );
 		
 
 		// ...
@@ -233,9 +250,11 @@ class Playground extends ScormPlayground
 	{
 		this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1, 4 );
 		this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
+		this.clonckSound = new PlaygroundAudio( 'sounds/clonck.mp3', 0.1 );
+		this.buttonSound = new PlaygroundAudio( 'sounds/slide-off.mp3', 0.13 );
 		//this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.2, 1, true );
 		
-		this.soundEffects.push( this.clickSound, this.clackSound );
+		this.soundEffects.push( this.clickSound, this.clackSound, this.buttonSound );
 		//this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
 	

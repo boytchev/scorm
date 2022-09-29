@@ -34,17 +34,97 @@ class Maze extends Group
 	
 	
 	
+	
+	// check whether [a1,a2] crosses [b1,b2]
+	// note: a1 is open side of interval
+	crossedLines( a1, a2, b1, b2 )
+	{
+		function between( x, y1, y2 )
+		{
+			return Math.min(y1,y2)<x && x<Math.max(y1,y2);
+		}
+		
+		function betweenEx( x, y1, y2 )
+		{
+			return Math.min(y1,y2)<=x && x<=Math.max(y1,y2);
+		}
+		
+		var goodX = ( between(a1[0],b1[0],b2[0]) && between(a2[0],b1[0],b2[0]) ) ||
+				    ( between(b1[0],a1[0],a2[0]) && between(b2[0],a1[0],a2[0]) );
+
+		var goodY = ( between(a1[1],b1[1],b2[1]) && between(a2[1],b1[1],b2[1]) ) ||
+				    ( between(b1[1],a1[1],a2[1]) && between(b2[1],a1[1],a2[1]) );
+					
+		var goodZ = ( between(a1[2],b1[2],b2[2]) && between(a2[2],b1[2],b2[2]) ) ||
+				    ( between(b1[2],a1[2],a2[2]) && between(b2[2],a1[2],a2[2]) );
+		// console.log(between(a1[0],b1[0],b2[0]), between(a2[0],b1[0],b2[0]), between(b1[0],a1[0],a2[0]), between(b2[0],a1[0],a2[0]) );
+		// console.log('goods',goodX , goodY , goodZ);
+		return goodX && goodY && goodZ;
+	}
+	
+	
+	
+	// check whether a line crosses any existing line
+	crossingExistingLines( a1, a2 )
+	{
+		for( var i=0; i<this.lineIdx; i++ )
+			if( this.crossedLines(a1,a2,this.lines[i][0],this.lines[i][1]) )
+				return true;
+		return false;
+	}
+	
+	
+	
+	// check whether any point from FROM+1 to TO
+	// is the same as existing points
+	goodLine( from, to, check=true )
+	{
+		var points = [];
+		
+		// i - coordinate index
+		for( var i=0; i<3; i++ )
+		{
+			var dist = to[i]-from[i],
+				step = Math.sign( dist ); // must be 1 or -1, never 0
+		
+			if( dist == 0 ) continue;
+			
+			for( var t=1; t<=Math.abs(dist); t++ )
+			{
+				var mid = [...from];
+					mid[i] += step*t;
+
+				if( check )
+				{
+					for( var j=0; j<this.pointIdx; j++ )
+						if( mid[0]==this.points[j].x && 
+							mid[1]==this.points[j].y &&
+							mid[2]==this.points[j].z )
+							return false;
+				}
+				
+				points.push( mid );
+			}
+		}
+		
+		return points;
+	}
+	
+	
+	
 	// creates a direct route between two points
 	// the route may have up to 3 segments - one
 	// for each coordinate that is different
-	addRoute( from, to )
+	addRoute( from, to, prematureExit = false )
 	{
+		
 		// mangle order of coordintes
 		var coords = [0,1,2].sort(()=>random(-1,1));
 
+		// try to make lines that do not cross existing lines
 		for( var i=0; i<coords.length; i++ )
 		{
-			// if equal coordinates - exit
+			// if equal coordinates - try next coordinate
 			if( from[i] == to[i] )
 				continue;
 			
@@ -52,29 +132,63 @@ class Maze extends Group
 			var corner = [...from];
 				corner[i] = to[i];
 
+			// if outside planet - try next coordinate
 			if( !this.allowed( corner ) )
 				continue;
 			
+			// if it is not a good line - try next coordinate
+			var midPoints = this.goodLine( from, corner, true );
+//console.log('mids',midPoints);
+			if( !midPoints )
+				continue;
+							
 			// add a line
 			this.addLine( from, corner );
 			
 			// add points along the line
-			var dist = corner[i]-from[i],
-				step = Math.sign( dist ); // must be 1 or -1, never 0
-				
-			for( var t=0; t<Math.abs(dist); t++ )
-			{
-				var mid = [...from];
-					mid[i] += step*t;
-					
-				this.addPoint( mid );
-			}
+			for( var j=0; j<midPoints.length; j++ )
+				this.addPoint( midPoints[j] );
 			
-			// continue to the target
-			return this.addRoute( corner, to );
+			from = corner;
 		}
+
+		if( prematureExit ) return;
 		
-		this.addPoint( to );
+		// second attemps - the same efforts, but do not care
+		// about crossing the existing path
+
+		// mangle again order of coordintes
+		coords = [0,1,2].sort(()=>random(-1,1));
+
+		for( var attempt=0; attempt<3; attempt++ )
+		{
+			for( var i=0; i<coords.length; i++ )
+			{
+				// if equal coordinates - try next coordinate
+				if( from[i] == to[i] )
+					continue;
+				
+				// find a corner point
+				var corner = [...from];
+					corner[i] = to[i];
+
+				// if outside planet - try next coordinate
+				if( !this.allowed( corner ) )
+					continue;
+				
+				// if it is not a good line - just use the points
+				var midPoints = this.goodLine( from, corner, false );
+								
+				// add a line
+				this.addLine( from, corner );
+				
+				// add points along the line
+				for( var j=0; j<midPoints.length; j++ )
+					this.addPoint( midPoints[j] );
+
+				from = corner;
+			}
+		}
 		
 	} // Maze.addRoute
 
@@ -157,7 +271,72 @@ class Maze extends Group
 	
 	
 
-	// find whether pos is on any line
+	regenerate( midPointsCount = 0, randomRoutesCount = 0 )
+	{
+		var platformA = playground.platformA,
+			platformB = playground.platformB;
+
+		
+		var from = [...platformA.center],
+			to = [...platformB.center];
+
+		// create some middle points
+		for( let i=0; i<midPointsCount; i++ )
+		{
+			var via = this.findVertex( );
+			
+			this.addRoute( from, via, false );
+			from = via;
+		}
+		this.addRoute( from, to );
+		//this.points.push( to );
+
+//		console.log('  to',platformB.center);
+		
+		// add random routes
+		for( let i=0; i<randomRoutesCount; i++ )
+		{
+			from = this.points[ Math.round(random(0,this.pointIdx-1)) ].center;
+			to = this.findVertex( );
+			this.addRoute( from, to, true );
+		}
+
+		
+//		console.log( 'initial segments', this.lines.length );
+//		this.dump( );
+
+	} // Maze.regenerate
+	
+	
+	
+	// pick a vertex that is not forbidden
+	findVertex( from )
+	{
+		while( true )
+		{
+			// get a random point
+			var x = Math.round( random( -this.GRID+1, this.GRID-1) );
+			var y = Math.round( random( -this.GRID+1, this.GRID-1) );
+			var z = Math.round( random( -this.GRID+1, this.GRID-1) );
+
+			var point = [x, y, z];
+			
+			point[ random([0,1,2]) ] = random( [-this.GRID,this.GRID] );
+			
+			// if not legal, try again
+			if( !this.allowed( point ) ) continue;
+
+			// if FROM is provided, check whether the line from 
+			// FROM to the new point crosses any existing line
+			if( from !== undefined )
+				if( this.crossingExistingLines( from, point ) )
+					continue;
+				
+			return point;
+		}
+	}
+	
+	
 	onTrack( pos, epsilon )
 	{
 		var ax = pos[0],// / playground.maze.size,
@@ -178,90 +357,7 @@ class Maze extends Group
 		}
 		
 		return false;
-	} // Maze.existsLine
-	
-	
-	
-	regenerate( midPointsCount = 0, randomRoutesCount = 0 )
-	{
-		var platformA = playground.platformA,
-			platformB = playground.platformB;
-
-		
-		var from = [...platformA.center],
-			to = [...platformB.center];
-
-		// create some middle points
-		for( let i=0; i<midPointsCount; i++ )
-		{
-			var via = this.findVertex( );
-			
-			this.addRoute( from, via );
-			from = via;
-		}
-		this.addRoute( from, to );
-		//this.points.push( to );
-
-//		console.log('  to',platformB.center);
-		
-		// add random routes
-		for( let i=0; i<randomRoutesCount; i++ )
-		{
-			from = random( this.points ).center;
-			to = this.findVertex( );
-			this.addRoute( from, to );
-		}
-
-		
-//		console.log( 'initial segments', this.lines.length );
-//		this.dump( );
-
-	} // Maze.regenerate
-	
-	
-	
-	// pick a vertex that is not forbidden
-	findVertex( )
-	{
-		while( true )
-		{
-			// get a random vert
-			var x = Math.round( random( -this.GRID+1, this.GRID-1) );
-			var y = Math.round( random( -this.GRID+1, this.GRID-1) );
-			var z = Math.round( random( -this.GRID+1, this.GRID-1) );
-			
-			// if not legal, try again
-			if( !this.allowed( [x,y,z] ) ) continue;
-			
-			// if it is on any of the forbidden, try again
-			// for( var i=0; i<forbidden.length; i++ )
-			// {
-				// if( forbidden.x==x ||
-					// forbidden.y==y ||
-					// forbidden.z==z ) continue;
-			// }
-
-			// if it is between any two successive forbidden vertices, try again
-			var fail = false;
-			for( var i=0; i<this.pointIdx-1; i++ )
-			{
-				var a = this.points[i].center,
-					b = this.points[i+1].center;
-					
-				fail = a.x==b.x && a.x==x && a.y==b.y && a.y==y && Math.min(a.z,b.z)<=z && z<=Math.max(a.z,b.z);
-				if( fail ) break;
-					
-				fail = a.x==b.x && a.x==x && a.z==b.z && a.z==z && Math.min(a.y,b.y)<=y && y<=Math.max(a.y,b.y);
-				if( fail ) break;
-					
-				fail = a.y==b.y && a.y==y && a.z==b.z && a.z==z && Math.min(a.x,b.x)<=x && x<=Math.max(a.x,b.x);
-				if( fail ) break;
-			}
-			if( fail ) continue;
-				
-			return [x, y, z];
-		}
-	}
+	} // Maze.onTrack
 	
 	
 	

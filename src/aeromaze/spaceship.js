@@ -184,6 +184,9 @@ class Spaceship extends Group
 	// perform fly commands
 	fly( )
 	{
+		
+		playground.clackSound.play( );
+
 		// hide the ring of buttons
 		//this.ring.style.display = 'none';
 
@@ -270,6 +273,9 @@ class Spaceship extends Group
 	// adds a new command
 	command( event )
 	{
+		console.log('play');
+		playground.buttonSound.play( );
+		
 		//console.dir( event.target );
 		var spaceship = playground.spaceship,
 			command = event.target.command;
@@ -316,7 +322,7 @@ class Spaceship extends Group
 			.to( {center:[0,0,0], spin:[0,0,0]}, Spaceship.GOTO_CENTER_SPEED )
 			.onUpdate( function( obj ) {
 					that.center = obj.center;
-					that.spin = obj.spin;
+					//that.spin = obj.spin;
 				} )
 			.easing( TWEEN.Easing.Cubic.Out )
 			.start( );
