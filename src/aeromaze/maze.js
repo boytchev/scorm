@@ -44,11 +44,6 @@ class Maze extends Group
 			return Math.min(y1,y2)<x && x<Math.max(y1,y2);
 		}
 		
-		function betweenEx( x, y1, y2 )
-		{
-			return Math.min(y1,y2)<=x && x<=Math.max(y1,y2);
-		}
-		
 		var goodX = ( between(a1[0],b1[0],b2[0]) && between(a2[0],b1[0],b2[0]) ) ||
 				    ( between(b1[0],a1[0],a2[0]) && between(b2[0],a1[0],a2[0]) );
 
@@ -129,7 +124,7 @@ class Maze extends Group
 				continue;
 			
 			// find a corner point
-			var corner = [...from];
+			let corner = [...from];
 				corner[i] = to[i];
 
 			// if outside planet - try next coordinate
@@ -137,7 +132,7 @@ class Maze extends Group
 				continue;
 			
 			// if it is not a good line - try next coordinate
-			var midPoints = this.goodLine( from, corner, true );
+			let midPoints = this.goodLine( from, corner, true );
 //console.log('mids',midPoints);
 			if( !midPoints )
 				continue;
@@ -169,7 +164,7 @@ class Maze extends Group
 					continue;
 				
 				// find a corner point
-				var corner = [...from];
+				let corner = [...from];
 					corner[i] = to[i];
 
 				// if outside planet - try next coordinate
@@ -177,7 +172,7 @@ class Maze extends Group
 					continue;
 				
 				// if it is not a good line - just use the points
-				var midPoints = this.goodLine( from, corner, false );
+				let midPoints = this.goodLine( from, corner, false );
 								
 				// add a line
 				this.addLine( from, corner );
