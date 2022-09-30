@@ -3,7 +3,6 @@
 //
 
 	
-
 class Playground extends ScormPlayground
 {
 	static POINTER_MOVEMENT = 5;
@@ -19,6 +18,7 @@ class Playground extends ScormPlayground
 		this.addLightsAndShadows( );
 
 		this.attempts = 0;
+		this.bonusAttempts = 0;
 		
 		this.planets = [
 			new Planet( 1 ),
@@ -107,16 +107,20 @@ class Playground extends ScormPlayground
 
 		super.newGame( );
 
-		this.attempts += Playground.NEW_ATTEMPTS;
+		this.bonusAttempts += this.attempts/2.5;
+		this.attempts = Playground.NEW_ATTEMPTS;
 		
 
 		// config
-		var planetSize = Math.round(THREE.MathUtils.mapLinear( this.difficulty**1.5, 10**1.5, 100**1.5, 0, this.planets.length-1 )),
+		var planetSize = Math.round(THREE.MathUtils.mapLinear( this.difficulty**1.2, 10**1.2, 100**1.2, 0, this.planets.length-1 )),
 			midPointsCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty**3, 10**3, 100**3, 0, 3 )),
-			randomRoutesCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty**4, 10**4, 100**4, 0, 7 ));
-console.log(`midPoints=${midPointsCount} randomRoutes=${randomRoutesCount}`);
-// midPointsCount = 5;
-// randomRoutesCount = 0;		
+			randomRoutesCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty**1.5, 10**2, 100**1.5, 0, 7 ));
+//console.log(`midPoints=${midPointsCount} randomRoutes=${randomRoutesCount}`);
+
+// planetSize = 5;
+//midPointsCount = 5;
+// randomRoutesCount = 2;		
+
 		this.planet.visible = false;
 		this.planet = this.planets[ planetSize ];
 		this.planet.visible = true;
@@ -184,7 +188,7 @@ console.log(`midPoints=${midPointsCount} randomRoutes=${randomRoutesCount}`);
 	canEndGame( )
 	{
 		// no more attemps, game must end now
-		if( this.attempts == 0 )
+		if( this.attempts+this.bonusAttempts < 1 )
 			return true;
 		
 		// if the spaceship is not at platform B
@@ -204,9 +208,16 @@ console.log(`midPoints=${midPointsCount} randomRoutes=${randomRoutesCount}`);
 	{
 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
 		
-		// ...
+		// distance to target
+		var dist = Math.sqrt(
+						(this.spaceship.x-this.platformB.x)**2 +
+						(this.spaceship.y-this.platformB.y)**2 +
+						(this.spaceship.z-this.platformB.z)**2
+					);
 		
-		return 1 * points;
+		var score = THREE.MathUtils.clamp( 1 - dist/this.planet.PLATES, 0, 1 );
+console.log('dist',dist,'penalty',dist/(this.planet.PLATES**2),'score',score);		
+		return score * points;
 
 	} // Playground.evaluateGame
 	
@@ -260,8 +271,19 @@ console.log(`midPoints=${midPointsCount} randomRoutes=${randomRoutesCount}`);
 	
 	
 	
-	
+	// return HTML with left attempts
+	attemptsHTML( )
+	{
+		if( this.attempts+playground.bonusAttempts < 1 )
+			return '';
 		
+		var html = this.attempts;
+		
+		if( playground.bonusAttempts >= 1 )
+			html += '<span class="bonus">+'+Math.floor(playground.bonusAttempts)+'</span>';
+		
+		return html;
+	} // Playground.attemptsHTML
 		
 		
 	// update the playground

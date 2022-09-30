@@ -124,8 +124,7 @@ class Spaceship extends Group
 		setPos( 'button_forward', 'F' );
 		setPos( 'button_start', '!' );
 
-		element( 'counter_start' ).innerHTML = playground.attempts;
-		element( 'counter_start' ).style.display = playground.attempts>1 ? 'block' : 'none';
+		element( 'counter_start' ).innerHTML = playground.attemptsHTML( );
 	}
 	
 	// generate a tween for rotation around axis
@@ -191,19 +190,25 @@ class Spaceship extends Group
 		//this.ring.style.display = 'none';
 
 		// reduce the number of left starts
-		playground.attempts--;
-
-		if( playground.attempts > 1 )
-			element( 'counter_start' ).style.display = 'block';
-		else
-		if( playground.attempts == 1 )
-			element( 'counter_start' ).style.display = 'none';
-		else
+		
 		if( playground.attempts < 1 )
 		{
-			element( 'button_start' ).style.display = 'none';
+			playground.attempts += playground.bonusAttempts;
+			playground.bonusAttempts = 0;
+			if( playground.attempts>1 )
+			{
+				playground.bonusAttempts = playground.attempts-1;
+				playground.attempts = 1;
+			}
 		}
-		element( 'counter_start' ).innerHTML = playground.attempts;
+		
+		playground.attempts--;
+		
+		if( playground.attempts < 1 )
+		{
+//			element( 'button_start' ).style.display = 'none';
+		}
+		element( 'counter_start' ).innerHTML = playground.attemptsHTML( );
 
 		var tween,
 			firstTween = null,
@@ -273,7 +278,7 @@ class Spaceship extends Group
 	// adds a new command
 	command( event )
 	{
-		console.log('play');
+		//console.log('play');
 		playground.buttonSound.play( );
 		
 		//console.dir( event.target );

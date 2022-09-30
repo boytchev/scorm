@@ -1,6 +1,8 @@
 //
 //	class Maze
 	
+//var line_color = 'black'; /**/
+
 
 class Maze extends Group
 {
@@ -240,7 +242,7 @@ class Maze extends Group
 		if( this.lineIdx >= this.lines.length )
 		{
 			// create
-			newLine = line( from, to );
+			newLine = line( from, to/*, line_color*/ );
 			newLine.threejs.castShadow = true;
 			this.lines.push( newLine );
 			this.add( newLine );
@@ -250,6 +252,7 @@ class Maze extends Group
 			newLine = this.lines[ this.lineIdx ];
 			newLine.from = from;
 			newLine.to = to;
+			/*newLine.color = line_color;*/
 			newLine.visible = true;
 		}
 		
@@ -275,6 +278,7 @@ class Maze extends Group
 		var from = [...platformA.center],
 			to = [...platformB.center];
 
+		/*line_color = 'black';*/
 		// create some middle points
 		for( let i=0; i<midPointsCount; i++ )
 		{
@@ -289,6 +293,7 @@ class Maze extends Group
 //		console.log('  to',platformB.center);
 		
 		// add random routes
+		/*line_color = 'crimson';*/
 		for( let i=0; i<randomRoutesCount; i++ )
 		{
 			from = this.points[ Math.round(random(0,this.pointIdx-1)) ].center;
