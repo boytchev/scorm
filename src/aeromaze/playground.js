@@ -41,6 +41,7 @@ class Playground extends ScormPlayground
 		this.maze.threejs.castShadow = true;
 
 		element( 'icon_start' ).src = `images/start_${this.getLanguage()}.png`;
+		element( 'icon_reset' ).src = `images/reset_${this.getLanguage()}.png`;
 
 		orb.addEventListener( 'start', () => Playground.POINTER_USED=true  );
 		orb.addEventListener( 'end', () => Playground.POINTER_USED=false );
@@ -113,7 +114,7 @@ class Playground extends ScormPlayground
 
 		// config
 		var planetSize = Math.round(THREE.MathUtils.mapLinear( this.difficulty**1.2, 10**1.2, 100**1.2, 0, this.planets.length-1 )),
-			midPointsCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty**3, 10**3, 100**3, 0, 3 )),
+			midPointsCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty**2, 10**2, 100**2, 0, 2 )),
 			randomRoutesCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty**1.5, 10**2, 100**1.5, 0, 7 ));
 //console.log(`midPoints=${midPointsCount} randomRoutes=${randomRoutesCount}`);
 
@@ -139,34 +140,30 @@ class Playground extends ScormPlayground
 		// commands
 		const COMMANDS = {
 			
-			// LR + UD + one roll
-			BASIC:	[ 'LRUD..', 'LRUDA.', 'LRUD.C' ],
+			// LR + UD
+			BASIC_1:[ 'LRUD!?' ],
+			BASIC_2:[ 'LRU.!?', 'LR.D!?', '.RUD!?', 'L.UD!?' ],
 			
-			// (LR or UD) and two rolls
-			EASY:	[ 'LR..AC', '..UDAC' ],
+			// LR/UD and two rolls
+			EASY_1:	[ 'LR!?AC', '!?UDAC' ],
+			EASY_2:	[ '.R!?AC', 'L.!?AC', 'LR!?.C', 'LR!?A.', '!?.DAC', '!?U.AC', '!?UD.C', '!?UDA.' ],
 			
-			// LR + one UD + one roll
-			MEDIUM:	[ 'LRU.A.', 'LRU..C', 'LR.DA.', 'LR.D.C' ],
-
-			// one LR + UD + one roll
-			HARD:	[ 'L.UDA.', 'L.UD.C', '.RUDA.', '.RUD.C', 'L.U.AC', 'L..DAC', '.RU.AC', '.R.DAC' ],
-
 			// only two from two different groups
-			MONSTER:[ 'L.U...', 'L..D..', '.RU...', '.R.D..', 'L...A.', 'L....C', '.R..A.', '.R...C', '..U.A.', '..U..C', '...DA.', '...D.C' ],
+			HARD:	[ 'L.U.!?', 'L..D!?', '.RU.!?', '.R.D!?', 'L.!?A.', 'L.!?.C', '.R!?A.', '.R!?.C', '!?U.A.', '!?U..C', '!?.DA.', '!?.D.C' ],
 		};
 		var commands = [];
 
-		if( this.totalScore < 60 )
-			commands = commands.concat( COMMANDS.BASIC );
+		if( this.totalScore < 50 )
+			commands = commands.concat( COMMANDS.BASIC_1 );
 		else
-		if( this.difficulty < 85 )
-			commands = commands.concat( COMMANDS.EASY );
+		if( this.totalScore < 70 )
+			commands = commands.concat( COMMANDS.BASIC_2 );
 		else
-		if( this.difficulty < 95 )
-			commands = commands.concat( COMMANDS.MEDIUM );
+		if( this.difficulty < 90 )
+			commands = commands.concat( COMMANDS.EASY_1 );
 		else
-		if( this.difficulty < 99 )
-			commands = commands.concat( COMMANDS.HARD );
+		if( this.difficulty < 96 )
+			commands = commands.concat( COMMANDS.EASY_2 );
 		else
 			commands = commands.concat( COMMANDS.MONSTER );
 		
@@ -216,7 +213,7 @@ class Playground extends ScormPlayground
 					);
 		
 		var score = THREE.MathUtils.clamp( 1 - dist/this.planet.PLATES, 0, 1 );
-console.log('dist',dist,'penalty',dist/(this.planet.PLATES**2),'score',score);		
+//console.log('dist',dist,'penalty',dist/(this.planet.PLATES**2),'score',score);		
 		return score * points;
 
 	} // Playground.evaluateGame

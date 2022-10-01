@@ -72,6 +72,15 @@
 			pointer-events: none;
 			user-select: none;
 		}
+		.forward {
+			font-weight: normal;
+			color: black;
+			position: relative;
+			top: -36px;
+			font-size: 14px;
+			pointer-events: none;
+			user-select: none;
+		}
 		.command:active {
 			background: rgba( 255, 200, 100, 1 );
 		}
@@ -109,9 +118,13 @@
 			<div id="button_left" class="command"><img src="images/left.png" draggable="false"></div>
 			<div id="button_up" class="command"><img src="images/up.png" draggable="false"></div>
 			<div id="button_down" class="command"><img src="images/down.png" draggable="false"></div>
-			<div id="button_forward" class="command"><img src="images/forward.png" draggable="false"></div>
+			<div id="button_forward" class="command">
+				<img src="images/forward.png" draggable="false">
+				<div class="forward" id="forward_count"></div>
+			</div>
 			<div id="button_roll_right" class="command"><img src="images/rollcw.png" draggable="false"></div>
 			<div id="button_roll_left" class="command"><img src="images/rollccw.png" draggable="false"></div>
+			<div id="button_reset" class="command"><img src="images/reset_en.png" draggable="false" id="icon_reset"></div>
 			<div id="button_start" class="command">
 				<img src="images/start_en.png" draggable="false" id="icon_start">
 				<div class="counter" id="counter_start">2</div>

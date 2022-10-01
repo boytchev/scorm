@@ -20,6 +20,7 @@ class Spaceship extends Group
 		this.ring = this.generateRing( );
 
 		this.flightCommands = '';
+		element( 'forward_count' ).innerHTML = '';
 		
 		this.model = model( 'models/craft_speederA.glb' );
 			its.size = Spaceship.SCALE;
@@ -65,6 +66,7 @@ class Spaceship extends Group
 		
 		setEventHandler( 'button_forward', 'F' );
 		setEventHandler( 'button_start', '!' );
+		setEventHandler( 'button_reset', '?' );
 
 		return element( 'ring' );
 	} // Spaceship.generateRing
@@ -74,55 +76,51 @@ class Spaceship extends Group
 	// initialize buttons - visibility and position
 	initButtons( commands )
 	{
-		const POS = {
-			U: [  0, 80],
-			D: [  0,-80],
-			L: [-70, 40],
-			R: [ 70, 40],
-			A: [-70,-40],
-			C: [ 70,-40],
-			F: [  0,  0]
-		};
+		const POS = [
+			/*L:*/ [-70, 40],
+			/*R:*/ [ 70, 40],
+			/*U:*/ [  0, 80],
+			/*D:*/ [  0,-80],
+			/*A:*/ [-70,-40],
+			/*C:*/ [ 70,-40],
+			/*F:*/ [  0,  0]
+		];
+		const LABEL = {
+			U: 'button_up',
+			D: 'button_down',
+			L: 'button_left',
+			R: 'button_right',
+			A: 'button_roll_left',
+			C: 'button_roll_right',
+			F: 'button_forward',
+			'!': 'button_start',
+			'?': 'button_reset',
+			'.': '',
+		}
 
-		var lowestCommand = 'U';
-		
-		function setPos( label, command )
+		function setPos( label, pos )
 		{
+			if( label=='' ) return;
+			
 			var style = element( label ).style;
 			
-			// find a place for the start button
-			if( commands.indexOf(command) > -1 )
+			style.left = (-80/2+pos[0])+'px';
+			style.top = (-80/2-pos[1])+'px';
+			style.display = 'block';
+		}
+
+		// hide all buttons
+		for( var label in LABEL )
+		{
+			if( label != '.' )
 			{
-				style.left = (-80/2+POS[command][0])+'px';
-				style.top = (-80/2-POS[command][1])+'px';
-				style.display = 'block';
-			}
-			else
-			if( command == '!' )
-			{
-				style.left = (-80/2+POS[lowestCommand][0])+'px';
-				style.top = (-80/2-POS[lowestCommand][1])+'px';
-				style.display = 'block';
-			}
-			else
-			{
-				style.display = 'none';
-				if( POS[command][1] <= POS[lowestCommand][1] )
-					lowestCommand = command;
+				element( LABEL[label] ).style.display = 'none';
 			}
 		}
 
-		setPos( 'button_up', 'U' );
-		setPos( 'button_down', 'D' );
-
-		setPos( 'button_left', 'L' );
-		setPos( 'button_right', 'R' );
-		
-		setPos( 'button_roll_left', 'A' );
-		setPos( 'button_roll_right', 'C' );
-		
-		setPos( 'button_forward', 'F' );
-		setPos( 'button_start', '!' );
+		// then show only buttons in commands
+		for( var i=0; i<commands.length; i++ )
+			setPos( LABEL[commands[i]], POS[i] );
 
 		element( 'counter_start' ).innerHTML = playground.attemptsHTML( );
 	}
@@ -180,6 +178,15 @@ class Spaceship extends Group
 	
 	
 	
+	// reset commands
+	reset( )
+	{
+		this.flightCommands = '';
+		element( 'forward_count' ).innerHTML = '';
+	}
+	
+	
+		
 	// perform fly commands
 	fly( )
 	{
@@ -238,7 +245,6 @@ class Spaceship extends Group
 					tween = this.rotateTween( 'rotateZ', -1 );
 					break;
 				case 'F': // forward
-					// go forward only if there is a line from to there
 					tween = this.translateTween( 'translateZ', -1 );
 					break;
 				default:
@@ -271,6 +277,7 @@ class Spaceship extends Group
 		
 		firstTween?.start( );
 		this.flightCommands = '';
+		element( 'forward_count' ).innerHTML = '';
 	}
 	
 	
@@ -291,8 +298,14 @@ class Spaceship extends Group
 				spaceship.fly( );
 		}
 		else
+		if( command == '?' )
+		{
+			spaceship.reset( );
+		}
+		else
 		{
 			spaceship.flightCommands += command;
+			element( 'forward_count' ).innerHTML = spaceship.flightCommands.length;
 		}
 
 	} // Spaceship.command
@@ -303,6 +316,7 @@ class Spaceship extends Group
 	goToPlatformA( )
 	{
 		this.flightCommands = '';
+		element( 'forward_count' ).innerHTML = '';
 
 		var that = this;
 		
