@@ -114,10 +114,15 @@ class Playground extends ScormPlayground
 
 		// config
 		var planetSize = Math.round(THREE.MathUtils.mapLinear( this.difficulty**1.2, 10**1.2, 100**1.2, 0, this.planets.length-1 )),
-			midPointsCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty**2, 10**2, 100**2, 0, 2 )),
+			midPointsCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty**1.5, 10**1.5, 100**1.5, 0, 2 )),
 			randomRoutesCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty**1.5, 10**2, 100**1.5, 0, 7 ));
-//console.log(`midPoints=${midPointsCount} randomRoutes=${randomRoutesCount}`);
 
+		if( this.totalScore >= 90 )
+			midPointsCount = 1;
+		if( this.totalScore >= 96 )
+			midPointsCount = 0;
+			
+//console.log(`midPoints=${midPointsCount} randomRoutes=${randomRoutesCount}`);
 // planetSize = 5;
 //midPointsCount = 5;
 // randomRoutesCount = 2;		
@@ -141,12 +146,12 @@ class Playground extends ScormPlayground
 		const COMMANDS = {
 			
 			// LR + UD
-			BASIC_1:[ 'LRUD!?' ],
-			BASIC_2:[ 'LRU.!?', 'LR.D!?', '.RUD!?', 'L.UD!?' ],
+			EASY_1:[ 'LRUD!?' ],
+			EASY_2:[ 'LRU.!?', 'LR.D!?', '.RUD!?', 'L.UD!?' ],
 			
 			// LR/UD and two rolls
-			EASY_1:	[ 'LR!?AC', '!?UDAC' ],
-			EASY_2:	[ '.R!?AC', 'L.!?AC', 'LR!?.C', 'LR!?A.', '!?.DAC', '!?U.AC', '!?UD.C', '!?UDA.' ],
+			MODERATE_1:	[ 'LR!?AC', '!?UDAC' ],
+			MODERATE_2:	[ '.R!?AC', 'L.!?AC', 'LR!?.C', 'LR!?A.', '!?.DAC', '!?U.AC', '!?UD.C', '!?UDA.' ],
 			
 			// only two from two different groups
 			HARD:	[ 'L.U.!?', 'L..D!?', '.RU.!?', '.R.D!?', 'L.!?A.', 'L.!?.C', '.R!?A.', '.R!?.C', '!?U.A.', '!?U..C', '!?.DA.', '!?.D.C' ],
@@ -154,18 +159,18 @@ class Playground extends ScormPlayground
 		var commands = [];
 
 		if( this.totalScore < 50 )
-			commands = commands.concat( COMMANDS.BASIC_1 );
-		else
-		if( this.totalScore < 70 )
-			commands = commands.concat( COMMANDS.BASIC_2 );
-		else
-		if( this.difficulty < 90 )
 			commands = commands.concat( COMMANDS.EASY_1 );
 		else
-		if( this.difficulty < 96 )
+		if( this.totalScore < 70 )
 			commands = commands.concat( COMMANDS.EASY_2 );
 		else
-			commands = commands.concat( COMMANDS.MONSTER );
+		if( this.totalScore < 90 )
+			commands = commands.concat( COMMANDS.MODERATE_1 );
+		else
+		if( this.totalScore < 96 )
+			commands = commands.concat( COMMANDS.MODERATE_2 );
+		else
+			commands = commands.concat( COMMANDS.HARD );
 		
 		this.spaceship.initButtons( random(commands)+'F' );
 		this.spaceship.goToPlatformA( );
@@ -260,10 +265,10 @@ class Playground extends ScormPlayground
 		this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
 		this.clonckSound = new PlaygroundAudio( 'sounds/clonck.mp3', 0.1 );
 		this.buttonSound = new PlaygroundAudio( 'sounds/slide-off.mp3', 0.13 );
-		//this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.2, 1, true );
+		this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.1, 1, true );
 		
 		this.soundEffects.push( this.clickSound, this.clackSound, this.buttonSound );
-		//this.soundMelody.push( this.backgroundMelody );
+		this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
 	
 	
