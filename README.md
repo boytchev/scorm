@@ -57,7 +57,7 @@ This SCO is used for experiments with SCORM 1.2-complient LMS. It shows the list
 [ <!-- markdown-link-check-disable -->[More info](src/thimble-bits/index.html)<!-- markdown-link-check-enable --> ] [ [Run online](src/thimble-bits/thimble-bits.html) ] [ [Download](bin/thimble-bits.zip) ]
 
 
-## Aerial maze (UNDER CONSTRUCTION)
+## Aerial maze
 
 <a href="src/aerial-maze/aerial-maze.html"><img src="src/aerial-maze/docs/snapshot.jpg" width="200" style="float:right; border-radius: 0.5em; border-bottom: 0.3em BurlyWood solid;"></a> Controlling a spaceship to fly from one position in space to another using a limited set of commands to manage yaw, pitch and roll.
 
