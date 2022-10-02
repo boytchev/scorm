@@ -56,9 +56,13 @@ The XSD files for SCORM 1.2 are not strictly valid and may cause errors in some 
 			<file href="aerial-maze.html"/>
 			
 			<!-- modules -->
-			<!--file href="plate.js"/-->
 			<file href="styles.css"/>
 			<file href="playground.js"/>
+			<file href="maze.js"/>
+			<file href="planet.js"/>
+			<file href="platform.js"/>
+			<file href="playground.js"/>
+			<file href="spaceship.js"/>
 
 			<!-- libraries -->
 			<file href="libs/scorm.utils.js"/>
@@ -70,11 +74,38 @@ The XSD files for SCORM 1.2 are not strictly valid and may cause errors in some 
 			<file href="images/sound-on.png"/>
 			<file href="images/sound-off.png"/>
 			<file href="images/sound-fx.png"/>
+			<file href="images/down.png"/>
+			<file href="images/forward.png"/>
+			<file href="images/left.png"/>
+			<file href="images/pan_bottom.png"/>
+			<file href="images/pan_left.png"/>
+			<file href="images/pan_right.png"/>
+			<file href="images/pan_top.png"/>
+			<file href="images/reset_bg.png"/>
+			<file href="images/reset_en.png"/>
+			<file href="images/reset_jp.png"/>
+			<file href="images/right.png"/>
+			<file href="images/rollccw.png"/>
+			<file href="images/rollcw.png"/>
+			<file href="images/start_bg.png"/>
+			<file href="images/start_en.png"/>
+			<file href="images/start_jp.png"/>
+			<file href="images/up.png"/>
+			<file href="images/metal_plate.jpg"/>
+			<file href="images/metal_plate_alpha.jpg"/>
+			<file href="images/metal_plate_normal.jpg"/>
 			
 			<!-- sounds -->
 			<file href="sounds/background.mp3"/>
 			<file href="sounds/click.mp3"/>
 			<file href="sounds/clack.mp3"/>
+			<file href="sounds/clonck.mp3"/>
+			<file href="sounds/slide-off.mp3"/>
+			
+			<!-- models -->
+			<file href="models/craft_speederA.glb"/>
+			<file href="models/platform_large.glb"/>
+			<file href="models/License.txt"/>
 
 			<!-- SCORM related definitions -->
 			<file href="adlcp_rootv1p2.xsd"/>
