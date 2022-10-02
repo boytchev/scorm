@@ -59,7 +59,7 @@ This SCO is used for experiments with SCORM 1.2-complient LMS. It shows the list
 
 ## Aerial maze (UNDER CONSTRUCTION)
 
-<!--a href="src/aerial-maze/aerial-maze.html"><img src="src/aerial-maze/docs/snapshot.jpg" width="200" style="float:right; border-radius: 0.5em; border-bottom: 0.3em BurlyWood solid;"></a--> Controlling a space aircraft to fly from one position in space to another using a limited set of commands to manage yaw, pitch and roll.
+<a href="src/aerial-maze/aerial-maze.html"><img src="src/aerial-maze/docs/snapshot.jpg" width="200" style="float:right; border-radius: 0.5em; border-bottom: 0.3em BurlyWood solid;"></a> Controlling a spaceship to fly from one position in space to another using a limited set of commands to manage yaw, pitch and roll.
 
 [ <!-- markdown-link-check-disable -->[More info](src/aerial-maze/index.html)<!-- markdown-link-check-enable --> ] [ [Run online](src/aerial-maze/aerial-maze.html) ] [ [Download](bin/aerial-maze.zip) ]
 

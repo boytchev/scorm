@@ -80,7 +80,7 @@ The application requires a good perception of depth, a strong 3D memory and a so
 
 ### Credits
 
-This application uses 3D models from [Kenney](www.kenney.nl):
+This application uses 3D models from [Kenney](https://www.kenney.nl/):
 
 - "[Space Kit](https://www.kenney.nl/assets/space-kit) by Kenney licensed under [CC0 License](http://creativecommons.org/publicdomain/zero/1.0/),
 
