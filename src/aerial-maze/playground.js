@@ -50,9 +50,9 @@ class Playground extends ScormPlayground
 
 		this.translate( [
 			{id: 'txt-caption',
-				en: 'Aeromaze',
-				bg: 'Аеролабиринт',
-				jp: 'エアロ迷路'},
+				en: 'Aerial maze',
+				bg: 'Въздушен лабиринт',
+				jp: '空中迷路'},
 		] );
 		
 	} // Playground.constructor
