@@ -93,7 +93,6 @@ The XSD files for SCORM 1.2 are not strictly valid and may cause errors in some 
 			<file href="images/up.png"/>
 			<file href="images/metal_plate.jpg"/>
 			<file href="images/metal_plate_alpha.jpg"/>
-			<file href="images/metal_plate_normal.jpg"/>
 			
 			<!-- sounds -->
 			<file href="sounds/background.mp3"/>
