@@ -77,10 +77,10 @@ The XSD files for SCORM 1.2 are not strictly valid and may cause errors in some 
 			<file href="images/down.png"/>
 			<file href="images/forward.png"/>
 			<file href="images/left.png"/>
-			<file href="images/pan_bottom.png"/>
-			<file href="images/pan_left.png"/>
-			<file href="images/pan_right.png"/>
-			<file href="images/pan_top.png"/>
+			<file href="images/dock_bottom.png"/>
+			<file href="images/dock_left.png"/>
+			<file href="images/dock_right.png"/>
+			<file href="images/dock_top.png"/>
 			<file href="images/reset_bg.png"/>
 			<file href="images/reset_en.png"/>
 			<file href="images/reset_jp.png"/>

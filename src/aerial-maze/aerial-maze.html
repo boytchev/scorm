@@ -15,7 +15,7 @@
 	<link rel="stylesheet" href="styles.css">
 
 	<style>
-		.ring {
+		.control-panel {
 			position: absolute;
 			width: 0px;
 			height: 0px;
@@ -113,7 +113,7 @@
 		<div class="hud corner bottom left"></div>
 		<div class="hud corner bottom right"></div>
 		
-		<div id="ring" class="ring" style="top:50%; left:50%;">
+		<div id="control-panel" class="control-panel" style="top:50%; left:50%;">
 			<div id="button_right" class="command"><img src="images/right.png" draggable="false"></div>
 			<div id="button_left" class="command"><img src="images/left.png" draggable="false"></div>
 			<div id="button_up" class="command"><img src="images/up.png" draggable="false"></div>
@@ -131,16 +131,10 @@
 			</div>
 
 
-			<div class="move command" style="left:-165px; top:-30px;" onclick="panLeft()"><img src="images/pan_left.png" draggable="false"></div>
-			<div class="move command" style="left:107px; top:-30px;" onclick="panRight()"><img src="images/pan_right.png" draggable="false"></div>
-			<div class="move command" style="left:-29px; top:-178px;" onclick="panTop()"><img src="images/pan_top.png" draggable="false"></div>
-			<div class="move command" style="left:-29px; top:120px;" onclick="panBottom()"><img src="images/pan_bottom.png" draggable="false"></div>
-<!--
-			<div class="move command" style="left:-165px; top:-30px;" onclick="panLeft()">⭰</div>
-			<div class="move command" style="left:107px; top:-30px;" onclick="panRight()">⭲</div>
-			<div class="move command" style="left:-29px; top:-178px;" onclick="panTop()">⭱</div>
-			<div class="move command" style="left:-29px; top:120px;" onclick="panBottom()">⭳</div>
-	-->		
+			<div class="move command" style="left:-165px; top:-30px;" onclick="dockLeft()"><img src="images/dock_left.png" draggable="false"></div>
+			<div class="move command" style="left:107px; top:-30px;" onclick="dockRight()"><img src="images/dock_right.png" draggable="false"></div>
+			<div class="move command" style="left:-29px; top:-178px;" onclick="dockTop()"><img src="images/dock_top.png" draggable="false"></div>
+			<div class="move command" style="left:-29px; top:120px;" onclick="dockBottom()"><img src="images/dock_bottom.png" draggable="false"></div>
 		</div>
 		
 		<div class="hud top right" style="border: none;">
@@ -174,39 +168,39 @@
 		window.addEventListener( 'resize', playground.resize );
 				
 			
-		function panLeft( )
+		function dockLeft( )
 		{
-			element( 'ring' ).style.left = '110px';
-			element( 'ring' ).style.right = '';
-			element( 'ring' ).style.top = '50%';
-			element( 'ring' ).style.bottom = '';
+			element( 'control-panel' ).style.left = '113px';
+			element( 'control-panel' ).style.right = '';
+			element( 'control-panel' ).style.top = '50%';
+			element( 'control-panel' ).style.bottom = '';
 		}
 		
 		
-		function panRight( )
+		function dockRight( )
 		{
-			element( 'ring' ).style.left = '';
-			element( 'ring' ).style.right = '110px';
-			element( 'ring' ).style.top = '50%';
-			element( 'ring' ).style.bottom = '';
+			element( 'control-panel' ).style.left = '';
+			element( 'control-panel' ).style.right = '113px';
+			element( 'control-panel' ).style.top = '50%';
+			element( 'control-panel' ).style.bottom = '';
 		}
 		
 		
-		function panTop( )
+		function dockTop( )
 		{
-			element( 'ring' ).style.left = '50%';
-			element( 'ring' ).style.right = '';
-			element( 'ring' ).style.top = '120px';
-			element( 'ring' ).style.bottom = '';
+			element( 'control-panel' ).style.left = '50%';
+			element( 'control-panel' ).style.right = '';
+			element( 'control-panel' ).style.top = '122px';
+			element( 'control-panel' ).style.bottom = '';
 		}
 		
 		
-		function panBottom( )
+		function dockBottom( )
 		{
-			element( 'ring' ).style.left = '50%';
-			element( 'ring' ).style.right = '';
-			element( 'ring' ).style.top = '';
-			element( 'ring' ).style.bottom = '120px';
+			element( 'control-panel' ).style.left = '50%';
+			element( 'control-panel' ).style.right = '';
+			element( 'control-panel' ).style.top = '';
+			element( 'control-panel' ).style.bottom = '122px';
 		}
 		
 		
@@ -214,17 +208,16 @@
 		{		
 			playground.pointerMovement += Math.abs( event.movementX ) + Math.abs( event.movementY );
 
-			var obj;
 			if( playground.gameStarted )
 			{
-				obj = findObject( event, [playground.spaceship] );
-				event.target.style.cursor = obj ? 'pointer' : 'default';
+				event.target.style.cursor = 'default';
 			}
 			else
 			{
-				obj = findObject( event, [playground.planet] );
+				var obj = findObject( event, [playground.planet] );
 				event.target.style.cursor = obj ? 'pointer' : 'default';
 			}
+
 		}
 
 
@@ -232,15 +225,10 @@
 		function onPointerDown( event )
 		{
 			playground.pointerMovement = 0;
-			
-			var obj = findObject( event, [playground.spaceship] );
-			if( obj )
-			{
-				playground.spaceship.onClick( );
-			}
 		}
 		
-		panRight();
+		
+		dockRight();
 		
 	</script>
 	

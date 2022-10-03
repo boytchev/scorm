@@ -2,7 +2,6 @@
 //	class Spaceship
 	
 
-
 class Spaceship extends Group
 {
 	static TURN_SPEED = 300;
@@ -12,12 +11,13 @@ class Spaceship extends Group
 	static GOTO_CENTER_SPEED = 1000;
 
 	static SCALE = 1/2;
+
 	
 	constructor( )
 	{
 		super( suica );
 
-		this.ring = this.generateRing( );
+		this.controlPanel = this.generatecontrolPanel( );
 
 		this.flightCommands = '';
 		element( 'forward_count' ).innerHTML = '';
@@ -44,8 +44,8 @@ class Spaceship extends Group
 
 
 
-	// generate commands ring
-	generateRing( )
+	// generate command panel
+	generatecontrolPanel( )
 	{
 		var that = this;
 		
@@ -68,8 +68,8 @@ class Spaceship extends Group
 		setEventHandler( 'button_start', '!' );
 		setEventHandler( 'button_reset', '?' );
 
-		return element( 'ring' );
-	} // Spaceship.generateRing
+		return element( 'control-panel' );
+	} // Spaceship.generatecontrolPanel
 	
 	
 	
@@ -111,19 +111,18 @@ class Spaceship extends Group
 
 		// hide all buttons
 		for( var label in LABEL )
-		{
 			if( label != '.' )
-			{
 				element( LABEL[label] ).style.display = 'none';
-			}
-		}
 
 		// then show only buttons in commands
 		for( var i=0; i<commands.length; i++ )
 			setPos( LABEL[commands[i]], POS[i] );
 
 		element( 'counter_start' ).innerHTML = playground.attemptsHTML( );
-	}
+		
+	} // Spaceship.initButtons
+	
+	
 	
 	// generate a tween for rotation around axis
 	rotateTween( method, sign )
@@ -145,7 +144,7 @@ class Spaceship extends Group
 					rz = Math.PI/2 * Math.round(obj.model.rotation.z/(Math.PI/2));
 				obj.model.rotation.set( rx, ry, rz );
 			} );
-	}
+	} // Spaceship.rotateTween
 	
 	
 	
@@ -174,16 +173,16 @@ class Spaceship extends Group
 				obj.spaceship.y = Math.round( obj.spaceship.y );
 				obj.spaceship.z = Math.round( obj.spaceship.z );
 			} );
-	}
+	} // Spaceship.translateTween
 	
 	
 	
-	// reset commands
+	// reset (forget) commands
 	reset( )
 	{
 		this.flightCommands = '';
 		element( 'forward_count' ).innerHTML = '';
-	}
+	} // Spaceship.reset
 	
 	
 		
@@ -192,9 +191,6 @@ class Spaceship extends Group
 	{
 		
 		playground.clackSound.play( );
-
-		// hide the ring of buttons
-		//this.ring.style.display = 'none';
 
 		// reduce the number of left starts
 		
@@ -210,11 +206,6 @@ class Spaceship extends Group
 		}
 		
 		playground.attempts--;
-		
-		if( playground.attempts < 1 )
-		{
-//			element( 'button_start' ).style.display = 'none';
-		}
 		element( 'counter_start' ).innerHTML = playground.attemptsHTML( );
 
 		var tween,
@@ -278,7 +269,7 @@ class Spaceship extends Group
 		firstTween?.start( );
 		this.flightCommands = '';
 		element( 'forward_count' ).innerHTML = '';
-	}
+	} // Spaceship.fly
 	
 	
 	
@@ -328,7 +319,7 @@ class Spaceship extends Group
 				} )
 			.easing( TWEEN.Easing.Cubic.Out )
 			.start( );
-	}
+	} // Spaceship.goToPlatformA
 	
 	
 	
@@ -345,21 +336,11 @@ class Spaceship extends Group
 				} )
 			.easing( TWEEN.Easing.Cubic.Out )
 			.start( );
-	}
-	
-	
-	
-	// handles clicks on a plate (called from main HTML file)
-	onClick( )
-	{
-		// if game is not started, click on any plate will start it
-		if( !playground.gameStarted )
-			playground.newGame( );
-	} // Spaceship.onClick
+	} // Spaceship.goToCenter
 	
 		
 	
-	// moves the spaceship and/or its ring of buttons
+	// moves the spaceship
 	update( t, dT )
 	{
 		if( !playground.gameStarted )
@@ -369,7 +350,7 @@ class Spaceship extends Group
 			this.spin = [ f(this.spinH+26.9*dT), f(this.spinV+23.5*dT), f(this.spinT+31.7*dT)];
 		}
 		
-	} // Spaceship.updateRing
+	} // Spaceship.update
 
 	
 } // class Spaceship

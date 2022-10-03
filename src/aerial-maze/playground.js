@@ -75,10 +75,10 @@ class Playground extends ScormPlayground
 
 				light.shadow.mapSize.width = 512;
 				light.shadow.mapSize.height = 512;
-				light.shadow.camera.left = -10;//-Planet.SIZE*Planet.SCALE;
-				light.shadow.camera.right = 10;//Planet.SIZE*Planet.SCALE;
-				light.shadow.camera.bottom = -10;//-Planet.SIZE*Planet.SCALE;
-				light.shadow.camera.top = 10;//Planet.SIZE*Planet.SCALE;
+				light.shadow.camera.left = -10;
+				light.shadow.camera.right = 10;
+				light.shadow.camera.bottom = -10;
+				light.shadow.camera.top = 10;
 				light.shadow.camera.near = 1;
 				light.shadow.camera.far = 100;
 
@@ -98,8 +98,10 @@ class Playground extends ScormPlayground
 		
 		addLight( 0, 0,  20 );
 		addLight( 0, 0, -20 );
+		
 	} // Playground.addLightsAndShadows
 	
+
 
 	// starts a new game by selecting new color hues
 	newGame( )
@@ -117,16 +119,12 @@ class Playground extends ScormPlayground
 			midPointsCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty**1.5, 10**1.5, 100**1.5, 0, 2 )),
 			randomRoutesCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty**1.5, 10**2, 100**1.5, 0, 7 ));
 
+		// for high level (near score 100) reduce the complexity
 		if( this.totalScore >= 90 )
 			midPointsCount = 1;
 		if( this.totalScore >= 96 )
 			midPointsCount = 0;
 			
-//console.log(`midPoints=${midPointsCount} randomRoutes=${randomRoutesCount}`);
-// planetSize = 5;
-//midPointsCount = 5;
-// randomRoutesCount = 2;		
-
 		this.planet.visible = false;
 		this.planet = this.planets[ planetSize ];
 		this.planet.visible = true;
@@ -174,13 +172,9 @@ class Playground extends ScormPlayground
 		
 		this.spaceship.initButtons( random(commands)+'F' );
 		this.spaceship.goToPlatformA( );
-		this.spaceship.ring.style.display = 'block';
+		this.spaceship.controlPanel.style.display = 'block';
 		
 		this.maze.regenerate( midPointsCount, randomRoutesCount );
-		
-
-		//this.spaceship.fly( 'FFUFDFF' );
-		
 
 	} // Playground.newGame
 
@@ -218,7 +212,7 @@ class Playground extends ScormPlayground
 					);
 		
 		var score = THREE.MathUtils.clamp( 1 - dist/this.planet.PLATES, 0, 1 );
-//console.log('dist',dist,'penalty',dist/(this.planet.PLATES**2),'score',score);		
+	
 		return score * points;
 
 	} // Playground.evaluateGame
@@ -234,16 +228,13 @@ class Playground extends ScormPlayground
 
 		this.platformA.visible = false;
 		this.platformB.visible = false;
-		this.spaceship.ring.style.display = 'none';
+		this.spaceship.controlPanel.style.display = 'none';
 
 		// hide all points and lines
 		this.maze.clearPoints( );
 		this.maze.clearLines( );
 
 		setTimeout( function(){playground.spaceship.goToCenter( );}, 10 );
-		
-
-		// ...
 		
 	} // Playground.endGame
 	
@@ -288,16 +279,11 @@ class Playground extends ScormPlayground
 	} // Playground.attemptsHTML
 		
 		
-	// update the playground
+		
+	// update the spaceship (when game not started the spaceship rotates slowly)
 	update( t, dT )
 	{
-		// ...
-		
 		this.spaceship.update( t, dT );
-
-		
-//		if( this.spaceship ) this.spaceship.up(t,dT);//spinH = 250*t;
-//		if( this.spaceshipA ) this.spaceshipA.up(t,dT);//spinH = 250*t;
-		//this.spaceship.y = 0.07*Math.sin( 2*t )+0.07*Math.sin( 1.3*t );
-	}
+	} // Playground.update
+	
 } // class Playground

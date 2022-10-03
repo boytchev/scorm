@@ -1,15 +1,12 @@
 //
 //	class Maze
-	
-//var line_color = 'black'; /**/
+
 
 
 class Maze extends Group
 {
 	static POINT_SIZE = 3;
 	
-/*	static GRID = 2 + Planet.PLATES>>1;
-	*/
 	constructor( planet )
 	{
 		super( suica );
@@ -36,7 +33,6 @@ class Maze extends Group
 	
 	
 	
-	
 	// check whether [a1,a2] crosses [b1,b2]
 	// note: a1 is open side of interval
 	crossedLines( a1, a2, b1, b2 )
@@ -54,10 +50,9 @@ class Maze extends Group
 					
 		var goodZ = ( between(a1[2],b1[2],b2[2]) && between(a2[2],b1[2],b2[2]) ) ||
 				    ( between(b1[2],a1[2],a2[2]) && between(b2[2],a1[2],a2[2]) );
-		// console.log(between(a1[0],b1[0],b2[0]), between(a2[0],b1[0],b2[0]), between(b1[0],a1[0],a2[0]), between(b2[0],a1[0],a2[0]) );
-		// console.log('goods',goodX , goodY , goodZ);
+
 		return goodX && goodY && goodZ;
-	}
+	} // Maze.crossedLines
 	
 	
 	
@@ -68,7 +63,7 @@ class Maze extends Group
 			if( this.crossedLines(a1,a2,this.lines[i][0],this.lines[i][1]) )
 				return true;
 		return false;
-	}
+	} // Maze.crossingExistingLines
 	
 	
 	
@@ -105,7 +100,7 @@ class Maze extends Group
 		}
 		
 		return points;
-	}
+	} // Maze.goodLine
 	
 	
 	
@@ -115,7 +110,7 @@ class Maze extends Group
 	addRoute( from, to, prematureExit = false )
 	{
 		
-		// mangle order of coordintes
+		// mangle the order of coordintes
 		var coords = [0,1,2].sort(()=>random(-1,1));
 
 		// try to make lines that do not cross existing lines
@@ -135,7 +130,6 @@ class Maze extends Group
 			
 			// if it is not a good line - try next coordinate
 			let midPoints = this.goodLine( from, corner, true );
-//console.log('mids',midPoints);
 			if( !midPoints )
 				continue;
 							
@@ -147,14 +141,14 @@ class Maze extends Group
 				this.addPoint( midPoints[j] );
 			
 			from = corner;
-		}
+		} // for( var i=0; i<coords.length; i++ )
 
 		if( prematureExit ) return;
 		
 		// second attemps - the same efforts, but do not care
 		// about crossing the existing path
 
-		// mangle again order of coordintes
+		// mangle again the order of coordintes
 		coords = [0,1,2].sort(()=>random(-1,1));
 
 		for( var attempt=0; attempt<3; attempt++ )
@@ -191,7 +185,7 @@ class Maze extends Group
 
 	
 	
-	// clear all points but do not forget them
+	// clear (hide) all points but do not forget them
 	clearPoints( )
 	{
 		this.pointIdx = 0;
@@ -224,7 +218,7 @@ class Maze extends Group
 	
 	
 	
-	// clear all lines but do not forget them
+	// clear (hide) all lines but do not forget them
 	clearLines( )
 	{
 		this.lineIdx = 0;
@@ -242,7 +236,7 @@ class Maze extends Group
 		if( this.lineIdx >= this.lines.length )
 		{
 			// create
-			newLine = line( from, to/*, line_color*/ );
+			newLine = line( from, to );
 			newLine.threejs.castShadow = true;
 			this.lines.push( newLine );
 			this.add( newLine );
@@ -252,7 +246,6 @@ class Maze extends Group
 			newLine = this.lines[ this.lineIdx ];
 			newLine.from = from;
 			newLine.to = to;
-			/*newLine.color = line_color;*/
 			newLine.visible = true;
 		}
 		
@@ -269,6 +262,7 @@ class Maze extends Group
 	
 	
 
+	// regenerate a new maze - recycling points and lines from previous maze
 	regenerate( midPointsCount = 0, randomRoutesCount = 0 )
 	{
 		var platformA = playground.platformA,
@@ -278,7 +272,6 @@ class Maze extends Group
 		var from = [...platformA.center],
 			to = [...platformB.center];
 
-		/*line_color = 'black';*/
 		// create some middle points
 		for( let i=0; i<midPointsCount; i++ )
 		{
@@ -288,22 +281,14 @@ class Maze extends Group
 			from = via;
 		}
 		this.addRoute( from, to );
-		//this.points.push( to );
-
-//		console.log('  to',platformB.center);
 		
 		// add random routes
-		/*line_color = 'crimson';*/
 		for( let i=0; i<randomRoutesCount; i++ )
 		{
 			from = this.points[ Math.round(random(0,this.pointIdx-1)) ].center;
 			to = this.findVertex( );
 			this.addRoute( from, to, true );
 		}
-
-		
-//		console.log( 'initial segments', this.lines.length );
-//		this.dump( );
 
 	} // Maze.regenerate
 	
@@ -334,22 +319,23 @@ class Maze extends Group
 				
 			return point;
 		}
-	}
+	} // Maze.findVertex
 	
 	
+	
+	// check whether the spaceship is on the allowed track
+	// this is called from spaceship.js
 	onTrack( pos, epsilon )
 	{
-		var ax = pos[0],// / playground.maze.size,
-			ay = pos[1],// / playground.maze.size,
-			az = pos[2];// / playground.maze.size;
-		
-//		console.log('can be at',[ax,ay,az]);
+		var ax = pos[0],
+			ay = pos[1],
+			az = pos[2];
 		
 		// check whether pos belonga to a line
 		for( var i=0; i<this.lineIdx; i++ )
 		{
 			var line = this.lines[i];
-//			console.log('  line',i,' min',line.min,'max',line.max);
+
 			if( 
 				line.min[0]-epsilon<=ax && ax<=line.max[0]+epsilon &&
 				line.min[1]-epsilon<=ay && ay<=line.max[1]+epsilon &&
@@ -377,6 +363,6 @@ class Maze extends Group
 		if( y+z >= 2*this.GRID2 ) return false;
 				
 		return true;
-	}
+	} // Maze.allowed
 	
 } // class Maze

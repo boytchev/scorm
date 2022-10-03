@@ -84,23 +84,11 @@ class Platform extends Group
 	
 	
 	
-	// handles clicks on a plate
-	onClick( )
-	{
-		// if game is not started, click on any plate will start it
-		if( playground.gameStarted )
-		{
-		}
-		else
-			playground.newGame( 0 );
-	} // Platform.onClick
-	
-		
-		
-	// update sizes
+	// update sizes when the planet size is changed
 	update( planet )
 	{
 		this.DISTANCE = planet.PLATES/2+1;
-	}
+	} // Platform.update
+
 	
 } // class Platform
