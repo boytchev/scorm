@@ -82,12 +82,12 @@ The application requires a good perception of depth, a strong 3D memory and a so
 
 This application uses 3D models from [Kenney](https://www.kenney.nl/):
 
-- "[Space Kit](https://www.kenney.nl/assets/space-kit) by Kenney licensed under [CC0 License](http://creativecommons.org/publicdomain/zero/1.0/),
+- "[Space Kit](https://www.kenney.nl/assets/space-kit)" by Kenney licensed under [CC0 License](http://creativecommons.org/publicdomain/zero/1.0/),
 
 
 a background music from [SoundCloud](https://soundcloud.com):
 
-- "[Mermaid Princess](https://soundcloud.com/dfiechter2/mermaid-princess) by Derek Fiechter / [Theme Cloud](https://soundcloud.com/dfiechter2)  licensed under [CC BY-NC 3.0 License](https://creativecommons.org/licenses/by-nc/3.0/),
+- "[Mermaid Princess](https://soundcloud.com/dfiechter2/mermaid-princess)" by Derek Fiechter / [Theme Cloud](https://soundcloud.com/dfiechter2)  licensed under [CC BY-NC 3.0 License](https://creativecommons.org/licenses/by-nc/3.0/),
 
 and sound effects from [Mixkit](https://mixkit.co/):
 
