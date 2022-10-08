@@ -17,12 +17,15 @@
 	<script src="libs/tween.umd.js"></script>
 	<script src="libs/suica.js"></script>
 	<script src="libs/scorm.utils.js"></script>
+	<script src="cloudPoint.js"></script>
+	<script src="cloud.js"></script>
 	<script src="playground.js"></script>
+	<script src="button.js"></script>
 </head>
 
 <body>
-	<suica fullwindow fullscreen background="linen" ontime="update"> <!-- onpointermove="onPointerMove"-->
-		<orbit id="orb" distance="70" altitude="0" maxPolarAngle="1.57" maxDistance="150" minDistance="25" enablePan="true">
+	<suica fullwindow fullscreen background="linen" ontime="update" onpointermove="onPointerMove">
+		<orbit id="orb" distance="70" altitude="0" maxPolarAngle="1.57" maxDistance="250" minDistance="25">
 		<div class="hud corner top left"></div>
 		<div class="hud corner top right"></div>
 		<div class="hud corner bottom left"></div>
@@ -58,13 +61,15 @@
 
 		window.addEventListener( 'resize', playground.resize );
 				
-		<!-- function onPointerMove( event ) -->
-		<!-- { -->
+		function onPointerMove( event )
+		{
+			playground.pointerMovement += Math.abs( event.movementX ) + Math.abs( event.movementY );
+
 			<!-- if( findObject( event ) ) -->
 				<!-- event.target.style.cursor = 'pointer'; -->
 			<!-- else -->
 				<!-- event.target.style.cursor = 'default'; -->
-		<!-- } -->
+		}
 		
 	</script>
 	

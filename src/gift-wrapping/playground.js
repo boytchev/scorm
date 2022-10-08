@@ -6,11 +6,15 @@
 
 class Playground extends ScormPlayground
 {
+	static POINTER_MOVEMENT = 5;
 	static POINTS_SPEED = 2000;
 	
 	constructor( )
 	{
 		super( );
+		
+		this.cloud = new Cloud( );
+		new Button( );
 		
 		this.resize( );
 
@@ -20,7 +24,7 @@ class Playground extends ScormPlayground
 				bg: 'Опаковане на подарък',
 				jp: 'ギフト包装'},
 		] );
-		
+
 	} // Playground.constructor
 
 	
@@ -30,6 +34,7 @@ class Playground extends ScormPlayground
 	{
 		super.newGame( );
 
+		this.cloud.randomizePoints( Math.round(random(3,15)) );
 		// ...
 
 	} // Playground.newGame
@@ -40,7 +45,7 @@ class Playground extends ScormPlayground
 	canEndGame( )
 	{
 		// ...
-		return false;
+		return true;
 	} // Playground.canEndGame
 	
 	
