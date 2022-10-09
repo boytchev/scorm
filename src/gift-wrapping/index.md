@@ -8,9 +8,9 @@ The **Ink tank** application allows experimenting with mixing inks. This is simi
 
 Click on the image to start the application.
 
-[<img src="docs/snapshot.jpg">](ink-tank.html)
+[<img src="docs/snapshot.jpg">](gift-wrapping.html)
 
-Alternatively, here are versions in [English](ink-tank.html?lang=en), [Bulgarian](ink-tank.html?lang=bg) and [Japanese](ink-tank.html?lang=jp).
+Alternatively, here are versions in [English](gift-wrapping.html?lang=en), [Bulgarian](gift-wrapping.html?lang=bg) and [Japanese](gift-wrapping.html?lang=jp).
 
 ### How to play
 
@@ -29,7 +29,9 @@ Here are a few hints: The tubes can be activated as many times as it is needed. 
 
 This application is provided as [SCORM](https://scorm.com/scorm-explained/one-minute-scorm-overview/) (Sharable Content Object Reference Model) module. It can be used with any [LMS](https://en.wikipedia.org/wiki/Learning_management_system) (Learning Management System) that supports version SCORM 1.2. SCORM modules are delivered as ZIP archive.
 
-[ [Download ZIP](../../bin/ink-tank.zip) ]
+<!--
+[ [Download ZIP](../../bin/gift-wrapping.zip) ]
+-->
 
 Follow the instruction of your LMS on how to install a SCORM module. Usually the ZIP is uploaded and a few additional settings are set.
 
@@ -48,11 +50,13 @@ When run from a LMS, the application sends back these data:
 The application itself does not create or use [HTTP cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies), [web beacons](https://en.wikipedia.org/wiki/Web_beacon), [spy pixels](https://en.wikipedia.org/wiki/Spy_pixel) or any other tracking technology. Besides SCORM-related data, described in section [Integration with LMS](#integration-with-lms), the application creates a local storage entry called `'sound'` with values `'on'`, `'off'` or `'fx'`. This entry is used to record user's sound preference and it is not sent to the server.
 
 When the application is run from a LMS, the LMS may utilize its own data policy, which is beyond the scope and the control of this application.
+
 <!--
 ### Disclaimer
 
 This application is not appropriate to users with color deficiencies. Emotional state, environment and screen calibration may impact the color perception.
 -->
+
 ### Credits
 
 This application uses a texture from [Vecteezy](https://www.vecteezy.com):
