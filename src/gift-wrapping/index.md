@@ -58,8 +58,8 @@ This application is not appropriate to users with color deficiencies. Emotional 
 This application uses a texture from [Vecteezy](https://www.vecteezy.com):
 
 - "[Seamless hand drawn pastel floral pattern background](https://www.vecteezy.com/vector-art/3415856-seamless-hand-drawn-pastel-floral-pattern-background)" by [Kachaya Thawansak](https://www.vecteezy.com/members/wawa99),
-<!--
-and a background music from [SoundCloud](https://soundcloud.com):
+
+<!--and a background music from [SoundCloud](https://soundcloud.com):
 
 - "[Calmness](https://soundcloud.com/ashamaluevmusic/calmness)" by Aleksandr Shamaluev / AShamaluevMusic, [https://www.ashamaluevmusic.com](https://www.ashamaluevmusic.com),
 -->
