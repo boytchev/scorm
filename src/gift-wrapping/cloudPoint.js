@@ -5,7 +5,7 @@
 
 class CloudPoint extends Group
 {
-	static POINT_SIZE = 3;
+	static POINT_SIZE = 2;
 	static MOVE_SPEED = [300, 1000];
 	static HIDE_SPEED = [300, 1000];
 	
@@ -14,6 +14,11 @@ class CloudPoint extends Group
 		super( suica );
 
 		var	point = sphere( [0,0,0], CloudPoint.POINT_SIZE );
+		its.threejs.material = new THREE.MeshStandardMaterial( {
+				color: 'gray',
+				metalness: 1,
+				roughness: 0.5,
+			} );
 
 		this.size = 0;
 		this.add( point );

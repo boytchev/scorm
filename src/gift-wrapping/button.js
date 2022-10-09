@@ -14,7 +14,15 @@ class Button extends Group
 	{
 		super( suica );
 
-		this.colorBall = sphere( [0,0,0], Button.SIZE, 'goldenrod' );
+		this.colorBall = sphere( [0,0,0], Button.SIZE );
+		its.threejs.material = new THREE.MeshPhysicalMaterial( {
+				color: 'goldenrod',
+				clearcoat: 1,
+				clearcoatRoughness: 0.5,
+				roughness: 0.1,
+				metalness: 0.05,
+		});
+
 	
 		this.addEventListener( 'click', this.onClick );
 		this.addEventListener( 'pointerenter', this.onMark );
