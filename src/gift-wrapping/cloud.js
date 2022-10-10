@@ -32,6 +32,7 @@ class Cloud extends Group
 				transparent: true,
 				opacity: 0,
 		});
+
 		this.add( this.hull );
 		
 	} // Cloud.constructor
@@ -42,8 +43,8 @@ class Cloud extends Group
 	cubePoints( )
 	{
 		var that = this;
-		new TWEEN.Tween( {k: 1} )
-					.to( {k: 0}, random(...CloudPoint.MOVE_SPEED) )
+		new TWEEN.Tween( {k: 0} )
+					.to( {k: 1}, random(...CloudPoint.MOVE_SPEED) )
 					.easing( TWEEN.Easing.Cubic.Out )
 					.onUpdate( obj => that.hull.threejs.material.opacity = obj.k )
 					.start( );
@@ -55,7 +56,7 @@ class Cloud extends Group
 		for( var y=-1; y<2; y+=2 )
 		for( var z=-1; z<2; z+=2 )
 		{
-			this.points[i++].moveTo( [x*size, y*size, z*size] );
+			this.points[i++].center = [x*size, y*size, z*size];
 		}
 		
 		for( let i=8; i<Cloud.MAX_POINTS; i++ )
@@ -100,23 +101,28 @@ class Cloud extends Group
 	
 	
 	// show convex hull
-	showConvexHull( )
+	showConvexHull( slow = true )
 	{
 		var points = [];
 		for( var i=0; i<this.pointIndex; i++ )
 		{
-			console.log( this.points[i].center );
 			points.push( this.points[i].center );
 		}
 		
 		this.hull.src = points;
-		var that = this;
-		new TWEEN.Tween( {k: 0} )
-					.to( {k: 1}, random(...CloudPoint.MOVE_SPEED) )
-					.easing( TWEEN.Easing.Cubic.Out )
-					.onUpdate( obj => that.hull.threejs.material.opacity = obj.k )
-					.start( );
-
+		if( slow )
+		{
+			var that = this;
+			new TWEEN.Tween( {k: 0} )
+						.to( {k: 1}, random(...CloudPoint.MOVE_SPEED) )
+						.easing( TWEEN.Easing.Cubic.Out )
+						.onUpdate( obj => that.hull.threejs.material.opacity = obj.k )
+						.start( );
+		}
+		else
+		{
+			this.hull.threejs.material.opacity = 1;
+		}
 	}
 	
 } // class Cloud
