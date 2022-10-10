@@ -25,10 +25,30 @@ class Playground extends ScormPlayground
 				jp: 'ギフト包装'},
 		] );
 
+		this.initScene( );
+		
 	} // Playground.constructor
 
 	
 
+	// create initial cube
+	initScene( )
+	{
+		var that = this;
+		
+		this.cloud.cubePoints( );
+		new TWEEN.Tween( {k:0} )
+			.to( {k:1}, CloudPoint.MOVE_SPEED[1]+10 )
+			.onComplete( function( obj ) {
+				console.log('complete');
+				that.cloud.showConvexHull( );
+			} )
+			.easing( TWEEN.Easing.Cubic.Out )
+			.start( );		
+	}
+	
+	
+	
 	// starts a new game by selecting new color hues
 	newGame( )
 	{
