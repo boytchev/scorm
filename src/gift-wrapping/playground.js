@@ -38,6 +38,7 @@ class Playground extends ScormPlayground
 		super.newGame( );
 
 		this.cloud.randomizePoints( Math.round(random(5,20)) );
+		
 		// ...
 
 	} // Playground.newGame
@@ -69,9 +70,9 @@ class Playground extends ScormPlayground
 	// ends the current game - evaluate results, update data
 	endGame( )
 	{
+		this.cloud.showConvexHull( );
 		super.endGame( );
 		
-		this.cloud.showConvexHull( );
 		// ...
 		
 	} // Playground.endGame

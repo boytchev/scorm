@@ -24,6 +24,7 @@ class Cloud extends Group
 			this.points.push( new CloudPoint() );
 		
 		this.hull = convex( [] );
+//		its.threejs.renderOrder = 10;
 		its.threejs.material = new THREE.MeshPhysicalMaterial( {
 				color: 'white',
 				roughness: 1,
@@ -105,11 +106,11 @@ class Cloud extends Group
 	{
 		var points = [];
 		for( var i=0; i<this.pointIndex; i++ )
-		{
-			points.push( this.points[i].center );
-		}
+			if( this.points[i].selected )
+				points.push( this.points[i].center );
 		
 		this.hull.src = points;
+		
 		if( slow )
 		{
 			var that = this;
@@ -123,6 +124,8 @@ class Cloud extends Group
 		{
 			this.hull.threejs.material.opacity = 1;
 		}
+		
+		return points;
 	}
 	
 } // class Cloud
