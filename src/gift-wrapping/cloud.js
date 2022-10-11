@@ -128,4 +128,14 @@ class Cloud extends Group
 		return points;
 	}
 	
+	
+	
+	// update rotation of points in the cloud
+	update( t, dT )
+	{
+		for( var i = 0; i<this.pointIndex; i++ )
+			this.points[i].spin = [10*t-30*i, 12*t+40*i, 13*t+35*i]
+	}
+	
+	
 } // class Cloud

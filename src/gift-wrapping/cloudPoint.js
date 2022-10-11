@@ -5,7 +5,7 @@
 
 class CloudPoint extends Group
 {
-	static SIZE = [2, 3]; // unselected, selected
+	static SIZE = [3, 3]; // unselected, selected
 	static COLOR = ['gray', new THREE.Color(0,1,2)]; // unselected, selected
 	
 	static MOVE_SPEED = [300, 1000];
@@ -18,14 +18,18 @@ class CloudPoint extends Group
 		this.colorSphere = sphere( [0,0,0], CloudPoint.SIZE[1] );
 		its.threejs.material = new THREE.MeshPhysicalMaterial( {
 				color: 'black',
-				clearcoat: 2,
-				clearcoatRoughness: 0.8,
+				// clearcoat: 1,
+				// clearcoatRoughness: 0.3,
 				metalness: 0,
-				roughness: 0,
-				
-				map: ScormUtils.image( 'marble2.jpg' ),
-				//transparent: true,
+				roughness: 0.15,
+				map: ScormUtils.image( 'marble.jpg' ),
+				displacementMap: ScormUtils.image( 'marble.jpg' ),
+				displacementScale: 0.3,
+				normalMap: ScormUtils.image( 'marble-normal.jpg' ),
+//				normalScale: new THREE.Vector2( 1, 1 ),
+				//bumpScale: 0.1,
 			} );
+
 
 		this.selected = 1;
 		
@@ -43,7 +47,7 @@ class CloudPoint extends Group
 	{
 		var that = this;
 		
-		this.select( );
+		this.unselect( );
 		
 		new TWEEN.Tween( {center:this.center, size:this.size} )
 			.to( {center:pos, size:1}, random(...CloudPoint.MOVE_SPEED) )
@@ -85,9 +89,9 @@ class CloudPoint extends Group
 	
 	
 	// select point selection status
-	select( )
+	unselect( )
 	{
-		this.selected = 0;
+		this.selected = 1;
 		this.toggle( );
 	} // CloudPoint.select
 	

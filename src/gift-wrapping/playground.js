@@ -104,6 +104,6 @@ class Playground extends ScormPlayground
 	// update the playground
 	update( t, dT )
 	{
-		// ...
+		this.cloud.update( t, dT );
 	}
 } // class Playground
