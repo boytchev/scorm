@@ -8,8 +8,9 @@ class CloudPoint extends Group
 	static SIZE = [3, 3]; // unselected, selected
 	static COLOR = ['gray', new THREE.Color(0,1,2)]; // unselected, selected
 	
-	static MOVE_SPEED = [300, 1000];
-	static HIDE_SPEED = [300, 1000];
+	static MOVE_SPEED = [150, 1500];
+	static HIDE_SPEED = [150, 1500];
+	static YOYO_SPEED = 150; // in ms
 	
 	constructor( )
 	{
@@ -80,6 +81,16 @@ class CloudPoint extends Group
 	// toggle point selection status
 	toggle( )
 	{
+		var that = this;
+		
+		new TWEEN.Tween( {k:1} )
+				.to( {k: this.selected?0.9:1.1}, CloudPoint.YOYO_SPEED )
+				.easing( TWEEN.Easing.Cubic.Out )
+				.onUpdate( obj => that.size=obj.k )
+				.repeat( 1 )
+				.yoyo( true )
+				.start( );
+
 		this.selected = 1-this.selected;
 		this.colorSphere.color = CloudPoint.COLOR[this.selected];
 		this.colorSphere.size = CloudPoint.SIZE[this.selected];

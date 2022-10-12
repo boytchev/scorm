@@ -13,6 +13,8 @@ class Playground extends ScormPlayground
 	{
 		super( );
 		
+		this.pointerMovement = 0;
+		
 		this.cloud = new Cloud( );
 		new Button( );
 		
@@ -24,9 +26,6 @@ class Playground extends ScormPlayground
 				bg: 'Опаковане на подарък',
 				jp: 'ギフト包装'},
 		] );
-
-		this.cloud.cubePoints( );
-		this.cloud.showConvexHull( false );
 		
 	} // Playground.constructor
 
@@ -37,7 +36,7 @@ class Playground extends ScormPlayground
 	{
 		super.newGame( );
 
-		this.cloud.randomizePoints( Math.round(random(5,20)) );
+		this.cloud.randomizePoints( Math.round(random(5,20)), 2 );
 		
 		// ...
 
@@ -48,8 +47,18 @@ class Playground extends ScormPlayground
 	// check whether a game can end
 	canEndGame( )
 	{
-		// ...
-		return true;
+		// if at least 4 points are selected, the game can end
+
+		var canEnd = this.cloud.selectedPoints().length >= 4;
+		
+		// somewhat impractical:
+		//	- first click is ok, selects all points
+		//	- they cannot be deselected, because a new click ends the game
+		if( !canEnd )
+			this.cloud.toggleAllPoints( );
+		
+		return canEnd;
+		
 	} // Playground.canEndGame
 	
 	
@@ -59,8 +68,51 @@ class Playground extends ScormPlayground
 	{
 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
 		
-		// ...
+		function hashCode( x, y, z )
+		{
+			const QUANT = 1000;
+			
+			return ((QUANT*x)|0)+'/'+((QUANT*y)|0)+'/'+((QUANT*z)|0);
+		}
 		
+
+		var correctCount = 0;
+		var wrongCount = 0;
+		
+		// get coordinates of correct points
+		var correctMap = {};
+		var pos = this.cloud.fullHull.threejs.geometry.getAttribute( 'position' );
+		for( let i=0; i<pos.count; i++ )
+		{
+			let hash = hashCode( pos.getX(i), pos.getY(i), pos.getZ(i) );
+			correctMap[hash] = false;
+		}
+		
+		// check whether each selected point
+		// is one of the correct points
+		var pnt = this.cloud.selectedPoints( );
+		for( let i=0; i<pnt.length; i++ )
+		{
+			let hash = hashCode( ...pnt[i] );
+			if( hash in correctMap )
+			{
+				correctMap[hash] = true;
+				correctCount++;
+			}
+			else
+			{
+				wrongCount++;
+			}
+		}
+		
+		// check how many correct points
+		// were not selected
+		for( var p in correctMap )
+		{
+			if( !correctMap[p] ) wrongCount++;
+		}
+		
+		console.log( 'correctCount =',correctCount,'wrongCount =',wrongCount );
 		return 0 * points;
 
 	} // Playground.evaluateGame
