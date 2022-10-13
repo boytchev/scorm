@@ -16,7 +16,7 @@ class Playground extends ScormPlayground
 		this.pointerMovement = 0;
 		
 		this.cloud = new Cloud( );
-		new Button( );
+		this.button = new Button( );
 		
 		this.resize( );
 
@@ -36,9 +36,15 @@ class Playground extends ScormPlayground
 	{
 		super.newGame( );
 
-		this.cloud.randomizePoints( Math.round(random(5,20)), 2 );
+		var totalCount = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 4, 15 ) | 0,
+			insideCount = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, 10 ) | 0,
+			insideFrom = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0.4, 0.9 ),
+			insideTo = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0.6, 1 );
+
+		console.log( totalCount, insideCount, insideFrom, insideTo );
+		this.cloud.randomizePoints( totalCount, insideCount, insideFrom, insideTo );
 		
-		// ...
+		this.button.visible = true;
 
 	} // Playground.newGame
 
@@ -51,12 +57,6 @@ class Playground extends ScormPlayground
 
 		var canEnd = this.cloud.selectedPoints().length >= 4;
 		
-		// somewhat impractical:
-		//	- first click is ok, selects all points
-		//	- they cannot be deselected, because a new click ends the game
-		if( !canEnd )
-			this.cloud.toggleAllPoints( );
-		
 		return canEnd;
 		
 	} // Playground.canEndGame
@@ -67,6 +67,7 @@ class Playground extends ScormPlayground
 	evaluateGame( )
 	{
 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
+		var penalty = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0.8, 0.2 );
 		
 		function hashCode( x, y, z )
 		{
@@ -113,7 +114,10 @@ class Playground extends ScormPlayground
 		}
 		
 		console.log( 'correctCount =',correctCount,'wrongCount =',wrongCount );
-		return 0 * points;
+		
+		var score = penalty ** wrongCount;
+		
+		return score * points;
 
 	} // Playground.evaluateGame
 	
@@ -122,6 +126,8 @@ class Playground extends ScormPlayground
 	// ends the current game - evaluate results, update data
 	endGame( )
 	{
+		this.button.visible = false;
+		this.cloud.shrinkPoints( );
 		this.cloud.showConvexHull( );
 		super.endGame( );
 		

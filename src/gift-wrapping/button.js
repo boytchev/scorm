@@ -53,8 +53,6 @@ class Button extends Group
 	// handles clicks on a plate
 	onClick( )
 	{
-		console.log(playground.pointerMovement, Playground.POINTER_MOVEMENT);
-		
 		// avoid fake onClicks
 		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 

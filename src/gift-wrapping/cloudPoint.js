@@ -6,12 +6,15 @@
 class CloudPoint extends Group
 {
 	static SIZE = [3, 3]; // unselected, selected
-	static COLOR = ['gray', new THREE.Color(0,1,2)]; // unselected, selected
+	static COLOR = ['gray', new THREE.Color(0,1,2), new THREE.Color(1.73,0.16,0.47)]; // unselected, selected, wrong
 	
 	static MOVE_SPEED = [150, 1500];
 	static HIDE_SPEED = [150, 1500];
+	static SHRINK_SPEED = [10, 200];
 	static YOYO_SPEED = 150; // in ms
 	
+	static DBLCLICK_TIME = 300;
+
 	constructor( )
 	{
 		super( suica );
@@ -31,7 +34,7 @@ class CloudPoint extends Group
 				//bumpScale: 0.1,
 			} );
 
-
+		this.toggleTime = 0;
 		this.selected = 1;
 		
 		this.size = 0;
@@ -62,7 +65,7 @@ class CloudPoint extends Group
 
 
 
-	// animate trasition to a hidden point
+	// animate transition to a hidden point
 	hide( )
 	{
 		var that = this;
@@ -75,12 +78,35 @@ class CloudPoint extends Group
 			.easing( TWEEN.Easing.Cubic.Out )
 			.start( );
 	} // CloudPoint.hide
+
+
+
+	// animate transition to a small point
+	shrink( )
+	{
+		var that = this;
+		
+		new TWEEN.Tween( {size:this.size} )
+			.to( {size:0.3}, random(...CloudPoint.SHRINK_SPEED) )
+			.onUpdate( function( obj ) {
+				that.size = obj.size;
+			} )
+			.easing( TWEEN.Easing.Cubic.Out )
+			.start( );
+	} // CloudPoint.shrink
 	
 	
 	
 	// toggle point selection status
 	toggle( )
 	{
+		if( !playground.gameStarted )
+		{
+			playground.cloud.hideConvexHull( );
+			playground.newGame( );
+			return;
+		}
+
 		var that = this;
 		
 		new TWEEN.Tween( {k:1} )
@@ -95,6 +121,17 @@ class CloudPoint extends Group
 		this.colorSphere.color = CloudPoint.COLOR[this.selected];
 		this.colorSphere.size = CloudPoint.SIZE[this.selected];
 //		this.colorSphere.threejs.material.opacity = this.selected ? 1 : 0.5;
+
+		// if it is a double click, toggle all points
+		var time = Date.now();
+
+		if( time-this.toggleTime < CloudPoint.DBLCLICK_TIME )
+		{
+			this.toggleTime = 0;
+			for( var i=0; i<playground.cloud.pointIndex; i++ )
+				playground.cloud.points[i].toggle( );
+		}
+		this.toggleTime = time;
 	} // CloudPoint.toggle
 	
 	

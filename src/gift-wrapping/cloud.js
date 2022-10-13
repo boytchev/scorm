@@ -6,10 +6,11 @@
 class Cloud extends Group
 {
 	static HULL_SPEED = 500;
+	static HULL_SHOW_SPEED = 200;
+	
 	static MAX_POINTS = 20;
 	static SIZE = 30;
-	static MIN_SIZE = 20;
-	static HULL_OPACITY = 0.9;
+	static HULL_OPACITY = 1;
 	
 	constructor( )
 	{
@@ -42,7 +43,7 @@ class Cloud extends Group
 // roughness: 0,
 				
 				map: ScormUtils.image( 'paper.jpg', 1/5, 1/5 ),
-//				transparent: true,
+				transparent: true,
 				opacity: 0,
 				side: THREE.DoubleSide,
 				polygonOffset: true,
@@ -52,9 +53,12 @@ class Cloud extends Group
 
 		this.hullFrame = cube( [0,0,0], [1,1,1] );
 		its.threejs.material = new THREE.MeshBasicMaterial( {
+				transparent: true,
 				color: 'black',
 				wireframe: true,
 		});
+		
+		this.addEventListener( 'click', this.onClick );
 		
 		this.add( this.hull, this.hullFrame );
 		
@@ -92,11 +96,11 @@ class Cloud extends Group
 	
 	
 	// set some points to be visible and animate them to new positions
-	randomizePoints( count, inCount = 0 )
+	randomizePoints( count, inCount, insideFrom, insideTo )
 	{
 		var that = this;
 		new TWEEN.Tween( {k: 1} )
-					.to( {k: 0}, CloudPoint.HULL_SPEED )
+					.to( {k: 0}, Cloud.HULL_SPEED )
 					.easing( TWEEN.Easing.Cubic.Out )
 					.onUpdate( obj => that.hull.threejs.material.opacity = obj.k )
 					.start( );
@@ -112,7 +116,7 @@ class Cloud extends Group
 			}
 			
 			if( i < inCount )
-				this.sphere.size = Cloud.MIN_SIZE;
+				this.sphere.size = Cloud.SIZE * random( insideFrom, insideTo );
 			else
 				this.sphere.size = Cloud.SIZE;
 			this.points[i].moveTo( randomOn(this.sphere) );
@@ -124,16 +128,7 @@ class Cloud extends Group
 		this.pointIndex = count;
 		
 	} // Cloud.randomizePoints
-	
-	
-	
-	
-	// toggle all points
-	toggleAllPoints( )
-	{
-		for( var i=0; i<this.pointIndex; i++ )
-			this.points[i].toggle( );
-	} // CloudPoint.toggleAllPoints
+
 	
 	
 	
@@ -147,6 +142,21 @@ class Cloud extends Group
 			
 		return points;
 	} // Cloud.selectedPoints
+	
+	
+	
+	// shrink selected points
+	shrinkPoints( )
+	{
+		for( var i=0; i<this.pointIndex; i++ )
+		{
+			// if( !this.points[i].selected )
+				// this.points[i].colorSphere.color = CloudPoint.COLOR[2];
+			// this.points[i].shrink( );
+			if( this.points[i].selected )
+				this.points[i].shrink( );
+		}
+	} // Cloud.shrinkSelectedPoints
 	
 	
 	
@@ -165,23 +175,81 @@ class Cloud extends Group
 	// show convex hull
 	showConvexHull( )
 	{
+		this.hull.threejs.material.opacity = 0;
+		this.hullFrame.threejs.material.opacity = 0;
+
+		this.hull.size = 0;
+		this.hullFrame.size = 0;
+		
 		this.fullHull.src = this.allPoints( );
 		this.hull.src = this.selectedPoints( );
 		this.hullFrame.threejs.geometry = this.hull.threejs.geometry;
 		
 		var that = this;
 		new TWEEN.Tween( {k: 0} )
-					.to( {k: Cloud.HULL_OPACITY}, random(...CloudPoint.MOVE_SPEED) )
-					.easing( TWEEN.Easing.Cubic.Out )
-					.onUpdate( function(obj) {
-						that.hull.threejs.material.opacity = obj.k;
-						that.hullFrame.threejs.material.opacity = obj.k;
-					} )
-					.start( );
+			.to( {k: 1}, Cloud.HULL_SHOW_SPEED )
+			.easing( TWEEN.Easing.Cubic.Out )
+			.onUpdate( function(obj) {
+				that.hull.threejs.material.opacity = obj.k*Cloud.HULL_OPACITY;
+				that.hullFrame.threejs.material.opacity = obj.k*Cloud.HULL_OPACITY;
+
+				that.hull.size = obj.k;
+				that.hullFrame.size = obj.k;
+			} )
+			.onComplete( function(obj) {
+				that.hull.threejs.material.opacity = Cloud.HULL_OPACITY;
+				that.hullFrame.threejs.material.opacity = Cloud.HULL_OPACITY;
+
+				that.hull.size = 1;
+				that.hullFrame.size = 1;
+			} )
+			.start( );
 	}
 	
 	
+
+	// hide convex hull
+	hideConvexHull( )
+	{
+		var that = this;
+		new TWEEN.Tween( {k: 1} )
+			.to( {k: 0}, Cloud.HULL_SHOW_SPEED )
+			.easing( TWEEN.Easing.Cubic.Out )
+			.onUpdate( function(obj) {
+				that.hull.threejs.material.opacity = obj.k*Cloud.HULL_OPACITY;
+				that.hullFrame.threejs.material.opacity = obj.k*Cloud.HULL_OPACITY;
+
+				that.hull.size = obj.k;
+				that.hullFrame.size = obj.k;
+			} )
+			.onComplete( function(obj) {
+				that.hull.threejs.material.opacity = 0;
+				that.hullFrame.threejs.material.opacity = 0;
+
+				that.hull.size = 0;
+				that.hullFrame.size = 0;
+			} )
+			.start( );
+	}
 	
+	
+
+	// clicking on the cloud hull while the game is off
+	// starts a new game
+	onClick( )
+	{
+		// avoid fake onClicks
+		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+
+		if( !playground.gameStarted )
+		{
+			this.hideConvexHull( );
+			playground.newGame( );
+		}
+	} // Cloud.onclick
+
+
+
 	// update rotation of points in the cloud
 	update( t, dT )
 	{
