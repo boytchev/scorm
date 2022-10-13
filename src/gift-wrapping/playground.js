@@ -36,12 +36,15 @@ class Playground extends ScormPlayground
 	{
 		super.newGame( );
 
-		var totalCount = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 4, 15 ) | 0,
-			insideCount = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, 10 ) | 0,
-			insideFrom = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0.4, 0.9 ),
-			insideTo = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0.6, 1 );
 
-		console.log( totalCount, insideCount, insideFrom, insideTo );
+		var totalCount = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 5, 15 ) | 0,
+			insideCount = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 1, 15 ) | 0,
+			insideFrom = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0.2, 0.8 ),
+			insideTo = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0.2, 0.8 );
+
+		console.log( totalCount, insideCount );
+		
+		this.cloud.hideConvexHull( );
 		this.cloud.randomizePoints( totalCount, insideCount, insideFrom, insideTo );
 		
 		this.button.visible = true;
@@ -113,9 +116,10 @@ class Playground extends ScormPlayground
 			if( !correctMap[p] ) wrongCount++;
 		}
 		
-		console.log( 'correctCount =',correctCount,'wrongCount =',wrongCount );
 		
 		var score = penalty ** wrongCount;
+		
+		console.log( 'wrong =',wrongCount,'score =',score );
 		
 		return score * points;
 

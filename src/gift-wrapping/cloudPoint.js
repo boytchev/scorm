@@ -51,6 +51,7 @@ class CloudPoint extends Group
 	{
 		var that = this;
 		
+		this.target = pos;
 		this.unselect( );
 		
 		new TWEEN.Tween( {center:this.center, size:this.size} )
@@ -102,7 +103,6 @@ class CloudPoint extends Group
 	{
 		if( !playground.gameStarted )
 		{
-			playground.cloud.hideConvexHull( );
 			playground.newGame( );
 			return;
 		}

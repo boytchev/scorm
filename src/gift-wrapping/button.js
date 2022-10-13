@@ -45,6 +45,8 @@ class Button extends Group
 		orb.addEventListener( 'start', () => Button.POINTER_USED=true  );
 		orb.addEventListener( 'end', () => Button.POINTER_USED=false );
 		
+		this.size = 0.7;
+		
 		this.add( this.colorBall, this.cap );
 	} // Button.constructor
 

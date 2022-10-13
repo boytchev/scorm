@@ -6,11 +6,12 @@
 class Cloud extends Group
 {
 	static HULL_SPEED = 500;
-	static HULL_SHOW_SPEED = 200;
+//	static HULL_SHOW_SPEED = 200;
 	
 	static MAX_POINTS = 20;
-	static SIZE = 30;
-	static HULL_OPACITY = 1;
+	static MIN_DIST = 5;
+	static SIZE = 40;
+//	static HULL_OPACITY = 1;
 	
 	constructor( )
 	{
@@ -43,9 +44,9 @@ class Cloud extends Group
 // roughness: 0,
 				
 				map: ScormUtils.image( 'paper.jpg', 1/5, 1/5 ),
-				transparent: true,
-				opacity: 0,
-				side: THREE.DoubleSide,
+				// transparent: true,
+				// opacity: 0,
+				// side: THREE.DoubleSide,
 				polygonOffset: true,
 				polygonOffsetFactor: 2,
 				polygonOffsetUnits: 2,
@@ -53,7 +54,7 @@ class Cloud extends Group
 
 		this.hullFrame = cube( [0,0,0], [1,1,1] );
 		its.threejs.material = new THREE.MeshBasicMaterial( {
-				transparent: true,
+				// transparent: true,
 				color: 'black',
 				wireframe: true,
 		});
@@ -119,7 +120,8 @@ class Cloud extends Group
 				this.sphere.size = Cloud.SIZE * random( insideFrom, insideTo );
 			else
 				this.sphere.size = Cloud.SIZE;
-			this.points[i].moveTo( randomOn(this.sphere) );
+			
+			this.points[i].moveTo( this.randomPos(i) );
 		}
 		
 		for( let i=count; i<Cloud.MAX_POINTS; i++ )
@@ -129,6 +131,42 @@ class Cloud extends Group
 		
 	} // Cloud.randomizePoints
 
+	
+	
+	
+	// get random position different from all points up to checkIndex
+	randomPos( checkIndex )
+	{
+		// the first point, no need to check it
+		if( checkIndex == 0 )
+			return randomOn(this.sphere);
+console.log('---------',checkIndex);
+		var pos,
+			tos, //target pos
+			dist,
+			minDist = 0,
+			attempts = 20;
+		while( minDist < Cloud.MIN_DIST && attempts > 0 )
+		{
+			attempts--;
+			minDist = 2*Cloud.SIZE;
+			pos = randomOn(this.sphere);
+			for( var i=0; i<checkIndex; i++ )
+			{
+				tos = this.points[i].target;
+				
+				// console.log(pos)
+				// console.log(tos)
+				dist = Math.sqrt( (pos[0]-tos[0])**2 + (pos[1]-tos[1])**2 + (pos[2]-tos[2])**2);
+			// console.log('\t',dist);
+				minDist = Math.min( minDist, dist );
+			}
+			console.log('minDist =',minDist);
+		}
+		
+			console.log('final minDist =',minDist);
+		return pos;
+	}
 	
 	
 	
@@ -175,35 +213,38 @@ class Cloud extends Group
 	// show convex hull
 	showConvexHull( )
 	{
-		this.hull.threejs.material.opacity = 0;
-		this.hullFrame.threejs.material.opacity = 0;
+//		console.log('showing');
 
-		this.hull.size = 0;
-		this.hullFrame.size = 0;
-		
 		this.fullHull.src = this.allPoints( );
 		this.hull.src = this.selectedPoints( );
 		this.hullFrame.threejs.geometry = this.hull.threejs.geometry;
+
+		this.hull.size = 1;
+		this.hullFrame.size = 1;
 		
-		var that = this;
-		new TWEEN.Tween( {k: 0} )
-			.to( {k: 1}, Cloud.HULL_SHOW_SPEED )
-			.easing( TWEEN.Easing.Cubic.Out )
-			.onUpdate( function(obj) {
-				that.hull.threejs.material.opacity = obj.k*Cloud.HULL_OPACITY;
-				that.hullFrame.threejs.material.opacity = obj.k*Cloud.HULL_OPACITY;
+//		this.hull.threejs.material.opacity = Cloud.HULL_OPACITY;
+//		this.hullFrame.threejs.material.opacity = Cloud.HULL_OPACITY;
+		
+		// var that = this;
+		// new TWEEN.Tween( {k: 0} )
+			// .to( {k: 1}, Cloud.HULL_SHOW_SPEED )
+			// .easing( TWEEN.Easing.Cubic.In )
+			// .onUpdate( function(obj) {
+				// that.hull.threejs.material.opacity = obj.k*Cloud.HULL_OPACITY;
+				// that.hullFrame.threejs.material.opacity = obj.k*Cloud.HULL_OPACITY;
 
-				that.hull.size = obj.k;
-				that.hullFrame.size = obj.k;
-			} )
-			.onComplete( function(obj) {
-				that.hull.threejs.material.opacity = Cloud.HULL_OPACITY;
-				that.hullFrame.threejs.material.opacity = Cloud.HULL_OPACITY;
+				// that.hull.size = obj.k;
+				// that.hullFrame.size = obj.k;
+			// } )
+			// .onComplete( function(obj) {
+				// that.hull.threejs.material.opacity = Cloud.HULL_OPACITY;
+				// that.hullFrame.threejs.material.opacity = Cloud.HULL_OPACITY;
 
-				that.hull.size = 1;
-				that.hullFrame.size = 1;
-			} )
-			.start( );
+				// that.hull.size = 1;
+				// that.hullFrame.size = 1;
+		// console.log('shown');
+			// } )
+			// .start( );
 	}
 	
 	
@@ -211,25 +252,34 @@ class Cloud extends Group
 	// hide convex hull
 	hideConvexHull( )
 	{
-		var that = this;
-		new TWEEN.Tween( {k: 1} )
-			.to( {k: 0}, Cloud.HULL_SHOW_SPEED )
-			.easing( TWEEN.Easing.Cubic.Out )
-			.onUpdate( function(obj) {
-				that.hull.threejs.material.opacity = obj.k*Cloud.HULL_OPACITY;
-				that.hullFrame.threejs.material.opacity = obj.k*Cloud.HULL_OPACITY;
+//		console.log('hiding');
 
-				that.hull.size = obj.k;
-				that.hullFrame.size = obj.k;
-			} )
-			.onComplete( function(obj) {
-				that.hull.threejs.material.opacity = 0;
-				that.hullFrame.threejs.material.opacity = 0;
+		this.hull.size = 0;
+		this.hullFrame.size = 0;
+		
+//		this.hull.threejs.material.opacity = Cloud.HULL_OPACITY;
+//		this.hullFrame.threejs.material.opacity = Cloud.HULL_OPACITY;
 
-				that.hull.size = 0;
-				that.hullFrame.size = 0;
-			} )
-			.start( );
+		// var that = this;
+		// new TWEEN.Tween( {k: 1} )
+			// .to( {k: 0}, Cloud.HULL_SHOW_SPEED )
+			// .easing( TWEEN.Easing.Cubic.In )
+			// .onUpdate( function(obj) {
+				// that.hull.threejs.material.opacity = obj.k*Cloud.HULL_OPACITY;
+				// that.hullFrame.threejs.material.opacity = obj.k*Cloud.HULL_OPACITY;
+
+				// that.hull.size = obj.k;
+				// that.hullFrame.size = obj.k;
+			// } )
+			// .onComplete( function(obj) {
+				// that.hull.threejs.material.opacity = 0;
+				// that.hullFrame.threejs.material.opacity = 0;
+
+				// that.hull.size = 0;
+				// that.hullFrame.size = 0;
+		// console.log('hidden');
+			// } )
+			// .start( );
 	}
 	
 	
@@ -243,7 +293,6 @@ class Cloud extends Group
 
 		if( !playground.gameStarted )
 		{
-			this.hideConvexHull( );
 			playground.newGame( );
 		}
 	} // Cloud.onclick
