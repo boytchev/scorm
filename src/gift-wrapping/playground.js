@@ -40,12 +40,14 @@ class Playground extends ScormPlayground
 		var totalCount = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 5, 15 ) | 0,
 			insideCount = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 1, 15 ) | 0,
 			insideFrom = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0.2, 0.8 ),
-			insideTo = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0.2, 0.8 );
+			insideTo = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0.2, 0.8 ),
+			displacement = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, 1 );
 
 		console.log( totalCount, insideCount );
 		
+		
 		this.cloud.hideConvexHull( );
-		this.cloud.randomizePoints( totalCount, insideCount, insideFrom, insideTo );
+		this.cloud.randomizePoints( totalCount, insideCount, insideFrom, insideTo, displacement );
 		
 		this.button.visible = true;
 
@@ -131,7 +133,7 @@ class Playground extends ScormPlayground
 	endGame( )
 	{
 		this.button.visible = false;
-		this.cloud.shrinkPoints( );
+		//this.cloud.shrinkPoints( );
 		this.cloud.showConvexHull( );
 		super.endGame( );
 		

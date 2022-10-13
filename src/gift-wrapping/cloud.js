@@ -97,7 +97,7 @@ class Cloud extends Group
 	
 	
 	// set some points to be visible and animate them to new positions
-	randomizePoints( count, inCount, insideFrom, insideTo )
+	randomizePoints( count, inCount, insideFrom, insideTo, displacement )
 	{
 		var that = this;
 		new TWEEN.Tween( {k: 1} )
@@ -122,6 +122,7 @@ class Cloud extends Group
 				this.sphere.size = Cloud.SIZE;
 			
 			this.points[i].moveTo( this.randomPos(i) );
+			this.points[i].colorSphere.threejs.material.displacementScale = CloudPoint.MAX_DISPLACEMENT*displacement;
 		}
 		
 		for( let i=count; i<Cloud.MAX_POINTS; i++ )
@@ -140,7 +141,7 @@ class Cloud extends Group
 		// the first point, no need to check it
 		if( checkIndex == 0 )
 			return randomOn(this.sphere);
-console.log('---------',checkIndex);
+//console.log('---------',checkIndex);
 		var pos,
 			tos, //target pos
 			dist,
@@ -151,6 +152,18 @@ console.log('---------',checkIndex);
 			attempts--;
 			minDist = 2*Cloud.SIZE;
 			pos = randomOn(this.sphere);
+			
+			// the first 6 points are glues to the sides of a cube
+			switch( checkIndex )
+			{
+				case 0: pos[0] =  Cloud.SIZE/2; break;
+				case 1: pos[0] = -Cloud.SIZE/2; break;
+				case 2: pos[1] =  Cloud.SIZE/2; break;
+				case 3: pos[1] = -Cloud.SIZE/2; break;
+				case 4: pos[2] =  Cloud.SIZE/2; break;
+				case 5: pos[2] = -Cloud.SIZE/2; break;
+			}
+			
 			for( var i=0; i<checkIndex; i++ )
 			{
 				tos = this.points[i].target;
@@ -161,10 +174,10 @@ console.log('---------',checkIndex);
 			// console.log('\t',dist);
 				minDist = Math.min( minDist, dist );
 			}
-			console.log('minDist =',minDist);
+	//		console.log('minDist =',minDist);
 		}
 		
-			console.log('final minDist =',minDist);
+	//		console.log('final minDist =',minDist);
 		return pos;
 	}
 	
@@ -184,17 +197,13 @@ console.log('---------',checkIndex);
 	
 	
 	// shrink selected points
-	shrinkPoints( )
-	{
-		for( var i=0; i<this.pointIndex; i++ )
-		{
-			// if( !this.points[i].selected )
-				// this.points[i].colorSphere.color = CloudPoint.COLOR[2];
+	// shrinkPoints( )
+	// {
+		// for( var i=0; i<this.pointIndex; i++ )
+		// {
 			// this.points[i].shrink( );
-			if( this.points[i].selected )
-				this.points[i].shrink( );
-		}
-	} // Cloud.shrinkSelectedPoints
+		// }
+	// } // Cloud.shrinkSelectedPoints
 	
 	
 	

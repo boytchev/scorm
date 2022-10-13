@@ -67,10 +67,10 @@
 		{
 			playground.pointerMovement += Math.abs( event.movementX ) + Math.abs( event.movementY );
 
-			<!-- if( findObject( event ) ) -->
-				<!-- event.target.style.cursor = 'pointer'; -->
-			<!-- else -->
-				<!-- event.target.style.cursor = 'default'; -->
+			if( findObject( event, playground.cloud.points ) )
+				event.target.style.cursor = 'pointer';
+			else
+				event.target.style.cursor = 'default';
 		}
 
 		
