@@ -9,8 +9,9 @@ class Cloud extends Group
 //	static HULL_SHOW_SPEED = 200;
 	
 	static MAX_POINTS = 20;
-	static MIN_DIST = 5;
-	static SIZE = 40;
+	static MIN_POINT_DIST = 5;
+	static MIN_PLAME_DIST = 5;
+	static SIZE = 35;
 //	static HULL_OPACITY = 1;
 	
 	constructor( )
@@ -66,36 +67,6 @@ class Cloud extends Group
 	} // Cloud.constructor
 	
 
-
-	// create a cloud in the shape of a cube
-	// cubePoints( )
-	// {
-		// var that = this;
-		// new TWEEN.Tween( {k: 0} )
-					// .to( {k: 1}, random(...CloudPoint.MOVE_SPEED) )
-					// .easing( TWEEN.Easing.Cubic.Out )
-					// .onUpdate( obj => that.hull.threejs.material.opacity = obj.k )
-					// .start( );
-			
-		// var i = 0,
-			// size = Cloud.SIZE/3;
-		
-		// for( var x=-1; x<2; x+=2 )
-		// for( var y=-1; y<2; y+=2 )
-		// for( var z=-1; z<2; z+=2 )
-		// {
-			// this.points[i++].center = [x*size, y*size, z*size];
-		// }
-		
-		// for( let i=8; i<Cloud.MAX_POINTS; i++ )
-			// this.points[i].hide( );
-		
-		// this.pointIndex = 8;
-		
-	// } // Cloud.cubePoints
-	
-	
-	
 	// set some points to be visible and animate them to new positions
 	randomizePoints( count, inCount, insideFrom, insideTo, displacement )
 	{
@@ -138,21 +109,11 @@ class Cloud extends Group
 	// get random position different from all points up to checkIndex
 	randomPos( checkIndex )
 	{
-		// the first point, no need to check it
-		if( checkIndex == 0 )
-			return randomOn(this.sphere);
-//console.log('---------',checkIndex);
-		var pos,
-			tos, //target pos
-			dist,
-			minDist = 0,
-			attempts = 20;
-		while( minDist < Cloud.MIN_DIST && attempts > 0 )
+		// pick a random point without any restriction
+		function rawRandomPos( sphere )
 		{
-			attempts--;
-			minDist = 2*Cloud.SIZE;
-			pos = randomOn(this.sphere);
-			
+			var pos = randomIn( sphere );
+
 			// the first 6 points are glues to the sides of a cube
 			switch( checkIndex )
 			{
@@ -164,21 +125,101 @@ class Cloud extends Group
 				case 5: pos[2] = -Cloud.SIZE/2; break;
 			}
 			
-			for( var i=0; i<checkIndex; i++ )
-			{
-				tos = this.points[i].target;
-				
-				// console.log(pos)
-				// console.log(tos)
-				dist = Math.sqrt( (pos[0]-tos[0])**2 + (pos[1]-tos[1])**2 + (pos[2]-tos[2])**2);
-			// console.log('\t',dist);
-				minDist = Math.min( minDist, dist );
-			}
-	//		console.log('minDist =',minDist);
+			return pos;
 		}
 		
-	//		console.log('final minDist =',minDist);
-		return pos;
+		// minimal distance to existing points
+		function minimalDistanctToPoints( points )
+		{
+			var min = Infinity;
+
+			for( var i=0; i<checkIndex; i++ )
+			{
+				var pnt = points[i].target,
+					dist = Math.sqrt( (pos[0]-pnt[0])**2 + (pos[1]-pnt[1])**2 + (pos[2]-pnt[2])**2);
+				
+				min = Math.min( min, dist );
+			}
+			
+			return min;
+		}
+		
+		// minimal distance to existing planes
+		function minimalDistanctToPlanes( points )
+		{
+//			points.push( {target:pos} );
+			
+			var min = Infinity,
+				plane = new THREE.Plane( ),
+				v0 = new THREE.Vector3( ...pos ),
+				v1 = new THREE.Vector3( ),
+				v2 = new THREE.Vector3( ),
+				v3 = new THREE.Vector3( );
+
+			if( checkIndex >= 3 )
+//			for( var i0=0; i0<checkIndex-3; i0++ )
+//			{
+//				v0.set( ...points[i0].target );
+				
+				//for( var i1=i0+1; i1<checkIndex-2; i1++ )
+				for( var i1=0; i1<checkIndex-2; i1++ )
+				{
+					v1.set( ...points[i1].target );
+					
+					for( var i2=i1+1; i2<checkIndex-1; i2++ )
+					{
+						v2.set( ...points[i2].target );
+						
+						for( var i3=i2+1; i3<checkIndex; i3++ )
+						{
+							v3.set( ...points[i3].target );
+							plane.setFromCoplanarPoints( v1, v2, v3 );
+							
+							var dist = Math.abs( plane.distanceToPoint( v0 ) );
+//							console.log('\t',i1,i2,i3,'<-',dist);
+					
+							min = Math.min( min, dist );
+						}
+					}
+				}
+//			}
+			
+//			points.pop( );
+			
+			return min;
+		}
+
+		
+		var bestPos = randomOn( this.sphere ),
+			bestMin = 0;
+
+		// the first point, no need to check it
+		if( checkIndex == 0 )
+			return bestPos;
+console.log('---new pnt');
+		for( var attempt=0; attempt<30; attempt++ ) 
+		{
+			var pos = rawRandomPos( this.sphere ),
+				minPoint = minimalDistanctToPoints( this.points ),
+				minPlane = minimalDistanctToPlanes( this.points );
+				
+			var min = minPoint/20 + minPlane;
+			
+console.log('\t#'+attempt,minPoint.toFixed(3),minPlane.toFixed(3),'->',min.toFixed(3));
+			
+			if( minPoint>Cloud.MIN_POINT_DIST && minPlane>Cloud.MIN_POINT_DIST )
+				return pos;
+			
+			
+			if( min > bestMin )
+			{
+				bestMin = min;
+				bestPos = pos;
+			}
+		}
+		
+console.log('\tbest ->',bestMin.toFixed(3));
+		return bestPos;
 	}
 	
 	

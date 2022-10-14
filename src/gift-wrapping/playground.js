@@ -37,12 +37,13 @@ class Playground extends ScormPlayground
 		super.newGame( );
 
 
-		var totalCount = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 5, 15 ) | 0,
-			insideCount = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 1, 15 ) | 0,
+		var totalCount = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 5, 10 ) | 0,
+			insideCount = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 1, 10 ) | 0,
 			insideFrom = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0.2, 0.8 ),
-			insideTo = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0.2, 0.8 ),
+			insideTo = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0.5, 0.8 ),
 			displacement = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, 1 );
 
+		Cloud.SIZE = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 20, 50 );
 		console.log( totalCount, insideCount );
 		
 		
