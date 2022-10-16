@@ -115,6 +115,8 @@ class CloudPoint extends Group
 			return;
 		}
 
+		playground.toggleSound.play( );
+		
 		var that = this;
 		
 		new TWEEN.Tween( {k:1} )

@@ -36,6 +36,7 @@ class Playground extends ScormPlayground
 	{
 		super.newGame( );
 
+		this.clickSound.play( );
 
 		var totalCount = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 5, Cloud.MAX_POINTS ) | 0,
 			outCount = Math.max( totalCount/2.5, 6 ) | 0,
@@ -137,6 +138,8 @@ class Playground extends ScormPlayground
 	// ends the current game - evaluate results, update data
 	endGame( )
 	{
+		this.clackSound.play( );
+		
 		this.button.visible = false;
 		//this.cloud.shrinkPoints( );
 		this.cloud.showConvexHull( );
@@ -162,9 +165,10 @@ class Playground extends ScormPlayground
 	{
 		this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1, 4 );
 		this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
+		this.toggleSound = new PlaygroundAudio( 'sounds/toggle.mp3', 0.1 );
 		//this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.2, 1, true );
 		
-		this.soundEffects.push( this.clickSound, this.clackSound );
+		this.soundEffects.push( this.clickSound, this.clackSound, this.toggleSound );
 		//this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
 	
