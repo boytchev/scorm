@@ -7,11 +7,13 @@ There are different ways to construct a color. When using dyes and inks the most
 The **Ink tank** application allows experimenting with mixing inks. This is similar to how painters mix colors on their palette. For example, yellow and cyan inks produce green color; while yellow and red &ndash; orange.
 
 Click on the image to start the application.
+-->
 
 [<img src="docs/snapshot.jpg">](gift-wrapping.html)
 
 Alternatively, here are versions in [English](gift-wrapping.html?lang=en), [Bulgarian](gift-wrapping.html?lang=bg) and [Japanese](gift-wrapping.html?lang=jp).
 
+<!--
 ### How to play
 
 When the application is started it shows an empty tank and three tubes. Inside the tank there is a plate which color must be recreated as a mixture of cyan, magenta and yellow inks. This must be done on a sequence of challenges with increasing difficulties. The ultimate goal is to reach score 100. 
