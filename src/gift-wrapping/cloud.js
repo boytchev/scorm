@@ -43,7 +43,7 @@ class Cloud extends Group
 //		its.threejs.renderOrder = 10;
 		its.threejs.material = new THREE.MeshPhysicalMaterial( {
 				color: 'white',
-				roughness: 1,
+				//roughness: 1,
 				metalness: 0,
 				
 transmission: 0.2,
@@ -209,7 +209,7 @@ roughness: 0.5,
 			// the point is good, no need to make the rest attempts
 			if(  dist > Cloud.MIN_PLANE_DIST )
 			{
-				bestDist = dist;
+//				bestDist = dist;
 				bestPos = pos;
 				break;
 			}
