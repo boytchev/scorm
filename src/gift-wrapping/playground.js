@@ -37,18 +37,21 @@ class Playground extends ScormPlayground
 		super.newGame( );
 
 
-		var totalCount = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 5, 10 ) | 0,
-			insideCount = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 1, 10 ) | 0,
-			insideFrom = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0.2, 0.8 ),
-			insideTo = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0.5, 0.8 ),
-			displacement = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, 1 );
+		var totalCount = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 5, Cloud.MAX_POINTS ) | 0,
+			outCount = Math.max( totalCount/2.5, 6 ) | 0,
+			displacement = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, 2 );
 
-		Cloud.SIZE = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 20, 50 );
-		console.log( totalCount, insideCount );
+		Cloud.SIZE = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 15, 30 );
+		Cloud.MIN_PLANE_DIST = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 4, 2 );
+		
+		this.cloud.sphere.size = Cloud.SIZE;
+		this.cloud.subSphere.size = Cloud.SIZE;
+		
+		//console.log( totalCount, outCount );
 		
 		
 		this.cloud.hideConvexHull( );
-		this.cloud.randomizePoints( totalCount, insideCount, insideFrom, insideTo, displacement );
+		this.cloud.randomizePoints( totalCount, outCount, displacement );
 		
 		this.button.visible = true;
 
@@ -73,7 +76,7 @@ class Playground extends ScormPlayground
 	evaluateGame( )
 	{
 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
-		var penalty = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0.8, 0.2 );
+		var penalty = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 2, 10 );
 		
 		function hashCode( x, y, z )
 		{
@@ -120,9 +123,10 @@ class Playground extends ScormPlayground
 		}
 		
 		
-		var score = penalty ** wrongCount;
+		var score = (correctCount/(wrongCount+correctCount)) ** penalty;
+		//console.log(correctCount/(wrongCount+correctCount), '**', penalty, '=',score);
 		
-		console.log( 'wrong =',wrongCount,'score =',score );
+		//console.log( 'wrong =',wrongCount,'score =',score );
 		
 		return score * points;
 

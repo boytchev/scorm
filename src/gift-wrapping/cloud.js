@@ -9,9 +9,8 @@ class Cloud extends Group
 //	static HULL_SHOW_SPEED = 200;
 	
 	static MAX_POINTS = 20;
-	static MIN_POINT_DIST = 5;
-	static MIN_PLAME_DIST = 5;
-	static SIZE = 35;
+	static MIN_PLANE_DIST = 3;
+	static SIZE = 30;
 //	static HULL_OPACITY = 1;
 	
 	constructor( )
@@ -23,14 +22,21 @@ class Cloud extends Group
 		
 		this.sphere = sphere( [0,0,0], Cloud.SIZE );
 			its.hidden = true;
+		this.subSphere = sphere( [0,0,0], Cloud.SIZE );
+			its.hidden = true;
 			
+// var ruler = cube( [10,0,0], [Cloud.MIN_PLANE_DIST,0.2,0.2] );
+// this.add( ruler );
 		
 		// create all points in advance
 		for( var i=0; i<Cloud.MAX_POINTS; i++ )
 			this.points.push( new CloudPoint() );
 		
-		this.fullHull = convex( [] );
+		this.fullHullVertices = [];
+		this.fullHull = convex( this.fullHullVertices );
+		
 		its.visible = false;
+		//its.threejs.material.wireframe = true;
 		
 		this.hull = convex( [] );
 		
@@ -40,14 +46,14 @@ class Cloud extends Group
 				roughness: 1,
 				metalness: 0,
 				
-// transmission: 5,
-// thickness: 0,
-// roughness: 0,
+transmission: 0.2,
+thickness: 0.2,
+roughness: 0.5,
 				
 				map: ScormUtils.image( 'paper.jpg', 1/5, 1/5 ),
-				// transparent: true,
-				// opacity: 0,
-				// side: THREE.DoubleSide,
+				transparent: true,
+				opacity: 0.8,
+				side: THREE.DoubleSide,
 				polygonOffset: true,
 				polygonOffsetFactor: 2,
 				polygonOffsetUnits: 2,
@@ -66,34 +72,29 @@ class Cloud extends Group
 		
 	} // Cloud.constructor
 	
+	
 
 	// set some points to be visible and animate them to new positions
-	randomizePoints( count, inCount, insideFrom, insideTo, displacement )
+	randomizePoints( count, outCount, displacement )
 	{
-		var that = this;
-		new TWEEN.Tween( {k: 1} )
-					.to( {k: 0}, Cloud.HULL_SPEED )
-					.easing( TWEEN.Easing.Cubic.Out )
-					.onUpdate( obj => that.hull.threejs.material.opacity = obj.k )
-					.start( );
-			
+		// var that = this;
+		// new TWEEN.Tween( {k: 1} )
+					// .to( {k: 0}, Cloud.HULL_SPEED )
+					// .easing( TWEEN.Easing.Cubic.Out )
+					// .onUpdate( obj => that.hull.threejs.material.opacity = obj.k )
+					// .start( );
+
+		this.fullHullVertices = [];
+		
+		// set positions of points
 		for( let i=0; i<count; i++ )
-		{
-			if( i>=this.pointIdx && this.pointIdx>0 )
-			{
-				// index of shown point
-				var j = Math.floor(random(0,this.pointIdx));
-				
-				this.points[i].center = [...this.points[j].center];
-			}
-			
-			if( i < inCount )
-				this.sphere.size = Cloud.SIZE * random( insideFrom, insideTo );
-			else
-				this.sphere.size = Cloud.SIZE;
-			
-			this.points[i].moveTo( this.randomPos(i) );
+		{			
+			var newPos = this.randomPos(i,outCount);
+			this.points[i].moveTo( newPos );
 			this.points[i].colorSphere.threejs.material.displacementScale = CloudPoint.MAX_DISPLACEMENT*displacement;
+			
+			this.fullHullVertices.push( newPos );
+			this.fullHull.src = this.fullHullVertices;
 		}
 		
 		for( let i=count; i<Cloud.MAX_POINTS; i++ )
@@ -102,123 +103,126 @@ class Cloud extends Group
 		this.pointIndex = count;
 		
 	} // Cloud.randomizePoints
+	
+	
 
-	
-	
-	
-	// get random position different from all points up to checkIndex
-	randomPos( checkIndex )
+	// calculate the minimal distance from point pos
+	// to the planes on the faces of the full hull
+	distanceToHull( pos, checkIndex )
 	{
-		// pick a random point without any restriction
-		function rawRandomPos( sphere )
-		{
-			var pos = randomIn( sphere );
+		var dist = Infinity,
+			v0 = new THREE.Vector3( ...pos ),
+			v1 = new THREE.Vector3( ),
+			v2 = new THREE.Vector3( ),
+			v3 = new THREE.Vector3( );
 
-			// the first 6 points are glues to the sides of a cube
-			switch( checkIndex )
+		var verts = this.fullHull.threejs.geometry.getAttribute( 'position' );
+		
+		if( verts.count == 1 )
+		{
+			// the hull is a point
+			v1.set( verts.getX(0), verts.getY(0), verts.getZ(0) );
+			dist = v1.distanceTo( v0 );
+		}
+		else
+		if( verts.count == 2 )
+		{
+			// the hull is a line
+			var line  = new THREE.Line3( v1, v2 );
+			
+			v1.set( verts.getX(0), verts.getY(0), verts.getZ(0) );
+			v2.set( verts.getX(2), verts.getY(2), verts.getZ(2) );
+			
+			line.closestPointToPoint( v0, true, v3 );
+			
+			dist = v0.distance( v3 );
+		}
+		else
+		{
+			// the hull is a 3d object
+			var plane = new THREE.Plane( );
+			
+			for( let i=0; i<verts.count; i+=3 )
 			{
-				case 0: pos[0] =  Cloud.SIZE/2; break;
-				case 1: pos[0] = -Cloud.SIZE/2; break;
-				case 2: pos[1] =  Cloud.SIZE/2; break;
-				case 3: pos[1] = -Cloud.SIZE/2; break;
-				case 4: pos[2] =  Cloud.SIZE/2; break;
-				case 5: pos[2] = -Cloud.SIZE/2; break;
-			}
-			
-			return pos;
-		}
-		
-		// minimal distance to existing points
-		function minimalDistanctToPoints( points )
-		{
-			var min = Infinity;
-
-			for( var i=0; i<checkIndex; i++ )
-			{
-				var pnt = points[i].target,
-					dist = Math.sqrt( (pos[0]-pnt[0])**2 + (pos[1]-pnt[1])**2 + (pos[2]-pnt[2])**2);
+				v1.set( verts.getX(i+0), verts.getY(i+0), verts.getZ(i+0) );
+				v2.set( verts.getX(i+1), verts.getY(i+1), verts.getZ(i+1) );
+				v3.set( verts.getX(i+2), verts.getY(i+2), verts.getZ(i+2) );
 				
-				min = Math.min( min, dist );
-			}
-			
-			return min;
-		}
-		
-		// minimal distance to existing planes
-		function minimalDistanctToPlanes( points )
-		{
-//			points.push( {target:pos} );
-			
-			var min = Infinity,
-				plane = new THREE.Plane( ),
-				v0 = new THREE.Vector3( ...pos ),
-				v1 = new THREE.Vector3( ),
-				v2 = new THREE.Vector3( ),
-				v3 = new THREE.Vector3( );
-
-			if( checkIndex >= 3 )
-//			for( var i0=0; i0<checkIndex-3; i0++ )
-//			{
-//				v0.set( ...points[i0].target );
+				plane.setFromCoplanarPoints( v1, v2, v3 );
 				
-				//for( var i1=i0+1; i1<checkIndex-2; i1++ )
-				for( var i1=0; i1<checkIndex-2; i1++ )
-				{
-					v1.set( ...points[i1].target );
-					
-					for( var i2=i1+1; i2<checkIndex-1; i2++ )
-					{
-						v2.set( ...points[i2].target );
-						
-						for( var i3=i2+1; i3<checkIndex; i3++ )
-						{
-							v3.set( ...points[i3].target );
-							plane.setFromCoplanarPoints( v1, v2, v3 );
-							
-							var dist = Math.abs( plane.distanceToPoint( v0 ) );
-//							console.log('\t',i1,i2,i3,'<-',dist);
-					
-							min = Math.min( min, dist );
-						}
-					}
-				}
-//			}
-			
-//			points.pop( );
-			
-			return min;
+				dist = Math.min( dist, Math.abs( plane.distanceToPoint(v0) ) );
+			}
 		}
-
 		
-		var bestPos = randomOn( this.sphere ),
-			bestMin = 0;
+		// now update distance to all points
+		// this is to avoid bulbing points in the center
+		v1.set( 0, 0, 0 );
+		dist = Math.min( dist, 0.5*v1.distanceTo( v0 ) ); // distance to (0,0,0) it twice more sensitive
+		for( let i=0; i<checkIndex; i++ )
+		{
+			v1.set( ...this.points[i].target );
+			dist = Math.min( dist, v1.distanceTo( v0 ) );
+		}
+		
+		
+		return dist;
+	}
 
-		// the first point, no need to check it
+
+	
+	// pick a random point without any restriction on distance
+	rawRandomPos( checkIndex, outCount )
+	{
+		var pos = checkIndex >= outCount ? randomIn( this.subSphere ) : randomOn( this.sphere );
+
+		// the first 6 points are gluee to the sides of a cube
+		switch( checkIndex )
+		{
+			case 0: pos[0] =  Cloud.SIZE/2; break;
+			case 1: pos[0] = -Cloud.SIZE/2; break;
+			case 2: pos[1] =  Cloud.SIZE/2; break;
+			case 3: pos[1] = -Cloud.SIZE/2; break;
+			case 4: pos[2] =  Cloud.SIZE/2; break;
+			case 5: pos[2] = -Cloud.SIZE/2; break;
+		}
+		
+		return pos;
+	}
+
+
+
+	// get random position different from all points up to checkIndex
+	randomPos( checkIndex, outCount )
+	{
+		var bestPos = this.rawRandomPos( checkIndex, outCount ),
+			bestDist = 0;
+
+		// is it the first point, no need to check it
 		if( checkIndex == 0 )
 			return bestPos;
-console.log('---new pnt');
+
 		for( var attempt=0; attempt<30; attempt++ ) 
 		{
-			var pos = rawRandomPos( this.sphere ),
-				minPoint = minimalDistanctToPoints( this.points ),
-				minPlane = minimalDistanctToPlanes( this.points );
-				
-			var min = minPoint/20 + minPlane;
+			var pos = this.rawRandomPos( checkIndex, outCount ),
+				dist = this.distanceToHull( pos, checkIndex );
 			
-console.log('\t#'+attempt,minPoint.toFixed(3),minPlane.toFixed(3),'->',min.toFixed(3));
-			
-			if( minPoint>Cloud.MIN_POINT_DIST && minPlane>Cloud.MIN_POINT_DIST )
-				return pos;
-			
-			
-			if( min > bestMin )
+			// the point is good, no need to make the rest attempts
+			if(  dist > Cloud.MIN_PLANE_DIST )
 			{
-				bestMin = min;
+				bestDist = dist;
+				bestPos = pos;
+				break;
+			}
+
+			// remember the best position (the biggest distance from the hull)
+			if( dist > bestDist )
+			{
+				bestDist = dist;
 				bestPos = pos;
 			}
 		}
 		
-console.log('\tbest ->',bestMin.toFixed(3));
+//console.log(`\t#${checkIndex} -> ${bestDist.toFixed(3)} '(${(bestDist/Cloud.MIN_PLANE_DIST*100)|0}%) attempts=${attempt}`);
 		return bestPos;
 	}
 	
@@ -265,7 +269,7 @@ console.log('\tbest ->',bestMin.toFixed(3));
 	{
 //		console.log('showing');
 
-		this.fullHull.src = this.allPoints( );
+//		this.fullHull.src = this.allPoints( );
 		this.hull.src = this.selectedPoints( );
 		this.hullFrame.threejs.geometry = this.hull.threejs.geometry;
 
