@@ -45,11 +45,7 @@ class Playground extends ScormPlayground
 		Cloud.SIZE = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 15, 30 );
 		Cloud.MIN_PLANE_DIST = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 4, 2 );
 		
-		this.cloud.sphere.size = Cloud.SIZE;
-		this.cloud.subSphere.size = Cloud.SIZE;
-		
-		//console.log( totalCount, outCount );
-		
+		this.cloud.sphere.size = Cloud.SIZE;		
 		
 		this.cloud.hideConvexHull( );
 		this.cloud.randomizePoints( totalCount, outCount, displacement );
@@ -125,9 +121,6 @@ class Playground extends ScormPlayground
 		
 		
 		var score = (correctCount/(wrongCount+correctCount)) ** penalty;
-		//console.log(correctCount/(wrongCount+correctCount), '**', penalty, '=',score);
-		
-		//console.log( 'wrong =',wrongCount,'score =',score );
 		
 		return score * points;
 
@@ -141,7 +134,7 @@ class Playground extends ScormPlayground
 		this.clackSound.play( );
 		
 		this.button.visible = false;
-		//this.cloud.shrinkPoints( );
+
 		this.cloud.showConvexHull( );
 		super.endGame( );
 		
@@ -178,5 +171,7 @@ class Playground extends ScormPlayground
 	update( t, dT )
 	{
 		this.cloud.update( t, dT );
-	}
+		this.button.update( t, dT );
+	} // Playground.update
+	
 } // class Playground

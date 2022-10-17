@@ -56,7 +56,9 @@ The XSD files for SCORM 1.2 are not strictly valid and may cause errors in some 
 			<file href="gift-wrapping.html"/>
 			
 			<!-- modules -->
-			<!--file href="plate.js"/-->
+			<file href="button.js"/>
+			<file href="cloud.js"/>
+			<file href="cloudPoint.js"/>
 			<file href="styles.css"/>
 			<file href="playground.js"/>
 
@@ -70,11 +72,18 @@ The XSD files for SCORM 1.2 are not strictly valid and may cause errors in some 
 			<file href="images/sound-on.png"/>
 			<file href="images/sound-off.png"/>
 			<file href="images/sound-fx.png"/>
+			<file href="images/marble.jpg"/>
+			<file href="images/marble-displacement.jpg"/>
+			<file href="images/marble-normal.jpg"/>
+			<file href="images/metal_plate.jpg"/>
+			<file href="images/metal_plate_normal.jpg"/>
+			<file href="images/paper.jpg"/>
 			
 			<!-- sounds -->
-			<!--file href="sounds/background.mp3"/-->
+			<file href="sounds/background.mp3"/>
 			<file href="sounds/click.mp3"/>
 			<file href="sounds/clack.mp3"/>
+			<file href="sounds/ping.mp3"/>
 
 			<!-- SCORM related definitions -->
 			<file href="adlcp_rootv1p2.xsd"/>

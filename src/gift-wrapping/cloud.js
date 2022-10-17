@@ -5,13 +5,10 @@
 
 class Cloud extends Group
 {
-	static HULL_SPEED = 500;
-//	static HULL_SHOW_SPEED = 200;
-	
 	static MAX_POINTS = 20;
-	static MIN_PLANE_DIST = 3;
-	static SIZE = 30;
-//	static HULL_OPACITY = 1;
+	static MIN_PLANE_DIST = 3; // set by Playground.newGame
+	static SIZE = 30; // set by Playground.newGame
+
 	
 	constructor( )
 	{
@@ -22,12 +19,7 @@ class Cloud extends Group
 		
 		this.sphere = sphere( [0,0,0], Cloud.SIZE );
 			its.hidden = true;
-		this.subSphere = sphere( [0,0,0], Cloud.SIZE );
-			its.hidden = true;
 			
-// var ruler = cube( [10,0,0], [Cloud.MIN_PLANE_DIST,0.2,0.2] );
-// this.add( ruler );
-		
 		// create all points in advance
 		for( var i=0; i<Cloud.MAX_POINTS; i++ )
 			this.points.push( new CloudPoint() );
@@ -36,19 +28,17 @@ class Cloud extends Group
 		this.fullHull = convex( this.fullHullVertices );
 		
 		its.visible = false;
-		//its.threejs.material.wireframe = true;
 		
 		this.hull = convex( [] );
 		
-//		its.threejs.renderOrder = 10;
 		its.threejs.material = new THREE.MeshPhysicalMaterial( {
 				color: 'white',
-				//roughness: 1,
+
 				metalness: 0,
 				
-transmission: 0.2,
-thickness: 0.2,
-roughness: 0.5,
+				transmission: 0.2,
+				thickness: 0.2,
+				roughness: 0.5,
 				
 				map: ScormUtils.image( 'paper.jpg', 1/5, 1/5 ),
 				transparent: true,
@@ -61,7 +51,6 @@ roughness: 0.5,
 
 		this.hullFrame = cube( [0,0,0], [1,1,1] );
 		its.threejs.material = new THREE.MeshBasicMaterial( {
-				// transparent: true,
 				color: 'black',
 				wireframe: true,
 		});
@@ -77,12 +66,6 @@ roughness: 0.5,
 	// set some points to be visible and animate them to new positions
 	randomizePoints( count, outCount, displacement )
 	{
-		// var that = this;
-		// new TWEEN.Tween( {k: 1} )
-					// .to( {k: 0}, Cloud.HULL_SPEED )
-					// .easing( TWEEN.Easing.Cubic.Out )
-					// .onUpdate( obj => that.hull.threejs.material.opacity = obj.k )
-					// .start( );
 
 		this.fullHullVertices = [];
 		
@@ -164,7 +147,6 @@ roughness: 0.5,
 			dist = Math.min( dist, v1.distanceTo( v0 ) );
 		}
 		
-		
 		return dist;
 	}
 
@@ -173,7 +155,7 @@ roughness: 0.5,
 	// pick a random point without any restriction on distance
 	rawRandomPos( checkIndex, outCount )
 	{
-		var pos = checkIndex >= outCount ? randomIn( this.subSphere ) : randomOn( this.sphere );
+		var pos = checkIndex >= outCount ? randomIn( this.sphere ) : randomOn( this.sphere );
 
 		// the first 6 points are gluee to the sides of a cube
 		switch( checkIndex )
@@ -209,7 +191,6 @@ roughness: 0.5,
 			// the point is good, no need to make the rest attempts
 			if(  dist > Cloud.MIN_PLANE_DIST )
 			{
-//				bestDist = dist;
 				bestPos = pos;
 				break;
 			}
@@ -222,7 +203,6 @@ roughness: 0.5,
 			}
 		}
 		
-//console.log(`\t#${checkIndex} -> ${bestDist.toFixed(3)} '(${(bestDist/Cloud.MIN_PLANE_DIST*100)|0}%) attempts=${attempt}`);
 		return bestPos;
 	}
 	
@@ -241,17 +221,6 @@ roughness: 0.5,
 	
 	
 	
-	// shrink selected points
-	// shrinkPoints( )
-	// {
-		// for( var i=0; i<this.pointIndex; i++ )
-		// {
-			// this.points[i].shrink( );
-		// }
-	// } // Cloud.shrinkSelectedPoints
-	
-	
-	
 	// get a list of all used points
 	allPoints( )
 	{
@@ -267,74 +236,21 @@ roughness: 0.5,
 	// show convex hull
 	showConvexHull( )
 	{
-//		console.log('showing');
-
-//		this.fullHull.src = this.allPoints( );
 		this.hull.src = this.selectedPoints( );
 		this.hullFrame.threejs.geometry = this.hull.threejs.geometry;
 
 		this.hull.size = 1;
 		this.hullFrame.size = 1;
-		
-//		this.hull.threejs.material.opacity = Cloud.HULL_OPACITY;
-//		this.hullFrame.threejs.material.opacity = Cloud.HULL_OPACITY;
-		
-		// var that = this;
-		// new TWEEN.Tween( {k: 0} )
-			// .to( {k: 1}, Cloud.HULL_SHOW_SPEED )
-			// .easing( TWEEN.Easing.Cubic.In )
-			// .onUpdate( function(obj) {
-				// that.hull.threejs.material.opacity = obj.k*Cloud.HULL_OPACITY;
-				// that.hullFrame.threejs.material.opacity = obj.k*Cloud.HULL_OPACITY;
-
-				// that.hull.size = obj.k;
-				// that.hullFrame.size = obj.k;
-			// } )
-			// .onComplete( function(obj) {
-				// that.hull.threejs.material.opacity = Cloud.HULL_OPACITY;
-				// that.hullFrame.threejs.material.opacity = Cloud.HULL_OPACITY;
-
-				// that.hull.size = 1;
-				// that.hullFrame.size = 1;
-		// console.log('shown');
-			// } )
-			// .start( );
-	}
+	} // Cloud.showConvexHull
 	
 	
 
 	// hide convex hull
 	hideConvexHull( )
 	{
-//		console.log('hiding');
-
 		this.hull.size = 0;
 		this.hullFrame.size = 0;
-		
-//		this.hull.threejs.material.opacity = Cloud.HULL_OPACITY;
-//		this.hullFrame.threejs.material.opacity = Cloud.HULL_OPACITY;
-
-		// var that = this;
-		// new TWEEN.Tween( {k: 1} )
-			// .to( {k: 0}, Cloud.HULL_SHOW_SPEED )
-			// .easing( TWEEN.Easing.Cubic.In )
-			// .onUpdate( function(obj) {
-				// that.hull.threejs.material.opacity = obj.k*Cloud.HULL_OPACITY;
-				// that.hullFrame.threejs.material.opacity = obj.k*Cloud.HULL_OPACITY;
-
-				// that.hull.size = obj.k;
-				// that.hullFrame.size = obj.k;
-			// } )
-			// .onComplete( function(obj) {
-				// that.hull.threejs.material.opacity = 0;
-				// that.hullFrame.threejs.material.opacity = 0;
-
-				// that.hull.size = 0;
-				// that.hullFrame.size = 0;
-		// console.log('hidden');
-			// } )
-			// .start( );
-	}
+	} // Cloud.hideConvexHull
 	
 	
 

@@ -16,7 +16,7 @@ class Button extends Group
 		super( suica );
 
 		this.cap = sphere( [0,0,0], Button.CUP_SIZE );
-		//its.spinV = 90;
+
 		its.threejs.material = new THREE.MeshPhysicalMaterial( {
 				color: 'white',
 				clearcoat: 0,
@@ -96,5 +96,14 @@ class Button extends Group
 	{
 		this.colorBall.color = 'white';
 	} // Button.onUnmark
+	
+	
+	
+	// spin the button
+	update( t, dT )
+	{
+		this.spin = [ 10*t, 20*t, 30*t ];
+	}
+	
 	
 } // class Button
