@@ -20,7 +20,7 @@ Alternatively, here are versions in [English](gift-wrapping.html?lang=en), [Bulg
 
 ### How to play
 
-When the application is started it shows a ball. Click on the ball to show a cloud of gray objects. Then pick only those of them, that are at the vertixes of the convex hull enclosing all objects. This must be done on a sequence of challenges with increasing number of objects. The ultimate goal is to reach score 100. 
+When the application is started it shows a ball. Click on the ball to show a cloud of gray objects. Then pick only those of them, that are at the vertices of the convex hull enclosing all objects. This must be done on a sequence of challenges with increasing number of objects. The ultimate goal is to reach score 100. 
 
 - **Starting**: Click on the ball or on a wrapped gift.
 - **Playing**: Click on the objects to select or unselect them. Selected objects are blue, the unselected objects are dark gray. Double-click on an object to toggle all objects.
@@ -67,10 +67,10 @@ This application uses a texture from [Vecteezy](https://www.vecteezy.com):
 
 - "[Seamless hand drawn pastel floral pattern background](https://www.vecteezy.com/vector-art/3415856-seamless-hand-drawn-pastel-floral-pattern-background)" by [Kachaya Thawansak](https://www.vecteezy.com/members/wawa99),
 
-<!--and a background music from [SoundCloud](https://soundcloud.com):
+a background music from [SoundCloud](https://soundcloud.com):
 
-- "[Calmness](https://soundcloud.com/ashamaluevmusic/calmness)" by Aleksandr Shamaluev / AShamaluevMusic, [https://www.ashamaluevmusic.com](https://www.ashamaluevmusic.com),
--->
+- "[The Holiday Season](https://soundcloud.com/pablo-de-pacas/the-holiday-season)" by [Pablo De Pacas](https://soundcloud.com/pablo-de-pacas) licensed under [CC-BY-3.0 license](https://creativecommons.org/licenses/by/3.0/),
+
 and sound effects from [Mixkit](https://mixkit.co/):
 
 - "[Game quick warning notification](https://mixkit.co/free-sound-effects/click/)" licensed under [Mixkit Sound Effects Free License](https://mixkit.co/license/#sfxFree),
