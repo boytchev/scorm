@@ -165,10 +165,10 @@ class Playground extends ScormPlayground
 	{
 		this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1, 4 );
 		this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
-		this.toggleSound = new PlaygroundAudio( 'sounds/toggle.mp3', 0.1 );
+		this.pingSound = new PlaygroundAudio( 'sounds/ping.mp3', 0.2 );
 		this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.1, 1, true );
 		
-		this.soundEffects.push( this.clickSound, this.clackSound, this.toggleSound );
+		this.soundEffects.push( this.clickSound, this.clackSound, this.pingSound );
 		this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
 	

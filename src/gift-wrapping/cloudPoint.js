@@ -115,7 +115,7 @@ class CloudPoint extends Group
 			return;
 		}
 
-		playground.toggleSound.play( );
+		playground.pingSound.play( );
 		
 		var that = this;
 		

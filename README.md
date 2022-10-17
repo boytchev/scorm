@@ -68,7 +68,7 @@ This SCO is used for experiments with SCORM 1.2-complient LMS. It shows the list
 
 <a href="src/gift-wrapping/gift-wrapping.html"><img src="src/gift-wrapping/docs/snapshot.jpg" width="200" style="float:right; border-radius: 0.5em; border-bottom: 0.3em BurlyWood solid;"></a> Picking points from a cloud of point to define how to gift-wrap the whole cloud. These points must form the vertices of a convex hull.
 
-[ <!-- markdown-link-check-disable -->[More info](src/gift-wrapping/index.html)<!-- markdown-link-check-enable --> ] [ [Run online](src/gift-wrapping/gift-wrapping.html) ] [ Download ] <!--[ [Download](bin/gift-wrapping.zip) ]-->
+[ <!-- markdown-link-check-disable -->[More info](src/gift-wrapping/index.html)<!-- markdown-link-check-enable --> ] [ [Run online](src/gift-wrapping/gift-wrapping.html) ] [ [Download](bin/gift-wrapping.zip) ]
 
 
 
