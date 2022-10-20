@@ -16,9 +16,9 @@ class Playground extends ScormPlayground
 
 		this.translate( [
 			{id: 'txt-caption',
-				en: 'Ink tank',
-				bg: 'Мастилен резервоар',
-				jp: 'インクタンク'},
+				en: 'Platonic walk',
+				bg: 'Платонична разходка',
+				jp: 'プラトニックな散歩------'},
 		] );
 		
 	} // Playground.constructor
