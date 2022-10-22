@@ -23,9 +23,10 @@ class Playground extends ScormPlayground
 				jp: 'プラトニックな散歩------'},
 		] );
 		
-		this.solid0 = new Platonic( 0 );
-		this.solid2 = new Platonic( 2 );
-		this.solid4 = new Platonic( 4 );
+		// this.solid0 = new Platonic( 0 );
+		this.solid1 = new Platonic( 1 );
+		// this.solid2 = new Platonic( 2 );
+		// this.solid4 = new Platonic( 4 );
 		
 	} // Playground.constructor
 

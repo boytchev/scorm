@@ -22,6 +22,7 @@ class Platonic extends Group
 		switch( n )
 		{
 			case 0 : this.tetrahedron( VOLUME ); break;
+			case 1 : this.hexahedron( VOLUME ); break;
 			case 2 : this.octahedron( VOLUME ); break;
 			case 4 : this.icosahedron( VOLUME ); break;
 		}
@@ -73,13 +74,43 @@ class Platonic extends Group
 	}
 	
 	
+	quadranglePlate( a, b, c, d, size, angle )
+	{
+		// square vertices
+		a = new THREE.Vector3( ...a );
+		b = new THREE.Vector3( ...b );
+		c = new THREE.Vector3( ...c );
+		d = new THREE.Vector3( ...d );
+
+		var m = new THREE.Vector3( (a.x+c.x)/2, (a.y+c.y)/2, (a.z+c.z)/2  );
+		
+		// axis
+		var ox = b.sub( a ).normalize( );
+		var oy = d.sub( a ).normalize( );
+		var oz = new THREE.Vector3().crossVectors( ox, oy ).normalize( );
+
+		var rot = new THREE.Matrix4( ).makeRotationX( angle );
+		var mat = new THREE.Matrix4( ).makeBasis( ox, oy, oz ).multiply( rot ).setPosition( m );
+		
+		
+		var plate = group( );
+		
+		var face = polygon( 4, [0,0,0], size );
+			its.image = ScormUtils.image( 'grid.png' );
+			its.images = Math.sqrt(2);
+			its.threejs.material.map.offset.set( -0.2, -0.2 );
+			
+		plate.add( face );
+		
+		plate.threejs.matrixAutoUpdate = false;
+		plate.threejs.matrix = mat;
+		
+		return plate;
+	}
+	
+	
 	trianglePlate( a, b, c, size, angle )
 	{
-		// function v( a, n=1, b=[0,0,0], k=1 )
-		// {
-			// return [ n*a[0]+k*b[0], n*a[1]+k*b[1], n*a[2]+k*b[2] ]
-		// };
-
 		// triangle vertices
 		a = new THREE.Vector3( ...a );
 		b = new THREE.Vector3( ...b );
@@ -124,6 +155,24 @@ class Platonic extends Group
 		for( var j=0; j<faces.length; j++ )
 		{
 			var side = this.trianglePlate( vertices[faces[j][0]], vertices[faces[j][1]], vertices[faces[j][2]], Math.sqrt(8/3)*2, Math.PI );
+			this.add( side );
+		}
+		
+		this.size = scale;
+	}
+	
+	
+	hexahedron( volume )
+	{
+		var vertices = [[1,1,1], [1,1,-1], [1,-1,1], [1,-1,-1], [-1,1,1], [-1,1,-1], [-1,-1,1], [-1,-1,-1]],
+			faces = [ [0,4,6,2], [0,1,5,4], [0,2,3,1], [2,6,7,3], [1,3,7,5], [4,5,7,6] ],
+			scale = 10;// (volume / (Math.sqrt(8)/3)) ** (1/3);
+
+		this.verticesLabels( vertices );
+		
+		for( var j=0; j<faces.length; j++ )
+		{
+			var side = this.quadranglePlate( vertices[faces[j][0]], vertices[faces[j][1]], vertices[faces[j][2]], vertices[faces[j][3]], Math.sqrt(8), Math.PI );
 			this.add( side );
 		}
 		
