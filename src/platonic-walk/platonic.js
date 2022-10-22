@@ -23,15 +23,12 @@ class Platonic extends Group
 		{
 			case 0 : this.tetrahedron( VOLUME ); break;
 			case 2 : this.octahedron( VOLUME ); break;
+			case 4 : this.icosahedron( VOLUME ); break;
 		}
 		
 /*		
 		// hexahedron/cube
 		convex( [[1,1,1], [1,1,-1], [1,-1,1], [1,-1,-1], [-1,1,1], [-1,1,-1], [-1,-1,1], [-1,-1,-1]], 10, 'dimgray' );
-		
-		// octahedron
-		convex( [], 15, 'peachpuff' );
-		its.x = 40;
 		
 		var Φ = (1+Math.sqrt(5))/2;
 		
@@ -145,6 +142,25 @@ class Platonic extends Group
 		for( var j=0; j<faces.length; j++ )
 		{
 			var side = this.trianglePlate( vertices[faces[j][0]], vertices[faces[j][1]], vertices[faces[j][2]], Math.sqrt(8/3), Math.PI );
+			this.add( side );
+		}
+		
+		this.size = scale;
+	}
+	
+	icosahedron( volume )
+	{
+		var Φ = (1+Math.sqrt(5))/2;
+		
+		var vertices = [[0,1,Φ], [0,1,-Φ], [0,-1,Φ], [0,-1,-Φ], [1,Φ,0], [1,-Φ,0], [-1,Φ,0], [-1,-Φ,0], [Φ,0,1], [-Φ,0,1], [Φ,0,-1], [-Φ,0,-1] ],
+			faces = [ [0,2,8], [4,8,10], [1,4,10], [1,6,4], [0,8,4], [0,4,6], [5,10,8], [1,10,3], [1,3,11], [1,11,6], [0,6,9], [6,11,9], [3,7,11], [3,10,5], [0,9,2], [7,9,11], [3,5,7], [2,9,7], [2,5,8], [2,7,5] ],
+			scale = 8; //2.5*(volume / (Math.sqrt(128)/3)) ** (1/3);
+
+		this.verticesLabels( vertices );
+		
+		for( var j=0; j<faces.length; j++ )
+		{
+			var side = this.trianglePlate( vertices[faces[j][0]], vertices[faces[j][1]], vertices[faces[j][2]], Math.sqrt(16/3), Math.PI );
 			this.add( side );
 		}
 		

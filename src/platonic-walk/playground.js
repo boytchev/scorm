@@ -25,6 +25,8 @@ class Playground extends ScormPlayground
 		
 		this.solid0 = new Platonic( 0 );
 		this.solid2 = new Platonic( 2 );
+		this.solid4 = new Platonic( 4 );
+		
 	} // Playground.constructor
 
 	
