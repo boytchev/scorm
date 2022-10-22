@@ -24,33 +24,9 @@ class Platonic extends Group
 			case 0 : this.tetrahedron( VOLUME ); break;
 			case 1 : this.hexahedron( VOLUME ); break;
 			case 2 : this.octahedron( VOLUME ); break;
+			case 3 : this.dodecahedron( VOLUME ); break;
 			case 4 : this.icosahedron( VOLUME ); break;
 		}
-		
-/*		
-		// hexahedron/cube
-		convex( [[1,1,1], [1,1,-1], [1,-1,1], [1,-1,-1], [-1,1,1], [-1,1,-1], [-1,-1,1], [-1,-1,-1]], 10, 'dimgray' );
-		
-		var Φ = (1+Math.sqrt(5))/2;
-		
-		// dodecahedron
-		convex( [[1,1,1], [1,1,-1], [1,-1,1], [1,-1,-1], [-1,1,1], [-1,1,-1], [-1,-1,1], [-1,-1,-1], [0,1/Φ,Φ], [0,1/Φ,-Φ], [0,-1/Φ,Φ], [0,-1/Φ,-Φ], [1/Φ,Φ,0], [1/Φ,-Φ,0], [-1/Φ,Φ,0], [-1/Φ,-Φ,0], [Φ,0,1/Φ], [-Φ,0,1/Φ], [Φ,0,-1/Φ], [-Φ,0,-1/Φ] ], 8, 'linen' );
-		its.z = -40;
-		
-		// icosahedron
-		convex( [[0,1,Φ], [0,1,-Φ], [0,-1,Φ], [0,-1,-Φ], [1,Φ,0], [1,-Φ,0], [-1,Φ,0], [-1,-Φ,0], [Φ,0,1], [-Φ,0,1], [Φ,0,-1], [-Φ,0,-1] ], 8, 'lightgray' );
-		its.z = 40;
-*/		
-		
-		// this.basePlate = convex( this.hexagonalGeometry(0.93), [10,1] );
-			// its.y = 0.5;
-			// its.threejs.material = this.frameMaterial();
-	
-		// this.colorPlate = convex( this.hexagonalGeometry(1), [7,0.9] );
-			// its.image = 'images/hexagon.jpg';
-			// its.images = [0.435,0.495];
-			// its.threejs.material.map.offset.set( 0.5, 0.5 );
-			// its.y = 0.8;
 	
 	} // Platonic.constructor
 
@@ -71,41 +47,6 @@ class Platonic extends Group
 			this.add( point(vertices[i],5,'white') );
 			its.image = texture;
 		}
-	}
-	
-	
-	quadranglePlate( a, b, c, d, size, angle )
-	{
-		// square vertices
-		a = new THREE.Vector3( ...a );
-		b = new THREE.Vector3( ...b );
-		c = new THREE.Vector3( ...c );
-		d = new THREE.Vector3( ...d );
-
-		var m = new THREE.Vector3( (a.x+c.x)/2, (a.y+c.y)/2, (a.z+c.z)/2  );
-		
-		// axis
-		var ox = b.sub( a ).normalize( );
-		var oy = d.sub( a ).normalize( );
-		var oz = new THREE.Vector3().crossVectors( ox, oy ).normalize( );
-
-		var rot = new THREE.Matrix4( ).makeRotationX( angle );
-		var mat = new THREE.Matrix4( ).makeBasis( ox, oy, oz ).multiply( rot ).setPosition( m );
-		
-		
-		var plate = group( );
-		
-		var face = polygon( 4, [0,0,0], size );
-			its.image = ScormUtils.image( 'grid.png' );
-			its.images = Math.sqrt(2);
-			its.threejs.material.map.offset.set( -0.2, -0.2 );
-			
-		plate.add( face );
-		
-		plate.threejs.matrixAutoUpdate = false;
-		plate.threejs.matrix = mat;
-		
-		return plate;
 	}
 	
 	
@@ -144,6 +85,78 @@ class Platonic extends Group
 	}
 	
 	
+	quadranglePlate( a, b, c, d, size, angle )
+	{
+		// square vertices
+		a = new THREE.Vector3( ...a );
+		b = new THREE.Vector3( ...b );
+		c = new THREE.Vector3( ...c );
+		d = new THREE.Vector3( ...d );
+
+		var m = new THREE.Vector3( (a.x+c.x)/2, (a.y+c.y)/2, (a.z+c.z)/2  );
+		
+		// axis
+		var ox = b.sub( a ).normalize( );
+		var oy = d.sub( a ).normalize( );
+		var oz = new THREE.Vector3().crossVectors( ox, oy ).normalize( );
+
+		var rot = new THREE.Matrix4( ).makeRotationX( angle );
+		var mat = new THREE.Matrix4( ).makeBasis( ox, oy, oz ).multiply( rot ).setPosition( m );
+		
+		
+		var plate = group( );
+		
+		var face = polygon( 4, [0,0,0], size );
+			its.image = ScormUtils.image( 'grid.png' );
+			its.images = Math.sqrt(2);
+			its.threejs.material.map.offset.set( -0.2, -0.2 );
+			
+		plate.add( face );
+		
+		plate.threejs.matrixAutoUpdate = false;
+		plate.threejs.matrix = mat;
+		
+		return plate;
+	}
+	
+	
+	quintanglePlate( a, b, c, d, e, size, angle )
+	{
+		// quintangle vertices
+		a = new THREE.Vector3( ...a );
+		b = new THREE.Vector3( ...b );
+		c = new THREE.Vector3( ...c );
+		d = new THREE.Vector3( ...d );
+		e = new THREE.Vector3( ...e );
+
+		var m = new THREE.Vector3( (a.x+b.x+c.x+d.x+e.x)/5, (a.y+b.y+c.y+d.y+e.y)/5, (a.z+b.z+c.z+d.z+e.z)/5  );
+		
+		// axis
+		var ox = b.sub( a ).normalize( );
+		var oy = c.sub( a );
+		var oz = new THREE.Vector3().crossVectors( ox, oy ).normalize( );
+		oy.crossVectors( ox, oz ).normalize( ); 
+		
+
+		var rot = new THREE.Matrix4( ).makeRotationX( angle );
+		var mat = new THREE.Matrix4( ).makeBasis( ox, oy, oz ).multiply( rot ).setPosition( m );
+		
+		
+		var plate = group( );
+		
+		var face = polygon( 5, [0,0,0], size );
+			its.image = ScormUtils.image( 'grid.png' );
+			its.images = 1;
+			
+		plate.add( face );
+		
+		plate.threejs.matrixAutoUpdate = false;
+		plate.threejs.matrix = mat;
+		
+		return plate;
+	}
+	
+	
 	tetrahedron( volume )
 	{
 		var vertices = [[1,1,1], [1,-1,-1], [-1,1,-1], [-1,-1,1]],
@@ -166,7 +179,7 @@ class Platonic extends Group
 	{
 		var vertices = [[1,1,1], [1,1,-1], [1,-1,1], [1,-1,-1], [-1,1,1], [-1,1,-1], [-1,-1,1], [-1,-1,-1]],
 			faces = [ [0,4,6,2], [0,1,5,4], [0,2,3,1], [2,6,7,3], [1,3,7,5], [4,5,7,6] ],
-			scale = 10;// (volume / (Math.sqrt(8)/3)) ** (1/3);
+			scale = 9;// (volume / (Math.sqrt(8)/3)) ** (1/3);
 
 		this.verticesLabels( vertices );
 		
@@ -196,6 +209,28 @@ class Platonic extends Group
 		
 		this.size = scale;
 	}
+
+	
+	dodecahedron( volume )
+	{
+		var Φ = (1+Math.sqrt(5))/2;
+		
+		var vertices = [[1,1,1], [1,1,-1], [1,-1,1], [1,-1,-1], [-1,1,1], [-1,1,-1], [-1,-1,1], [-1,-1,-1], [0,1/Φ,Φ], [0,1/Φ,-Φ], [0,-1/Φ,Φ], [0,-1/Φ,-Φ], [1/Φ,Φ,0], [1/Φ,-Φ,0], [-1/Φ,Φ,0], [-1/Φ,-Φ,0], [Φ,0,1/Φ], [-Φ,0,1/Φ], [Φ,0,-1/Φ], [-Φ,0,-1/Φ]],
+			faces = [ [3,13,15,7,11], [1,9,5,14,12], [5,9,11,7,19], [2,10,6,15,13], [2,13,3,18,16], [1,18,3,11,9], [0,16,18,1,12], [0,8,10,2,16], [0,12,14,4,8], [6,17,19,7,15], [4,17,6,10,8], [4,14,5,19,17] ],
+			scale = 8;// (volume / (Math.sqrt(8)/3)) ** (1/3);
+
+		this.verticesLabels( vertices );
+
+	
+		for( var j=0; j<faces.length; j++ )
+		{
+			var side = this.quintanglePlate( vertices[faces[j][0]], vertices[faces[j][1]], vertices[faces[j][2]], vertices[faces[j][3]], vertices[faces[j][4]], 2.103, Math.PI );
+			this.add( side );
+		}
+		
+		this.size = scale;
+	}
+	
 	
 	icosahedron( volume )
 	{
