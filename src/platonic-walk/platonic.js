@@ -61,9 +61,9 @@ class Platonic extends Group
 	{
 		for( var i=0; i<vertices.length; i++ )
 		{
-			var x = vertices[i][0];
-			var y = vertices[i][1];
-			var z = vertices[i][2];
+			// var x = vertices[i][0];
+			// var y = vertices[i][1];
+			// var z = vertices[i][2];
 			
 			var texture = drawing( 32 );
 				arc( 16, 16, 16 );
@@ -78,10 +78,10 @@ class Platonic extends Group
 	
 	trianglePlate( a, b, c, size, angle )
 	{
-		function v( a, n=1, b=[0,0,0], k=1 )
-		{
-			return [ n*a[0]+k*b[0], n*a[1]+k*b[1], n*a[2]+k*b[2] ]
-		};
+		// function v( a, n=1, b=[0,0,0], k=1 )
+		// {
+			// return [ n*a[0]+k*b[0], n*a[1]+k*b[1], n*a[2]+k*b[2] ]
+		// };
 
 		// triangle vertices
 		a = new THREE.Vector3( ...a );
