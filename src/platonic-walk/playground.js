@@ -12,6 +12,8 @@ class Playground extends ScormPlayground
 	{
 		super( );
 		
+		this.solid = null;
+		
 		this.resize( );
 
 		this.translate( [
@@ -21,6 +23,8 @@ class Playground extends ScormPlayground
 				jp: 'プラトニックな散歩------'},
 		] );
 		
+		this.solid0 = new Platonic( 0 );
+		this.solid2 = new Platonic( 2 );
 	} // Playground.constructor
 
 	
