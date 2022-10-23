@@ -14,7 +14,7 @@
 class Platonic extends Group
 {
 	static ROT = new THREE.Matrix4( ).makeRotationX( Math.PI );
-
+	
 	constructor( n )
 	{
 		super( suica );
@@ -33,23 +33,51 @@ class Platonic extends Group
 	} // Platonic.constructor
 
 
-	verticesLabels( vertices )
+	constructTexture( n )
 	{
-		for( var i=0; i<vertices.length; i++ )
-		{
-			// var x = vertices[i][0];
-			// var y = vertices[i][1];
-			// var z = vertices[i][2];
-			
-			var texture = drawing( 32 );
-				arc( 16, 16, 16 );
-				fill( 'crimson' );
-				fillText( 8, 8, i, 'white' );		
+		var img = drawing( 512, 512, 'DarkSeaGreen' );
 		
-			this.add( point(vertices[i],5,'white') );
-			its.image = texture;
+		var cx = 256,
+			cy = 256,
+			r = 200;
+
+		var angle = 2*Math.PI/n*0+(n==4?Math.PI/4:Math.PI/2);
+		moveTo( cx+r*Math.cos(angle), cy+r*Math.sin(angle) );
+		for( var i=0; i<=n+1; i++ )
+		{
+			var angle = 2*Math.PI/n*i+(n==4?Math.PI/4:Math.PI/2);
+			lineTo( cx+r*Math.cos(angle), cy+r*Math.sin(angle) );
 		}
+
+		var dist = r*Math.cos(Math.PI/n);
+		for( var i=0; i<=n; i++ )
+		{
+			var angle = 2*Math.PI/n*(i+0.5)+(n==4?Math.PI/4:Math.PI/2);
+			moveTo( cx+dist*Math.cos(angle), cy+dist*Math.sin(angle) );
+			lineTo( cx+2*r*Math.cos(angle), cy+2*r*Math.sin(angle) );
+		}
+
+		stroke( 'black', 34 );
+		stroke( 'gold', 30 );
+
+		return img;
 	}
+	
+	
+	
+	// verticesLabels( vertices )
+	// {
+		// for( var i=0; i<vertices.length; i++ )
+		// {
+			// var texture = drawing( 32 );
+				// arc( 16, 16, 16 );
+				// fill( 'crimson' );
+				// fillText( 8, 8, i, 'white' );		
+		
+			// this.add( point(vertices[i],5,'white') );
+			// its.image = texture;
+		// }
+	// }
 	
 	
 	plate( vertices, face, size )
@@ -84,9 +112,9 @@ class Platonic extends Group
 		var mat = new THREE.Matrix4( ).makeBasis( ox, oy, oz ).multiply( Platonic.ROT ).setPosition( center );
 		
 		// construct plate object
-		var face = polygon( n, [0,0,0], size );
-			its.image = ScormUtils.image( 'grid.png' );
-			its.images = 1;
+		var face = polygon( n, [0,0,0], size, 'white' );
+//			its.image = ScormUtils.image( 'grid3.png' );
+			its.image = this.texture;
 
 		var plate = group( );
 			plate.add( face );
@@ -105,7 +133,9 @@ class Platonic extends Group
 			faces = [[0,1,2], [0,2,3], [0,1,3], [1,2,3]],
 			scale = 10;
 
-		this.verticesLabels( vertices );
+		this.texture = this.constructTexture( faces[0].length );
+
+		//this.verticesLabels( vertices );
 		
 		for( var f=0; f<faces.length; f++ )
 			this.add( this.plate( vertices, faces[f], Math.sqrt(8/3)*2 ) );
@@ -122,9 +152,9 @@ class Platonic extends Group
 			faces = [[0,4,6,2], [0,1,5,4], [0,2,3,1], [2,6,7,3], [1,3,7,5], [4,5,7,6]],
 			scale = 9;
 
-		this.verticesLabels( vertices );
-		
-		this.verticesLabels( vertices );
+		this.texture = this.constructTexture( faces[0].length );
+
+		//this.verticesLabels( vertices );
 		
 		for( var f=0; f<faces.length; f++ )
 			this.add( this.plate( vertices, faces[f], Math.sqrt(8) ) );
@@ -141,7 +171,9 @@ class Platonic extends Group
 			faces = [[0,1,2], [5,1,0], [3,1,5], [2,1,3], [2,3,4], [0,2,4], [5,0,4], [3,5,4]],
 			scale = 15;
 
-		this.verticesLabels( vertices );
+		this.texture = this.constructTexture( faces[0].length );
+
+		//this.verticesLabels( vertices );
 		
 		for( var f=0; f<faces.length; f++ )
 			this.add( this.plate( vertices, faces[f], Math.sqrt(8/3) ) );
@@ -160,7 +192,9 @@ class Platonic extends Group
 			faces = [[3,13,15,7,11], [1,9,5,14,12], [5,9,11,7,19], [2,10,6,15,13], [2,13,3,18,16], [1,18,3,11,9], [0,16,18,1,12], [0,8,10,2,16], [0,12,14,4,8], [6,17,19,7,15], [4,17,6,10,8], [4,14,5,19,17]],
 			scale = 8;
 
-		this.verticesLabels( vertices );
+		this.texture = this.constructTexture( faces[0].length );
+
+		//this.verticesLabels( vertices );
 
 		for( var f=0; f<faces.length; f++ )
 			this.add( this.plate( vertices, faces[f], Math.sqrt(31/7) ) );
@@ -179,7 +213,9 @@ class Platonic extends Group
 			faces = [[0,2,8], [4,8,10], [1,4,10], [1,6,4], [0,8,4], [0,4,6], [5,10,8], [1,10,3], [1,3,11], [1,11,6], [0,6,9], [6,11,9], [3,7,11], [3,10,5], [0,9,2], [7,9,11], [3,5,7], [2,9,7], [2,5,8], [2,7,5]],
 			scale = 8;
 
-		this.verticesLabels( vertices );
+		this.texture = this.constructTexture( faces[0].length );
+
+		//this.verticesLabels( vertices );
 		
 		for( var f=0; f<faces.length; f++ )
 			this.add( this.plate( vertices, faces[f], Math.sqrt(16/3) ) );
