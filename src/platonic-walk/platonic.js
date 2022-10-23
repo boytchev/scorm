@@ -115,7 +115,6 @@ class Platonic extends Group
 		
 		// construct plate object
 		var face = polygon( n, [0,0,0], size, 'white' );
-//			its.image = ScormUtils.image( 'grid3.png' );
 			its.image = this.texture;
 
 		var plate = group( );
@@ -130,21 +129,29 @@ class Platonic extends Group
 	
 
 	
-	// generate a tetrahedron platonic solid
-	tetrahedron( volume )
+	// generate texture and plates for general n-hedron
+	hedron( vertices, faces, size, scale )
 	{
-		var vertices = [[1,1,1], [1,-1,-1], [-1,1,-1], [-1,-1,1]],
-			faces = [[0,1,2], [0,2,3], [0,1,3], [1,2,3]],
-			scale = 10;
-
 		this.texture = this.constructTexture( faces[0].length );
 
 		//this.verticesLabels( vertices );
 		
 		for( var f=0; f<faces.length; f++ )
-			this.add( this.plate( vertices, faces[f], Math.sqrt(8/3)*2 ) );
+			this.add( this.plate( vertices, faces[f], scale ) );
 		
-		this.size = scale;
+		this.size = size;
+	}
+	
+	
+	
+	// generate a tetrahedron platonic solid
+	tetrahedron( volume )
+	{
+		this.hedron(
+			[[1,1,1], [1,-1,-1], [-1,1,-1], [-1,-1,1]],
+			[[0,1,2], [0,2,3], [0,1,3], [1,2,3]],
+			10,
+			Math.sqrt(8/3)*2 );
 	} // Platonic.tetrahedron
 	
 
@@ -152,18 +159,11 @@ class Platonic extends Group
 	// generate a hexahedron (cube) platonic solid
 	hexahedron( volume )
 	{
-		var vertices = [[1,1,1], [1,1,-1], [1,-1,1], [1,-1,-1], [-1,1,1], [-1,1,-1], [-1,-1,1], [-1,-1,-1]],
-			faces = [[0,4,6,2], [0,1,5,4], [0,2,3,1], [2,6,7,3], [1,3,7,5], [4,5,7,6]],
-			scale = 9;
-
-		this.texture = this.constructTexture( faces[0].length );
-
-		//this.verticesLabels( vertices );
-		
-		for( var f=0; f<faces.length; f++ )
-			this.add( this.plate( vertices, faces[f], Math.sqrt(8) ) );
-		
-		this.size = scale;
+		this.hedron(
+			[[1,1,1], [1,1,-1], [1,-1,1], [1,-1,-1], [-1,1,1], [-1,1,-1], [-1,-1,1], [-1,-1,-1]],
+			[[0,4,6,2], [0,1,5,4], [0,2,3,1], [2,6,7,3], [1,3,7,5], [4,5,7,6]],
+			9,
+			Math.sqrt(8) );
 	} // Platonic.hexahedron
 	
 	
@@ -171,18 +171,11 @@ class Platonic extends Group
 	// generate an octahedron platonic solid
 	octahedron( volume )
 	{
-		var vertices = [[1,0,0], [0,1,0], [0,0,1], [-1,0,0], [0,-1,0], [0,0,-1]],
-			faces = [[0,1,2], [5,1,0], [3,1,5], [2,1,3], [2,3,4], [0,2,4], [5,0,4], [3,5,4]],
-			scale = 15;
-
-		this.texture = this.constructTexture( faces[0].length );
-
-		//this.verticesLabels( vertices );
-		
-		for( var f=0; f<faces.length; f++ )
-			this.add( this.plate( vertices, faces[f], Math.sqrt(8/3) ) );
-
-		this.size = scale;
+		this.hedron(
+			[[1,0,0], [0,1,0], [0,0,1], [-1,0,0], [0,-1,0], [0,0,-1]],
+			[[0,1,2], [5,1,0], [3,1,5], [2,1,3], [2,3,4], [0,2,4], [5,0,4], [3,5,4]],
+			15,
+			Math.sqrt(8/3) );
 	} // Platonic.octahedron
 	
 
@@ -190,20 +183,13 @@ class Platonic extends Group
 	// generate an dodecahedron platonic solid
 	dodecahedron( volume )
 	{
-		var Φ = (1+Math.sqrt(5))/2;
-		
-		var vertices = [[1,1,1], [1,1,-1], [1,-1,1], [1,-1,-1], [-1,1,1], [-1,1,-1], [-1,-1,1], [-1,-1,-1], [0,1/Φ,Φ], [0,1/Φ,-Φ], [0,-1/Φ,Φ], [0,-1/Φ,-Φ], [1/Φ,Φ,0], [1/Φ,-Φ,0], [-1/Φ,Φ,0], [-1/Φ,-Φ,0], [Φ,0,1/Φ], [-Φ,0,1/Φ], [Φ,0,-1/Φ], [-Φ,0,-1/Φ]],
-			faces = [[3,13,15,7,11], [1,9,5,14,12], [5,9,11,7,19], [2,10,6,15,13], [2,13,3,18,16], [1,18,3,11,9], [0,16,18,1,12], [0,8,10,2,16], [0,12,14,4,8], [6,17,19,7,15], [4,17,6,10,8], [4,14,5,19,17]],
-			scale = 8;
-
-		this.texture = this.constructTexture( faces[0].length );
-
-		//this.verticesLabels( vertices );
-
-		for( var f=0; f<faces.length; f++ )
-			this.add( this.plate( vertices, faces[f], Math.sqrt(31/7) ) );
-		
-		this.size = scale;
+		var Φ = (1+Math.sqrt(5))/2; //note:  Ф-1 = 1/Ф
+		this.hedron(
+			[ [1,1,1], [1,1,-1], [1,-1,1], [1,-1,-1], [-1,1,1], [-1,1,-1], [-1,-1,1], [-1,-1,-1],
+			  [0,Φ-1,Φ], [0,Φ-1,-Φ], [0,1-Φ,Φ], [0,1-Φ,-Φ], [Φ-1,Φ,0], [Φ-1,-Φ,0], [1-Φ,Φ,0], [1-Φ,-Φ,0], [Φ,0,Φ-1], [-Φ,0,Φ-1], [Φ,0,1-Φ], [-Φ,0,1-Φ]],
+			[[3,13,15,7,11], [1,9,5,14,12], [5,9,11,7,19], [2,10,6,15,13], [2,13,3,18,16], [1,18,3,11,9], [0,16,18,1,12], [0,8,10,2,16], [0,12,14,4,8], [6,17,19,7,15], [4,17,6,10,8], [4,14,5,19,17]],
+			8,
+			Math.sqrt(31/7) );
 	} // Platonic.dodecahedron
 	
 
@@ -211,20 +197,12 @@ class Platonic extends Group
 	// generate an icosahedron platonic solid
 	icosahedron( volume )
 	{
-		var Φ = (1+Math.sqrt(5))/2;
-		
-		var vertices = [[0,1,Φ], [0,1,-Φ], [0,-1,Φ], [0,-1,-Φ], [1,Φ,0], [1,-Φ,0], [-1,Φ,0], [-1,-Φ,0], [Φ,0,1], [-Φ,0,1], [Φ,0,-1], [-Φ,0,-1]],
-			faces = [[0,2,8], [4,8,10], [1,4,10], [1,6,4], [0,8,4], [0,4,6], [5,10,8], [1,10,3], [1,3,11], [1,11,6], [0,6,9], [6,11,9], [3,7,11], [3,10,5], [0,9,2], [7,9,11], [3,5,7], [2,9,7], [2,5,8], [2,7,5]],
-			scale = 8;
-
-		this.texture = this.constructTexture( faces[0].length );
-
-		//this.verticesLabels( vertices );
-		
-		for( var f=0; f<faces.length; f++ )
-			this.add( this.plate( vertices, faces[f], Math.sqrt(16/3) ) );
-
-		this.size = scale;
+		var Φ = (1+Math.sqrt(5))/2; //note:  Ф-1 = 1/Ф
+		this.hedron(
+			[[0,1,Φ], [0,1,-Φ], [0,-1,Φ], [0,-1,-Φ], [1,Φ,0], [1,-Φ,0], [-1,Φ,0], [-1,-Φ,0], [Φ,0,1], [-Φ,0,1], [Φ,0,-1], [-Φ,0,-1]],
+			[[0,2,8], [4,8,10], [1,4,10], [1,6,4], [0,8,4], [0,4,6], [5,10,8], [1,10,3], [1,3,11], [1,11,6], [0,6,9], [6,11,9], [3,7,11], [3,10,5], [0,9,2], [7,9,11], [3,5,7], [2,9,7], [2,5,8], [2,7,5]],
+			8,
+			Math.sqrt(16/3) );
 	} // Platonic.icosahedron
 	
 } // class Platonic
