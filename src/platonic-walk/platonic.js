@@ -37,8 +37,9 @@ class Platonic extends Group
 
 	constructTexture( n )
 	{
-		var img = drawing( 512, 512, 'DarkSeaGreen' );
-		
+		var img = drawing( 512, 512, 'Black' );
+			img.context.lineJoin = 'round';
+	
 		var cx = 256,
 			cy = 256,
 			r = 200;
@@ -59,8 +60,9 @@ class Platonic extends Group
 			lineTo( cx+2*r*Math.cos(angle), cy+2*r*Math.sin(angle) );
 		}
 
-		stroke( 'black', 34 );
-		stroke( 'gold', 30 );
+		fill( 'DarkSeaGreen' );
+		stroke( 'Black', 34 );
+		stroke( 'Gold', 30 );
 
 		return img;
 	}
