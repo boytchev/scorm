@@ -29,6 +29,8 @@ class Platonic extends Group
 			case 3 : this.dodecahedron( VOLUME ); break;
 			case 4 : this.icosahedron( VOLUME ); break;
 		}
+
+//		this.addEventListener( 'click', function() {console.log('click')} );
 	
 	} // Platonic.constructor
 
@@ -120,7 +122,9 @@ class Platonic extends Group
 			plate.add( face );
 			plate.threejs.matrixAutoUpdate = false;
 			plate.threejs.matrix = mat;
-		
+			
+//			plate.addEventListener( 'click', function() {console.log('inside click')} );
+			
 		return plate;
 	}
 	
