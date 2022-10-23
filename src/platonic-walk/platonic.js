@@ -47,14 +47,14 @@ class Platonic extends Group
 		moveTo( cx+r*Math.cos(angle), cy+r*Math.sin(angle) );
 		for( var i=0; i<=n+1; i++ )
 		{
-			var angle = 2*Math.PI/n*i+(n==4?Math.PI/4:Math.PI/2);
+			let angle = 2*Math.PI/n*i+(n==4?Math.PI/4:Math.PI/2);
 			lineTo( cx+r*Math.cos(angle), cy+r*Math.sin(angle) );
 		}
 
 		var dist = r*Math.cos(Math.PI/n);
 		for( var i=0; i<=n; i++ )
 		{
-			var angle = 2*Math.PI/n*(i+0.5)+(n==4?Math.PI/4:Math.PI/2);
+			let angle = 2*Math.PI/n*(i+0.5)+(n==4?Math.PI/4:Math.PI/2);
 			moveTo( cx+dist*Math.cos(angle), cy+dist*Math.sin(angle) );
 			lineTo( cx+2*r*Math.cos(angle), cy+2*r*Math.sin(angle) );
 		}
