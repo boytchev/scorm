@@ -24,6 +24,10 @@ class Platonic extends Group
 		this.plates = [];
 		this.spots = [];
 		
+		this.nextSpot = [];
+		this.prevSpot = [];
+		this.twinSpot = [];
+		
 		switch( n )
 		{
 			case 0 : this.tetrahedron( VOLUME ); break;
@@ -32,6 +36,9 @@ class Platonic extends Group
 			case 3 : this.dodecahedron( VOLUME ); break;
 			case 4 : this.icosahedron( VOLUME ); break;
 		}
+
+for( var i=0; i<this.spots.length; i++ )
+	console.log(i+'\t',this.nextSpot[i],this.prevSpot[i],this.twinSpot[i]);
 
 		this.addEventListener( 'click', this.onClick );
 
@@ -102,14 +109,32 @@ class Platonic extends Group
 	
 	
 	// generate texture and plates for general n-hedron
-	hedron( vertices, faces, size, scale, spotOffset, spotRadius )
+	hedron( vertices, faces, twins, size, scale, spotOffset, spotRadius )
 	{
-		var texture = this.constructTexture( faces[0].length );
+		var n = faces[0].length; // n-gon
+		
+		var texture = this.constructTexture( n );
 
 		//this.verticesLabels( vertices );
+		for( var t=0; t<twins.length; t++ )
+		{
+			this.twinSpot[twins[t][0]] = twins[t][1];
+			this.twinSpot[twins[t][1]] = twins[t][0];
+		}
 		
 		for( var f=0; f<faces.length; f++ )
 		{
+			
+			// DCEL set prev & next
+			var firstSpot = f*n;
+			for( var j=0; j<n; j++ )
+			{
+				this.nextSpot[firstSpot+j] = firstSpot + (j+1)%n;
+				this.prevSpot[firstSpot+j] = firstSpot + (j+n-1)%n;
+			}
+
+
+			// create one of the plates
 			var plate = new Plate( vertices, faces[f], scale, texture, spotOffset, spotRadius );
 				plate.face.index = f;
 				
@@ -130,6 +155,7 @@ class Platonic extends Group
 		this.hedron(
 			[[1,1,1], [1,-1,-1], [-1,1,-1], [-1,-1,1]],
 			[[0,1,2], [0,2,3], [0,1,3], [1,2,3]],
+			[[0,11], [1,5], [2,8], [3,9], [4,7], [6,10]],
 			10,
 			Math.sqrt(8/3)*2,
 			0.25, 0.65,
@@ -144,6 +170,7 @@ class Platonic extends Group
 		this.hedron(
 			[[1,1,1], [1,1,-1], [1,-1,1], [1,-1,-1], [-1,1,1], [-1,1,-1], [-1,-1,1], [-1,-1,-1]],
 			[[0,4,6,2], [0,1,5,4], [0,2,3,1], [2,6,7,3], [1,3,7,5], [4,5,7,6]],
+			[ [0,22], [1,15], [2,11], [3,6], [7,10], [8,14], [12,21], [5,23], [4,18], [17,20], [9,19], [13,16] ],
 			9,
 			Math.sqrt(8),
 			0, 0.78,
@@ -158,6 +185,7 @@ class Platonic extends Group
 		this.hedron(
 			[[1,0,0], [0,1,0], [0,0,1], [-1,0,0], [0,-1,0], [0,0,-1]],
 			[[0,1,2], [5,1,0], [3,1,5], [2,1,3], [2,3,4], [0,2,4], [5,0,4], [3,5,4]],
+			[ [2,3], [1,17], [0,11], [10,14], [8,9], [7,23], [5,6], [4,20], [16,18], [13,15], [12,22], [19,21], ],
 			15,
 			Math.sqrt(8/3),
 			0.25, 0.32,
@@ -174,6 +202,7 @@ class Platonic extends Group
 			[ [1,1,1], [1,1,-1], [1,-1,1], [1,-1,-1], [-1,1,1], [-1,1,-1], [-1,-1,1], [-1,-1,-1],
 			  [0,Φ-1,Φ], [0,Φ-1,-Φ], [0,1-Φ,Φ], [0,1-Φ,-Φ], [Φ-1,Φ,0], [Φ-1,-Φ,0], [1-Φ,Φ,0], [1-Φ,-Φ,0], [Φ,0,Φ-1], [-Φ,0,Φ-1], [Φ,0,1-Φ], [-Φ,0,1-Φ]],
 			[[3,13,15,7,11], [1,9,5,14,12], [5,9,11,7,19], [2,10,6,15,13], [2,13,3,18,16], [1,18,3,11,9], [0,16,18,1,12], [0,8,10,2,16], [0,12,14,4,8], [6,17,19,7,15], [4,17,6,10,8], [4,14,5,19,17]],
+			[ [42,53], [39,43], [33,44], [7,40], [41,59], [35,52], [34,38], [8,32], [6,55], [54,58], [49,50], [15,51], [19,36], [23,37], [22,30], [29,31], [9,28], [5,14], [13,56], [45,57], [16,48], [0,17], [4,20], [1,47], [2,11], [3,26], [12,46], [10,27], [18,24], [21,25], ],
 			8,
 			Math.sqrt(31/7),
 			-0.25, 0.67,
@@ -189,9 +218,10 @@ class Platonic extends Group
 		this.hedron(
 			[[0,1,Φ], [0,1,-Φ], [0,-1,Φ], [0,-1,-Φ], [1,Φ,0], [1,-Φ,0], [-1,Φ,0], [-1,-Φ,0], [Φ,0,1], [-Φ,0,1], [Φ,0,-1], [-Φ,0,-1]],
 			[[0,2,8], [4,8,10], [1,4,10], [1,6,4], [0,8,4], [0,4,6], [5,10,8], [1,10,3], [1,3,11], [1,11,6], [0,6,9], [6,11,9], [3,7,11], [3,10,5], [0,9,2], [7,9,11], [3,5,7], [2,9,7], [2,5,8], [2,7,5]],
+			[ [0,55], [1,14], [2,43], [3,18], [4,6], [5,12], [7,23], [8,10], [9,15], [11,28], [13,17], [16,32], [19,54], [20,39], [21,41], [22,26], [25,29], [24,37], [27,35], [30,34], [31,44], [52,59], [56,58], [48,57], [38,49], [36,46], [33,45], [42,53], [40,50], [47,51], ],
 			8,
 			Math.sqrt(16/3),
-			0.25, 0.67,
+			0.25, 0.45,
 		);
 	} // Platonic.icosahedron
 	
