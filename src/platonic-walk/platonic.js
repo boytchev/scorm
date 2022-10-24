@@ -21,6 +21,8 @@ class Platonic extends Group
 
 		var VOLUME = 10**3;
 		
+		this.plates = [];
+		
 		switch( n )
 		{
 			case 0 : this.tetrahedron( VOLUME ); break;
@@ -30,14 +32,14 @@ class Platonic extends Group
 			case 4 : this.icosahedron( VOLUME ); break;
 		}
 
-//		this.addEventListener( 'click', function() {console.log('click')} );
+		this.addEventListener( 'click', this.onClick );
 	
 	} // Platonic.constructor
 
 
 	constructTexture( n )
 	{
-		var img = drawing( 512, 512, 'Black' );
+		var img = drawing( 512, 512);//, 'Black' );
 			img.context.lineJoin = 'round';
 	
 		var cx = 256,
@@ -63,10 +65,17 @@ class Platonic extends Group
 		fill( 'DarkSeaGreen' );
 		stroke( 'Black', 34 );
 		stroke( 'Gold', 30 );
+		//stroke( 'White', 30 );
 
 		return img;
 	}
 	
+	
+
+	onClick( event )
+	{
+		console.log( event );
+	}
 	
 	
 	// verticesLabels( vertices )
@@ -84,62 +93,19 @@ class Platonic extends Group
 	// }
 	
 	
-	plate( vertices, face, size )
-	{
-		// plate is n-gon
-		var n = face.length;
-		
-		// calculate coordinate system of the face
-		var ox, oy, oz;
-		{
-			let a = new THREE.Vector3( ...vertices[face[0]] ),
-				b = new THREE.Vector3( ...vertices[face[1]] ),
-				c = new THREE.Vector3( ...vertices[face[2]] );
-
-			ox = b.sub( a ).normalize( );
-			oy = c.sub( a );
-			oz = new THREE.Vector3().crossVectors( ox, oy ).normalize( );
-			
-			oy.crossVectors( ox, oz ).normalize( ); 
-		}
-		
-		// calculate center
-		var center = new THREE.Vector3();
-		for( var f=0; f<n; f++ )
-		{
-			center.x += vertices[face[f]][0]/n;
-			center.y += vertices[face[f]][1]/n;
-			center.z += vertices[face[f]][2]/n;
-		}
-
-		// prepare matrix
-		var mat = new THREE.Matrix4( ).makeBasis( ox, oy, oz ).multiply( Platonic.ROT ).setPosition( center );
-		
-		// construct plate object
-		var face = polygon( n, [0,0,0], size, 'white' );
-			its.image = this.texture;
-
-		var plate = group( );
-			plate.add( face );
-			plate.threejs.matrixAutoUpdate = false;
-			plate.threejs.matrix = mat;
-			
-//			plate.addEventListener( 'click', function() {console.log('inside click')} );
-			
-		return plate;
-	}
-	
-
-	
 	// generate texture and plates for general n-hedron
 	hedron( vertices, faces, size, scale )
 	{
-		this.texture = this.constructTexture( faces[0].length );
+		var texture = this.constructTexture( faces[0].length );
 
 		//this.verticesLabels( vertices );
 		
 		for( var f=0; f<faces.length; f++ )
-			this.add( this.plate( vertices, faces[f], scale ) );
+		{
+			var plate = new Plate( vertices, faces[f], scale, texture );
+			this.plates.push( plate );
+			this.add( plate );
+		}
 		
 		this.size = size;
 	}
