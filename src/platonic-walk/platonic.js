@@ -22,6 +22,7 @@ class Platonic extends Group
 		var VOLUME = 10**3;
 		
 		this.plates = [];
+		this.spots = [];
 		
 		switch( n )
 		{
@@ -33,7 +34,9 @@ class Platonic extends Group
 		}
 
 		this.addEventListener( 'click', this.onClick );
-	
+
+		this.addLabels( this.spots );
+		
 	} // Platonic.constructor
 
 
@@ -64,8 +67,8 @@ class Platonic extends Group
 
 		fill( 'DarkSeaGreen' );
 		stroke( 'Black', 34 );
-		stroke( 'Gold', 30 );
-		//stroke( 'White', 30 );
+		//stroke( 'Gold', 30 );
+		stroke( 'White', 30 );
 
 		return img;
 	}
@@ -74,27 +77,32 @@ class Platonic extends Group
 
 	onClick( event )
 	{
-		console.log( event );
+		if( playground.pointerMovement > Playground.POINTER_MOVEMENT )
+			return;
+		
+		Plate.select( Plate.selected, true );
+		
+		console.log( 'click on plate', Plate.selected.index );
 	}
 	
 	
-	// verticesLabels( vertices )
-	// {
-		// for( var i=0; i<vertices.length; i++ )
-		// {
-			// var texture = drawing( 32 );
-				// arc( 16, 16, 16 );
-				// fill( 'crimson' );
-				// fillText( 8, 8, i, 'white' );		
+	addLabels( vertices )
+	{
+		for( var i=0; i<vertices.length; i++ )
+		{
+			var texture = drawing( 32 );
+				arc( 16, 16, 16 );
+				fill( 'crimson' );
+				fillText( 6, 8, i, 'white' );		
 		
-			// this.add( point(vertices[i],5,'white') );
-			// its.image = texture;
-		// }
-	// }
+			this.add( point(vertices[i],4,'white') );
+			its.image = texture;
+		}
+	}
 	
 	
 	// generate texture and plates for general n-hedron
-	hedron( vertices, faces, size, scale )
+	hedron( vertices, faces, size, scale, spotOffset, spotRadius )
 	{
 		var texture = this.constructTexture( faces[0].length );
 
@@ -102,8 +110,12 @@ class Platonic extends Group
 		
 		for( var f=0; f<faces.length; f++ )
 		{
-			var plate = new Plate( vertices, faces[f], scale, texture );
+			var plate = new Plate( vertices, faces[f], scale, texture, spotOffset, spotRadius );
+				plate.face.index = f;
+				
 			this.plates.push( plate );
+			this.spots.push( ...plate.spots );
+			
 			this.add( plate );
 		}
 		
@@ -119,7 +131,9 @@ class Platonic extends Group
 			[[1,1,1], [1,-1,-1], [-1,1,-1], [-1,-1,1]],
 			[[0,1,2], [0,2,3], [0,1,3], [1,2,3]],
 			10,
-			Math.sqrt(8/3)*2 );
+			Math.sqrt(8/3)*2,
+			0.25, 0.65,
+		);
 	} // Platonic.tetrahedron
 	
 
@@ -131,7 +145,9 @@ class Platonic extends Group
 			[[1,1,1], [1,1,-1], [1,-1,1], [1,-1,-1], [-1,1,1], [-1,1,-1], [-1,-1,1], [-1,-1,-1]],
 			[[0,4,6,2], [0,1,5,4], [0,2,3,1], [2,6,7,3], [1,3,7,5], [4,5,7,6]],
 			9,
-			Math.sqrt(8) );
+			Math.sqrt(8),
+			0, 0.78,
+		);
 	} // Platonic.hexahedron
 	
 	
@@ -143,7 +159,9 @@ class Platonic extends Group
 			[[1,0,0], [0,1,0], [0,0,1], [-1,0,0], [0,-1,0], [0,0,-1]],
 			[[0,1,2], [5,1,0], [3,1,5], [2,1,3], [2,3,4], [0,2,4], [5,0,4], [3,5,4]],
 			15,
-			Math.sqrt(8/3) );
+			Math.sqrt(8/3),
+			0.25, 0.32,
+		);
 	} // Platonic.octahedron
 	
 
@@ -157,7 +175,9 @@ class Platonic extends Group
 			  [0,Φ-1,Φ], [0,Φ-1,-Φ], [0,1-Φ,Φ], [0,1-Φ,-Φ], [Φ-1,Φ,0], [Φ-1,-Φ,0], [1-Φ,Φ,0], [1-Φ,-Φ,0], [Φ,0,Φ-1], [-Φ,0,Φ-1], [Φ,0,1-Φ], [-Φ,0,1-Φ]],
 			[[3,13,15,7,11], [1,9,5,14,12], [5,9,11,7,19], [2,10,6,15,13], [2,13,3,18,16], [1,18,3,11,9], [0,16,18,1,12], [0,8,10,2,16], [0,12,14,4,8], [6,17,19,7,15], [4,17,6,10,8], [4,14,5,19,17]],
 			8,
-			Math.sqrt(31/7) );
+			Math.sqrt(31/7),
+			-0.25, 0.67,
+		);
 	} // Platonic.dodecahedron
 	
 
@@ -170,7 +190,9 @@ class Platonic extends Group
 			[[0,1,Φ], [0,1,-Φ], [0,-1,Φ], [0,-1,-Φ], [1,Φ,0], [1,-Φ,0], [-1,Φ,0], [-1,-Φ,0], [Φ,0,1], [-Φ,0,1], [Φ,0,-1], [-Φ,0,-1]],
 			[[0,2,8], [4,8,10], [1,4,10], [1,6,4], [0,8,4], [0,4,6], [5,10,8], [1,10,3], [1,3,11], [1,11,6], [0,6,9], [6,11,9], [3,7,11], [3,10,5], [0,9,2], [7,9,11], [3,5,7], [2,9,7], [2,5,8], [2,7,5]],
 			8,
-			Math.sqrt(16/3) );
+			Math.sqrt(16/3),
+			0.25, 0.67,
+		);
 	} // Platonic.icosahedron
 	
 } // class Platonic

@@ -6,12 +6,14 @@
 
 class Playground extends ScormPlayground
 {
-	static POINTS_SPEED = 2000;
+	static POINTER_MOVEMENT = 5;
+	static POINTER_USED = false;
 	
 	constructor( )
 	{
 		super( );
 		
+		this.pointerMovement = 0;
 		this.solid = null;
 		
 		this.resize( );
@@ -23,9 +25,12 @@ class Playground extends ScormPlayground
 				jp: 'プラトニックな散歩------'},
 		] );
 		
-		//this.solid0 = new Platonic( 0 );
-		//this.solid1 = new Platonic( 1 );
-		//this.solid2 = new Platonic( 2 );
+		orb.addEventListener( 'start', () => Playground.POINTER_USED=true  );
+		orb.addEventListener( 'end', () => Playground.POINTER_USED=false );
+
+		//this.solid = new Platonic( 0 );
+		//this.solid = new Platonic( 1 );
+		//this.solid = new Platonic( 2 );
 		//this.solid = new Platonic( 3 );
 		this.solid = new Platonic( 4 );
 		

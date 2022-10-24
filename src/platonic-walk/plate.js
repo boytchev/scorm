@@ -6,7 +6,9 @@
 
 class Plate extends Group
 {
-	constructor( vertices, face, size, texture )
+	static selected = null;
+	
+	constructor( vertices, face, size, texture, spotOffset, spotRadius )
 	{
 		super( suica );
 
@@ -40,13 +42,47 @@ class Plate extends Group
 		var mat = new THREE.Matrix4( ).makeBasis( ox, oy, oz ).multiply( Platonic.ROT ).setPosition( center );
 		
 		// construct plate object
-		var face = polygon( n, [0,0,0], size, 'white' );
+		this.face = polygon( n, [0,0,0], size, 'white' );
 			its.image = texture;
-
-		this.add( face );
+its.threejs.material.polygonOffset = true;
+its.threejs.material.polygonOffsetUnits = 20;
+its.threejs.material.polygonOffsetFactor = 20;
+		this.add( this.face );
 		this.threejs.matrixAutoUpdate = false;
 		this.threejs.matrix = mat;
+		
+		var spot;// = this.objectPosition( [0,0,-0.1] );
+		this.spots = [];
+
+		for( var i=0; i<n; i++ )
+		{
+			var angle = 2*Math.PI*(i+spotOffset)/n,
+				r = spotRadius;
+				
+			spot = this.objectPosition( [r*Math.cos(angle),r*Math.sin(angle),0] );
+			this.spots.push( spot );
+		}
+		
 	} // Plate.constructor
+
+
+
+	// select/unselect plate
+	static select( plate, hard=false )
+	{
+		if( Plate.selected )
+		{
+			Plate.selected.color = 'White';
+			Plate.selected = null;
+		}
+
+		if( plate )
+		{
+			Plate.selected = plate;
+			Plate.selected.color = hard ? 'Crimson' : 'Orange';
+		}
+	} // Plate.select
+
 
 
 	// verticesLabels( vertices )
