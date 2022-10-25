@@ -37,12 +37,10 @@ class Platonic extends Group
 			case 4 : this.icosahedron( VOLUME ); break;
 		}
 
-for( var i=0; i<this.spots.length; i++ )
-	console.log(i+'\t',this.nextSpot[i],this.prevSpot[i],this.twinSpot[i]);
-
 		this.addEventListener( 'click', this.onClick );
 
 		this.addLabels( this.spots );
+		this.addLabels( this.plates );
 		
 	} // Platonic.constructor
 
@@ -102,7 +100,7 @@ for( var i=0; i<this.spots.length; i++ )
 				fill( 'crimson' );
 				fillText( 6, 8, i, 'white' );		
 		
-			this.add( point(vertices[i],4,'white') );
+			this.add( point(vertices[i].midCenter||vertices[i],4,'white') );
 			its.image = texture;
 		}
 	}
@@ -154,7 +152,7 @@ for( var i=0; i<this.spots.length; i++ )
 	{
 		this.hedron(
 			[[1,1,1], [1,-1,-1], [-1,1,-1], [-1,-1,1]],
-			[[0,1,2], [0,2,3], [0,1,3], [1,2,3]],
+			[[0,1,2], [0,2,3], [0,3,1], [1,3,2]],
 			[[0,11], [1,5], [2,8], [3,9], [4,7], [6,10]],
 			10,
 			Math.sqrt(8/3)*2,

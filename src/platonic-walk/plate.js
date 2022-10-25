@@ -37,6 +37,8 @@ class Plate extends Group
 			center.y += vertices[face[f]][1]/n;
 			center.z += vertices[face[f]][2]/n;
 		}
+		
+		this.midCenter = center;
 
 		// prepare matrix
 		var mat = new THREE.Matrix4( ).makeBasis( ox, oy, oz ).multiply( Platonic.ROT ).setPosition( center );
@@ -60,6 +62,8 @@ its.threejs.material.polygonOffsetFactor = 20;
 				r = spotRadius;
 				
 			spot = this.objectPosition( [r*Math.cos(angle),r*Math.sin(angle),0] );
+			this.add( cone( [r*Math.cos(angle),r*Math.sin(angle),0], [0.1,1], 'white' ) );
+			its.spinV = -90;
 			this.spots.push( spot );
 		}
 		
