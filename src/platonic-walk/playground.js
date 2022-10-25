@@ -28,11 +28,12 @@ class Playground extends ScormPlayground
 		orb.addEventListener( 'start', () => Playground.POINTER_USED=true  );
 		orb.addEventListener( 'end', () => Playground.POINTER_USED=false );
 
-		//this.solid = new Platonic( 0 );
-		//this.solid = new Platonic( 1 );
-		//this.solid = new Platonic( 2 );
-		//this.solid = new Platonic( 3 );
-		this.solid = new Platonic( 4 );
+		this.solids = [];
+		for( var i=0; i<5; i++ )
+			this.solids.push( new Platonic( i ) );
+		
+		this.solid = this.solids[4];
+		this.solid.visible = true;
 		
 		this.model = new THREE.Group();
 		suica.scene.add( this.model );
@@ -58,24 +59,40 @@ class Playground extends ScormPlayground
 			{
 				if( child.material )
 				{
-					//encoding = sRGBEncoding
-					//child.material.map.encoding = THREE.sRGBEncoding;
-					//console.log(child.material);
-					//console.log(child.material.color)
 					child.material.emissive = new THREE.Color( 'white' );
 					child.material.emissiveIntensity = 0.2;
-//					child.material.color.setRGB(1.5,1.5,1.5);
 				}
 			} );				
 			
-			object.scale.set( 0.15, 0.15, 0.15 );
+			object.rotation.set( -Math.PI/2, 0, 0 );
+			object.scale.set( 0.05, 0.05, 0.05 );
 			parent.add( object );
 			
 			// анимация
 			parent.animator = new THREE.AnimationMixer( object );
 			parent.animator.clipAction( object.animations[0] ).play();
+			parent.matrixAutoUpdate = false;
+
+that.moveModelToSpot(49);
 		}
 	} // Playground.loadModel
+	
+	
+	
+	// move the model to spot n and make it
+	// it stand on the sirface of the plate
+	moveModelToSpot( n )
+	{
+		var plateIdx = this.solid.spotPlate[ n ],
+			plate = this.solid.plates[ plateIdx ];
+console.log('plateidx',plateIdx);
+console.log('spot pos',this.solid.spots[n]);
+			
+console.log(this.solid.size);			
+		// get position from the spot, but orientation from the plate
+		this.model.matrix.copy( plate.threejs.matrix );
+		this.model.matrix.setPosition( new THREE.Vector3( ...this.solid.spots[n] ).multiplyScalar(this.solid.size) );
+	}
 	
 	
 	

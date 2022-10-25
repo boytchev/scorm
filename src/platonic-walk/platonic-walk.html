@@ -72,7 +72,9 @@
 				return;
 			}
 			
-			var obj = findObject( event, playground.solid.plates );
+			var obj;
+
+			if( playground.solid ) obj = findObject( event, playground.solid.plates );
 
 			Plate.select( obj );
 			if( obj )

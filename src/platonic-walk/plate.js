@@ -62,8 +62,8 @@ its.threejs.material.polygonOffsetFactor = 20;
 				r = spotRadius;
 				
 			spot = this.objectPosition( [r*Math.cos(angle),r*Math.sin(angle),0] );
-			this.add( cone( [r*Math.cos(angle),r*Math.sin(angle),0], [0.1,1], 'white' ) );
-			its.spinV = -90;
+			//this.add( cone( [r*Math.cos(angle),r*Math.sin(angle),0], [0.1,1], 'white' ) );
+			//its.spinV = -90;
 			this.spots.push( spot );
 		}
 		

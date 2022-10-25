@@ -23,6 +23,7 @@ class Platonic extends Group
 		
 		this.plates = [];
 		this.spots = [];
+		this.spotPlate = [];
 		
 		this.nextSpot = [];
 		this.prevSpot = [];
@@ -30,8 +31,8 @@ class Platonic extends Group
 		
 		switch( n )
 		{
-			case 0 : this.tetrahedron( VOLUME ); break;
-			case 1 : this.hexahedron( VOLUME ); break;
+			case 0 : this.hexahedron( VOLUME ); break;
+			case 1 : this.tetrahedron( VOLUME ); break;
 			case 2 : this.octahedron( VOLUME ); break;
 			case 3 : this.dodecahedron( VOLUME ); break;
 			case 4 : this.icosahedron( VOLUME ); break;
@@ -41,6 +42,8 @@ class Platonic extends Group
 
 		this.addLabels( this.spots );
 		this.addLabels( this.plates );
+
+		this.visible = false;
 		
 	} // Platonic.constructor
 
@@ -129,6 +132,7 @@ class Platonic extends Group
 			{
 				this.nextSpot[firstSpot+j] = firstSpot + (j+1)%n;
 				this.prevSpot[firstSpot+j] = firstSpot + (j+n-1)%n;
+				this.spotPlate[firstSpot+j] = f;
 			}
 
 
