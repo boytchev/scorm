@@ -29,11 +29,11 @@ class Playground extends ScormPlayground
 		orb.addEventListener( 'end', () => Playground.POINTER_USED=false );
 
 		this.solids = [];
-		for( var i=0; i<5; i++ )
+		for( var i=0; i<6; i++ )
 			this.solids.push( new Platonic( i ) );
 		
-		this.solid = this.solids[4];
-		this.solid.visible = true;
+		//this.solid = this.solids[0];
+		//this.solid.visible = true;
 		
 		this.model = new THREE.Group();
 		suica.scene.add( this.model );
@@ -52,6 +52,7 @@ class Playground extends ScormPlayground
 		var loader = new THREE.FBXLoader( );
 			loader.load( 'models/'+name, objectLoaded );
 				
+			parent.matrixAutoUpdate = false;
 		function objectLoaded( object )
 		{
 			// маха лъскавината, слага сенки, включва гама корекция
@@ -71,11 +72,61 @@ class Playground extends ScormPlayground
 			// анимация
 			parent.animator = new THREE.AnimationMixer( object );
 			parent.animator.clipAction( object.animations[0] ).play();
-			parent.matrixAutoUpdate = false;
 
-that.moveModelToSpot(49);
+			that.moveModelToCenter( );
 		}
+		
+		var img = drawing( 512, 512, 'DarkSeaGreen' );
+			img.context.lineJoin = 'round';
+			
+		var s = 78;
+		
+		moveTo( s, s );
+		lineTo( 512-s, s, 512-s, 512-s, s, 512-s, s, s );
+
+		stroke( 'Black', 34 );
+		stroke( 'White', 30 );
+
+		// also create ground for the model
+		var ground = new THREE.Mesh(
+			new THREE.CylinderGeometry( 10, 10, 1*4, 6 ),
+			new THREE.MeshLambertMaterial( {
+				color: 'white',
+				map: new THREE.CanvasTexture( Platonic.constructTexture(6,false).canvas ),
+			} )
+		);
+		var pos = ground.geometry.getAttribute( 'position' );
+		for( var i=0; i<pos.count; i++ )
+		{
+			if( pos.getY(i)>0 && pos.getX(i)**2+pos.getZ(i)**2>0.01  )
+				pos.setY(i,-1/2*4+1);
+		}
+		
+		ground.geometry.computeVertexNormals();
+		ground.material.map.repeat.set( 0.9, 0.9 );
+		ground.material.map.center.set( 0.5, 0.5 );
+		ground.material.map.rotation = Math.PI/6;
+			ground.position.z = 1/2*4;
+			ground.rotation.set( Math.PI/2, 0, 0 );
+		
+		parent.add( ground );
+		var blackGround = new THREE.Mesh(
+			new THREE.CylinderGeometry( 10.1, 10.1, 1, 6 ),
+			new THREE.MeshBasicMaterial( {color: 'black'} )
+		);
+		blackGround.position.y = -1.45;
+		ground.add( blackGround );
+		
 	} // Playground.loadModel
+	
+	
+	
+	// move the model to the center of the screen
+	moveModelToCenter( )
+	{
+		this.model.matrix.makeRotationX( Math.PI/2 );
+		this.model.matrix.setPosition( new THREE.Vector3(0,0,0) );
+	}
 	
 	
 	

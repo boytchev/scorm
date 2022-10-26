@@ -46,9 +46,9 @@ class Plate extends Group
 		// construct plate object
 		this.face = polygon( n, [0,0,0], size, 'white' );
 			its.image = texture;
-its.threejs.material.polygonOffset = true;
-its.threejs.material.polygonOffsetUnits = 20;
-its.threejs.material.polygonOffsetFactor = 20;
+// its.threejs.material.polygonOffset = true;
+// its.threejs.material.polygonOffsetUnits = 20;
+// its.threejs.material.polygonOffsetFactor = 20;
 		this.add( this.face );
 		this.threejs.matrixAutoUpdate = false;
 		this.threejs.matrix = mat;

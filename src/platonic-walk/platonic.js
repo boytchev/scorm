@@ -48,7 +48,7 @@ class Platonic extends Group
 	} // Platonic.constructor
 
 
-	constructTexture( n )
+	static constructTexture( n, crosses = true )
 	{
 		var img = drawing( 512, 512);//, 'Black' );
 			img.context.lineJoin = 'round';
@@ -65,12 +65,15 @@ class Platonic extends Group
 			lineTo( cx+r*Math.cos(angle), cy+r*Math.sin(angle) );
 		}
 
-		var dist = r*Math.cos(Math.PI/n);
-		for( var i=0; i<=n; i++ )
+		if( crosses )
 		{
-			let angle = 2*Math.PI/n*(i+0.5)+(n==4?Math.PI/4:Math.PI/2);
-			moveTo( cx+dist*Math.cos(angle), cy+dist*Math.sin(angle) );
-			lineTo( cx+2*r*Math.cos(angle), cy+2*r*Math.sin(angle) );
+			var dist = r*Math.cos(Math.PI/n);
+			for( var i=0; i<=n; i++ )
+			{
+				let angle = 2*Math.PI/n*(i+0.5)+(n==4?Math.PI/4:Math.PI/2);
+				moveTo( cx+dist*Math.cos(angle), cy+dist*Math.sin(angle) );
+				lineTo( cx+2*r*Math.cos(angle), cy+2*r*Math.sin(angle) );
+			}
 		}
 
 		fill( 'DarkSeaGreen' );
@@ -80,6 +83,8 @@ class Platonic extends Group
 
 		return img;
 	}
+
+
 	
 	
 
@@ -114,7 +119,8 @@ class Platonic extends Group
 	{
 		var n = faces[0].length; // n-gon
 		
-		var texture = this.constructTexture( n );
+		var texture;
+		texture = Platonic.constructTexture( n );
 
 		//this.verticesLabels( vertices );
 		for( var t=0; t<twins.length; t++ )
@@ -147,6 +153,7 @@ class Platonic extends Group
 		}
 		
 		this.size = size;
+		this.defaultSize = size;
 	}
 	
 	
