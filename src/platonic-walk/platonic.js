@@ -44,6 +44,7 @@ class Platonic extends Group
 		this.addLabels( this.plates );
 
 		this.visible = false;
+		this.y = 10000;
 		
 	} // Platonic.constructor
 

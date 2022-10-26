@@ -36,17 +36,33 @@ class Playground extends ScormPlayground
 		//this.solid.visible = true;
 		
 		this.model = new THREEJSModel();
-		
+		this.modelShell = prism( 6, [0,0,0], [2*THREEJSModel.SIZE,8], 'crimson' );
+		its.spin = 30;
+		its.visible = false;
+
+		this.modelShell.addEventListener( 'click', this.onClickModel )
 	} // Playground.constructor
 
 	
 
+	// clicking on the model while the game is not started
+	// starts a new game
+	onClickModel( )
+	{
+		if( !playground.gameStarted )
+			playground.newGame( );
+	} // Playground.onClickModel
+	
+	
 	// starts a new game by selecting new color hues
 	newGame( )
 	{
 		super.newGame( );
 
 		// pick a random slot
+		this.model.ground.visible = false;
+		this.solids[3].visible = true;
+		this.solids[3].y = 0;
 
 	} // Playground.newGame
 
