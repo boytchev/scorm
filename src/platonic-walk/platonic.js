@@ -94,9 +94,11 @@ class Platonic extends Group
 		if( playground.pointerMovement > Playground.POINTER_MOVEMENT )
 			return;
 		
-		Plate.select( Plate.selected, true );
+		Plate.select( Plate.selected/*, true*/ );
 		
-		console.log( 'click on plate', Plate.selected.index );
+		//console.log( 'click on plate', Plate.selected.index );
+		if( playground.canEndGame( ) )
+			playground.endGame( );
 	}
 	
 	

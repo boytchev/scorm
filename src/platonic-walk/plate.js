@@ -72,7 +72,7 @@ class Plate extends Group
 
 
 	// select/unselect plate
-	static select( plate, hard=false )
+	static select( plate/*, hard=false*/ )
 	{
 		if( Plate.selected )
 		{
@@ -83,7 +83,7 @@ class Plate extends Group
 		if( plate )
 		{
 			Plate.selected = plate;
-			Plate.selected.color = hard ? 'Crimson' : 'Orange';
+			Plate.selected.color = /*hard ? 'Crimson' :*/ 'Orange';
 		}
 	} // Plate.select
 

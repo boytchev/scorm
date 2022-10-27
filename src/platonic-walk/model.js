@@ -51,7 +51,7 @@ class THREEJSModel extends THREE.Group
 			that.animator = new THREE.AnimationMixer( object );
 			that.animator.clipAction( object.animations[0] ).play();
 
-			that.moveModelToCenter( );
+			that.moveToCenter( );
 		}
 	} // THREEJSModel.loadModel
 	
@@ -108,29 +108,36 @@ class THREEJSModel extends THREE.Group
 	
 	
 	// move the model to the center of the screen
-	moveModelToCenter( )
+	moveToCenter( )
 	{
+		this.ground.visible = true;
 		this.matrix.makeRotationX( Math.PI/2 );
 		this.matrix.setPosition( new THREE.Vector3(0,0,0) );
 	}
 	
 	
-/*	
+	
 	// move the model to spot n and make it
 	// it stand on the sirface of the plate
-	moveModelToSpot( n )
+	moveToSpot( n )
 	{
-		var plateIdx = this.solid.spotPlate[ n ],
-			plate = this.solid.plates[ plateIdx ];
-console.log('plateidx',plateIdx);
-console.log('spot pos',this.solid.spots[n]);
+		this.ground.visible = false;
+
+		var solid = playground.solid,
+			plateIdx = solid.spotPlate[ n ],
+			plate = solid.plates[ plateIdx ];
 			
-console.log(this.solid.size);			
+console.log('plateidx',plateIdx);
+console.log('plate',plate);
+console.log('spot idx',n);
+console.log('spot pos',solid.spots[n]);
+console.log('size',solid.size);			
+
 		// get position from the spot, but orientation from the plate
-		this.model.matrix.copy( plate.threejs.matrix );
-		this.model.matrix.setPosition( new THREE.Vector3( ...this.solid.spots[n] ).multiplyScalar(this.solid.size) );
+		this.matrix.copy( plate.threejs.matrix );
+		this.matrix.setPosition( new THREE.Vector3( ...solid.spots[n] ).multiplyScalar(solid.size) );
 	}
-*/	
+	
 	
 	
 	// update the model

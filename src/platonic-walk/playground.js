@@ -36,8 +36,8 @@ class Playground extends ScormPlayground
 		//this.solid.visible = true;
 		
 		this.model = new THREEJSModel();
-		this.modelShell = prism( 6, [0,0,0], [2*THREEJSModel.SIZE,8], 'crimson' );
-		its.spin = 30;
+		this.modelShell = prism( 6, [0,-THREEJSModel.HEIGHT,0], [2*THREEJSModel.SIZE,THREEJSModel.HEIGHT+9], 'crimson' );
+//		its.spin = 30;
 		its.visible = false;
 
 		this.modelShell.addEventListener( 'click', this.onClickModel )
@@ -49,6 +49,9 @@ class Playground extends ScormPlayground
 	// starts a new game
 	onClickModel( )
 	{
+		if( playground.pointerMovement > Playground.POINTER_MOVEMENT )
+			return;
+
 		if( !playground.gameStarted )
 			playground.newGame( );
 	} // Playground.onClickModel
@@ -59,10 +62,19 @@ class Playground extends ScormPlayground
 	{
 		super.newGame( );
 
-		// pick a random slot
-		this.model.ground.visible = false;
-		this.solids[3].visible = true;
-		this.solids[3].y = 0;
+		var solidIdx = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, 4 ) );
+		var spotIdx = Math.floor( random(0, this.solids[solidIdx].spots.length) );
+console.log('spotIdx',spotIdx);
+
+		// show selected solid
+		this.solid = this.solids[solidIdx];
+		this.solid.visible = true;
+		this.solid.y = 0;
+		
+		this.modelShell.y = 1000;
+
+		// move to a random slot
+		this.model.moveToSpot( spotIdx );
 
 	} // Playground.newGame
 
@@ -72,7 +84,7 @@ class Playground extends ScormPlayground
 	canEndGame( )
 	{
 		// ...
-		return false;
+		return true;
 	} // Playground.canEndGame
 	
 	
@@ -83,8 +95,9 @@ class Playground extends ScormPlayground
 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
 		
 		// ...
+		var score = 1;
 		
-		return 0 * points;
+		return score * points;
 
 	} // Playground.evaluateGame
 	
@@ -95,7 +108,13 @@ class Playground extends ScormPlayground
 	{
 		super.endGame( );
 		
-		// ...
+		this.solid.visible = false;
+		this.solid.y = 1000;
+		this.solid.null;
+		
+		this.modelShell.y = -THREEJSModel.HEIGHT;
+		
+		this.model.moveToCenter( );
 		
 	} // Playground.endGame
 	
