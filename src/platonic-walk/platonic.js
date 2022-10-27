@@ -271,8 +271,6 @@ class Platonic extends Group
 				playground.solid = null;
 			} )
 			.start( );
-			
-		var matrix
 	} // Platonic.hide
 	
 	
