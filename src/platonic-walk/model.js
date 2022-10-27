@@ -110,9 +110,19 @@ class THREEJSModel extends THREE.Group
 	// move the model to the center of the screen
 	moveToCenter( )
 	{
-		this.ground.visible = true;
-		this.matrix.makeRotationX( Math.PI/2 );
-		this.matrix.setPosition( new THREE.Vector3(0,0,0) );
+		var that = this;
+		
+		var matrix = new THREE.Matrix4();
+			matrix.makeRotationX( Math.PI/2 );
+			matrix.setPosition( new THREE.Vector3(0,0,0) );
+
+		new TWEEN.Tween( this )
+			.to( {matrix: matrix}, Platonic.HIDE_SPEED )
+			.easing( TWEEN.Easing.Cubic.In )
+			.onComplete( function() {
+				that.ground.visible = true;
+			})
+			.start( );
 	}
 	
 	
@@ -127,16 +137,16 @@ class THREEJSModel extends THREE.Group
 			plateIdx = solid.spotPlate[ n ],
 			plate = solid.plates[ plateIdx ];
 			
-console.log('plateidx',plateIdx);
-console.log('plate',plate);
-console.log('spot idx',n);
-console.log('spot pos',solid.spots[n]);
-console.log('size',solid.size);			
-
 		// get position from the spot, but orientation from the plate
-		this.matrix.copy( plate.threejs.matrix );
-		this.matrix.setPosition( new THREE.Vector3( ...solid.spots[n] ).multiplyScalar(solid.size) );
-	}
+		var matrix = new THREE.Matrix4();
+			matrix.copy( plate.threejs.matrix );
+			matrix.setPosition( new THREE.Vector3( ...solid.spots[n] ).multiplyScalar(solid.defaultSize) );
+			
+		new TWEEN.Tween( this )
+			.to( {matrix: matrix}, Platonic.SHOW_SPEED )
+			.easing( TWEEN.Easing.Elastic.Out )
+			.start( );
+	} // THREEJSModel.moveToSpot
 	
 	
 	

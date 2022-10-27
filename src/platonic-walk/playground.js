@@ -62,16 +62,16 @@ class Playground extends ScormPlayground
 	{
 		super.newGame( );
 
+		// remove model shell (because otherwise it will capture onclick events)
+		this.modelShell.y = 1000;
+		
+		// pick solid index and spot index
 		var solidIdx = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, 4 ) );
 		var spotIdx = Math.floor( random(0, this.solids[solidIdx].spots.length) );
-console.log('spotIdx',spotIdx);
 
 		// show selected solid
 		this.solid = this.solids[solidIdx];
-		this.solid.visible = true;
-		this.solid.y = 0;
-		
-		this.modelShell.y = 1000;
+		this.solid.show( spotIdx );
 
 		// move to a random slot
 		this.model.moveToSpot( spotIdx );
@@ -108,9 +108,7 @@ console.log('spotIdx',spotIdx);
 	{
 		super.endGame( );
 		
-		this.solid.visible = false;
-		this.solid.y = 1000;
-		this.solid.null;
+		this.solid.hide( );
 		
 		this.modelShell.y = -THREEJSModel.HEIGHT;
 		

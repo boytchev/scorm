@@ -13,6 +13,8 @@
 
 class Platonic extends Group
 {
+	static SHOW_SPEED = 700;
+	static HIDE_SPEED = 300;
 	static ROT = new THREE.Matrix4( ).makeRotationX( Math.PI );
 	
 	constructor( n )
@@ -40,8 +42,8 @@ class Platonic extends Group
 
 		this.addEventListener( 'click', this.onClick );
 
-		this.addLabels( this.spots );
-		this.addLabels( this.plates );
+		//this.addLabels( this.spots );
+		//this.addLabels( this.plates );
 
 		this.visible = false;
 		this.y = 10000;
@@ -51,7 +53,7 @@ class Platonic extends Group
 
 	static constructTexture( n, crosses = true )
 	{
-		var img = drawing( 512, 512);//, 'Black' );
+		var img = drawing( 512, 512, 'Black' );
 			img.context.lineJoin = 'round';
 	
 		var cx = 256,
@@ -236,5 +238,42 @@ class Platonic extends Group
 			0.25, 0.45,
 		);
 	} // Platonic.icosahedron
+	
+	
+	
+	// show specific platonic solid
+	show( spotIdx )
+	{
+		this.visible = true;
+		this.y = 0;
+		this.size = 0;
+		
+		new TWEEN.Tween( this )
+			.to( {size: playground.solid.defaultSize}, Platonic.SHOW_SPEED )
+			.easing( TWEEN.Easing.Elastic.Out )
+			.start( );
+	} // Platonic.show
+	
+	
+	
+	// hide specific platonic solid
+	hide( )
+	{
+		var that = this;
+		
+		new TWEEN.Tween( this )
+			.to( {size: 0}, Platonic.HIDE_SPEED )
+			.easing( TWEEN.Easing.Cubic.In )
+			.onComplete( function() {
+				that.visible = false;
+				that.y = 1000;
+				that.size = 0;
+				playground.solid = null;
+			} )
+			.start( );
+			
+		var matrix
+	} // Platonic.hide
+	
 	
 } // class Platonic
