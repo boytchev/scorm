@@ -32,12 +32,8 @@ class Playground extends ScormPlayground
 		for( var i=0; i<6; i++ )
 			this.solids.push( new Platonic( i ) );
 		
-		//this.solid = this.solids[0];
-		//this.solid.visible = true;
-		
 		this.model = new THREEJSModel();
 		this.modelShell = prism( 6, [0,-THREEJSModel.HEIGHT,0], [2*THREEJSModel.SIZE,THREEJSModel.HEIGHT+9], 'crimson' );
-//		its.spin = 30;
 		its.visible = false;
 
 		this.modelShell.addEventListener( 'click', this.onClickModel )
@@ -62,11 +58,15 @@ class Playground extends ScormPlayground
 	{
 		super.newGame( );
 
+		this.clickSound.play( );
+
 		// remove model shell (because otherwise it will capture onclick events)
 		this.modelShell.y = 1000;
 		
 		// pick solid index and spot index
 		var solidIdx = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, 4 ) );
+		if( solidIdx > 2 ) solidIdx = random( [solidIdx-1,solidIdx] );
+		
 		var spotIdx = Math.floor( random(0, this.solids[solidIdx].spots.length) );
 
 		// show selected solid
@@ -107,6 +107,8 @@ class Playground extends ScormPlayground
 	endGame( )
 	{
 		super.endGame( );
+		
+		this.clackSound.play( );
 		
 		this.solid.hide( );
 		
