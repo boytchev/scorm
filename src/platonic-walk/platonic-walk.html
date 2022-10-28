@@ -75,10 +75,11 @@
 			
 			var obj;
 
-			if( playground.solid ) obj = findObject( event, playground.solid.plates );
+			if( playground.solid )
+				obj = findObject( event, playground.solid.plates );
 
 			Plate.select( obj );
-			if( obj )
+			if( obj || findObject( event, [playground.modelShell] ))
 			{
 				event.target.style.cursor = 'pointer';
 			}
