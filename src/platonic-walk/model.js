@@ -136,7 +136,11 @@ class THREEJSModel extends THREE.Group
 		var solid = playground.solid,
 			plateIdx = solid.spotPlate[ n ],
 			plate = solid.plates[ plateIdx ];
-			
+
+// console.log('solid',solid);
+// console.log('plateIdx',plateIdx);
+// console.log('plate',plate);
+
 		// get position from the spot, but orientation from the plate
 		var matrix = new THREE.Matrix4();
 			matrix.copy( plate.threejs.matrix );

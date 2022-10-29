@@ -36,6 +36,27 @@ class Playground extends ScormPlayground
 		this.modelShell = prism( 6, [0,-THREEJSModel.HEIGHT,0], [2*THREEJSModel.SIZE,THREEJSModel.HEIGHT+9], 'crimson' );
 		its.visible = false;
 
+		this.route = [];
+		this.routeRing = tube( [0,0,0], [[0,2,0,24.5], [0,1,0,25], [0,0,0,25.2], [0,-1,0,25], [0,-2,0,24.5]], 1, [10,120], 1, 'white' );
+			//this.routeRing.threejs.material.transparent = true;
+			//this.routeRing.threejs.material.opacity = 0.5;
+			this.routeRing.threejs.material = new THREE.MeshPhysicalMaterial( {
+				transparent: true,
+				opacity: 1,
+				clearcoat: 1,
+				metalness: 0,
+				roughness: 0,
+				transmission: 1,
+				thickness: 1,
+				side: THREE.DoubleSide,
+//				normalMap: ScormUtils.image( 'metal_plate_normal.jpg',1,80 ),
+				envMap: ScormUtils.image( 'environment.jpg' ),
+				envMapIntensity: 1,
+			} );
+			this.routeRing.threejs.renderOrder = -15;
+			its.threejs.material.envMap.mapping = THREE.EquirectangularReflectionMapping; 
+		
+		
 		this.modelShell.addEventListener( 'click', this.onClickModel )
 	} // Playground.constructor
 
@@ -63,11 +84,17 @@ class Playground extends ScormPlayground
 		// remove model shell (because otherwise it will capture onclick events)
 		this.modelShell.y = 1000;
 		
-		// pick solid index and spot index
-		var solidIdx = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, 4 ) );
-		if( solidIdx > 2 ) solidIdx = random( [solidIdx-1,solidIdx] );
-		
-		var spotIdx = Math.floor( random(0, this.solids[solidIdx].spots.length) );
+		// pick solid index, spot index and route parameters
+		var solidIdx = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, 4 ) ),
+			spotIdx = Math.floor( random(0, this.solids[solidIdx].spots.length) ),
+			routeLength = Math.round( THREE.MathUtils.mapLinear( this.difficulty**1.5, 10**1.5, 100**1.5, 2, 6 ) ),
+			routeMax = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 2, 5 );
+
+		// generate descriptor of the route; forward > 0, backward < 0, twin between two numbers
+		// [2,-2,3,0] means FFtBBtFFFt
+		this.route = [];
+		for( var i=0; i<=routeLength; i++ )
+			this.route.push( Math.floor(routeMax * random(0,1)**0.5 ) * random([-1,1]) );
 
 		// show selected solid
 		this.solid = this.solids[solidIdx];
@@ -76,6 +103,8 @@ class Playground extends ScormPlayground
 		// move to a random slot
 		this.model.moveToSpot( spotIdx );
 
+		
+		console.log('route',this.route);
 	} // Playground.newGame
 
 
