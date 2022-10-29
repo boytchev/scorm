@@ -36,6 +36,12 @@ class Playground extends ScormPlayground
 		this.modelShell = prism( 6, [0,-THREEJSModel.HEIGHT,0], [2*THREEJSModel.SIZE,THREEJSModel.HEIGHT+9], 'crimson' );
 		its.visible = false;
 
+
+var img = drawing( 1024, 128, 'Black' );
+fillText( 6, 40, 'Abcdefgh Ijklmno Pqrstuvwxyz', 'crimson', 'bold 60px Arial Black' );		
+var img2 = drawing( 1024, 128, 'Black' );
+fillText( 6, 40, 'Abcdefgh Ijklmno Pqrstuvwxyz', 'white', 'bold 60px Arial Black' );		
+
 		this.route = [];
 		this.routeRing = tube( [0,0,0], [[0,2,0,24.5], [0,1,0,25], [0,0,0,25.2], [0,-1,0,25], [0,-2,0,24.5]], 1, [10,120], 1, 'white' );
 			//this.routeRing.threejs.material.transparent = true;
@@ -46,15 +52,22 @@ class Playground extends ScormPlayground
 				clearcoat: 1,
 				metalness: 0,
 				roughness: 0,
-				transmission: 1,
+				transmission: 0,
 				thickness: 1,
 				side: THREE.DoubleSide,
-//				normalMap: ScormUtils.image( 'metal_plate_normal.jpg',1,80 ),
+				map: new THREE.CanvasTexture( img.canvas ),
+				alphaMap: new THREE.CanvasTexture( img2.canvas ),
+				normalMap: ScormUtils.image( 'metal_plate_normal.jpg',1,80 ),
 				envMap: ScormUtils.image( 'environment.jpg' ),
 				envMapIntensity: 1,
 			} );
 			this.routeRing.threejs.renderOrder = -15;
 			its.threejs.material.envMap.mapping = THREE.EquirectangularReflectionMapping; 
+			its.threejs.material.map.repeat.set( 4, 1 ); 
+			its.threejs.material.map.rotation = Math.PI/2; 
+			its.threejs.material.map.offset.set( 0, 1 );
+			its.threejs.material.map.wrapS = THREE.RepeatWrapping;
+			its.threejs.material.map.wrapT = THREE.RepeatWrapping;			
 		
 		
 		this.modelShell.addEventListener( 'click', this.onClickModel )
