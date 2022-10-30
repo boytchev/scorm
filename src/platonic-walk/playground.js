@@ -57,10 +57,12 @@ class Playground extends ScormPlayground
 
 	
 
-	glyphStroke( img )
+	glyphStroke( img, seed )
 	{
 		console.log('route',this.route);
 		
+		THREE.MathUtils.seededRandom( seed );
+
 		// starting point
 		var x = 20,
 			y = 64;
@@ -82,11 +84,38 @@ class Playground extends ScormPlayground
 			var count = Math.abs(this.route[i]),
 				sign = Math.sign(this.route[i]);
 			
+			var prevX = x - CIRCLE_RADIUS - 0.5*LINE_STEP,
+				nextX = x + count*LINE_STEP + CIRCLE_RADIUS + 0.5*LINE_STEP;
+				
 			// draw up/down lines
+			var treshold;
+
+			if( count < 4 )
+				treshold = THREE.MathUtils.seededRandom() * (count+1) - 1;
+			else
+				treshold = THREE.MathUtils.seededRandom() * (count-1) + 1;
+
 			for( var j=0; j<count; j++ )
 			{
 				img.moveTo( x + (j+0.5)*LINE_STEP, y );
-				img.lineTo( x + (j+0.5)*LINE_STEP, y + LINE_LENGTH*sign );
+				//img.lineTo( x + (j+0.5)*LINE_STEP, y + LINE_LENGTH*sign );
+				
+				if( j < treshold )
+				{
+					// curve left
+					if( sign > 0 )
+						img.arc( prevX, y, x+(j+0.5)*LINE_STEP - prevX, 90, 45, false );
+					else
+						img.arc( prevX, y, x+(j+0.5)*LINE_STEP - prevX, 90, 135, true );
+				}
+				else
+				{
+					// curve right
+					if( sign > 0 )
+						img.arc( nextX, y, nextX - (x+(j+0.5)*LINE_STEP), 270, 315, true );
+					else
+						img.arc( nextX, y, nextX - (x+(j+0.5)*LINE_STEP), 270, 225, false );
+				}
 			}
 			
 			// draw horizontal line
@@ -135,8 +164,10 @@ class Playground extends ScormPlayground
 	{
 		var material = this.routeRing.threejs.material;
 		
+		var seed = Math.floor( random(1,100000) );
+		
 		this.ringImage.clear( 'Crimson' );
-		this.glyphStroke( this.ringImage );
+		this.glyphStroke( this.ringImage, seed );
 		this.ringImage.stroke( 'Black', 12 );
 		this.ringImage.stroke( 'Yellow', 10 );
 		
@@ -151,7 +182,7 @@ class Playground extends ScormPlayground
 		this.ringAlpha.clear( '#202020' );
 		this.ringAlpha.context.shadowBlur = 5;
 		this.ringAlpha.context.shadowColor = "white";
-		this.glyphStroke( this.ringAlpha );
+		this.glyphStroke( this.ringAlpha, seed );
 		this.ringAlpha.stroke( 'White', 12 );
 		this.ringAlpha.moveTo( 0, 0 );
 		this.ringAlpha.lineTo( 1024, 0 );
