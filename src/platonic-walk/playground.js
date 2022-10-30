@@ -57,8 +57,54 @@ class Playground extends ScormPlayground
 
 	
 
+	glyphStroke( img )
+	{
+		//this.route = [];
+		
+		img.moveTo( 0, 0 );
+		img.lineTo( 1024, 128 );
+
+		img.moveTo( 1024, 0 );
+		img.lineTo( 0, 128 );
+	}
+
 	setGlyphTexture( )
 	{
+		var material = this.routeRing.threejs.material;
+		
+		this.ringImage.clear( 'Crimson' );
+		this.glyphStroke( this.ringImage );
+		this.ringImage.stroke( 'Black', 12 );
+		this.ringImage.stroke( 'Yellow', 10 );
+		
+		if( material.map ) material.map.dispose( );
+		material.map = new THREE.CanvasTexture( this.ringImage.canvas );
+		material.map.repeat.set( 4, 1 ); 
+		material.map.rotation = Math.PI/2; 
+		material.map.offset.set( 0, 1 );
+		material.map.wrapS = THREE.RepeatWrapping;
+		material.map.wrapT = THREE.RepeatWrapping;			
+		
+		this.ringAlpha.clear( '#202020' );
+		this.ringAlpha.context.shadowBlur = 5;
+		this.ringAlpha.context.shadowColor = "white";
+		this.glyphStroke( this.ringAlpha );
+		this.ringAlpha.stroke( 'White', 12 );
+		this.ringAlpha.moveTo( 0, 0 );
+		this.ringAlpha.lineTo( 1024, 0 );
+		this.ringAlpha.moveTo( 0, 128 );
+		this.ringAlpha.lineTo( 1024, 128 );
+		this.ringAlpha.stroke( 'dimgray', 2 );
+		
+		if( material.alphaMap ) material.alphaMap.dispose( );
+		material.alphaMap = new THREE.CanvasTexture( this.ringAlpha.canvas );
+		material.alphaMap.repeat.set( 4, 1 ); 
+		material.alphaMap.rotation = Math.PI/2; 
+		material.alphaMap.offset.set( 0, 1 );
+		material.alphaMap.wrapS = THREE.RepeatWrapping;
+		material.alphaMap.wrapT = THREE.RepeatWrapping;			
+
+/*
 		var material = this.routeRing.threejs.material;
 		
 		this.ringImage.clear( 'Crimson' );
@@ -84,6 +130,7 @@ class Playground extends ScormPlayground
 		
 		if( material.alphaMap ) material.alphaMap.dispose( );
 		material.alphaMap = new THREE.CanvasTexture( this.ringAlpha.canvas );
+*/
 	}
 	
 	
