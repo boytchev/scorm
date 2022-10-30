@@ -37,44 +37,57 @@ class Playground extends ScormPlayground
 		its.visible = false;
 
 
-var img = drawing( 1024, 128, 'Black' );
-fillText( 6, 40, 'Abcdefgh Ijklmno Pqrstuvwxyz', 'crimson', 'bold 60px Arial Black' );		
-var img2 = drawing( 1024, 128, 'Black' );
-fillText( 6, 40, 'Abcdefgh Ijklmno Pqrstuvwxyz', 'white', 'bold 60px Arial Black' );		
 
 		this.route = [];
-		this.routeRing = tube( [0,0,0], [[0,2,0,24.5], [0,1,0,25], [0,0,0,25.2], [0,-1,0,25], [0,-2,0,24.5]], 1, [10,120], 1, 'white' );
-			//this.routeRing.threejs.material.transparent = true;
-			//this.routeRing.threejs.material.opacity = 0.5;
-			this.routeRing.threejs.material = new THREE.MeshPhysicalMaterial( {
+		this.routeRing = tube( [0,0,0], [[0,2,0,24.5], [0,1,0,25], [0,0,0,25.2], [0,-1,0,25], [0,-2,0,24.5]], 1, [10,120], 0, 'white' );
+			its.threejs.material = new THREE.MeshPhysicalMaterial( {
 				transparent: true,
 				opacity: 1,
-				clearcoat: 1,
 				metalness: 0,
-				roughness: 0,
-				transmission: 0,
-				thickness: 1,
+				roughness: 1,
 				side: THREE.DoubleSide,
-				map: new THREE.CanvasTexture( img.canvas ),
-				alphaMap: new THREE.CanvasTexture( img2.canvas ),
-				normalMap: ScormUtils.image( 'metal_plate_normal.jpg',1,80 ),
-				envMap: ScormUtils.image( 'environment.jpg' ),
-				envMapIntensity: 1,
 			} );
 			this.routeRing.threejs.renderOrder = -15;
-			its.threejs.material.envMap.mapping = THREE.EquirectangularReflectionMapping; 
-			its.threejs.material.map.repeat.set( 4, 1 ); 
-			its.threejs.material.map.rotation = Math.PI/2; 
-			its.threejs.material.map.offset.set( 0, 1 );
-			its.threejs.material.map.wrapS = THREE.RepeatWrapping;
-			its.threejs.material.map.wrapT = THREE.RepeatWrapping;			
-		
+		this.ringImage = drawing( 1024, 128 );
+		this.ringAlpha = drawing( 1024, 128 );
+		this.setGlyphTexture( );
 		
 		this.modelShell.addEventListener( 'click', this.onClickModel )
 	} // Playground.constructor
 
 	
 
+	setGlyphTexture( )
+	{
+		var material = this.routeRing.threejs.material;
+		
+		this.ringImage.clear( 'Crimson' );
+		this.ringImage.fillText( 6, 40, 'Abcdefgh Ijklmno Pqrstuvwxyz', 'Yellow', 'bold 60px Arial Black' );		
+		this.ringImage.context.font = 'bold 60px Arial Black';		
+		this.ringImage.context.lineWidth = 2;		
+		this.ringImage.context.strokeStyle = 'Crimson';
+		this.ringImage.context.strokeText( 'Abcdefgh Ijklmno Pqrstuvwxyz', 6, 88.2 );	
+		this.ringImage.context.stroke( );	
+		
+		if( material.map ) material.map.dispose( );
+		material.map = new THREE.CanvasTexture( this.ringImage.canvas );
+		material.map.repeat.set( 4, 1 ); 
+		material.map.rotation = Math.PI/2; 
+		material.map.offset.set( 0, 1 );
+		material.map.wrapS = THREE.RepeatWrapping;
+		material.map.wrapT = THREE.RepeatWrapping;			
+		
+		this.ringAlpha.clear( 'Black' );
+		this.ringAlpha.context.shadowBlur = 5;
+		this.ringAlpha.context.shadowColor = "white";
+		this.ringAlpha.fillText( 6, 40, 'Abcdefgh Ijklmno Pqrstuvwxyz', 'white', 'bold 60px Arial Black' );
+		
+		if( material.alphaMap ) material.alphaMap.dispose( );
+		material.alphaMap = new THREE.CanvasTexture( this.ringAlpha.canvas );
+	}
+	
+	
+	
 	// clicking on the model while the game is not started
 	// starts a new game
 	onClickModel( )

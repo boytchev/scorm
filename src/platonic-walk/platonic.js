@@ -252,6 +252,13 @@ class Platonic extends Group
 			.to( {size: playground.solid.defaultSize}, Platonic.SHOW_SPEED )
 			.easing( TWEEN.Easing.Elastic.Out )
 			.start( );
+			
+		playground.routeRing.size = 0;
+		new TWEEN.Tween( playground.routeRing )
+			.to( {size: 1}, Platonic.SHOW_SPEED )
+			.easing( TWEEN.Easing.Elastic.Out )
+			.start( );
+		
 	} // Platonic.show
 	
 	
@@ -270,6 +277,11 @@ class Platonic extends Group
 				that.size = 0;
 				playground.solid = null;
 			} )
+			.start( );
+			
+		new TWEEN.Tween( playground.routeRing )
+			.to( {size: 0}, Platonic.HIDE_SPEED )
+			.easing( TWEEN.Easing.Cubic.In )
 			.start( );
 	} // Platonic.hide
 	
