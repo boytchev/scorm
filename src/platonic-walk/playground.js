@@ -59,13 +59,76 @@ class Playground extends ScormPlayground
 
 	glyphStroke( img )
 	{
-		//this.route = [];
+		console.log('route',this.route);
 		
-		img.moveTo( 0, 0 );
-		img.lineTo( 1024, 128 );
+		// starting point
+		var x = 20,
+			y = 64;
+		
+		const LINE_STEP = 16;
+		const LINE_LENGTH = 40;
+		const CIRCLE_RADIUS = 16;
+		const CIRCLE_MIN_RADIUS = 5;
 
-		img.moveTo( 1024, 0 );
-		img.lineTo( 0, 128 );
+		// starting node
+		img.moveTo( x, y+CIRCLE_MIN_RADIUS );
+		img.arc( x, y, CIRCLE_MIN_RADIUS );
+		img.moveTo( x, y );
+		x += LINE_STEP;
+		img.lineTo( x, y );
+
+		for( var i=0; i<this.route.length; i++ )
+		{
+			var count = Math.abs(this.route[i]),
+				sign = Math.sign(this.route[i]);
+			
+			// draw up/down lines
+			for( var j=0; j<count; j++ )
+			{
+				img.moveTo( x + (j+0.5)*LINE_STEP, y );
+				img.lineTo( x + (j+0.5)*LINE_STEP, y + LINE_LENGTH*sign );
+			}
+			
+			// draw horizontal line
+			img.moveTo( x, y );
+			x += (count) * LINE_STEP;
+			img.lineTo( x, y );
+			
+			// if not the last one, add circle
+			if( i < this.route.length-1 )
+			{
+				img.moveTo( x, y );
+				x += 0.5 * LINE_STEP;
+				img.lineTo( x, y );
+				
+				img.moveTo( x+CIRCLE_RADIUS, y+CIRCLE_RADIUS );
+				img.arc( x+CIRCLE_RADIUS, y, CIRCLE_RADIUS );
+				// img.moveTo( x+CIRCLE_RADIUS, y+CIRCLE_MIN_RADIUS );
+				// img.arc( x+CIRCLE_RADIUS, y, CIRCLE_MIN_RADIUS );
+				x += 2*CIRCLE_RADIUS;
+				
+				img.moveTo( x, y );
+				x += 0.5 * LINE_STEP;
+				img.lineTo( x, y );
+				
+			}
+			
+		}
+
+		// ending node
+		img.moveTo( x, y );
+		x += LINE_STEP;
+		img.lineTo( x, y );
+		img.moveTo( x, y+CIRCLE_MIN_RADIUS );
+		img.arc( x, y, CIRCLE_MIN_RADIUS );
+
+
+
+//		img.moveTo( 0, 0 );
+//		img.lineTo( 1024, 128 );
+
+//		img.moveTo( 1024, 0 );
+//		img.lineTo( 0, 128 );
 	}
 
 	setGlyphTexture( )
@@ -79,7 +142,7 @@ class Playground extends ScormPlayground
 		
 		if( material.map ) material.map.dispose( );
 		material.map = new THREE.CanvasTexture( this.ringImage.canvas );
-		material.map.repeat.set( 4, 1 ); 
+		material.map.repeat.set( 5, 1 ); 
 		material.map.rotation = Math.PI/2; 
 		material.map.offset.set( 0, 1 );
 		material.map.wrapS = THREE.RepeatWrapping;
@@ -98,7 +161,7 @@ class Playground extends ScormPlayground
 		
 		if( material.alphaMap ) material.alphaMap.dispose( );
 		material.alphaMap = new THREE.CanvasTexture( this.ringAlpha.canvas );
-		material.alphaMap.repeat.set( 4, 1 ); 
+		material.alphaMap.repeat.set( 5, 1 ); 
 		material.alphaMap.rotation = Math.PI/2; 
 		material.alphaMap.offset.set( 0, 1 );
 		material.alphaMap.wrapS = THREE.RepeatWrapping;
@@ -169,15 +232,14 @@ class Playground extends ScormPlayground
 		for( var i=0; i<=routeLength; i++ )
 			this.route.push( Math.floor(routeMax * random(0,1)**0.5 ) * random([-1,1]) );
 
+		this.setGlyphTexture( );
+		
 		// show selected solid
 		this.solid = this.solids[solidIdx];
 		this.solid.show( spotIdx );
 
 		// move to a random slot
 		this.model.moveToSpot( spotIdx );
-
-		
-		console.log('route',this.route);
 	} // Playground.newGame
 
 
