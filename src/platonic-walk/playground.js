@@ -353,10 +353,7 @@ class Playground extends ScormPlayground
 	{
 		// ...
 
-		if( Playground.POINTER_USED )
-		{
-		}
-		else
+		if( !Playground.POINTER_USED )
 		{
 			var k = THREE.MathUtils.clamp( 1-5*dT, 0.5, 0.99 );
 
