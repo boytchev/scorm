@@ -59,16 +59,16 @@ class Playground extends ScormPlayground
 
 	glyphStroke( img, seed )
 	{
-		console.log('route',this.route);
-		
 		THREE.MathUtils.seededRandom( seed );
 
+		const START_X = 20;
+		const START_Y = 64;
+		
 		// starting point
-		var x = 20,
-			y = 64;
+		var x = START_X,
+			y = START_Y;
 		
 		const LINE_STEP = 16;
-		const LINE_LENGTH = 40;
 		const CIRCLE_RADIUS = 16;
 		const CIRCLE_MIN_RADIUS = 5;
 
@@ -151,7 +151,13 @@ class Playground extends ScormPlayground
 		img.moveTo( x, y+CIRCLE_MIN_RADIUS );
 		img.arc( x, y, CIRCLE_MIN_RADIUS );
 
-
+		// calculate rotation to center the glyphStroke
+		// 		x - START_X 	glyph width in texels
+		//		/2				half the width
+		//		/1024			fraction from the whole texture
+		//		/5				there are 5 textures in a ringAlpha
+		//		*360			a ring is 360 degrees
+		this.ringSpin = - (x - START_X + 40)/2/1024/5*360;
 
 //		img.moveTo( 0, 0 );
 //		img.lineTo( 1024, 128 );
@@ -248,6 +254,11 @@ class Playground extends ScormPlayground
 
 		this.clickSound.play( );
 
+		this.routeRing.spinH = random( -180, 180 );
+		this.routeRing.spinV = random( -180, 180 );
+		this.routeRing.spinT = random( -180, 180 );
+
+
 		// remove model shell (because otherwise it will capture onclick events)
 		this.modelShell.y = 1000;
 		
@@ -341,6 +352,29 @@ class Playground extends ScormPlayground
 	update( t, dT )
 	{
 		// ...
+
+		if( Playground.POINTER_USED )
+		{
+		}
+		else
+		{
+			var k = THREE.MathUtils.clamp( 1-5*dT, 0.5, 0.99 );
+
+			this.routeRing.spinH = k*this.routeRing.spinH + (1-k)*(180/Math.PI * orb.getAzimuthalAngle( ));
+			this.routeRing.spinV = k*this.routeRing.spinV + (1-k)*(180/Math.PI * orb.getPolarAngle( ) - 90 + 15);
+			this.routeRing.spinT = this.ringSpin;//-31-4*this.route.length + 36;
+		}
+// console.log( this.route.length );	
+
+// 3a+b = -43
+// 6a+b = -55
+
+// a = -4
+// b = -31
+
+// 3    -43
+// 6	-55
+	
 		this.model.update( t, dT );
 	}
 } // class Playground
