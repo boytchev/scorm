@@ -44,14 +44,15 @@ class Plate extends Group
 		var mat = new THREE.Matrix4( ).makeBasis( ox, oy, oz ).multiply( Platonic.ROT ).setPosition( center );
 		
 		// construct plate object
-		this.face = polygon( n, [0,0,0], size, 'white' );
+		this.face = polygon( n, [0,0,0], size, 'lightgray' );
 			its.threejs.material.map = new THREE.CanvasTexture( texture.canvas );
 			its.threejs.material.trasparent = false;
 			its.threejs.renderOrder = -20;
+			its.threejs.receiveShadow = true;
 			
-its.threejs.material.polygonOffset = true;
-its.threejs.material.polygonOffsetUnits = 20;
-its.threejs.material.polygonOffsetFactor = 20;
+// its.threejs.material.polygonOffset = true;
+// its.threejs.material.polygonOffsetUnits = 20;
+// its.threejs.material.polygonOffsetFactor = 20;
 
 		this.add( this.face );
 		this.threejs.matrixAutoUpdate = false;
@@ -66,8 +67,9 @@ its.threejs.material.polygonOffsetFactor = 20;
 				r = spotRadius;
 				
 			spot = this.objectPosition( [r*Math.cos(angle),r*Math.sin(angle),0] );
-			//this.add( cone( [r*Math.cos(angle),r*Math.sin(angle),0], [0.1,1], 'white' ) );
-			//its.spinV = -90;
+this.add( cone( [random(0,r)*Math.cos(angle),random(0,r)*Math.sin(angle),0], [0.1,random(0.1,1)], 'white' ) );
+its.spinV = -90;
+its.threejs.castShadow = true;
 			this.spots.push( spot );
 		}
 		
@@ -80,7 +82,7 @@ its.threejs.material.polygonOffsetFactor = 20;
 	{
 		if( Plate.selected )
 		{
-			Plate.selected.color = 'White';
+			Plate.selected.color = 'LightGray';
 			Plate.selected = null;
 		}
 

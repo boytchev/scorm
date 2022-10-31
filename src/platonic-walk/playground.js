@@ -16,6 +16,8 @@ class Playground extends ScormPlayground
 		this.pointerMovement = 0;
 		this.solid = null;
 		
+		this.addLightsAndShadows( );
+		
 		this.resize( );
 
 		this.translate( [
@@ -363,10 +365,44 @@ class Playground extends ScormPlayground
 	
 	
 	
+	// add support for lights and shadows
+	addLightsAndShadows( )
+	{
+		// allow shadows
+		suica0.renderer.shadowMap.enabled = true;
+		suica0.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+			var light = new THREE.DirectionalLight( 'white', 0.3 );
+				light.position.set( 0, 100, 0 );
+				light.target = suica0.scene;
+				light.castShadow = true;
+
+				light.shadow.mapSize.width = 512;
+				light.shadow.mapSize.height = 512;
+				light.shadow.camera.left = -20;
+				light.shadow.camera.right = 20;
+				light.shadow.camera.bottom = -20;
+				light.shadow.camera.top = 20;
+				light.shadow.camera.near = 1;
+				light.shadow.camera.far = 500;
+
+		suica0.scene.add( light );
+		
+		this.shadowLight = light;
+		
+	} // Playground.addLightsAndShadows
+
+
+
 	// update the playground
 	update( t, dT )
 	{
 		// ...
+
+		this.shadowLight.position.x = suica0.light.position.x+15;
+		this.shadowLight.position.y = suica0.light.position.y+10;
+		this.shadowLight.position.z = suica0.light.position.z+5;
+		this.shadowLight.target = suica0.scene;
 
 		if( !Playground.POINTER_USED )
 		{

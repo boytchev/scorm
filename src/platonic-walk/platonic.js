@@ -42,8 +42,8 @@ class Platonic extends Group
 
 		this.addEventListener( 'click', this.onClick );
 
-		this.addLabels( this.spots );
-		this.addLabels( this.plates );
+		// this.addLabels( this.spots );
+		// this.addLabels( this.plates );
 
 		this.visible = false;
 		this.y = 10000;

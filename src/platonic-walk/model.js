@@ -34,17 +34,20 @@ class THREEJSModel extends THREE.Group
 				
 		function objectLoaded( object )
 		{
-			// object.traverse( function ( child )
-			// {
+			object.traverse( function ( child )
+			{
+				child.castShadow = true;
+				child.receiveShadow = true;
 				// if( child.material )
 				// {
 					// child.material.emissive = new THREE.Color( 'white' );
 					// child.material.emissiveIntensity = 0.1;
 				// }
-			// } );				
+			} );				
 			
 			object.rotation.set( -Math.PI/2, 0, 0 );
 			object.scale.set( 0.05, 0.05, 0.05 );
+			object.castShadow = true;
 			that.add( object );
 			
 			// анимация
@@ -75,6 +78,7 @@ class THREEJSModel extends THREE.Group
 		
 		// now create the ground for the model
 		this.ground = new THREE.Mesh( geometry, material );
+		this.ground.receiveShadow = true;
 		
 		
 		// change the sape and the uv mapping
@@ -106,7 +110,7 @@ class THREEJSModel extends THREE.Group
 	} // THREEJSModel.createGround
 	
 	
-	
+
 	// move the model to the center of the screen
 	moveToCenter( )
 	{
