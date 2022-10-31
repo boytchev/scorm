@@ -49,9 +49,10 @@ class Plate extends Group
 			its.threejs.material.trasparent = false;
 			its.threejs.renderOrder = -20;
 			
-// its.threejs.material.polygonOffset = true;
-// its.threejs.material.polygonOffsetUnits = 20;
-// its.threejs.material.polygonOffsetFactor = 20;
+its.threejs.material.polygonOffset = true;
+its.threejs.material.polygonOffsetUnits = 20;
+its.threejs.material.polygonOffsetFactor = 20;
+
 		this.add( this.face );
 		this.threejs.matrixAutoUpdate = false;
 		this.threejs.matrix = mat;

@@ -33,17 +33,17 @@ class Platonic extends Group
 		
 		switch( n )
 		{
-			case 0 : this.hexahedron( VOLUME ); break;
+			case 2 : this.hexahedron( VOLUME ); break;
 			case 1 : this.tetrahedron( VOLUME ); break;
-			case 2 : this.octahedron( VOLUME ); break;
+			case 0 : this.octahedron( VOLUME ); break;
 			case 3 : this.icosahedron( VOLUME ); break;
 			case 4 : this.dodecahedron( VOLUME ); break;
 		}
 
 		this.addEventListener( 'click', this.onClick );
 
-		//this.addLabels( this.spots );
-		//this.addLabels( this.plates );
+		this.addLabels( this.spots );
+		this.addLabels( this.plates );
 
 		this.visible = false;
 		this.y = 10000;
@@ -169,7 +169,7 @@ class Platonic extends Group
 		this.hedron(
 			[[1,1,1], [1,-1,-1], [-1,1,-1], [-1,-1,1]],
 			[[0,1,2], [0,2,3], [0,3,1], [1,3,2]],
-			[[0,11], [1,5], [2,8], [3,9], [4,7], [6,10]],
+			[[0,10], [1,5], [2,7], [3,9], [4,8], [6,11]],
 			10,
 			Math.sqrt(8/3)*2,
 			0.25, 0.65,
@@ -199,7 +199,7 @@ class Platonic extends Group
 		this.hedron(
 			[[1,0,0], [0,1,0], [0,0,1], [-1,0,0], [0,-1,0], [0,0,-1]],
 			[[0,1,2], [5,1,0], [3,1,5], [2,1,3], [2,3,4], [0,2,4], [5,0,4], [3,5,4]],
-			[ [2,3], [1,17], [0,11], [10,14], [8,9], [7,23], [5,6], [4,20], [16,18], [13,15], [12,22], [19,21], ],
+			[ [0,11], [1,17], [2,3], [4,20], [5,6], [7,23], [8,9], [10,14], [12,22], [13,15], [16,18], [19,21], ]
 			15,
 			Math.sqrt(8/3),
 			0.25, 0.32,

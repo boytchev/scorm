@@ -57,6 +57,7 @@ class Playground extends ScormPlayground
 
 	
 
+	// generate glyph shape fo the current route
 	glyphStroke( img, seed )
 	{
 		THREE.MathUtils.seededRandom( seed );
@@ -158,14 +159,10 @@ class Playground extends ScormPlayground
 		//		/5				there are 5 textures in a ringAlpha
 		//		*360			a ring is 360 degrees
 		this.ringSpin = - (x - START_X + 40)/2/1024/5*360;
+	} // Playground.glyphStroke
 
-//		img.moveTo( 0, 0 );
-//		img.lineTo( 1024, 128 );
 
-//		img.moveTo( 1024, 0 );
-//		img.lineTo( 0, 128 );
-	}
-
+	// set ring texture
 	setGlyphTexture( )
 	{
 		var material = this.routeRing.threejs.material;
@@ -204,37 +201,9 @@ class Playground extends ScormPlayground
 		material.alphaMap.wrapS = THREE.RepeatWrapping;
 		material.alphaMap.wrapT = THREE.RepeatWrapping;			
 
-/*
-		var material = this.routeRing.threejs.material;
-		
-		this.ringImage.clear( 'Crimson' );
-		this.ringImage.fillText( 6, 40, 'Abcdefgh Ijklmno Pqrstuvwxyz', 'Yellow', 'bold 60px Arial Black' );		
-		this.ringImage.context.font = 'bold 60px Arial Black';		
-		this.ringImage.context.lineWidth = 2;		
-		this.ringImage.context.strokeStyle = 'Crimson';
-		this.ringImage.context.strokeText( 'Abcdefgh Ijklmno Pqrstuvwxyz', 6, 88.2 );	
-		this.ringImage.context.stroke( );	
-		
-		if( material.map ) material.map.dispose( );
-		material.map = new THREE.CanvasTexture( this.ringImage.canvas );
-		material.map.repeat.set( 4, 1 ); 
-		material.map.rotation = Math.PI/2; 
-		material.map.offset.set( 0, 1 );
-		material.map.wrapS = THREE.RepeatWrapping;
-		material.map.wrapT = THREE.RepeatWrapping;			
-		
-		this.ringAlpha.clear( 'Black' );
-		this.ringAlpha.context.shadowBlur = 5;
-		this.ringAlpha.context.shadowColor = "white";
-		this.ringAlpha.fillText( 6, 40, 'Abcdefgh Ijklmno Pqrstuvwxyz', 'white', 'bold 60px Arial Black' );
-		
-		if( material.alphaMap ) material.alphaMap.dispose( );
-		material.alphaMap = new THREE.CanvasTexture( this.ringAlpha.canvas );
-*/
-	}
+	} // Playground.setGlyphTexture
 	
-	
-	
+		
 	// clicking on the model while the game is not started
 	// starts a new game
 	onClickModel( )
@@ -263,9 +232,10 @@ class Playground extends ScormPlayground
 		this.modelShell.y = 1000;
 		
 		// pick solid index, spot index and route parameters
-		var solidIdx = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, 4 ) ),
-			spotIdx = Math.floor( random(0, this.solids[solidIdx].spots.length) ),
-			routeLength = Math.round( THREE.MathUtils.mapLinear( this.difficulty**1.5, 10**1.5, 100**1.5, 2, 6 ) ),
+		this.solidIdx = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, 4 ) );
+		this.spotIdx = Math.floor( random(0, this.solids[this.solidIdx].spots.length) );
+		
+		var	routeLength = Math.round( THREE.MathUtils.mapLinear( this.difficulty**1.5, 10**1.5, 100**1.5, 2, 6 ) ),
 			routeMax = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 2, 5 );
 
 		// generate descriptor of the route; forward > 0, backward < 0, twin between two numbers
@@ -277,11 +247,11 @@ class Playground extends ScormPlayground
 		this.setGlyphTexture( );
 		
 		// show selected solid
-		this.solid = this.solids[solidIdx];
-		this.solid.show( spotIdx );
+		this.solid = this.solids[this.solidIdx];
+		this.solid.show( this.spotIdx );
 
 		// move to a random slot
-		this.model.moveToSpot( spotIdx );
+		this.model.moveToSpot( this.spotIdx );
 	} // Playground.newGame
 
 
@@ -290,7 +260,7 @@ class Playground extends ScormPlayground
 	canEndGame( )
 	{
 		// ...
-		return true;
+		return Plate.selected;
 	} // Playground.canEndGame
 	
 	
@@ -300,8 +270,53 @@ class Playground extends ScormPlayground
 	{
 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
 		
-		// ...
-		var score = 1;
+		var spotIdx = this.spotIdx;
+		// console.log('------------');
+		// console.log('start spot',spotIdx);
+		
+		for( var i=0; i<this.route.length; i++ )
+		{
+			var count = Math.abs( this.route[i] ),
+				dir   = Math.sign( this.route[i] );
+				
+			if( dir > 0 )
+				for( ; count>0; count-- ) spotIdx = this.solid.nextSpot[ spotIdx ];
+			else
+				for( ; count>0; count-- ) spotIdx = this.solid.prevSpot[ spotIdx ];
+			
+			if( i<this.route.length-1 )
+				spotIdx = this.solid.twinSpot[ spotIdx ];
+		}
+		
+		var plateIdx = this.solid.spotPlate[ spotIdx ];
+		
+		// console.log('end spot',spotIdx);
+		// console.log('end plate',plateIdx);
+		// console.log('selected plate',Plate.selected.index);
+		
+		
+		var score = 0;
+		
+		if( plateIdx == Plate.selected.index )
+		{
+			// correctly seelcted plate
+			score = 1;
+		}
+		else
+		if( this.solid.plates.length > 10 )
+		{
+			// if the number of plates high (dodecahedron or icosahedron)
+			// check wether selected and correct plate are neighbours
+			// there must be twins from both plates. if neighbours, give 50%
+			for( var i=0; i<this.solid.twinSpot.length; i++ )
+			{
+				if( this.solid.spotPlate[i] == plateIdx &&
+					this.solid.spotPlate[this.solid.twinSpot[i]] == Plate.selected.index )
+					score = 0.5;
+			}
+		}
+		
+		console.log('score',score);
 		
 		return score * points;
 
