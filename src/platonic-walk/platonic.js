@@ -33,9 +33,9 @@ class Platonic extends Group
 		
 		switch( n )
 		{
-			case 2 : this.hexahedron( VOLUME ); break;
+			case 0 : this.hexahedron( VOLUME ); break;
 			case 1 : this.tetrahedron( VOLUME ); break;
-			case 0 : this.octahedron( VOLUME ); break;
+			case 2 : this.octahedron( VOLUME ); break;
 			case 3 : this.icosahedron( VOLUME ); break;
 			case 4 : this.dodecahedron( VOLUME ); break;
 		}

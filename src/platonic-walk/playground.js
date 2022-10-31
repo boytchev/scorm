@@ -232,10 +232,10 @@ class Playground extends ScormPlayground
 		this.modelShell.y = 1000;
 		
 		// pick solid index, spot index and route parameters
-		this.solidIdx = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, 4 ) );
+		this.solidIdx = this.difficulty<30 ? 0 : random( [0,1,2,3,4] );
 		this.spotIdx = Math.floor( random(0, this.solids[this.solidIdx].spots.length) );
 		
-		var	routeLength = Math.round( THREE.MathUtils.mapLinear( this.difficulty**1.5, 10**1.5, 100**1.5, 2, 6 ) ),
+		var	routeLength = Math.round( THREE.MathUtils.mapLinear( this.difficulty**2, 10**2, 100**2, 1, 6 ) ),
 			routeMax = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 2, 5 );
 
 		// generate descriptor of the route; forward > 0, backward < 0, twin between two numbers
