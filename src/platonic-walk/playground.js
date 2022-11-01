@@ -8,6 +8,7 @@ class Playground extends ScormPlayground
 {
 	static POINTER_MOVEMENT = 5;
 	static POINTER_USED = false;
+	static ENABLE_USER = false;
 	
 	constructor( )
 	{
@@ -226,7 +227,8 @@ class Playground extends ScormPlayground
 			return;
 
 		if( !playground.gameStarted )
-			playground.newGame( );
+			if( Playground.ENABLE_USER )
+				playground.newGame( );
 	} // Playground.onClickModel
 	
 	

@@ -38,11 +38,6 @@ class THREEJSModel extends THREE.Group
 			{
 				child.castShadow = true;
 				child.receiveShadow = true;
-				// if( child.material )
-				// {
-					// child.material.emissive = new THREE.Color( 'white' );
-					// child.material.emissiveIntensity = 0.1;
-				// }
 			} );				
 			
 			object.rotation.set( -Math.PI/2, 0, 0 );
@@ -125,6 +120,7 @@ class THREEJSModel extends THREE.Group
 			.easing( TWEEN.Easing.Cubic.In )
 			.onComplete( function() {
 				that.ground.visible = true;
+				Playground.ENABLE_USER = true;
 			})
 			.start( );
 	}
