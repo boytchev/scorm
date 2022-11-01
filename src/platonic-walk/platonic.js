@@ -158,9 +158,8 @@ class Platonic extends Group
 		// add as many decoration objects as there are faces
 		for( var i=0; i<this.plates.length; i++ )
 		{
-			var plate = this.plates[i];
 			for( var j=0; j<random(-0.5,7); j++ )
-				plate.generateGreenery( spotRadius, this.platonicIdx );
+				this.plates[i].generateGreenery( spotRadius, this.platonicIdx );
 		}	
 
 		this.size = size;
