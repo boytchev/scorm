@@ -1,34 +1,46 @@
 &nbsp;
 # Platonic walk
 
-<!--
-[Normal vectors](https://mathworld.wolfram.com/NormalVector.html) serve an important role in Mathematics and Computer Graphics. When a normal vector is constructed on a point on a surface, this vector is perpendicular to the surface around this point. This application shows pins that must be put on a [pincushion](https://en.wikipedia.org/wiki/Pincushion). The positions of the pins are fixed, but their orientations can be manipulated. All pins come in pairs &ndash; one pin is against its mate pin.
+Many computer graphics algorithms use a special data structure to represent and work with polyhedra &ndash; [Doubly Connected Edge List (DCEL)](https://en.wikipedia.org/wiki/Doubly_connected_edge_list). This structure represents each edge as two half-edges with opposite directions.  
 
 Click on the image to start the application.
 
--->
 [<img src="docs/snapshot.jpg">](platonic-walk.html)
 
 Alternatively, here are versions in [English](platonic-walk.html?lang=en), [Bulgarian](platonic-walk.html?lang=bg) and [Japanese](platonic-walk.html?lang=jp).
 
+Orientations of all half-edges forming one face of the 3D body is consistent throughout all faces of the body. Typically, when an object is observed from outside, all half-edges form loops in counterclockwise direction as the default [positive direction in Mathematics](https://en.wikipedia.org/wiki/Clockwise#Mathematics). For each **half-edge** the DCEL provides function to get the **next half-edge** from the loop, the **previous half-edge** from the loop and the corresponding **twin half-edge**.
+
+<img src="docs/dcel.png"> <img src="docs/traversal.png">
+
+The traversal of a DCEL mesh uses these functions. For example, the path from half-edge (1) to half-edge (9) is the following:
+*start (1) &rarr; next &rarr; (2) &rarr; twin &rarr; (3) &rarr; next &rarr; (4) &rarr; next &rarr; (5) &rarr; next &rarr; (6) &rarr; twin &rarr; (7) &rarr; previous &rarr; (8) &rarr; twin &rarr; end (9)*.
+
 
 ### How to play
 
-<!--
+When the application is started it shows Claire standing on a platform. Click on her to open a challenge &ndash; a platonic solid and Claire standing in the middle of one half-edge. A floating ring shows a path define with glyphs. Each glyph represents one of the DCEL functions. The goal is to trace the path of Claire as if she walks according to the instructions on the ring and to click on the final side where the path ends.
 
-When the application is started it shows a pincushion with a pair of pins. The pin can be rotated around the pinpoint so that it becomes perpendicular to the surface, i.e. it is its normal vector. There are two types of pincushions &ndash; a bright matte one and a dark shiny one. The level of difficulty defines the color of the pincushion, the number of pins (from 1 to 4) and how precise they should be rotated. The goal is to reach score 100. 
+- **Starting**: Click anywhere on Claire or the platform.
+- **Playing**:  Turn the scene while tracing the path.
+- **Ending**: Click on the side where the path will end.
 
-- **Starting**: Click anywhere on the pincushion.
-- **Playing**:  Drag the head of a pin to rotate it. Its mate pin will rotate automatically.
-- **Ending**: Click on the outer rim to end the challenge.
+The glyphs are written left-to-right. 
 
-Here are a few hints: It is sufficient to make the pin look perpendicular from two different directions (optimally they should be perpendicular). The dot pattern on a bright pincushion can be used to guess the [tangent vectors](https://en.wikipedia.org/wiki/Tangent_vector). When the pincushion is dark the shiny reflections may be used as hint to the correct orientation of the normal vectors. When one pins in a pair is normal vector, then the mate pin is also a normal vector. Sometimes one of the pins in a pair is easier to do than the other pin.
+| Function | Example&nbsp;glyphs | Meaning |
+| --- | :-: | --- |
+| Start / end | <img src="docs/glyph-beg-end.png"> | A path glyph starts and ends with small dots. |
+| Twin  | <img src="docs/glyph-twin.png"> | A circle represents walking from the current half-edge to its twin half-edge. |
+| Next  | <img src="docs/glyph-next.png"> | Arcs above the line represent walking from the current half-edge to its next half-edge. The number of arcs defines the number of consecutive walks. The directions of arcs' curvatures are not significant. The example glyphs show single, double and triple walking in counterclockwise direction. |
+| Previous  | <img src="docs/glyph-previous.png"> | Arcs below the line represent walking from the current half-edge to its previous half-edge. The number of arcs defines the number of consecutive walks. The directions of arcs' curvatures are not significant. The example glyphs show single, double and triple walking in clockwise direction. |
 
-The following snapshots show: a pair of opposite pins, using surface profile as a guide for the normal vector and using the dot pattern as a guide.
+The following images show Claire on a platform (*left*) and an open challenge with a glyph (*right*). The glyph defines the following path:  *start &rarr; previous &rarr; previous &rarr; twin &rarr; next &rarr; next &rarr; next &rarr; twin &rarr; previous &rarr; twin &rarr; previous &rarr; previous &rarr; end*. Just for illustration the path is coloured in blue.
 
-<img src="docs/examples.jpg">
+<img src="docs/claire.jpg">
 
--->
+Here are a few hints: It might be easier to trace the path step by step, turning the scene in a way that the current end of the path faces you. The ring will always spin to a predefined orientation &ndash; if a tree obscures the glyph, spin the scene. Some sequences of glyphs can be eliminated. For example, two consecutive transitions to twins can be ignored, because the twin of a twin is the original half-edge. Also, three consecutive walks to the next half-edge on a triangular side can be ignored too, because walking will end on the same half-edge.
+
+
 
 ### Integration with LMS
 
@@ -56,7 +68,7 @@ When the application is run from a LMS, the LMS may utilize its own data policy,
 
 ### Disclaimer
 
-The application uses relatively small interactive elements. It might be easier to manipulate them with a precise pointing device.
+The application requires a good level of visual memory and persistent mapping of rotating objects.
 
 ### Credits
 
