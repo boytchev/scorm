@@ -50,7 +50,6 @@ class Plate extends Group
 			its.threejs.material.trasparent = false;
 			its.threejs.renderOrder = -20;
 			its.threejs.receiveShadow = true;
-			
 // its.threejs.material.polygonOffset = true;
 // its.threejs.material.polygonOffsetUnits = 20;
 // its.threejs.material.polygonOffsetFactor = 20;
@@ -86,7 +85,8 @@ class Plate extends Group
 			its.visible = false;
 		}
 		
-
+		r *= [0.8,0.75,0.65,0.7,0.85][platonicIdx];
+		
 		var object, p, h;
 		
 		switch( random([0,0,1]) )
@@ -104,11 +104,11 @@ class Plate extends Group
 				break;
 			case 1: // generate a tree
 				object = group();
-				h = random( 1, 2.5 );
+				h = random( 1.5, 2.5 );
 				
 	
-				var posTop = [random(-1/4,1/4),random(-1/4,1/4),-h,0.03],
-					posMid = [random(-1/15,1/15),random(-1/15,1/15),-h/3,0.05];
+				var posTop = [random(-1/3,1/3),random(-1/3,1/3),-h,0.03],
+					posMid = [random(-1/10,1/10),random(-1/10,1/10),-h/3,0.05];
 				var stem = tube( [0,0,0], [[0,0,0.2,0.2],posMid,posTop], 1, [12,6], 1, 'Peru' );
 					stem.threejs.castShadow = true;
 					stem.plate = this;
@@ -122,7 +122,7 @@ class Plate extends Group
 					p[i][2] += random(-0.4,0.4);
 				}
 
-				var crown = convex( p, random(0.1,0.3), 'DarkSeaGreen' );
+				var crown = convex( p, random(0.2,0.3), 'DarkSeaGreen' );
 					crown.center = posTop;
 					crown.threejs.castShadow = true;
 					crown.plate = this;

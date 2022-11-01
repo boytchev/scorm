@@ -40,8 +40,17 @@ class Playground extends ScormPlayground
 
 
 
+		const RING_SIZE = 25,
+			  RING_HEIGHT = 2;
+		
 		this.route = [];
-		this.routeRing = tube( [0,0,0], [[0,2,0,24.5], [0,1,0,25], [0,0,0,25.2], [0,-1,0,25], [0,-2,0,24.5]], 1, [10,120], 0, 'white' );
+		this.routeRing = tube( [0,0,0],
+				[	[0,RING_HEIGHT,0,0.98*RING_SIZE],
+					[0,RING_HEIGHT/2,0,RING_SIZE],
+					[0,0,0,1.01*RING_SIZE],
+					[0,-RING_HEIGHT/2,0,RING_SIZE],
+					[0,-RING_HEIGHT,0,0.98*RING_SIZE]
+				], 1, [10,120], 0, 'white' );
 			its.threejs.material = new THREE.MeshPhysicalMaterial( {
 				transparent: true,
 				opacity: 2,
@@ -238,6 +247,7 @@ class Playground extends ScormPlayground
 		
 		// pick solid index, spot index and route parameters
 		this.solidIdx = this.difficulty<30 ? 0 : random( [0,1,2,3,4] );
+//this.solidIdx = 4;		
 		this.spotIdx = Math.floor( random(0, this.solids[this.solidIdx].spots.length) );
 		
 		var	routeLength = Math.round( THREE.MathUtils.mapLinear( this.difficulty**2, 10**2, 100**2, 1, 6 ) ),
@@ -361,10 +371,10 @@ class Playground extends ScormPlayground
 	{
 		this.clickSound = new PlaygroundAudio( 'sounds/click.mp3', 0.1, 4 );
 		this.clackSound = new PlaygroundAudio( 'sounds/clack.mp3', 0.03 );
-		//this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.2, 1, true );
+		this.backgroundMelody = new PlaygroundAudio( 'sounds/background.mp3', 0.2, 1, true );
 		
 		this.soundEffects.push( this.clickSound, this.clackSound );
-		//this.soundMelody.push( this.backgroundMelody );
+		this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
 	
 	
