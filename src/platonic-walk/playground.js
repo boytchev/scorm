@@ -31,7 +31,7 @@ class Playground extends ScormPlayground
 		orb.addEventListener( 'end', () => Playground.POINTER_USED=false );
 
 		this.solids = [];
-		for( var i=0; i<6; i++ )
+		for( var i=0; i<5; i++ )
 			this.solids.push( new Platonic( i ) );
 		
 		this.model = new THREEJSModel();
@@ -44,10 +44,13 @@ class Playground extends ScormPlayground
 		this.routeRing = tube( [0,0,0], [[0,2,0,24.5], [0,1,0,25], [0,0,0,25.2], [0,-1,0,25], [0,-2,0,24.5]], 1, [10,120], 0, 'white' );
 			its.threejs.material = new THREE.MeshPhysicalMaterial( {
 				transparent: true,
-				opacity: 1,
+				opacity: 2,
 				metalness: 0,
-				roughness: 1,
+				roughness: 0.5,
 				side: THREE.DoubleSide,
+				sheenColor: 'navy',
+				sheen: 2,
+				sheenRoughness: 0.25,
 			} );
 			this.routeRing.threejs.renderOrder = -15;
 		this.ringImage = drawing( 1024, 128 );
@@ -218,7 +221,7 @@ class Playground extends ScormPlayground
 	} // Playground.onClickModel
 	
 	
-	// starts a new game by selecting new color hues
+	// starts a new game 
 	newGame( )
 	{
 		super.newGame( );
@@ -294,7 +297,8 @@ class Playground extends ScormPlayground
 		
 		// console.log('end spot',spotIdx);
 		// console.log('end plate',plateIdx);
-		// console.log('selected plate',Plate.selected.index);
+		// console.log('selected plate',Plate.selected);
+		// console.log('selected plate index',Plate.selected.index);
 		
 		
 		var score = 0;
@@ -318,7 +322,7 @@ class Playground extends ScormPlayground
 			}
 		}
 		
-		console.log('score',score);
+		//console.log('score',score);
 		
 		return score * points;
 

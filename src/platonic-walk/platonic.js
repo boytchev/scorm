@@ -23,6 +23,7 @@ class Platonic extends Group
 
 		var VOLUME = 10**3;
 		
+		this.platonicIdx = n;
 		this.plates = [];
 		this.spots = [];
 		this.spotPlate = [];
@@ -53,12 +54,12 @@ class Platonic extends Group
 
 	static constructTexture( n, crosses = true )
 	{
-		var img = drawing( 512, 512, 'Black' );
+		var img = drawing( 512, 512, 'Orange' );
 			img.context.lineJoin = 'round';
 	
 		var cx = 256,
 			cy = 256,
-			r = 200;
+			r = 200-10;
 
 		var angle = 2*Math.PI/n*0+(n==4?Math.PI/4:Math.PI/2);
 		moveTo( cx+r*Math.cos(angle), cy+r*Math.sin(angle) );
@@ -88,14 +89,12 @@ class Platonic extends Group
 	}
 
 
-	
-	
 
 	onClick( event )
 	{
 		if( playground.pointerMovement > Playground.POINTER_MOVEMENT )
 			return;
-		
+
 		Plate.select( Plate.selected/*, true*/ );
 		
 		//console.log( 'click on plate', Plate.selected.index );
@@ -124,8 +123,7 @@ class Platonic extends Group
 	{
 		var n = faces[0].length; // n-gon
 		
-		var texture;
-		texture = Platonic.constructTexture( n );
+		var texture = Platonic.constructTexture( n );
 
 		//this.verticesLabels( vertices );
 		for( var t=0; t<twins.length; t++ )
@@ -156,7 +154,15 @@ class Platonic extends Group
 			
 			this.add( plate );
 		}
-		
+
+		// add as many decoration objects as there are faces
+		for( var i=0; i<this.plates.length; i++ )
+		{
+			var plate = this.plates[i];
+			for( var j=0; j<random(-0.5,7); j++ )
+				plate.generateGreenery( spotRadius, this.platonicIdx );
+		}	
+
 		this.size = size;
 		this.defaultSize = size;
 	}

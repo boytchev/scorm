@@ -7,6 +7,7 @@
 class Plate extends Group
 {
 	static selected = null;
+	static GREENERY_CIRCLE;
 	
 	constructor( vertices, face, size, texture, spotOffset, spotRadius )
 	{
@@ -64,12 +65,11 @@ class Plate extends Group
 		for( var i=0; i<n; i++ )
 		{
 			var angle = 2*Math.PI*(i+spotOffset)/n,
-				r = spotRadius;
+				r = spotRadius,
+				pos = [r*Math.cos(angle),r*Math.sin(angle),0];
 				
-			spot = this.objectPosition( [r*Math.cos(angle),r*Math.sin(angle),0] );
-this.add( cone( [random(0,r)*Math.cos(angle),random(0,r)*Math.sin(angle),0], [0.1,random(0.1,1)], 'white' ) );
-its.spinV = -90;
-its.threejs.castShadow = true;
+			spot = this.objectPosition( pos );
+			
 			this.spots.push( spot );
 		}
 		
@@ -77,19 +77,90 @@ its.threejs.castShadow = true;
 
 
 
+	// create a random objects - a tree, a bush, ...
+	generateGreenery( r, platonicIdx )
+	{
+		if( !Plate.GREENERY_CIRCLE )
+		{
+			Plate.GREENERY_CIRCLE = circle( [0,0,0], 0 );
+			its.visible = false;
+		}
+		
+
+		var object, p, h;
+		
+		switch( random([0,0,1]) )
+		{
+			case 0: // generate a stone
+				p = [];
+				h = random( 0.02, 0.2 );
+				for( var i=0; i<random(10,30); i++ )
+					p.push( [random(-0.2,0.2),random(-h,h),random(-0.2,0.2)] );
+				
+				object = convex( p, 1, 'BurlyWood' );
+				its.spinV = -90;
+				its.threejs.castShadow = true;
+				its.plate = this;
+				break;
+			case 1: // generate a tree
+				object = group();
+				h = random( 1, 2.5 );
+				
+	
+				var posTop = [random(-1/4,1/4),random(-1/4,1/4),-h,0.03],
+					posMid = [random(-1/15,1/15),random(-1/15,1/15),-h/3,0.05];
+				var stem = tube( [0,0,0], [[0,0,0.2,0.2],posMid,posTop], 1, [12,6], 1, 'Peru' );
+					stem.threejs.castShadow = true;
+					stem.plate = this;
+
+				var Φ = (1+Math.sqrt(5))/2;
+				p = [[0,1,Φ], [0,1,-Φ], [0,-1,Φ], [0,-1,-Φ], [1,Φ,0], [1,-Φ,0], [-1,Φ,0], [-1,-Φ,0], [Φ,0,1], [-Φ,0,1], [Φ,0,-1], [-Φ,0,-1]];
+				for( var i=0; i<p.length; i++ )
+				{
+					p[i][0] += random(-0.4,0.4);
+					p[i][1] += random(-0.4,0.4);
+					p[i][2] += random(-0.4,0.4);
+				}
+
+				var crown = convex( p, random(0.1,0.3), 'DarkSeaGreen' );
+					crown.center = posTop;
+					crown.threejs.castShadow = true;
+					crown.plate = this;
+					
+				
+				object.add( crown, stem );
+				its.threejs.castShadow = true;
+				its.spinV = -90;
+				its.plate = this;
+				break;
+		}
+
+		Plate.GREENERY_CIRCLE.size = 2*0.8*r;
+		object.center = Plate.GREENERY_CIRCLE.randomIn;
+		object.size = [1,1,0.7,1,1][platonicIdx];
+		
+		this.add( object );
+	}
+	
+	
+	
 	// select/unselect plate
-	static select( plate/*, hard=false*/ )
+	static select( object/*, hard=false*/ )
 	{
 		if( Plate.selected )
 		{
 			Plate.selected.color = 'LightGray';
 			Plate.selected = null;
 		}
-
-		if( plate )
+		
+		if( object )
 		{
-			Plate.selected = plate;
-			Plate.selected.color = /*hard ? 'Crimson' :*/ 'Orange';
+			// if plate is a tree or a bush, then it has
+			// property plate that is the actual plate
+			if( object.plate ) object = object.plate.face;
+			
+			Plate.selected = object;
+			Plate.selected.color = 'WhiteSMoke';
 		}
 	} // Plate.select
 
