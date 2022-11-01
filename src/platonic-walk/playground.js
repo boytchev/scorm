@@ -247,7 +247,7 @@ class Playground extends ScormPlayground
 		
 		// pick solid index, spot index and route parameters
 		this.solidIdx = this.difficulty<30 ? 0 : random( [0,1,2,3,4] );
-//this.solidIdx = 4;		
+this.solidIdx = 3;		
 		this.spotIdx = Math.floor( random(0, this.solids[this.solidIdx].spots.length) );
 		
 		var	routeLength = Math.round( THREE.MathUtils.mapLinear( this.difficulty**2, 10**2, 100**2, 1, 6 ) ),

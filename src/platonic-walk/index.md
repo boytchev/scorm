@@ -6,8 +6,8 @@
 
 Click on the image to start the application.
 
-[<img src="docs/snapshot.jpg">](normal-pins.html)
 -->
+[<img src="docs/snapshot.jpg">](platonic-walk.html)
 
 Alternatively, here are versions in [English](platonic-walk.html?lang=en), [Bulgarian](platonic-walk.html?lang=bg) and [Japanese](platonic-walk.html?lang=jp).
 
@@ -64,9 +64,9 @@ This application uses a model from [Mixamo](https://www.mixamo.com):
 
 - Character "Claire" and animation "Look Around" available free as stated in [Mixamo | Common questions](https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html),
 
-a modified environment map texture from [Poly Heaven](https://polyhaven.com):
+a background soundscape from [FreeSound](https://freesound.org):
 
-- "[Paul Lobe Haus](https://polyhaven.com/a/paul_lobe_haus)" by Greg Zaal licensed under [CC0 1.0 Universal license](https://creativecommons.org/publicdomain/zero/1.0/),
+- "[Park May 738PM NL](https://freesound.org/people/klankbeeld/sounds/609329/)" by [klankbeeld](https://freesound.org/people/klankbeeld/) licensed under [CC BY 4.0 License](https://creativecommons.org/licenses/by/4.0/),
 
 and sound effects from [Mixkit](https://mixkit.co/):
 
