@@ -3,10 +3,11 @@
 
 <!-- “Patience is not the ability to wait, but the ability to keep a good attitude while waiting.”-->
 
+<!--
 ## LMS info
 
 This SCO is used for experiments with SCORM 1.2-complient LMS. It shows the list of elements passed from the LMS to the SCORM. The elements that are read-write can be modified and sent back to the LMS.
-
+-->
 
 ## Color hues
 
@@ -71,8 +72,11 @@ This SCO is used for experiments with SCORM 1.2-complient LMS. It shows the list
 [ <!-- markdown-link-check-disable -->[More info](src/gift-wrapping/index.html)<!-- markdown-link-check-enable --> ] [ [Run online](src/gift-wrapping/gift-wrapping.html) ] [ [Download](bin/gift-wrapping.zip) ]
 
 
-## Platonic walk (under construction)
+## Platonic walk
 
+<a href="src/platonic-walk/platonic-walk.html"><img src="src/platonic-walk/docs/snapshot.jpg" width="200" style="float:right; border-radius: 0.5em; border-bottom: 0.3em BurlyWood solid;"></a> Tracing a path in a doubly-connected edge list onto one of the five Platonic solids, and finding the place where the end of the path is.
+
+[ <!-- markdown-link-check-disable -->[More info](src/platonic-walk/index.html)<!-- markdown-link-check-enable --> ] [ [Run online](src/platonic-walk/platonic-walk.html) ] [ [Download](bin/platonic-walk.zip) ]
 
 
 
