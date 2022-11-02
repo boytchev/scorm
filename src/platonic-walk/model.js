@@ -10,6 +10,7 @@ class THREEJSModel extends THREE.Group
 	static HEIGHT = 6; // of ground
 	static NAME = 'Look Around Claire.fbx';
 	
+	
 	constructor( )
 	{
 		super( );
@@ -34,18 +35,20 @@ class THREEJSModel extends THREE.Group
 				
 		function objectLoaded( object )
 		{
+			// add shadows
 			object.traverse( function ( child )
 			{
 				child.castShadow = true;
 				child.receiveShadow = true;
 			} );				
 			
+			// adjust the model
 			object.rotation.set( -Math.PI/2, 0, 0 );
 			object.scale.set( 0.05, 0.05, 0.05 );
 			object.castShadow = true;
 			that.add( object );
 			
-			// анимация
+			// start the animation
 			that.animator = new THREE.AnimationMixer( object );
 			that.animator.clipAction( object.animations[0] ).play();
 
@@ -58,7 +61,6 @@ class THREEJSModel extends THREE.Group
 	// create ground for the model
 	createGround( )
 	{
-			
 		var geometry = new THREE.CylinderGeometry( THREEJSModel.SIZE, THREEJSModel.SIZE, THREEJSModel.HEIGHT, 6 );
 		
 		var img = Platonic.constructTexture( 6, false ),
@@ -69,12 +71,10 @@ class THREEJSModel extends THREE.Group
 		material.map.repeat.set( 0.9, 0.9 );
 		material.map.center.set( 0.5, 0.5 );
 		material.map.rotation = Math.PI/6;
-		
-		
+				
 		// now create the ground for the model
 		this.ground = new THREE.Mesh( geometry, material );
 		this.ground.receiveShadow = true;
-		
 		
 		// change the sape and the uv mapping
 		var pos = geometry.getAttribute( 'position' ),
@@ -87,13 +87,12 @@ class THREEJSModel extends THREE.Group
 			if( pos.getY(i)>0 && pos.getX(i)**2+pos.getZ(i)**2>0.01  )
 				pos.setY( i, 1-THREEJSModel.HEIGHT/2 );
 			
-			// make the side completely black byte
+			// make the side completely black by
 			// setting uv to black area of texture)
 			if( nor.getY(i)**2 < 0.1 )
 				uv.setXY( i, 0, 0 );
 		}
 		
-		// recalculate normals
 		geometry.computeVertexNormals();
 		
 		// move the ground just below the model feet
@@ -123,12 +122,12 @@ class THREEJSModel extends THREE.Group
 				Playground.ENABLE_USER = true;
 			})
 			.start( );
-	}
+	} // THREEJSModel.moveToCenter
 	
 	
 	
 	// move the model to spot n and make it
-	// it stand on the sirface of the plate
+	// it stand on the surface of the plate
 	moveToSpot( n )
 	{
 		this.ground.visible = false;
@@ -136,10 +135,6 @@ class THREEJSModel extends THREE.Group
 		var solid = playground.solid,
 			plateIdx = solid.spotPlate[ n ],
 			plate = solid.plates[ plateIdx ];
-
-// console.log('solid',solid);
-// console.log('plateIdx',plateIdx);
-// console.log('plate',plate);
 
 		// get position from the spot, but orientation from the plate
 		var matrix = new THREE.Matrix4();

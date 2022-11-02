@@ -6,8 +6,10 @@
 
 class Plate extends Group
 {
-	static selected = null;
-	static GREENERY_CIRCLE;
+	static selected = null; // selected or pointer plate
+	
+	static GREENERY_CIRCLE; // trees and stones are within this circle
+
 	
 	constructor( vertices, face, size, texture, spotOffset, spotRadius )
 	{
@@ -50,17 +52,18 @@ class Plate extends Group
 			its.threejs.material.trasparent = false;
 			its.threejs.renderOrder = -20;
 			its.threejs.receiveShadow = true;
-// its.threejs.material.polygonOffset = true;
-// its.threejs.material.polygonOffsetUnits = 20;
-// its.threejs.material.polygonOffsetFactor = 20;
+			// its.threejs.material.polygonOffset = true;
+			// its.threejs.material.polygonOffsetUnits = 20;
+			// its.threejs.material.polygonOffsetFactor = 20;
 
 		this.add( this.face );
 		this.threejs.matrixAutoUpdate = false;
 		this.threejs.matrix = mat;
 		
-		var spot;// = this.objectPosition( [0,0,-0.1] );
+		var spot;
 		this.spots = [];
 
+		// calculate spots (middles of half-edges) for this plate
 		for( var i=0; i<n; i++ )
 		{
 			var angle = 2*Math.PI*(i+spotOffset)/n,
@@ -76,7 +79,7 @@ class Plate extends Group
 
 
 
-	// create a random objects - a tree, a bush, ...
+	// create random objects - trees and stones
 	generateGreenery( r, platonicIdx )
 	{
 		if( !Plate.GREENERY_CIRCLE )
@@ -127,7 +130,6 @@ class Plate extends Group
 					crown.threejs.castShadow = true;
 					crown.plate = this;
 					
-				
 				object.add( crown, stem );
 				its.threejs.castShadow = true;
 				its.spinV = -90;
@@ -140,12 +142,12 @@ class Plate extends Group
 		object.size = [1,1,0.7,1,1][platonicIdx];
 		
 		this.add( object );
-	}
+	} // Plate.generateGreenery
 	
 	
 	
 	// select/unselect plate
-	static select( object/*, hard=false*/ )
+	static select( object )
 	{
 		if( Plate.selected )
 		{
@@ -155,7 +157,7 @@ class Plate extends Group
 		
 		if( object )
 		{
-			// if plate is a tree or a bush, then it has
+			// if plate is a tree or a stone, then it has
 			// property plate that is the actual plate
 			if( object.plate ) object = object.plate.face;
 			
@@ -166,18 +168,22 @@ class Plate extends Group
 
 
 
-	// verticesLabels( vertices )
-	// {
-		// for( var i=0; i<vertices.length; i++ )
-		// {
-			// var texture = drawing( 32 );
-				// arc( 16, 16, 16 );
-				// fill( 'crimson' );
-				// fillText( 8, 8, i, 'white' );		
+/*
+	// add labels for vertices -- for debug purposes
+	verticesLabels( vertices )
+	{
+		for( var i=0; i<vertices.length; i++ )
+		{
+			var texture = drawing( 32 );
+				arc( 16, 16, 16 );
+				fill( 'crimson' );
+				fillText( 8, 8, i, 'white' );		
 		
-			// this.add( point(vertices[i],5,'white') );
-			// its.image = texture;
-		// }
-	// }
+			this.add( point(vertices[i],5,'white') );
+			its.image = texture;
+		}
+	} // Plate.verticesLabels
+*/
+
 	
 } // class Plate

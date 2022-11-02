@@ -11,7 +11,7 @@ Alternatively, here are versions in [English](platonic-walk.html?lang=en), [Bulg
 
 Orientations of all half-edges forming one face of the 3D body is consistent throughout all faces of the body. Typically, when an object is observed from outside, all half-edges form loops in counterclockwise direction as the default [positive direction in Mathematics](https://en.wikipedia.org/wiki/Clockwise#Mathematics). For each **half-edge** the DCEL provides function to get the **next half-edge** from the loop, the **previous half-edge** from the loop and the corresponding **twin half-edge**.
 
-<img src="docs/dcel.png"> <img src="docs/traversal.png">
+<img src="docs/dcel.png">
 
 The traversal of a DCEL mesh uses these functions. For example, the path from half-edge (1) to half-edge (9) is the following:
 *start (1) &rarr; next &rarr; (2) &rarr; twin &rarr; (3) &rarr; next &rarr; (4) &rarr; next &rarr; (5) &rarr; next &rarr; (6) &rarr; twin &rarr; (7) &rarr; previous &rarr; (8) &rarr; twin &rarr; end (9)*.

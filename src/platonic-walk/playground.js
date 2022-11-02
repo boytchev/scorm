@@ -15,9 +15,7 @@ class Playground extends ScormPlayground
 		super( );
 		
 		this.pointerMovement = 0;
-		this.solid = null;
 		
-		this.addLightsAndShadows( );
 		
 		this.resize( );
 
@@ -31,19 +29,32 @@ class Playground extends ScormPlayground
 		orb.addEventListener( 'start', () => Playground.POINTER_USED=true  );
 		orb.addEventListener( 'end', () => Playground.POINTER_USED=false );
 
+		// the Platonic solids
+		this.solid = null;
 		this.solids = [];
 		for( var i=0; i<5; i++ )
 			this.solids.push( new Platonic( i ) );
-		
+
+		// the 3D model (Claire)
 		this.model = new THREEJSModel();
 		this.modelShell = prism( 6, [0,-THREEJSModel.HEIGHT,0], [2*THREEJSModel.SIZE,THREEJSModel.HEIGHT+9], 'crimson' );
-		its.visible = false;
+			its.visible = false;
+			its.addEventListener( 'click', this.onClickModel )
+
+		this.addLightsAndShadows( );
+
+		this.createGlythRing( );
+
+	} // Playground.constructor
 
 
-
+	
+	// create the ring of glyphStroke
+	createGlythRing( )
+	{
 		const RING_SIZE = 25,
 			  RING_HEIGHT = 2;
-		
+
 		this.route = [];
 		this.routeRing = tube( [0,0,0],
 				[	[0,RING_HEIGHT,0,0.98*RING_SIZE],
@@ -63,74 +74,78 @@ class Playground extends ScormPlayground
 				sheenRoughness: 0.25,
 			} );
 			this.routeRing.threejs.renderOrder = -15;
+
 		this.ringImage = drawing( 1024, 128 );
 		this.ringAlpha = drawing( 1024, 128 );
 		this.setGlyphTexture( );
-		
-		this.modelShell.addEventListener( 'click', this.onClickModel )
-	} // Playground.constructor
-
+	} // Playground.createGlythRing
 	
-
+	
+	
 	// generate glyph shape fo the current route
 	glyphStroke( img, seed )
 	{
-		THREE.MathUtils.seededRandom( seed );
-
 		const START_X = 20;
-		const START_Y = 64;
+		const START_Y = 64; // half of ringImage height
+
+		const LINE_STEP = 16;
+		const CIRCLE_RADIUS = 16;
+		const CIRCLE_MIN_RADIUS = 5;
+
+		
+		// stabilize randomness for left- and right- arcs
+		// for main image to be the same as for the alpha map
+		THREE.MathUtils.seededRandom( seed );
 		
 		// starting point
 		var x = START_X,
 			y = START_Y;
 		
-		const LINE_STEP = 16;
-		const CIRCLE_RADIUS = 16;
-		const CIRCLE_MIN_RADIUS = 5;
-
-		// starting node
+		// starting node - a small dot
 		img.moveTo( x, y+CIRCLE_MIN_RADIUS );
 		img.arc( x, y, CIRCLE_MIN_RADIUS );
 		img.moveTo( x, y );
 		x += LINE_STEP;
 		img.lineTo( x, y );
 
+		// generate all glyphs
 		for( var i=0; i<this.route.length; i++ )
 		{
-			var count = Math.abs(this.route[i]),
-				sign = Math.sign(this.route[i]);
+			var count = Math.abs(this.route[i]), // numer of arcs
+				sign = Math.sign(this.route[i]); // up(1) or down(-1)
 			
 			var prevX = x - CIRCLE_RADIUS - 0.5*LINE_STEP,
 				nextX = x + count*LINE_STEP + CIRCLE_RADIUS + 0.5*LINE_STEP;
 				
-			// draw up/down lines
+			// draw up/down arcs
 			var treshold;
 
+			// arcs below treshold are curved to the left, arcs above - to the right
 			if( count < 4 )
 				treshold = THREE.MathUtils.seededRandom() * (count+1) - 1;
 			else
 				treshold = THREE.MathUtils.seededRandom() * (count-1) + 1;
 
+			// draw arcs
 			for( var j=0; j<count; j++ )
 			{
 				img.moveTo( x + (j+0.5)*LINE_STEP, y );
-				//img.lineTo( x + (j+0.5)*LINE_STEP, y + LINE_LENGTH*sign );
 				
 				if( j < treshold )
 				{
 					// curve left
 					if( sign > 0 )
-						img.arc( prevX, y, x+(j+0.5)*LINE_STEP - prevX, 90, 45, false );
+						img.arc( prevX, y, x + (j+0.5)*LINE_STEP - prevX, 90, 45, false ); // up
 					else
-						img.arc( prevX, y, x+(j+0.5)*LINE_STEP - prevX, 90, 135, true );
+						img.arc( prevX, y, x + (j+0.5)*LINE_STEP - prevX, 90, 135, true ); // down
 				}
 				else
 				{
 					// curve right
 					if( sign > 0 )
-						img.arc( nextX, y, nextX - (x+(j+0.5)*LINE_STEP), 270, 315, true );
+						img.arc( nextX, y, nextX - (x+(j+0.5)*LINE_STEP), 270, 315, true ); // up
 					else
-						img.arc( nextX, y, nextX - (x+(j+0.5)*LINE_STEP), 270, 225, false );
+						img.arc( nextX, y, nextX - (x+(j+0.5)*LINE_STEP), 270, 225, false ); // down
 				}
 			}
 			
@@ -139,7 +154,7 @@ class Playground extends ScormPlayground
 			x += (count) * LINE_STEP;
 			img.lineTo( x, y );
 			
-			// if not the last one, add circle
+			// if not the last one, add a big circle
 			if( i < this.route.length-1 )
 			{
 				img.moveTo( x, y );
@@ -148,14 +163,12 @@ class Playground extends ScormPlayground
 				
 				img.moveTo( x+CIRCLE_RADIUS, y+CIRCLE_RADIUS );
 				img.arc( x+CIRCLE_RADIUS, y, CIRCLE_RADIUS );
-				// img.moveTo( x+CIRCLE_RADIUS, y+CIRCLE_MIN_RADIUS );
-				// img.arc( x+CIRCLE_RADIUS, y, CIRCLE_MIN_RADIUS );
+
 				x += 2*CIRCLE_RADIUS;
 				
 				img.moveTo( x, y );
 				x += 0.5 * LINE_STEP;
 				img.lineTo( x, y );
-				
 			}
 			
 		}
@@ -183,7 +196,8 @@ class Playground extends ScormPlayground
 		var material = this.routeRing.threejs.material;
 		
 		var seed = Math.floor( random(1,100000) );
-		
+
+		// draw the glyph image (used as map texture)
 		this.ringImage.clear( 'Crimson' );
 		this.glyphStroke( this.ringImage, seed );
 		this.ringImage.stroke( 'Black', 12 );
@@ -197,6 +211,7 @@ class Playground extends ScormPlayground
 		material.map.wrapS = THREE.RepeatWrapping;
 		material.map.wrapT = THREE.RepeatWrapping;			
 		
+		// draw the glyph alpha map
 		this.ringAlpha.clear( '#202020' );
 		this.ringAlpha.context.shadowBlur = 5;
 		this.ringAlpha.context.shadowColor = "white";
@@ -218,6 +233,7 @@ class Playground extends ScormPlayground
 
 	} // Playground.setGlyphTexture
 	
+
 		
 	// clicking on the model while the game is not started
 	// starts a new game
@@ -230,6 +246,7 @@ class Playground extends ScormPlayground
 			if( Playground.ENABLE_USER )
 				playground.newGame( );
 	} // Playground.onClickModel
+
 	
 	
 	// starts a new game 
@@ -243,13 +260,11 @@ class Playground extends ScormPlayground
 		this.routeRing.spinV = random( -180, 180 );
 		this.routeRing.spinT = random( -180, 180 );
 
-
 		// remove model shell (because otherwise it will capture onclick events)
 		this.modelShell.y = 1000;
 		
 		// pick solid index, spot index and route parameters
 		this.solidIdx = this.difficulty<30 ? 0 : random( [0,1,2,3,4] );
-//this.solidIdx = 4;		
 		this.spotIdx = Math.floor( random(0, this.solids[this.solidIdx].spots.length) );
 		
 		var	routeLength = Math.round( THREE.MathUtils.mapLinear( this.difficulty**2, 10**2, 100**2, 1, 6 ) ),
@@ -276,7 +291,7 @@ class Playground extends ScormPlayground
 	// check whether a game can end
 	canEndGame( )
 	{
-		// ...
+		// it can, if there is a selected plate
 		return Plate.selected;
 	} // Playground.canEndGame
 	
@@ -287,10 +302,8 @@ class Playground extends ScormPlayground
 	{
 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
 		
+		// traverse the route to find the correct ending plate
 		var spotIdx = this.spotIdx;
-		// console.log('------------');
-		// console.log('start spot',spotIdx);
-		
 		for( var i=0; i<this.route.length; i++ )
 		{
 			var count = Math.abs( this.route[i] ),
@@ -307,17 +320,13 @@ class Playground extends ScormPlayground
 		
 		var plateIdx = this.solid.spotPlate[ spotIdx ];
 		
-		// console.log('end spot',spotIdx);
-		// console.log('end plate',plateIdx);
-		// console.log('selected plate',Plate.selected);
-		// console.log('selected plate index',Plate.selected.index);
-		
+		// calculate score: 1=match, 0.5=almost match
 		
 		var score = 0;
 		
 		if( plateIdx == Plate.selected.index )
 		{
-			// correctly seelcted plate
+			// correctly selected plate
 			score = 1;
 		}
 		else
@@ -333,8 +342,6 @@ class Playground extends ScormPlayground
 					score = 0.5;
 			}
 		}
-		
-		//console.log('score',score);
 		
 		return score * points;
 
@@ -388,24 +395,23 @@ class Playground extends ScormPlayground
 		suica0.renderer.shadowMap.enabled = true;
 		suica0.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-			var light = new THREE.DirectionalLight( 'white', 0.3 );
-				light.position.set( 0, 100, 0 );
-				light.target = suica0.scene;
-				light.castShadow = true;
+		var light = new THREE.DirectionalLight( 'white', 0.3 );
+			light.position.set( 0, 100, 0 );
+			light.target = suica0.scene;
+			light.castShadow = true;
 
-				light.shadow.mapSize.width = 512;
-				light.shadow.mapSize.height = 512;
-				light.shadow.camera.left = -20;
-				light.shadow.camera.right = 20;
-				light.shadow.camera.bottom = -20;
-				light.shadow.camera.top = 20;
-				light.shadow.camera.near = 1;
-				light.shadow.camera.far = 500;
+			light.shadow.mapSize.width = 512;
+			light.shadow.mapSize.height = 512;
+			light.shadow.camera.left = -20;
+			light.shadow.camera.right = 20;
+			light.shadow.camera.bottom = -20;
+			light.shadow.camera.top = 20;
+			light.shadow.camera.near = 1;
+			light.shadow.camera.far = 500;
 
 		suica0.scene.add( light );
 		
-		this.shadowLight = light;
-		
+		this.shadowLight = light;		
 	} // Playground.addLightsAndShadows
 
 
@@ -413,32 +419,24 @@ class Playground extends ScormPlayground
 	// update the playground
 	update( t, dT )
 	{
-		// ...
-
+		// fix the shadow light to the normal light, which is
+		// fixed by Suica to the viewing position
 		this.shadowLight.position.x = suica0.light.position.x+15;
 		this.shadowLight.position.y = suica0.light.position.y+10;
 		this.shadowLight.position.z = suica0.light.position.z+5;
 		this.shadowLight.target = suica0.scene;
 
+		// spin the ring to have a glyph centered on the screen
 		if( !Playground.POINTER_USED )
 		{
 			var k = THREE.MathUtils.clamp( 1-5*dT, 0.5, 0.99 );
 
 			this.routeRing.spinH = k*this.routeRing.spinH + (1-k)*(180/Math.PI * orb.getAzimuthalAngle( ));
 			this.routeRing.spinV = k*this.routeRing.spinV + (1-k)*(180/Math.PI * orb.getPolarAngle( ) - 90 + 15);
-			this.routeRing.spinT = this.ringSpin;//-31-4*this.route.length + 36;
+			this.routeRing.spinT = this.ringSpin;
 		}
-// console.log( this.route.length );	
-
-// 3a+b = -43
-// 6a+b = -55
-
-// a = -4
-// b = -31
-
-// 3    -43
-// 6	-55
 	
 		this.model.update( t, dT );
 	}
+	
 } // class Playground

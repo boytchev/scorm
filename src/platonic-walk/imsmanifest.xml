@@ -56,7 +56,9 @@ The XSD files for SCORM 1.2 are not strictly valid and may cause errors in some 
 			<file href="platonic-walk.html"/>
 			
 			<!-- modules -->
-			<!--file href="plate.js"/-->
+			<file href="model.js"/>
+			<file href="plate.js"/>
+			<file href="platonic.js"/>
 			<file href="styles.css"/>
 			<file href="playground.js"/>
 
@@ -64,6 +66,8 @@ The XSD files for SCORM 1.2 are not strictly valid and may cause errors in some 
 			<file href="libs/scorm.utils.js"/>
 			<file href="libs/suica.js"/>
 			<file href="libs/tween.umd.js"/>
+			<file href="libs/FBXLoader.js"/>
+			<file href="libs/fflate.min.js"/>
 			
 			<!-- images -->
 			<file href="images/logo.png"/>
@@ -72,7 +76,7 @@ The XSD files for SCORM 1.2 are not strictly valid and may cause errors in some 
 			<file href="images/sound-fx.png"/>
 			
 			<!-- sounds -->
-			<!--file href="sounds/background.mp3"/-->
+			<file href="sounds/background.mp3"/>
 			<file href="sounds/click.mp3"/>
 			<file href="sounds/clack.mp3"/>
 

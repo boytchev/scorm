@@ -2,20 +2,13 @@
 //	class Platonic( center, spin )
 //
 	
-//	no	name			rad			V			vertices
-//	0	tetrahedron		1/sq(6)		sq(8)/3
-//	1	cube			1			8
-//	2	octahedron		sq(2/3)		sq(128)/3
-//	3	dodecahedron	f^2/sq(3-f)	20f^3/(3-f)
-//	4	ocpsahedron		f^2/sq(3)	20f^2/3
-//
-//	f = (1+sq(5))/2
 
 class Platonic extends Group
 {
 	static SHOW_SPEED = 700;
 	static HIDE_SPEED = 300;
 	static ROT = new THREE.Matrix4( ).makeRotationX( Math.PI );
+	
 	
 	constructor( n )
 	{
@@ -24,13 +17,13 @@ class Platonic extends Group
 		var VOLUME = 10**3;
 		
 		this.platonicIdx = n;
-		this.plates = [];
-		this.spots = [];
-		this.spotPlate = [];
+		this.plates = []; // all plates/faces
+		this.spots = []; // stop spots - middles of all half-edges
+		this.spotPlate = []; // the plate index for each spot
 		
-		this.nextSpot = [];
-		this.prevSpot = [];
-		this.twinSpot = [];
+		this.nextSpot = []; // the index of the next spot
+		this.prevSpot = []; // the previous spot
+		this.twinSpot = []; // the twin spot
 		
 		switch( n )
 		{
@@ -43,15 +36,14 @@ class Platonic extends Group
 
 		this.addEventListener( 'click', this.onClick );
 
-		// this.addLabels( this.spots );
-		// this.addLabels( this.plates );
-
 		this.visible = false;
 		this.y = 10000;
 		
 	} // Platonic.constructor
 
 
+
+	// generate the texture of one face
 	static constructTexture( n, crosses = true )
 	{
 		var img = drawing( 512, 512, 'Orange' );
@@ -82,14 +74,14 @@ class Platonic extends Group
 
 		fill( 'DarkSeaGreen' );
 		stroke( 'Black', 34 );
-		//stroke( 'Gold', 30 );
 		stroke( 'White', 30 );
 
 		return img;
-	}
+	} // Platonic.constructTexture
 
 
 
+	// clicking on a plate ends the game
 	onClick( event )
 	{
 		if( playground.pointerMovement > Playground.POINTER_MOVEMENT )
@@ -97,14 +89,17 @@ class Platonic extends Group
 
 		Playground.ENABLE_USER = false;
 		
-		Plate.select( Plate.selected/*, true*/ );
+		Plate.select( Plate.selected );
 		
 		//console.log( 'click on plate', Plate.selected.index );
 		if( playground.canEndGame( ) )
 			playground.endGame( );
-	}
-	
-	
+	} // Platonic.onClick
+
+
+
+/*
+	// add labels - for debug purposes only
 	addLabels( vertices )
 	{
 		for( var i=0; i<vertices.length; i++ )
@@ -117,17 +112,18 @@ class Platonic extends Group
 			this.add( point(vertices[i].midCenter||vertices[i],4,'white') );
 			its.image = texture;
 		}
-	}
+	} // Platonic.addLabels
+*/
 	
 	
-	// generate texture and plates for general n-hedron
+	
+	// generate plates for general n-hedron
 	hedron( vertices, faces, twins, size, scale, spotOffset, spotRadius )
 	{
 		var n = faces[0].length; // n-gon
 		
 		var texture = Platonic.constructTexture( n );
 
-		//this.verticesLabels( vertices );
 		for( var t=0; t<twins.length; t++ )
 		{
 			this.twinSpot[twins[t][0]] = twins[t][1];
@@ -135,8 +131,7 @@ class Platonic extends Group
 		}
 		
 		for( var f=0; f<faces.length; f++ )
-		{
-			
+		{			
 			// DCEL set prev & next
 			var firstSpot = f*n;
 			for( var j=0; j<n; j++ )
@@ -145,7 +140,6 @@ class Platonic extends Group
 				this.prevSpot[firstSpot+j] = firstSpot + (j+n-1)%n;
 				this.spotPlate[firstSpot+j] = f;
 			}
-
 
 			// create one of the plates
 			var plate = new Plate( vertices, faces[f], scale, texture, spotOffset, spotRadius );
@@ -168,7 +162,7 @@ class Platonic extends Group
 
 		this.size = size;
 		this.defaultSize = size;
-	}
+	} // Platonic,hedron
 	
 	
 	
@@ -267,7 +261,6 @@ class Platonic extends Group
 			.to( {size: 1}, Platonic.SHOW_SPEED )
 			.easing( TWEEN.Easing.Elastic.Out )
 			.start( );
-		
 	} // Platonic.show
 	
 	
