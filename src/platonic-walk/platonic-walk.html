@@ -26,7 +26,7 @@
 </head>
 
 <body>
-	<suica fullwindow fullscreen background="linen" ontime="update" onpointermove="onPointerMove" onpointerdown="onPointerDown">
+	<suica fullwindow fullscreen background="linen" ontime="update" onpointermove="onPointerMove" onpointerdown="onPointerDown" onclick="onClick">
 		<orbit id="orb" distance="70" altitude="0" maxDistance="150" minDistance="25" enablePan="true">
 		<div class="hud corner top left"></div>
 		<div class="hud corner top right"></div>
@@ -62,7 +62,16 @@
 		var playground = new Playground;
 
 		window.addEventListener( 'resize', playground.resize );
-				
+		
+		orb.addEventListener( 'start', function(){ Playground.POINTER_USED=true; }  );
+		orb.addEventListener( 'end', function(){ Playground.POINTER_USED=false; } );
+
+
+		function onClick( event )
+		{
+			onPointerMove( event );
+		}
+		
 		function onPointerMove( event )
 		{
 			playground.pointerMovement += Math.abs( event.movementX ) + Math.abs( event.movementY );
@@ -73,7 +82,7 @@
 				return;
 			}
 			
-			var obj;
+			var obj = null;
 
 			if( playground.solid )
 				obj = findObject( event, playground.solid.plates );

@@ -91,7 +91,6 @@ class Platonic extends Group
 		
 		Plate.select( Plate.selected );
 		
-		//console.log( 'click on plate', Plate.selected.index );
 		if( playground.canEndGame( ) )
 			playground.endGame( );
 	} // Platonic.onClick

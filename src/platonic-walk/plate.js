@@ -148,7 +148,7 @@ class Plate extends Group
 	
 	// select/unselect plate
 	static select( object )
-	{
+	{		
 		if( Plate.selected )
 		{
 			Plate.selected.color = 'LightGray';
@@ -159,7 +159,10 @@ class Plate extends Group
 		{
 			// if plate is a tree or a stone, then it has
 			// property plate that is the actual plate
-			if( object.plate ) object = object.plate.face;
+			if( object.plate )
+			{
+				object = object.plate.face;
+			}
 			
 			Plate.selected = object;
 			Plate.selected.color = 'WhiteSMoke';

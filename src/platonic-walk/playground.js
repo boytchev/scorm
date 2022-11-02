@@ -26,9 +26,6 @@ class Playground extends ScormPlayground
 				jp: 'プラトニックな散歩------'},
 		] );
 		
-		orb.addEventListener( 'start', () => Playground.POINTER_USED=true  );
-		orb.addEventListener( 'end', () => Playground.POINTER_USED=false );
-
 		// the Platonic solids
 		this.solid = null;
 		this.solids = [];
