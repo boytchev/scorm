@@ -74,7 +74,7 @@ The application requires a good level of visual memory and persistent mapping of
 
 This application uses a model from [Mixamo](https://www.mixamo.com):
 
-- Character "Claire" and animation "Look Around" available free as stated in [Mixamo | Common questions](https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html),
+- Character "Claire" and animation "Look Around" available free as stated in [Mixamo / Common questions](https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html),
 
 a background soundscape from [FreeSound](https://freesound.org):
 
