@@ -200,7 +200,7 @@ class Playground extends ScormPlayground
 		// draw the glyph image (used as map texture)
 		this.ringImage.clear( 'Crimson' );
 		this.glyphStroke( this.ringImage, seed );
-		this.ringImage.stroke( 'Black', 12 );
+		this.ringImage.stroke( 'Black', 14 );
 		this.ringImage.stroke( 'Yellow', 10 );
 		
 		if( material.map ) material.map.dispose( );

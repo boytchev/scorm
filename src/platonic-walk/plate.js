@@ -120,9 +120,9 @@ class Plate extends Group
 				p = [[0,1,Φ], [0,1,-Φ], [0,-1,Φ], [0,-1,-Φ], [1,Φ,0], [1,-Φ,0], [-1,Φ,0], [-1,-Φ,0], [Φ,0,1], [-Φ,0,1], [Φ,0,-1], [-Φ,0,-1]];
 				for( var i=0; i<p.length; i++ )
 				{
-					p[i][0] += random(-0.4,0.4);
-					p[i][1] += random(-0.4,0.4);
-					p[i][2] += random(-0.4,0.4);
+					p[i][0] += random(-0.6,0.6);
+					p[i][1] += random(-0.6,0.6);
+					p[i][2] += random(-0.6,0.6);
 				}
 
 				var crown = convex( p, random(0.2,0.3), 'DarkSeaGreen' );
@@ -131,9 +131,9 @@ class Plate extends Group
 					crown.plate = this;
 					
 				object.add( crown, stem );
-				its.threejs.castShadow = true;
-				its.spinV = -90;
-				its.plate = this;
+				object.threejs.castShadow = true;
+				//object.spinV = -90;
+				object.plate = this;
 				break;
 		}
 
