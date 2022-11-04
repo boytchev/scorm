@@ -47,7 +47,7 @@ class Playground extends ScormPlayground
 		
 		// generate initial hue and hue step
 		var masterHue = random( 0, 359 ),
-			hueStep = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 70, 7 );
+			hueStep = this.configRange( 70, 7 );
 			
 		// setup master plate hue
 		this.masterPlate.index = random([0.5, 1.5, 2.5, 3.5, 4.5]);
@@ -97,7 +97,7 @@ class Playground extends ScormPlayground
 			if( plate.selected ) answers.push( Math.abs(plate.index-this.masterPlate.index)-0.5 );
 		}
 
-		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
+		var points = this.maxPoints( );
 		
 		var score = 0;
 		

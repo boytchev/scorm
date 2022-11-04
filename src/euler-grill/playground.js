@@ -43,7 +43,7 @@ class Playground extends ScormPlayground
 
 	
 
-	// starts a new game by selecting new color hues
+	// starts a new game 
 	newGame( )
 	{
 		super.newGame( );
@@ -52,16 +52,16 @@ class Playground extends ScormPlayground
 
 		this.spinner.deactivate( );
 		
-		Spinner.SPEED = random([-1,1]) * THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0, 50 ); 
+		Spinner.SPEED = random([-1,1]) * this.configRange( 5, 50 ); 
 
 		// tunnels
-		var tunnels = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 1, 8 ) - random([0,1]) );
+		var tunnels = this.configRangeInt( 1.7, 8 ) - random([0,1]);
 		this.spinner.box.T = {x: 0, y:0, z:0};
 		for( var i=0; i<tunnels; i++ )
 			this.spinner.box.T[random(['x','y','z'])]++;
 		
 		//numbed of grid units
-		this.spinner.box.N = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 6, 12 ) );
+		this.spinner.box.N = this.configRangeInt( 6, 12 );
 
 		this.spinner.box.regenerateBox( );
 
@@ -85,8 +85,8 @@ class Playground extends ScormPlayground
 	// returns the score of the current game
 	evaluateGame( )
 	{
-		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 ),
-			maxError = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 6, 4 );
+		var points = this.maxPoints( ),
+			maxError = this.configRange( 6, 4 );
 			
 		var box = playground.spinner.box,
 			error = Math.abs( THREE.MathUtils.clamp( box.F-box.E+box.V, -6, 6 ) - playground.slider.euler);
