@@ -478,6 +478,80 @@ class ScormPlayground
 		
 		playground.setSound( );
 	}
+
+
+	// generate configuraiton value based on difficulty
+	configRange( min, max, power=1 )
+	{
+		var difficulty = playground?.difficulty || 0,		
+			value = THREE.MathUtils.mapLinear( difficulty**power, 10**power, 100**power, min, max );
+			
+		return value;
+	} // Playground.config
+
+
+	// generate points score based on difficulty
+	maxPoints( )
+	{
+		var difficulty = playground?.difficulty || 0,		
+			value = THREE.MathUtils.mapLinear( difficulty, 0, 100, 30, 100 );
+			
+		return value;
+	} // Playground.maxPoints
+
+
+/*
+  D:\Pavel\Projects\GitHub\scorm\src\aerial-maze\playground.js (4 hits)
+	Line 118: 		var planetSize = Math.round(THREE.MathUtils.mapLinear( this.difficulty**1.2, 10**1.2, 100**1.2, 0, this.planets.length-1 )),
+	Line 119: 			midPointsCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty**1.5, 10**1.5, 100**1.5, 0, 2 )),
+	Line 120: 			randomRoutesCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty**1.5, 10**2, 100**1.5, 0, 7 ));
+	Line 205: 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
+  D:\Pavel\Projects\GitHub\scorm\src\color-hues\playground.js (2 hits)
+	Line 50: 			hueStep = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 70, 7 );
+	Line 100: 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
+  D:\Pavel\Projects\GitHub\scorm\src\euler-grill\playground.js (6 hits)
+	Line 55: 		Spinner.SPEED = random([-1,1]) * THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0, 50 ); 
+	Line 58: 		var tunnels = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 1, 8 ) - random([0,1]) );
+	Line 64: 		this.spinner.box.N = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 6, 12 ) );
+	Line 88: 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 ),
+	Line 89: 			maxError = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 6, 4 );
+	Line 94: 		var score = THREE.MathUtils.mapLinear( error, 0, maxError, 1, 0 );
+  D:\Pavel\Projects\GitHub\scorm\src\gift-wrapping\playground.js (6 hits)
+	Line 41: 		var totalCount = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 5, Cloud.MAX_POINTS ) | 0,
+	Line 43: 			displacement = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, 2 );
+	Line 45: 		Cloud.SIZE = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 15, 30 );
+	Line 46: 		Cloud.MIN_PLANE_DIST = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 4, 2 );
+	Line 75: 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
+	Line 76: 		var penalty = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 2, 10 );
+  D:\Pavel\Projects\GitHub\scorm\src\ink-tank\playground.js (3 hits)
+	Line 113: 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
+	Line 114: 		var granularity  = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 3, 10 );
+	Line 134: 		var score = THREE.MathUtils.mapLinear( error, 1, granularity, 1, 0 );
+  D:\Pavel\Projects\GitHub\scorm\src\matrix-carousel\playground.js (1 hit)
+	Line 199: 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 ),
+  D:\Pavel\Projects\GitHub\scorm\src\normal-pins\membrane.js (1 hit)
+	Line 110: 		var scale = THREE.MathUtils.mapLinear( playground?.difficulty || 0, 10, 100, 1, 1.5 ),
+  D:\Pavel\Projects\GitHub\scorm\src\normal-pins\playground.js (5 hits)
+	Line 52: 		this.n = Math.round( THREE.MathUtils.mapLinear( this.difficulty**5, 10**5, 100**5, 1, 4 ));
+	Line 78: 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
+	Line 79: 		var maxAngle = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 60, 30 ),
+	Line 80: 			minAngle = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 20, 10 );
+	Line 101: 			var subScore = THREE.MathUtils.mapLinear( angle, minAngle, maxAngle, 1, 0 );
+  D:\Pavel\Projects\GitHub\scorm\src\race-balls\playground.js (6 hits)
+	Line 56: 			n = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 0, 70, 3, Playground.N ));
+	Line 58: 			n = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 70, 100, Playground.N-1, 4 ));
+	Line 76: 		var speedGap = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 1, 0.15 )/Math.pow(n,1.25),
+	Line 77: 			speed = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0.1, 0.5 );
+	Line 143: 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
+	Line 164: 					score += THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0.1, 0.3 );
+  D:\Pavel\Projects\GitHub\scorm\src\scorm-template\playground.js (1 hit)
+	Line 51: 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
+  D:\Pavel\Projects\GitHub\scorm\src\thimble-bits\playground.js (4 hits)
+	Line 42: 		this.thimble.lines = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 2, 6 ) );
+	Line 43: 		this.thimble.extraBumps = Math.round( THREE.MathUtils.clamp( THREE.MathUtils.mapLinear( this.difficulty, 40, 100, 0, 20 ), 0, 10 ) );
+	Line 44: 		this.thimble.shownHints = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 1, 0 );
+	Line 74: 		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
+*/
 	
 } // class ScormPlayground
 	
@@ -505,6 +579,7 @@ class ScormUtils
 			
 		return map;
 	} // ScormUtils.image
-	
+
+
 } // class ScormUtils
 

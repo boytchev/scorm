@@ -264,8 +264,8 @@ class Playground extends ScormPlayground
 		this.solidIdx = this.difficulty<30 ? 0 : random( [0,1,2,3,4] );
 		this.spotIdx = Math.floor( random(0, this.solids[this.solidIdx].spots.length) );
 		
-		var	routeLength = Math.round( THREE.MathUtils.mapLinear( this.difficulty**2, 10**2, 100**2, 1, 6 ) ),
-			routeMax = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 2, 5 );
+		var	routeLength = Math.round( this.configRange( 1, 6, 2 ) ),
+			routeMax = this.configRange( 2, 5 );
 
 		// generate descriptor of the route; forward > 0, backward < 0, twin between two numbers
 		// [2,-2,3,0] means FFtBBtFFFt
@@ -297,7 +297,7 @@ class Playground extends ScormPlayground
 	// returns the score of the current game
 	evaluateGame( )
 	{
-		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
+		var points = this.maxPoints( );
 		
 		// traverse the route to find the correct ending plate
 		var spotIdx = this.spotIdx;
