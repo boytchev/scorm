@@ -38,12 +38,12 @@ class Playground extends ScormPlayground
 
 		this.clickSound.play( );
 
-		var totalCount = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 5, Cloud.MAX_POINTS ) | 0,
+		var totalCount = this.configRange( 5, Cloud.MAX_POINTS ) | 0,
 			outCount = Math.max( totalCount/2.5, 6 ) | 0,
-			displacement = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 0, 2 );
+			displacement = this.configRange( 0, 2 );
 
-		Cloud.SIZE = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 15, 30 );
-		Cloud.MIN_PLANE_DIST = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 4, 2 );
+		Cloud.SIZE = this.configRange( 15, 30 );
+		Cloud.MIN_PLANE_DIST = this.configRange( 4, 2 );
 		
 		this.cloud.sphere.size = Cloud.SIZE;		
 		
@@ -72,8 +72,8 @@ class Playground extends ScormPlayground
 	// returns the score of the current game
 	evaluateGame( )
 	{
-		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
-		var penalty = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 2, 10 );
+		var points = this.maxPoints( );
+		var penalty = this.configRange( 2, 10 );
 		
 		function hashCode( x, y, z )
 		{

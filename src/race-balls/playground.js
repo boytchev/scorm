@@ -73,8 +73,8 @@ class Playground extends ScormPlayground
 			}
 		
 		// pick speeds based on difficulty
-		var speedGap = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 1, 0.15 )/Math.pow(n,1.25),
-			speed = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0.1, 0.5 );
+		var speedGap = this.configRange( 1, 0.15 )/Math.pow(n,1.25),
+			speed = this.configRange( 0.1, 0.5 );
 
 		// generate shuffled array of speeds
 		var speeds = [];
@@ -140,7 +140,7 @@ class Playground extends ScormPlayground
 	// returns the score of the current game
 	evaluateGame( )
 	{
-		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
+		var points = this.maxPoints( );
 
 		var speeds = [];
 		for( let track of this.tracks )
@@ -161,7 +161,7 @@ class Playground extends ScormPlayground
 					score += 0.5
 				else
 				if( idx==1 || idx==speeds.length-2 )
-					score += THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 0.1, 0.3 );
+					score += this.configRange( 0.1, 0.3 );
 			}
 		return score * points;
 
