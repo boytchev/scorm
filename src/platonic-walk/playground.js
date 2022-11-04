@@ -264,7 +264,7 @@ class Playground extends ScormPlayground
 		this.solidIdx = this.difficulty<30 ? 0 : random( [0,1,2,3,4] );
 		this.spotIdx = Math.floor( random(0, this.solids[this.solidIdx].spots.length) );
 		
-		var	routeLength = Math.round( this.configRange( 1, 6, 2 ) ),
+		var	routeLength = this.configRangeInt( 1, 6, 2 ),
 			routeMax = this.configRange( 2, 5 );
 
 		// generate descriptor of the route; forward > 0, backward < 0, twin between two numbers
