@@ -115,9 +115,9 @@ class Playground extends ScormPlayground
 		
 
 		// config
-		var planetSize = Math.round(THREE.MathUtils.mapLinear( this.difficulty**1.2, 10**1.2, 100**1.2, 0, this.planets.length-1 )),
-			midPointsCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty**1.5, 10**1.5, 100**1.5, 0, 2 )),
-			randomRoutesCount = Math.round(THREE.MathUtils.mapLinear( this.difficulty**1.5, 10**2, 100**1.5, 0, 7 ));
+		var planetSize = this.configRangeInt( 0, this.planets.length-1, 1.2 ),
+			midPointsCount = this.configRangeInt( 0, 2, 1.5 ),
+			randomRoutesCount = this.configRangeInt( 0, 7, 1.5 );
 
 		// for high level (near score 100) reduce the complexity
 		if( this.totalScore >= 90 )
@@ -202,7 +202,7 @@ class Playground extends ScormPlayground
 	// returns the score of the current game
 	evaluateGame( )
 	{
-		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
+		var points = this.maxPoints( );
 		
 		// distance to target
 		var dist = Math.sqrt(
