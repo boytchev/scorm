@@ -1,6 +1,6 @@
 ---
-title: 'Suica SCORM'
-description: A collection of SCORM modules
+title: 'SCORM'
+description: A collection of Suica SCORM modules
 tag: github
 ---
 
