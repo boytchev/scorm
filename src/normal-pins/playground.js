@@ -49,7 +49,7 @@ class Playground extends ScormPlayground
 		this.membrane.show( );
 		
 		// number of pins
-		this.n = Math.round( THREE.MathUtils.mapLinear( this.difficulty**5, 10**5, 100**5, 1, 4 ));
+		this.n = this.configRangeInt( 1, 4, 5 );
 
 		var	angle = random( 0, 2*Math.PI ),
 			dist;
@@ -75,9 +75,9 @@ class Playground extends ScormPlayground
 	// returns the score of the current game
 	evaluateGame( )
 	{
-		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
-		var maxAngle = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 60, 30 ),
-			minAngle = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 20, 10 );
+		var points = this.maxPoints( );
+		var maxAngle = this.configRange( 60, 30 ),
+			minAngle = this.configRange( 20, 10 );
 		
 		var score = 0;
 	

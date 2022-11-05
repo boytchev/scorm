@@ -39,9 +39,9 @@ class Playground extends ScormPlayground
 		
 		super.newGame( );
 
-		this.thimble.lines = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 2, 6 ) );
-		this.thimble.extraBumps = Math.round( THREE.MathUtils.clamp( THREE.MathUtils.mapLinear( this.difficulty, 40, 100, 0, 20 ), 0, 10 ) );
-		this.thimble.shownHints = THREE.MathUtils.mapLinear( this.difficulty, 10, 100, 1, 0 );
+		this.thimble.lines = this.configRangeInt( 2, 6 );
+		this.thimble.extraBumps = THREE.MathUtils.clamp( this.configRangeInt( -10, 20 ), 0, 10 );
+		this.thimble.shownHints = this.configRange( 1, 0 );
 
 		this.thimble.regenerate( );
 		
@@ -71,7 +71,7 @@ class Playground extends ScormPlayground
 	// returns the score of the current game
 	evaluateGame( )
 	{
-		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
+		var points = this.maxPoints( );
 		
 		var thimble = playground.thimble,
 			tiles = thimble.plates[thimble.userZone].tiles,

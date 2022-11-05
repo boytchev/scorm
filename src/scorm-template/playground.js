@@ -48,7 +48,7 @@ class Playground extends ScormPlayground
 	// returns the score of the current game
 	evaluateGame( )
 	{
-		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
+		var points = this.maxPoints( );
 		
 		// ...
 		

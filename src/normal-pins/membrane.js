@@ -107,8 +107,10 @@ class Membrane extends Group
 	// generate a new coordinates of surface's control points
 	randomize( )
 	{
-		var scale = THREE.MathUtils.mapLinear( playground?.difficulty || 0, 10, 100, 1, 1.5 ),
-			threshold = (playground?.difficulty/100)**0.5;
+		// var scale = THREE.MathUtils.mapLinear( playground?.difficulty || 0, 10, 100, 1, 1.5 ),
+			// threshold = (playground?.difficulty/100)**0.5;
+		var scale = playground?.configRange( 1, 1.5 ) || 1,
+			threshold = (playground?.difficulty/100)**0.5 || 0;
 		
 		// randomize control points
 		for( var n in this.pi )

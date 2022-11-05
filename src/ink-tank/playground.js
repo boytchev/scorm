@@ -110,8 +110,8 @@ class Playground extends ScormPlayground
 	// returns the score of the current game
 	evaluateGame( )
 	{
-		var points = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 30, 100 );
-		var granularity  = THREE.MathUtils.mapLinear( this.difficulty, 0, 100, 3, 10 );
+		var points = this.configRange( 30, 100 );
+		var granularity  = this.configRange( 3, 10 );
 		
 		var water = this.tank.water,
 			max = Math.max( water.cyan, water.magenta, water.yellow );
