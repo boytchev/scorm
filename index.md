@@ -1,3 +1,9 @@
+---
+title: 'Suica SCORM'
+description: A collection of SCORM modules
+tag:
+---
+
 &nbsp;
 
 <!-- “Patience is not the ability to wait, but the ability to keep a good attitude while waiting.”-->

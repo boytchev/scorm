@@ -1,6 +1,6 @@
 ---
-title: 'Suica SCORM'
-description: Aerial Maze
+title: 'Aerial Maze'
+description: A Suica SCORM module
 tag: scorm
 ---
 
