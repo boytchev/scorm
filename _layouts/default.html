@@ -20,7 +20,7 @@
       <h2 class="project-tagline">{{ page.description | default: site.description | default: site.github.project_tagline }}</h2>
 	  
   
-		{% if page.title == "github" %}
+		{% if page.tag contains "github" %}
 			<a href="{{ site.github.repository_url }}" class="btn">View on GitHub</a>
 		{% endif %}
 
