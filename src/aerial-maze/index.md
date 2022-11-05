@@ -1,3 +1,9 @@
+---
+title: 'Suica SCORM'
+description: Aerial Maze
+tag: scorm
+---
+
 &nbsp;
 # Aerial maze
 
