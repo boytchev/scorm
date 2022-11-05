@@ -1,5 +1,11 @@
+---
+title: 'Euler Grill'
+description: A Suica SCORM module
+tag: scorm
+---
+
 &nbsp;
-# Euler Grill
+### About
 
 The [Euler characteristic](https://en.wikipedia.org/wiki/Euler_characteristic) is a number **&#967;** that describes the overall 3D shape regardless of how it is deformed. This number is calculated by **&#967;=V−E+F** where **V** is the number of vertices, **E** is the number of shapes and **F** is the number of faces. In its simplest form, this number can be expressed as **&#967;=2-2T**, where **T** is the number of tunnels. Thus, a cube and a sphere have both **&#967;=2**, while a torus has **&#967;=0**, because **T=1**. Another way to calculate the Euler characteristic is by the [Euler-Poincaré formula](https://pages.mtu.edu/~shene/COURSES/cs3621/NOTES/model/euler.html).
 

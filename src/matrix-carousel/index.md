@@ -1,5 +1,11 @@
+---
+title: 'Matrix carousel'
+description: A Suica SCORM module
+tag: scorm
+---
+
 &nbsp;
-# Matrix carousel
+### About
 
 The [swing carousel](https://en.wikipedia.org/wiki/Swing_ride) is an amusement ride with seats hanging from a spinning top. This application features a carousel with geometrical transformations and matrices. The basic geometrical transformations can be represented with [transformation matrices](https://en.wikipedia.org/wiki/Transformation_matrix). 
 

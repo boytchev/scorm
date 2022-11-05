@@ -1,5 +1,11 @@
+---
+title: 'Normal Pins'
+description: A Suica SCORM module
+tag: scorm
+---
+
 &nbsp;
-# Normal Pins
+### About
 
 [Normal vectors](https://mathworld.wolfram.com/NormalVector.html) serve an important role in Mathematics and Computer Graphics. When a normal vector is constructed on a point on a surface, this vector is perpendicular to the surface around this point. This application shows pins that must be put on a [pincushion](https://en.wikipedia.org/wiki/Pincushion). The positions of the pins are fixed, but their orientations can be manipulated. All pins come in pairs &ndash; one pin is against its mate pin.
 

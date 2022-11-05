@@ -1,5 +1,11 @@
+---
+title: 'Platonic walk'
+description: A Suica SCORM module
+tag: scorm
+---
+
 &nbsp;
-# Platonic walk
+### About
 
 Many computer graphics algorithms use a special data structure to represent and work with polyhedra &ndash; [Doubly Connected Edge List (DCEL)](https://en.wikipedia.org/wiki/Doubly_connected_edge_list). This structure represents each edge as two half-edges with opposite directions.  
 

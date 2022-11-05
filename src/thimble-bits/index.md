@@ -1,5 +1,11 @@
+---
+title: 'Thimble bits'
+description: A Suica SCORM module
+tag: scorm
+---
+
 &nbsp;
-# Thimble bits
+### About
 
 Line clipping in computer graphics is a process for removing parts of lines that are outside the graphical window. One of the basic algorithms for this is the [Cohen–Sutherland line clipping algorithm](https://en.wikipedia.org/wiki/Cohen–Sutherland_algorithm). It divides the window into zones and assigns a bitmask for each zone. The thimble bits application represents a topological variation with the following modifications:
 

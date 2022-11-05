@@ -1,5 +1,11 @@
+---
+title: 'Race balls'
+description: A Suica SCORM module
+tag: scorm
+---
+
 &nbsp;
-# Race balls
+### About
 
 Speed is the time rate at which a numerical parameter changes. This parameter could be position in space, color, angle of orientation, level of transparency, etc. When an object orbits another objects, its speed can be defined in two ways: distance per time or angle per time. The later is called *angular speed* and it is the magnitute of the [orbital angular velocity](https://en.wikipedia.org/wiki/Angular_velocity).
 

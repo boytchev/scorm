@@ -1,5 +1,11 @@
+---
+title: 'Color Hues'
+description: A Suica SCORM module
+tag: scorm
+---
+
 &nbsp;
-# Color Hues
+### About
 
 [Hue](https://en.wikipedia.org/wiki/Hue) is the main property of a color. It defines the color tone, like red, green or blue. This application shows colors with different hues and the user must fit a hue among other hues. Colors can be organized by their hue in a [color wheel](color-wheel.html).
 

@@ -1,5 +1,11 @@
+---
+title: 'Gift-wrapping'
+description: A Suica SCORM module
+tag: scorm
+---
+
 &nbsp;
-# Gift-wrapping
+### About
 
 A [convex hull](https://en.wikipedia.org/wiki/Convex_hull) is the smallest shape that envelops a set of points in space. They are important in 3D modelling, because some computer graphics algorithms benefit from objects being convex. The following image shows a concave 3D object and its convex hull.
 

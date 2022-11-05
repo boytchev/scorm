@@ -1,7 +1,7 @@
 ---
 title: 'Suica SCORM'
 description: A collection of SCORM modules
-tag:
+tag: github
 ---
 
 &nbsp;

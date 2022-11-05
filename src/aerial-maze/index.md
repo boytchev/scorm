@@ -5,7 +5,7 @@ tag: scorm
 ---
 
 &nbsp;
-# Aerial maze
+### About
 
 When airplane fly they can change their orientation by rotation around [three principal axes](https://en.wikipedia.org/wiki/Aircraft_principal_axes) &ndash; <em>vertical</em>, <em>transverse</em> and <em>longitudinal</em>. The rotation around the vertical axis is called [yaw](https://howthingsfly.si.edu/flight-dynamics/roll-pitch-and-yaw) (i.e. the front of the aircraft turns left or right). The rotation around the transverse axis is called [pitch](https://howthingsfly.si.edu/flight-dynamics/roll-pitch-and-yaw) (i.e. the front of the aircraft goes up or down). The rotation around the longitudinal axis is called [roll](https://howthingsfly.si.edu/flight-dynamics/roll-pitch-and-yaw) (i.s. the aircraft rolls clockwise or counterclockwise). 
 
