@@ -478,6 +478,36 @@ class ScormPlayground
 		
 		playground.setSound( );
 	}
+
+
+	// generate configuraiton value based on difficulty
+	configRange( min, max, power=1 )
+	{
+		var difficulty = playground?.difficulty || 0,		
+			value = THREE.MathUtils.mapLinear( difficulty**power, 10**power, 100**power, min, max );
+			
+		return value;
+	} // Playground.config
+
+
+	// generate integer configuraiton value based on difficulty
+	configRangeInt( min, max, power=1 )
+	{
+		var value = this.configRange( min, max, power );
+		
+		return Math.round( value );
+	} // Playground.configRangeInt
+	
+	
+	// generate points score based on difficulty
+	maxPoints( )
+	{
+		var difficulty = playground?.difficulty || 0,		
+			value = THREE.MathUtils.mapLinear( difficulty, 0, 100, 30, 100 );
+			
+		return value;
+	} // Playground.maxPoints
+
 	
 } // class ScormPlayground
 	
@@ -505,6 +535,7 @@ class ScormUtils
 			
 		return map;
 	} // ScormUtils.image
-	
+
+
 } // class ScormUtils
 
