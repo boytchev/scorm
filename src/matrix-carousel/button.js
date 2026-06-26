@@ -4,7 +4,7 @@
 	
 
 
-class Button extends Group
+class Button extends Suica.Group
 {
 	static SIZE = 8;
 	static YOYO_SPEED = 150; // in ms

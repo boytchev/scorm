@@ -3,7 +3,7 @@
 //
 
 	
-class Membrane extends Group
+class Membrane extends Suica.Group
 {
 	
 	static GRID = 10;
@@ -88,7 +88,7 @@ class Membrane extends Group
 				roughness: 1,
 				metalness: 0,
 				bumpMap: image('images/tile.png'),
-				bumpScale: 0.8,
+				bumpScale: 5*0.8,
 				sheen: 0,
 				sheenColor: 'white',
 				sheenRoughness: 0.15,
@@ -212,7 +212,7 @@ class Membrane extends Group
 		}
 			
 		new TWEEN.Tween( mat )
-			.to( {sheen:0.5*k, metalness:0.85*k, roughness:1-0.85*k, bumpScale:0.8-0.75*k }, Membrane.SHOW_SPEED/2 )
+			.to( {sheen:0.5*k, metalness:0.85*k, roughness:1-0.85*k, bumpScale:5*(0.8-0.75*k) }, Membrane.SHOW_SPEED/2 )
 			.easing( TWEEN.Easing.Linear.None )
 			.start( );
 

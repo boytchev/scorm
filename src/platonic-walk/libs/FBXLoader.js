@@ -19,6 +19,37 @@
 	let connections;
 	let sceneGraph;
 
+	function extractUrlBase( url ) {
+
+		const index = url.lastIndexOf( '/' );
+
+		if ( index === - 1 ) return './';
+
+		return url.substr( 0, index + 1 );
+
+	}
+	
+	function decodeText ( array ) {
+
+		let s = '';
+
+		for ( let i = 0, il = array.length; i < il; i ++ )
+			s += String.fromCharCode( array[ i ] );
+
+/*		try {
+
+			return decodeURIComponent( escape( s ) );
+
+		} catch ( e ) { // see #16358
+
+			return s;
+
+		}
+*/
+
+		return s;
+	}
+	
 	class FBXLoader extends THREE.Loader {
 
 		constructor( manager ) {
@@ -30,7 +61,7 @@
 		load( url, onLoad, onProgress, onError ) {
 
 			const scope = this;
-			const path = scope.path === '' ? THREE.LoaderUtils.extractUrlBase( url ) : scope.path;
+			const path = scope.path === '' ? /*THREE.LoaderUtils.*/extractUrlBase( url ) : scope.path;
 			const loader = new THREE.FileLoader( this.manager );
 			loader.setPath( scope.path );
 			loader.setResponseType( 'arraybuffer' );
@@ -3536,7 +3567,7 @@
 
 			const nullByte = a.indexOf( 0 );
 			if ( nullByte >= 0 ) a = a.slice( 0, nullByte );
-			return THREE.LoaderUtils.decodeText( new Uint8Array( a ) );
+			return /*THREE.LoaderUtils.*/decodeText( new Uint8Array( a ) );
 
 		}
 
@@ -3797,7 +3828,7 @@
 
 		if ( from === undefined ) from = 0;
 		if ( to === undefined ) to = buffer.byteLength;
-		return THREE.LoaderUtils.decodeText( new Uint8Array( buffer, from, to ) );
+		return /*THREE.LoaderUtils.*/decodeText( new Uint8Array( buffer, from, to ) );
 
 	}
 
@@ -3831,5 +3862,5 @@
 	}
 
 	THREE.FBXLoader = FBXLoader;
-
+	window.FBXLoader = FBXLoader;
 } )();

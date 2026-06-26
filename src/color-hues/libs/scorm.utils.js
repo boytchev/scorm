@@ -4,6 +4,40 @@
 
 
 
+// smart legacy XR path enforcer - only for local development with emulator / AI
+function setupLegacyXRForEmulator()
+{
+
+    const isLocalhost = window.location.hostname === 'localhost' ||
+                        window.location.hostname === '127.0.0.1' ||
+                        window.location.hostname === '[::1]';
+
+    if( !isLocalhost ) return; // do nothing if not on localhost
+
+    console.log('Localhost detected - forcing legacy XR path for emulator compatibility');
+
+    if( typeof XRWebGLBinding === "undefined" ) return;
+
+    try {
+		
+        const proto = XRWebGLBinding.prototype;
+        
+        // remove createProjectionLayer to force legacy path
+        if (Object.getOwnPropertyDescriptor(proto, 'createProjectionLayer'))
+		{
+			
+            delete proto.createProjectionLayer;
+            console.log('Successfully forced legacy XR path');
+			
+        }
+		
+    } catch (e) {
+        console.warn('could not modify XRWebGLBinding:', e);
+    }
+}
+
+
+
 function update( t, dT )
 {
 	if( playground?.gameStarted )
@@ -41,6 +75,7 @@ class PlaygroundAudio
 			
 //			console.log( 'LOADING', audioFile.split('/').pop() );
 		}
+
 	}
 
 
@@ -105,13 +140,19 @@ class ScormPlayground
 
 	constructor( )
 	{
+		lookAt( [0,0,200], [0,0,0], [0,1,0] );
+
 		this.gameStarted = false;
+		
+		this.gameTime = 0;
+		this.gameHits = 0;
+		this.gameNumber = 0;
 		
 		this.totalTime = 0;
 		
 		this.totalScore = 0;
 		this.scoreHistory = [];
-		
+				
 		this.redrawScoreHistory( );
 
 		this.soundMelody = [];
@@ -119,12 +160,30 @@ class ScormPlayground
 		this.loadSounds( );
 		
 		this.userInteracted = false; // used for audio play
+
+		suica.light.intensity = 0;
+
+		this.light = new THREE.PointLight( 'white', 5 );
+		this.light.position.y = 1;
+		this.light.decay = 0;
+		suica.scene.add( this.light );
+			
+			
+		this.urlParams = new URLSearchParams( window.location.search );
+		this.vr = this.urlParams.has( 'vr' );
+		if( this.vr ) {
+			setupLegacyXRForEmulator();
+			suica.vr( );
+		} else {
+			suica.fullScreen( );
+		}
 		
 		scorm.setValue( 'cmi.core.lesson_status', 'incomplete' );
 
 		element( 'sound-on-off' ).addEventListener( 'click', this.toggleSound );
 
 		window.addEventListener( 'pointerdown', this.onGlobalClick );
+		window.addEventListener( 'visibilitychange', this.onVisibilityChange );
 
 		setInterval( update4PerSecond, 1000 );
 		
@@ -182,13 +241,21 @@ class ScormPlayground
 
 	onGlobalClick( )
 	{
-//		console.log('USER');
 		if( playground )
 		{
-			window.removeEventListener( 'pointerdown', playground.onGlobalClick );
 			playground.userInteracted = true;
 			playground.setSound( );
+			playground.gameHits++;
 		}
+	}
+
+
+	// if user exits the game tab, end the game automatically
+	
+	onVisibilityChange( )
+	{
+		if( playground && playground.gameStarted )
+			playground.endGame( true );
 	}
 
 
@@ -227,24 +294,49 @@ class ScormPlayground
 	} // ScormPlayground.redrawPerformanceGraph
 	
 	
-	
 	// starts a new game
 	newGame( )
 	{
-		// initiate SCORM data when the first game starts,
-		// i.e. there is still no any score history
-		if( this.scoreHistory.length==0 )
-		{
-			scorm.setValue( 'cmi.core.lesson_status', 'completed' );
-			scorm.setValue( 'cmi.core.score.max', 100 );
-			scorm.setValue( 'cmi.core.score.min', 0 );
-		}
+		
+		this.gameNumber++;
+				
+		// if score is almost 100, keep it as it is (no penalty for early exit)
+		var score = this.totalScore * (this.totalScore > 99.9 ? 1 : Playground.TEMPORAL_AVERAGE_OLD);
+			score = score.toFixed( 1 )+'1'; // id for start of game
 
-		// protect agains browser closure - assume that the user
-		// will gets 0 points, update the points when the game ends
-		scorm.score = (Playground.TEMPORAL_AVERAGE_OLD*this.totalScore).toFixed(1);
+		setTimeout( () => {
+			
+			if ( scorm.api && scorm.api.LMSInitialize( "" ) ) {
 
+				// initiate SCORM data when the first game starts,
+				// i.e. there is still no any score history
+				if( this.scoreHistory.length==0 )
+				{
+					//console.log( 'cmi.core.lesson_status', 'completed' );
+					//console.log( 'cmi.core.score.max', 100 );
+					//console.log( 'cmi.core.score.min', 0 );
+
+					scorm.api.LMSSetValue( 'cmi.core.lesson_status', 'completed' );
+					scorm.api.LMSSetValue( 'cmi.core.score.max', 100 );
+					scorm.api.LMSSetValue( 'cmi.core.score.min', 0 );
+				}
+
+				//console.log( 'cmi.core.score.raw', score );
+				//console.log( 'cmi.comments', '['+score );
+
+				scorm.api.LMSSetValue( 'cmi.core.score.raw', score );
+				scorm.api.LMSSetValue( 'cmi.comments', '['+score );
+
+				scorm.api.LMSCommit( '' );
+				scorm.api.LMSFinish( '' );
+
+			}
+			
+		}, 0 );
+		
 		this.gameStarted = true;
+		this.gameTime = performance.now();
+		this.gameHits = 0;
 
 	} // ScormPlayground.newGame
 	
@@ -268,8 +360,9 @@ class ScormPlayground
 	
 	
 	// ends the current game - evaluate results, update data
-	endGame( )
+	endGame( forced = false )
 	{
+
 		// get the score
 		var score = this.evaluateGame( );
 
@@ -277,15 +370,40 @@ class ScormPlayground
 		var oldScore = this.totalScore;
 		this.totalScore = Playground.TEMPORAL_AVERAGE_OLD*this.totalScore + Playground.TEMPORAL_AVERAGE_NEW*score;
 		
-		// ensure that an increment of the total score are at least 1 point
+		// protect high scores
+		if( oldScore>99.9 )
+			this.totalScore = Math.max( this.totalScore, oldScore );
+		
+		// ensure that an increment of the total score is at least 2 points
 		// this is important when the score reaches 100% - increments
 		// become too small
-		if( this.totalScore > oldScore && this.totalScore < oldScore+1 )
-			this.totalScore = THREE.MathUtils.clamp( oldScore+1, 0, 100 );
+		if( this.totalScore > oldScore && this.totalScore < oldScore+2 )
+			this.totalScore = THREE.MathUtils.clamp( this.totalScore+2, 0, 100 );
 
-		// send the score to LMS
-		scorm.score = this.totalScore.toFixed(1);
 
+		var lastScore = this.totalScore.toFixed(1);
+
+		var message = '-' + Math.round(10*Math.round( performance.now() - this.gameTime )/1000)
+						  + '.' + this.gameHits + (forced?'(!)':'') + '=' + lastScore + ']';
+		
+		setTimeout( () => {
+			
+			if ( scorm.api && scorm.api.LMSInitialize( "" ) ) {
+
+				//console.log( 'cmi.core.score.raw', lastScore );
+				//console.log( 'cmi.comments', message );
+
+				// send the score to LMS
+				scorm.api.LMSSetValue( 'cmi.core.score.raw', lastScore );
+				scorm.api.LMSSetValue( 'cmi.comments', message );
+				
+				scorm.api.LMSCommit( "" );
+				scorm.api.LMSFinish( "" );
+				
+			}
+			
+		}, 0 );
+		
 		// record the score in the history
 		this.scoreHistory.push( this.totalScore );
 		if( this.scoreHistory.length > 24 )
@@ -302,7 +420,8 @@ class ScormPlayground
 			element('suica-fullscreen-button' ).remove();
 		
 		this.gameStarted = false;
-		
+
+						
 	} // ScormPlayground.endGame
 	
 	
@@ -316,6 +435,9 @@ class ScormPlayground
 			pointsValue = Math.round(10*(this.totalScore-oldScore))/10;
 			pointsElem.innerHTML = (pointsValue>0?'+':'')+pointsValue;
 			
+		if( this.totalScore>99.9 ) pointsElem.innerHTML = '&#x22C6;';
+		
+
 		new TWEEN.Tween( {opacity:0, scale:4, x:suica.width/2, y:suica.height/2} )
 			.to( {opacity:1, scale:1, x:scoreElem.offsetLeft+30, y:scoreElem.offsetTop}, Playground.POINTS_SPEED )
 			.easing( TWEEN.Easing.Cubic.InOut )
@@ -343,11 +465,8 @@ class ScormPlayground
 	{
 		// get language parameter from the URL,
 		// if omitted, use time zone of the OS
-		
-		var urlParams = new URLSearchParams( window.location.search );
-
-		if( urlParams.has('lang') )
-			return urlParams.get('lang');
+		if( this.urlParams.has('lang') )
+			return this.urlParams.get('lang');
 
 		// https://stackoverflow.com/a/70870895
 		var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -510,6 +629,7 @@ class ScormPlayground
 
 	
 } // class ScormPlayground
+	
 	
 	
 class ScormUtils

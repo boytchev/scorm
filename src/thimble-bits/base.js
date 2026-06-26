@@ -3,7 +3,7 @@
 //
 
 	
-class Base extends Group
+class Base extends Suica.Group
 {
 	static POS_Y = -10;
 	static SIZE = [30,1,30];
@@ -42,7 +42,7 @@ class Base extends Group
 	{
 		// main body of the base
 		var map = ScormUtils.image( 'metal_plate.jpg', 10, 10/Base.SIZE[0] ),
-			normalMap = ScormUtils.image( 'metal_plate_normal.jpg' );
+			normalMap = ScormUtils.image( 'metal_plate_normal.jpg', 10, 10 );
 			//lightMap = ScormUtils.image( 'base_antilight.jpg', 1, 1 );
 		var material = new THREE.MeshStandardMaterial( {
 			color: 'white',

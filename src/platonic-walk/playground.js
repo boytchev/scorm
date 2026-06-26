@@ -316,7 +316,7 @@ class Playground extends ScormPlayground
 		}
 		
 		var plateIdx = this.solid.spotPlate[ spotIdx ];
-		
+
 		// calculate score: 1=match, 0.5=almost match
 		
 		var score = 0;

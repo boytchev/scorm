@@ -3,7 +3,7 @@
 
 
 
-class Maze extends Group
+class Maze extends Suica.Group
 {
 	static POINT_SIZE = 3;
 	

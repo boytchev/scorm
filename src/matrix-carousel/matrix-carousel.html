@@ -73,14 +73,15 @@
 		
 		function findCube( event )
 		{
-			
+
 			var objects = findObjects( event, [playground.carousel.pillar, playground.carousel.pillarTop, ...playground.carousel.cubes] );
 
 			// scan the objects to identify a possible cube
 			for( var object of objects )
 			{
-				if( object instanceof Tube ) return null; // tube is the central pillar
-				if( object instanceof Cube )
+				if( object instanceof Suica.Tube ) return null; // tube is the central pillar
+				if( object instanceof Suica.Group ) object = object.groupElements[0];
+				if( object instanceof Suica.Cube )
 				{
 					for( var cosys of playground.carousel.cosys )
 						if( cosys.cube.groupElements.indexOf( object ) >= 0 && cosys.cube.visible )
@@ -94,12 +95,14 @@
 
 		function onPointerMove( event )
 		{		
+
 			playground.pointerMovement += Math.abs( event.movementX ) + Math.abs( event.movementY );
 			
 			var obj;
 			
 			if( playground.gameStarted )
 			{	
+
 				if( findCube( event ) )
 					event.target.style.cursor = 'ew-resize';
 				else

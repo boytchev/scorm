@@ -3,7 +3,7 @@
 //
 
 	
-class Track extends Group
+class Track extends Suica.Group
 {
 	static RADIUS = 2;
 	static DEPTH = 2;
@@ -32,7 +32,7 @@ class Track extends Group
 						normalScale: new THREE.Vector2( 1/2, 1/2 ),
 					} );
 
-		this.ballLight = new THREE.SpotLight( 'white', -1, 3*Track.BALL_SIZE, 1.2, 1 );
+		this.ballLight = new THREE.SpotLight( 'white', -3, 3*Track.BALL_SIZE, 1.2, 1 );
 		this.ballLight.position.y = 0.1;
 		
 		// create ball
@@ -181,7 +181,7 @@ class Track extends Group
 			this.subball.color = 'orange';
 			this.subball.threejs.material.emissiveIntensity = 0.6;
 			this.ballLight.color.set( 'orange' );
-			this.ballLight.intensity = 3;
+			this.ballLight.intensity = 100;
 			this.ballLight.position.y = 4;
 		}
 		else
@@ -190,7 +190,7 @@ class Track extends Group
 			this.subball.color = 'white';
 			this.subball.threejs.material.emissiveIntensity = 0;
 			this.ballLight.color.set( 'white' );
-			this.ballLight.intensity = -1;
+			this.ballLight.intensity = -3;
 			this.ballLight.position.y = 0.1;
 		}
 	} // Track.onMark

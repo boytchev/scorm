@@ -37,7 +37,8 @@
 			this._hue = hue;
 
 			var colorSpline = spline([
-				[0],[18],[60],[72],[108],[140],[174],[210],[242],[268],[295],[332],[360]
+//				[0],[18],[60],[72],[108],[140],[174],[210],[242],[268],[295],[332],[360]
+				[0],[360]
 			], false, true);
 
 			function cos( base, x )
@@ -59,6 +60,18 @@
 			moveTo( 300+190*Math.cos(radians(i)), 300+190*Math.sin(radians(i)) );
 			lineTo( 300+290*Math.cos(radians(i)), 300+290*Math.sin(radians(i)) );
 			stroke( hue(i), 6 );
+		}
+
+		for( var i=0; i<360; i+=10 )
+		{
+			arc( 300+260*Math.cos(radians(i)), 300+260*Math.sin(radians(i)), 30 );
+			stroke( 'black', 1 );
+		}
+
+		for( var i=0; i<360; i+=10 )
+		{
+			arc( 300+260*Math.cos(radians(i)), 300+260*Math.sin(radians(i)), 30 );
+			fill( hue(i) );
 		}
 
 		arc( 300, 300, 299 );

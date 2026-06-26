@@ -3,7 +3,7 @@
 //
 
 	
-class Arena extends Group
+class Arena extends Suica.Group
 {
 	static SIZE = 8;
 	static DISTANCE = 11.5;

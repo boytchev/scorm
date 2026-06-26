@@ -3,7 +3,7 @@
 //
 
 	
-class Base extends Group
+class Base extends Suica.Group
 {
 	static POS_Y = 6;
 	static SIZE = [48,1,28];

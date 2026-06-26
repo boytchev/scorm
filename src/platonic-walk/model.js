@@ -30,7 +30,7 @@ class THREEJSModel extends THREE.Group
 	loadModel( name )
 	{
 		var that = this;
-		var loader = new THREE.FBXLoader( );
+		var loader = new FBXLoader( );
 			loader.load( 'models/'+THREEJSModel.NAME, objectLoaded );
 				
 		function objectLoaded( object )

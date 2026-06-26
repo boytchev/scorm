@@ -17,9 +17,9 @@
 //		onUnmark( )
 	
 
-
-class Plate extends Group
+class Plate extends Suica.Group
 {
+	static SPIN_SPEED   = 700; // in ms
 	static FLIP_SPEED   = 700; // in ms
 	static TOGGLE_SPEED = 300; // in ms
 	static YOYO_SPEED   = 150; // in ms
@@ -34,15 +34,16 @@ class Plate extends Group
 		this.spinH = spin;
 		this.index = 0;
 		
-		this.basePlate = convex( this.hexagonalGeometry(0.93), [10,1] );
-			its.y = 0.5;
+		this.basePlate = convex( this.hexagonalGeometry(0.93), [10/10,1/10] );
+			its.y = 0.5/10;
 			its.threejs.material = this.frameMaterial();
 	
-		this.colorPlate = convex( this.hexagonalGeometry(1), [7,0.9] );
+		this.colorPlate = convex( this.hexagonalGeometry(1), [7/10,0.9/10] );
 			its.image = 'images/hexagon.jpg';
 			its.images = [0.435,0.495];
 			its.threejs.material.map.offset.set( 0.5, 0.5 );
-			its.y = 0.8;
+			its.y = 0.6/10;
+			its.threejs.material = new THREE.MeshBasicMaterial({map:its.threejs.material.map});
 	
 		this.addEventListener( 'click', this.onClick );
 		this.addEventListener( 'pointerenter', this.onMark );
@@ -92,13 +93,14 @@ class Plate extends Group
 		var normalMap = image( 'images/metal_plate_normal.jpg' );
 			normalMap.repeat.set( SCALE, SCALE );
 			normalMap.offset.set( 0.5, 0.5 );
+			normalMap.colorSpace = THREE.NoColorSpace;
 		
-		var material = new THREE.MeshPhongMaterial({
+		var material = new THREE.MeshStandardMaterial({
 				color: 'linen',
-				shininess: 150,
+				metalness: 0.1,
+				roughness: 0.4,
 				map: map,
 				normalMap: normalMap,
-				normalScale: new THREE.Vector2( 0.2, 0.2 ),
 			});
 
 		return material;
@@ -121,8 +123,7 @@ class Plate extends Group
 	
 	
 	
-	// color hue of the plate - the hue is normalized 
-	// in order to make percieved hues equally distributed
+	// color hue of the plate
 	get hue( )
 	{
 		return this._hue;
@@ -132,9 +133,7 @@ class Plate extends Group
 	{
 		this._hue = hue;
 
-		var colorSpline = spline([
-			[0],[18],[60],[72],[108],[140],[174],[210],[242],[268],[295],[332],[360]
-		], false, true);
+		var colorSpline = spline([[0],[360]], false, true);
 
 		function cos( base, x )
 		{
@@ -183,8 +182,8 @@ class Plate extends Group
 
 		new TWEEN.Tween( this )
 				.to( {
-						height: this.selected?15:1,
-						angle: (this.selected && !this.isMasterPlate)? -10 : 0
+						height: this.selected? (playground.vr?5:15):1,
+						angle: (this.selected && !this.isMasterPlate)? (playground.vr?-25:-10) : 0
 					}, Plate.TOGGLE_SPEED )
 				.easing( TWEEN.Easing.Cubic.InOut )
 				.start( );
@@ -198,7 +197,7 @@ class Plate extends Group
 		playground.clickSound.play( );
 
 		new TWEEN.Tween( this )
-				.to( {y:-5}, Plate.YOYO_SPEED )
+				.to( {y:-5/10}, Plate.YOYO_SPEED )
 				.easing( TWEEN.Easing.Cubic.Out )
 				.repeat( 1 )
 				.yoyo( true )

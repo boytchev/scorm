@@ -41,6 +41,7 @@ class PlaygroundAudio
 			
 //			console.log( 'LOADING', audioFile.split('/').pop() );
 		}
+
 	}
 
 
@@ -107,11 +108,14 @@ class ScormPlayground
 	{
 		this.gameStarted = false;
 		
+		this.gameTime = 0;
+		this.gameHits = 0;
+		
 		this.totalTime = 0;
 		
 		this.totalScore = 0;
 		this.scoreHistory = [];
-		
+				
 		this.redrawScoreHistory( );
 
 		this.soundMelody = [];
@@ -119,12 +123,16 @@ class ScormPlayground
 		this.loadSounds( );
 		
 		this.userInteracted = false; // used for audio play
-		
+
+		this.vr = this.urlParams.has( 'vr' );
+
+
 		scorm.setValue( 'cmi.core.lesson_status', 'incomplete' );
 
 		element( 'sound-on-off' ).addEventListener( 'click', this.toggleSound );
 
 		window.addEventListener( 'pointerdown', this.onGlobalClick );
+		window.addEventListener( 'visibilitychange', this.onVisibilityChange );
 
 		setInterval( update4PerSecond, 1000 );
 		
@@ -182,12 +190,23 @@ class ScormPlayground
 
 	onGlobalClick( )
 	{
-//		console.log('USER');
 		if( playground )
 		{
-			window.removeEventListener( 'pointerdown', playground.onGlobalClick );
 			playground.userInteracted = true;
 			playground.setSound( );
+			playground.gameHits++;
+		}
+	}
+
+
+	onVisibilityChange( )
+	{
+		if( playground && playground.gameStarted )
+		{
+			var message = 'Lost focus';
+			scorm.setValue( 'cmi.comments', message );
+		
+			playground.endGame( );
 		}
 	}
 
@@ -231,6 +250,9 @@ class ScormPlayground
 	// starts a new game
 	newGame( )
 	{
+
+		scorm.setValue( 'cmi.comments', 'New game' );
+
 		// initiate SCORM data when the first game starts,
 		// i.e. there is still no any score history
 		if( this.scoreHistory.length==0 )
@@ -245,6 +267,9 @@ class ScormPlayground
 		scorm.score = (Playground.TEMPORAL_AVERAGE_OLD*this.totalScore).toFixed(1);
 
 		this.gameStarted = true;
+		this.gameTime = performance.now();
+		this.gameHits = 0;
+
 
 	} // ScormPlayground.newGame
 	
@@ -270,12 +295,17 @@ class ScormPlayground
 	// ends the current game - evaluate results, update data
 	endGame( )
 	{
+
 		// get the score
 		var score = this.evaluateGame( );
 
 		// calculate temporal average score
 		var oldScore = this.totalScore;
 		this.totalScore = Playground.TEMPORAL_AVERAGE_OLD*this.totalScore + Playground.TEMPORAL_AVERAGE_NEW*score;
+		
+		// protect high scores
+		if( oldScore>99.99 )
+			this.totalScore = Math.max( this.totalScore, oldScore );
 		
 		// ensure that an increment of the total score are at least 1 point
 		// this is important when the score reaches 100% - increments
@@ -302,6 +332,13 @@ class ScormPlayground
 			element('suica-fullscreen-button' ).remove();
 		
 		this.gameStarted = false;
+
+		window.removeEventListener( 'pointerdown', this.countHits );
+		
+		this.gameTime = (performance.now()-this.gameTime)/1000;
+		
+		var message = 'End game time='+(this.gameTime.toFixed(1))+' hits='+this.gameHits+' score='+this.totalScore.toFixed(1);
+		scorm.setValue( 'cmi.comments', message );
 		
 	} // ScormPlayground.endGame
 	
@@ -316,6 +353,9 @@ class ScormPlayground
 			pointsValue = Math.round(10*(this.totalScore-oldScore))/10;
 			pointsElem.innerHTML = (pointsValue>0?'+':'')+pointsValue;
 			
+		if( this.totalScore>99.99 ) pointsElem.innerHTML = '&#x22C6;';
+		
+
 		new TWEEN.Tween( {opacity:0, scale:4, x:suica.width/2, y:suica.height/2} )
 			.to( {opacity:1, scale:1, x:scoreElem.offsetLeft+30, y:scoreElem.offsetTop}, Playground.POINTS_SPEED )
 			.easing( TWEEN.Easing.Cubic.InOut )
@@ -344,9 +384,7 @@ class ScormPlayground
 		// get language parameter from the URL,
 		// if omitted, use time zone of the OS
 		
-		var urlParams = new URLSearchParams( window.location.search );
-
-		if( urlParams.has('lang') )
+		if( this.urlParams.has('lang') )
 			return urlParams.get('lang');
 
 		// https://stackoverflow.com/a/70870895
@@ -510,6 +548,7 @@ class ScormPlayground
 
 	
 } // class ScormPlayground
+	
 	
 	
 class ScormUtils

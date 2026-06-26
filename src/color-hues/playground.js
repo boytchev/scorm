@@ -10,17 +10,21 @@ class Playground extends ScormPlayground
 	
 	constructor( )
 	{
-		super( );
 		
+		super( );
+
+		this.light.position.y = 20/10;
+
+		this.plates = [];
+	
 		// create plates
 		this.masterPlate = new Plate( [0,0,0], 0 );
 		this.masterPlate.isMasterPlate = true;
 
-		this.plates = [ ];
 		for( var spin=-30; spin<360-30; spin+=60 )
 		{
-			var x = 19 * Math.cos( radians(spin) ),
-				z = 19 * Math.sin( radians(spin) );
+			var x = 19/10 * Math.cos( radians(spin) ),
+				z = 19/10 * Math.sin( radians(spin) );
 		
 			this.plates.push( new Plate( [x,0,z], 90-spin ) );
 		}
@@ -128,6 +132,9 @@ class Playground extends ScormPlayground
 		playground.masterPlate.flipOut( );
 		for( var plate of this.plates ) plate.flipOut( );
 
+		// spin all plates
+		//playground.masterPlate.spinIt( );
+		
 	} // Playground.endGame
 	
 
@@ -136,8 +143,11 @@ class Playground extends ScormPlayground
 	// on orientation of mobile devices
 	resize( )
 	{
-		var distance = 90*THREE.MathUtils.clamp(suica.canvas.clientHeight/suica.canvas.clientWidth,1,3);
-		lookAt( [0,distance,0], [0,0,0], [0,0,1] );
+		if( !this.vr || !suica.renderer.xr?.isPresenting ) 
+		{
+			var distance = 90/10*THREE.MathUtils.clamp(suica.canvas.clientHeight/suica.canvas.clientWidth,1,3);
+			lookAt( [0,distance,0], [0,0,0], [0,0,1] );
+		}
 	} // Playground.resize
 	
 
@@ -152,5 +162,18 @@ class Playground extends ScormPlayground
 		this.soundEffects.push( this.clickSound, this.clackSound );
 		this.soundMelody.push( this.backgroundMelody );
 	} // Playground.loadSounds
+	
+	
+	
+	update( t, dT )
+	{
+		if( this.vr && suica.renderer.xr?.isPresenting )
+		{
+			var y = suica.renderer.xr.getCamera().position.y;
+			lookAt( [0,2,-y], [0,0,-y], [0,0,1] );
+			suica.vrCamera.updateMatrixWorld(true);
+		}
+	}
+	
 	
 } // class Playground

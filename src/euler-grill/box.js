@@ -3,7 +3,7 @@
 //
 
 	
-class Box extends Group
+class Box extends Suica.Group
 {
 	static SIZE = 20;
 	
@@ -68,7 +68,7 @@ class Box extends Group
 
 		var dotted = drawing( 4, 1 );
 			moveTo( 0, 0 );
-			lineTo( 2, 0 );
+			lineTo( 1, 0 );
 		stroke( 'white', 2 );
 		
 		this.wrapper = cube( [0,0,0], 1, 'black' );

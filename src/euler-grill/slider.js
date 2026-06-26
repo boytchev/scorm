@@ -3,7 +3,7 @@
 //
 
 	
-class Slider extends Group
+class Slider extends Suica.Group
 {
 	static SIZE = [5,2,2];
 	static SHADOW_SIZE = [9,4.2];

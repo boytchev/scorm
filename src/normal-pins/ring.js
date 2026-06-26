@@ -3,7 +3,7 @@
 //
 
 	
-class Ring extends Group
+class Ring extends Suica.Group
 {
 	static SIZE = 20;
 	static CLAMP_SIZE = 19.7;

@@ -4,7 +4,7 @@
 	
 
 
-class Button extends Group
+class Button extends Suica.Group
 {
 	static SIZE = [7, 6.5, 7];
 	static CUP_SIZE = [6.8, 7, 6.8];

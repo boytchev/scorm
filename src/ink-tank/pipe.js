@@ -3,7 +3,7 @@
 //
 
 	
-class Pipe extends Group
+class Pipe extends Suica.Group
 {
 	
 	static VALVE_LENGTH = 0.8;

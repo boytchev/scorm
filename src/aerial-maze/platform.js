@@ -3,7 +3,7 @@
 	
 
 
-class Platform extends Group
+class Platform extends Suica.Group
 {
 	
 	static SCALE = 0.6;

@@ -3,11 +3,15 @@
 //
 
 	
+var lastClickTime = -1000;
 
-class Water extends Group
+
+
+class Water extends Suica.Group
 {
 	static DRAIN_ALL_SPEED = 500;
 	static BOOM_TIMEOUT = 350;
+	static DOUBLE_CLICK_PROTECTION = 0.1;
 	
 	constructor( )
 	{
@@ -150,14 +154,23 @@ class Water extends Group
 	} // Water.waves
 	
 	
+	
 	clickOnPlate( )
 	{
+
+		if( playground.totalTime-lastClickTime < Water.DOUBLE_CLICK_PROTECTION ) return;
+		lastClickTime = playground.totalTime;
+		
 		if( !playground.gameStarted )
+		{
 			playground.newGame( )
+		}
 		else
 		{
 			if( playground.tank.water.level > 0.9 )
+			{
 				playground.endGame();
+			}
 		}
 	}
 	

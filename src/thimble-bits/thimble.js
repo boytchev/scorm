@@ -3,7 +3,7 @@
 //
 
 	
-class Thimble extends Group
+class Thimble extends Suica.Group
 {
 	static RADIUS = 8;
 	static HEIGHT = 22.5;

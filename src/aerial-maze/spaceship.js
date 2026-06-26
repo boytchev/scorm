@@ -2,7 +2,7 @@
 //	class Spaceship
 	
 
-class Spaceship extends Group
+class Spaceship extends Suica.Group
 {
 	static TURN_SPEED = 300;
 	static MOVE_SPEED = 500;
@@ -157,6 +157,7 @@ class Spaceship extends Group
 			.to( {k:1/*Planet.GRID_SCALE*/}, Spaceship.MOVE_SPEED )
 			.easing( TWEEN.Easing.Linear.None )
 			.onUpdate( function(obj){
+
 				obj.model[method]( sign*(obj.k-lastK) );
 				if( !playground.maze.onTrack( obj.spaceship.center, 0.01 ) )
 				{
@@ -167,6 +168,10 @@ class Spaceship extends Group
 				lastK = obj.k;
 			} )
 			.onComplete( function(obj){
+				// this protects when the focused is moved to another browser tab,
+				// when the focus returns, if the ship is not on track, just end the game immediately
+				if( !playground.maze.onTrack( obj.spaceship.center, 0.1 ) ) playground.endGame();
+
 				obj.model[method]( sign*(1/*Planet.GRID_SCALE*/-lastK) );
 
 				obj.spaceship.x = Math.round( obj.spaceship.x );

@@ -18,6 +18,8 @@ class Playground extends ScormPlayground
 
 		this.supportShadows( );
 			
+		suica.light.intensity = 2;
+		
 		this.n = 0; // number of active pins
 		this.ring = new Ring;
 		this.pins = [new Pin(),new Pin(),new Pin(),new Pin()];

@@ -3,7 +3,7 @@
 //
 
 	
-class Base extends Group
+class Base extends Suica.Group
 {
 	static POS_Y = -10;
 	static FLOOR_SIZE = 40;

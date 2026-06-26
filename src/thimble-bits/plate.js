@@ -3,7 +3,7 @@
 //
 
 	
-class Plate extends Group
+class Plate extends Suica.Group
 {
 	static DEPTH = 0.1;
 	

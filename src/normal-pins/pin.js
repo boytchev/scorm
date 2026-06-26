@@ -3,7 +3,7 @@
 //
 
 	
-class Pin extends Group
+class Pin extends Suica.Group
 {
 	static LENGTH = 10;
 	static SMALL_HEAD_SIZE = 2;

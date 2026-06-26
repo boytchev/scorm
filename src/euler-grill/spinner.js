@@ -3,10 +3,10 @@
 //
 
 	
-class Spinner extends Group
+class Spinner extends Suica.Group
 {
-	static SPEED = 20;
-	static MAX_SPEED = 100;
+	static SPEED = 10;
+	static MAX_SPEED = 60;
 	static SIZE = [3,7,3];
 	static ROTOR_SIZE = [10, 2.1, 10];
 	static ROTOR_POS = 22;

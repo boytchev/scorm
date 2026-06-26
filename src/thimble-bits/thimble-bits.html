@@ -117,10 +117,11 @@
 				{
 					obj = findObject( event, playground.thimble.plates[playground.thimble.userZone].tiles );
 					
-					if( obj?.idx < playground.thimble.lines )
+					var idx = obj?.groupElements[0].idx;
+					if( idx < playground.thimble.lines )
 					{
 						playground.clickSound.play( );
-						playground.thimble.plates[playground.thimble.userZone].tiles[obj.idx].toggle();
+						playground.thimble.plates[playground.thimble.userZone].tiles[idx].toggle();
 					}
 				}
 			}

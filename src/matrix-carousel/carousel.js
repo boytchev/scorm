@@ -3,7 +3,7 @@
 //
 
 	
-class Carousel extends Group
+class Carousel extends Suica.Group
 {
 	static PILLAR_HEIGHT = 20;
 	static PILLAR_RADIUS = 7;

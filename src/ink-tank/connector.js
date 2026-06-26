@@ -3,7 +3,7 @@
 //
 
 	
-class Connector extends Group
+class Connector extends Suica.Group
 {
 	
 	constructor( center, spinV=0 )

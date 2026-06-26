@@ -3,7 +3,7 @@
 //
 
 	
-class CoSys extends Group
+class CoSys extends Suica.Group
 {
 	static ROPE_SIZE = [0.3, 13];
 	static AXIS_SIZE = [0.1, 10];

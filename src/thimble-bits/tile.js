@@ -3,7 +3,7 @@
 //
 
 	
-class Tile extends Group
+class Tile extends Suica.Group
 {
 	static HEIGHT = 2.5;
 	static WIDTH = 2.5;

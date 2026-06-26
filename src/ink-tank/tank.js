@@ -4,7 +4,7 @@
 
 	
 
-class Tank extends Group
+class Tank extends Suica.Group
 {
 	static WIDTH = 9;
 	static DEPTH = 4.1;
@@ -77,7 +77,7 @@ class Tank extends Group
 		
 		var floor = prism( 128, [0,-0.2,0], [Tank.FLOOR_SIZE,0.2] );
 			floor.threejs.material = Tank.metal( map, normalMap, aoMap );
-			floor.threejs.material.color = new THREE.Color( 'gray' );
+			floor.threejs.material.color = new THREE.Color( 'white' );
 
 		ScormUtils.addUV2( floor ); // because of AO
 

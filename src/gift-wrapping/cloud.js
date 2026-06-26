@@ -3,7 +3,7 @@
 
 
 
-class Cloud extends Group
+class Cloud extends Suica.Group
 {
 	static MAX_POINTS = 20;
 	static MIN_PLANE_DIST = 3; // set by Playground.newGame

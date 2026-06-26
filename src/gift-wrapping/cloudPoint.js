@@ -3,10 +3,10 @@
 
 
 
-class CloudPoint extends Group
+class CloudPoint extends Suica.Group
 {
 	static SIZE = 5;
-	static COLOR = ['gray', new THREE.Color(0,1,2), new THREE.Color(1.73,0.16,0.47)]; // unselected, selected, wrong
+	static COLOR = ['gray', new THREE.Color(0,1,4), new THREE.Color(2.73,0.16,0.47)]; // unselected, selected, wrong
 	
 	static MOVE_SPEED = [150, 2000];
 	static HIDE_SPEED = [150, 2000];
@@ -24,7 +24,7 @@ class CloudPoint extends Group
 			color: 'black',
 
 			metalness: 0,
-			roughness: 0.15,
+			roughness: 0.25,
 
 			map: ScormUtils.image( 'marble.jpg' ),
 

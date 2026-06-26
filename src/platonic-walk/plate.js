@@ -4,7 +4,7 @@
 
 	
 
-class Plate extends Group
+class Plate extends Suica.Group
 {
 	static selected = null; // selected or pointer plate
 	
@@ -48,6 +48,8 @@ class Plate extends Group
 		
 		// construct plate object
 		this.face = polygon( n, [0,0,0], size, 'lightgray' );
+		this.face.spinS = n==4?45:90;
+
 			its.threejs.material.map = new THREE.CanvasTexture( texture.canvas );
 			its.threejs.material.trasparent = false;
 			its.threejs.renderOrder = -20;
@@ -148,7 +150,8 @@ class Plate extends Group
 	
 	// select/unselect plate
 	static select( object )
-	{		
+	{	
+	
 		if( Plate.selected )
 		{
 			Plate.selected.color = 'LightGray';
@@ -157,15 +160,22 @@ class Plate extends Group
 		
 		if( object )
 		{
-			// if plate is a tree or a stone, then it has
-			// property plate that is the actual plate
-			if( object.plate )
+
+			if( object instanceof Suica.Group )
 			{
-				object = object.plate.face;
+				object = object.groupElements[0];
 			}
 			
+			
+			// if plate is a tree or a stone, then it has
+			// property plate that is the actual plate
+			// if( object.plate )
+			// {
+				// object = object.plate.face;
+			// }
+			
 			Plate.selected = object;
-			Plate.selected.color = 'WhiteSMoke';
+			Plate.selected.color = 'WhiteSmoke';
 		}
 	} // Plate.select
 

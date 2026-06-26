@@ -3,7 +3,7 @@
 	
 
 
-class Planet extends Group
+class Planet extends Suica.Group
 {
 	
 	constructor( plates )

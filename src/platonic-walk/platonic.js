@@ -3,7 +3,7 @@
 //
 	
 
-class Platonic extends Group
+class Platonic extends Suica.Group
 {
 	static SHOW_SPEED = 700;
 	static HIDE_SPEED = 300;
@@ -49,15 +49,17 @@ class Platonic extends Group
 		var img = drawing( 512, 512, 'Orange' );
 			img.context.lineJoin = 'round';
 	
+		var rots = {3:2*Math.PI/3, 4:Math.PI/2, 5:0, 6:Math.PI/2, 8:Math.PI/2};
+		
 		var cx = 256,
 			cy = 256,
 			r = 200-10;
 
-		var angle = 2*Math.PI/n*0+(n==4?Math.PI/4:Math.PI/2);
+		var angle = 2*Math.PI/n*0+rots[n];
 		moveTo( cx+r*Math.cos(angle), cy+r*Math.sin(angle) );
 		for( var i=0; i<=n+1; i++ )
 		{
-			let angle = 2*Math.PI/n*i+(n==4?Math.PI/4:Math.PI/2);
+			let angle = 2*Math.PI/n*i+rots[n];
 			lineTo( cx+r*Math.cos(angle), cy+r*Math.sin(angle) );
 		}
 
@@ -66,7 +68,7 @@ class Platonic extends Group
 			var dist = r*Math.cos(Math.PI/n);
 			for( var i=0; i<=n; i++ )
 			{
-				let angle = 2*Math.PI/n*(i+0.5)+(n==4?Math.PI/4:Math.PI/2);
+				let angle = 2*Math.PI/n*(i+0.5)+rots[n];
 				moveTo( cx+dist*Math.cos(angle), cy+dist*Math.sin(angle) );
 				lineTo( cx+2*r*Math.cos(angle), cy+2*r*Math.sin(angle) );
 			}
@@ -161,6 +163,9 @@ class Platonic extends Group
 
 		this.size = size;
 		this.defaultSize = size;
+		
+//		this.addLabels( vertices );
+		
 	} // Platonic,hedron
 	
 	

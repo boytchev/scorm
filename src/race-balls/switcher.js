@@ -3,7 +3,7 @@
 //
 
 	
-class Switcher extends Group
+class Switcher extends Suica.Group
 {
 	static SIZE = 10;
 	static YOYO_SPEED = 150;

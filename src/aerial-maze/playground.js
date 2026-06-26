@@ -69,7 +69,7 @@ class Playground extends ScormPlayground
 
 		function addLight( x, y, z )
 		{
-			var light = new THREE.DirectionalLight( 'white', 0.6 );
+			var light = new THREE.DirectionalLight( 'white', 1 );
 				light.position.set( x, y, z );
 				light.castShadow = true;
 
