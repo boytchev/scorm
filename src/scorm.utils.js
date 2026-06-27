@@ -190,7 +190,7 @@ class ScormPlayground
 			suica.vrCamera.add( this.controller1 );
 console.log(suica)			
 			this.ray0 = new THREE.Mesh(
-						new THREE.CylinderGeometry( 0.01, 0.001, 1 ).rotateX( Math.PI/2 ).translate( 0, 0, 0.5 ),
+						new THREE.CylinderGeometry( 0.01, 0.001, 1 ).rotateX( Math.PI/2 ).translate( 0, 0, -0.5 ),
 						new THREE.MeshBasicMaterial( {
 							color: 'orange',
 							transparent: true,
