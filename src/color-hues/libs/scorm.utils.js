@@ -178,6 +178,30 @@ class ScormPlayground
 			suica.renderer.xr.addEventListener('sessionstart', this.onEnterVR );
 			suica.renderer.xr.addEventListener('sessionend', this.onExitVR );
 			
+			this.controller0 = suica.renderer.xr.getController(0);
+			this.controller1 = suica.renderer.xr.getController(1);
+			
+			suica.vrCamera.children[0].near = 0.01;
+			suica.vrCamera.children[0].far = 30;
+			suica.vrCamera.children[0].updateProjectionMatrix();
+			
+			suica.scene.add( suica.vrCamera );
+			suica.vrCamera.add( this.controller0 );
+			suica.vrCamera.add( this.controller1 );
+console.log(suica)			
+			this.ray0 = new THREE.Mesh(
+						new THREE.CylinderGeometry( 0.01, 0.001, 1 ).rotateX( Math.PI/2 ).translate( 0, 0, 0.5 ),
+						new THREE.MeshBasicMaterial( {
+							color: 'orange',
+							transparent: true,
+							opacity: 0.5} )
+					);
+			this.controller0.add( this.ray0 );
+
+			this.ray1 = this.ray0.clone();
+			this.controller1.add( this.ray1 );
+
+
 			suica.square( [-3,0,3], [1.5,0.6], 'white' );
 			its.spinH = 180;
 			its.spinV = -90;
