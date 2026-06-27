@@ -170,10 +170,26 @@ class ScormPlayground
 			
 			
 		this.urlParams = new URLSearchParams( window.location.search );
-		this.vr = this.urlParams.has( 'vr' );
-		if( this.vr ) {
+		this.vrMode = this.urlParams.has( 'vr' );
+		this.inVR = false;
+		if( this.vrMode ) {
 			setupLegacyXRForEmulator();
 			suica.vr( );
+			suica.renderer.xr.addEventListener('sessionstart', this.onEnterVR );
+			suica.renderer.xr.addEventListener('sessionend', this.onExitVR );
+			
+			suica.square( [-3,0,3], [1.5,0.6], 'white' );
+			its.spinH = 180;
+			its.spinV = -90;
+			its.image = drawing( 300, 130 );
+			this.vrTimePanel = its.image;
+			
+			suica.square( [-3,0,-3], [1.5,0.6], 'white' );
+			its.spinH = 180;
+			its.spinV = -90;
+			its.image = drawing( 300, 130 );
+			this.vrScorePanel = its.image;
+			
 		} else {
 			suica.fullScreen( );
 		}
@@ -202,21 +218,42 @@ class ScormPlayground
 			var seconds = Math.floor(t);
 			if( seconds<10 ) seconds = '0'+seconds;
 			
-			element('timer').innerHTML = `${hours}:${minutes}:${seconds}`;
+			var time = `${hours}:${minutes}:${seconds}`;
+			element('timer').innerHTML = time;
+			
+			if( playground.inVR )
+			{
+				playground.vrTimePanel.clear( );
+				playground.vrTimePanel.moveTo(5,125,295,125,295,5);
+				playground.vrTimePanel.stroke('black',1);
+				playground.vrTimePanel.fillText( 18, 60, time, 'black', 'bold 66px Arial' );
+				playground.vrTimePanel.fillText( 154, 20, element('txt-time').innerHTML, 'black', '36px Arial' );
+
+				playground.vrScorePanel.clear( );
+				playground.vrScorePanel.moveTo(5,5,295,5,295,125);
+				playground.vrScorePanel.stroke('black',1);
+				var xx = 0;
+				var txt = playground.totalScore.toFixed(1);
+				if( txt.length==3 ) xx = 185;
+				if( txt.length==4 ) xx = 150;
+				if( txt.length==5 ) xx = 110;
+				playground.vrScorePanel.fillText( xx, 20, txt, 'black', 'bold 66px Arial' );
+				playground.vrScorePanel.fillText( 100, 85, element('txt-score').innerHTML, 'black', '36px Arial' );
+			}
 		}
 		
 		this.translate( [
 			{id: 'txt-time',
-				en: 'Time',
-				bg: 'Време',
+				en: 'TIME',
+				bg: 'ВРЕМЕ',
 				jp: '時間'},
 			{id: 'txt-score',
-				en: 'Score',
-				bg: 'Резултат',
+				en: 'SCORE',
+				bg: 'РЕЗУЛТАТ',
 				jp: '時間'},
 			{id: 'txt-performance',
-				en: 'Performance',
-				bg: 'Изпълнение',
+				en: 'PERFORMANCE',
+				bg: 'ИЗПЪЛНЕНИЕ',
 				jp: '時間'},
 			{id: 'txt-user',
 				en: scorm.api
@@ -250,13 +287,31 @@ class ScormPlayground
 	}
 
 
-	// if user exits the game tab, end the game automatically
-	
+	// if user exits the game tab, end the game automatically	
 	onVisibilityChange( )
 	{
 		if( playground && playground.gameStarted )
 			playground.endGame( true );
 	}
+
+
+
+	// when user enters VR experience
+	onEnterVR( )
+	{
+		console.log('🔴 VR Session STARTED - User is now in VR');
+		playground.inVR = true;
+	}
+
+
+
+	// when user exits VR experience
+	onExitVR( )
+	{
+		console.log('🔵 VR Session ENDED - User exited VR');
+		playground.inVR = false;
+	}
+
 
 
 	// update the graph - a history of scores
@@ -627,6 +682,12 @@ class ScormPlayground
 		return value;
 	} // Playground.maxPoints
 
+
+	vrDrawTime( )
+	{
+		element('timer').innerHTML = `${hours}:${minutes}:${seconds}`;
+	}
+	
 	
 } // class ScormPlayground
 	

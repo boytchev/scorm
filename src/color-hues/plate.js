@@ -182,8 +182,8 @@ class Plate extends Suica.Group
 
 		new TWEEN.Tween( this )
 				.to( {
-						height: this.selected? (playground.vr?5:15):1,
-						angle: (this.selected && !this.isMasterPlate)? (playground.vr?-25:-10) : 0
+						height: this.selected? (playground.inVR?5:15):1,
+						angle: (this.selected && !this.isMasterPlate)? (playground.inVR?-25:-10) : 0
 					}, Plate.TOGGLE_SPEED )
 				.easing( TWEEN.Easing.Cubic.InOut )
 				.start( );

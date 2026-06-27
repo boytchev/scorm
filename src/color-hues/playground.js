@@ -143,7 +143,7 @@ class Playground extends ScormPlayground
 	// on orientation of mobile devices
 	resize( )
 	{
-		if( !this.vr || !suica.renderer.xr?.isPresenting ) 
+		if( !this.inVR ) 
 		{
 			var distance = 90/10*THREE.MathUtils.clamp(suica.canvas.clientHeight/suica.canvas.clientWidth,1,3);
 			lookAt( [0,distance,0], [0,0,0], [0,0,1] );
@@ -167,7 +167,7 @@ class Playground extends ScormPlayground
 	
 	update( t, dT )
 	{
-		if( this.vr && suica.renderer.xr?.isPresenting )
+		if( this.inVR )
 		{
 			var y = suica.renderer.xr.getCamera().position.y;
 			lookAt( [0,5,-y], [0,0,-y], [0,0,1] );
