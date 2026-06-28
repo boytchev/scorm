@@ -338,7 +338,12 @@ class ScormPlayground
 		
 		// create controllers
 		this.controller0 = suica.renderer.xr.getController(0);
+		this.controller0.addEventListener( 'selectstart', function(){ playground.ray0.material.color.set(1,1,0); } );
+		this.controller0.addEventListener( 'selectend', function(){ playground.ray0.material.color.set(1,0.5,0); } );
+		
 		this.controller1 = suica.renderer.xr.getController(1);
+		this.controller1.addEventListener( 'selectstart', function(){ playground.ray1.material.color.set(1,1,0); } );
+		this.controller1.addEventListener( 'selectend', function(){ playground.ray1.material.color.set(1,0.5,0); } );
 
 		suica.scene.add( suica.vrCamera );
 		suica.vrCamera.add( this.controller0 );
