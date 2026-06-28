@@ -48,22 +48,14 @@ function update( t, dT )
 		
 		if( playground.inVR )
 		{
-			playground.controller0.getWorldDirection( playground._v );
-			playground.raycaster.ray.origin.setFromMatrixPosition( playground.controller0.matrixWorld );
-			playground.raycaster.ray.direction.set( -playground._v.x, -playground._v.y, -playground._v.z );
-
-			var intersections0 = playground.raycaster.intersectObjects( playground.intersectables );
+			var intersections0 = playground.vrIntersections( playground.controller0 );
 			
 			if( intersections0.length )
 				playground.marker0.center = [...intersections0[0].point];
 			else
 				playground.marker0.center = [0,-1000,0];
 
-			playground.controller1.getWorldDirection( playground._v );
-			playground.raycaster.ray.origin.setFromMatrixPosition( playground.controller1.matrixWorld );
-			playground.raycaster.ray.direction.set( -playground._v.x, -playground._v.y, -playground._v.z );
-
-			var intersections1 = playground.raycaster.intersectObjects( playground.intersectables );
+			var intersections1 = playground.vrIntersections( playground.controller1 );
 			
 			if( intersections1.length )
 				playground.marker1.center = [...intersections1[0].point];
@@ -340,10 +332,12 @@ class ScormPlayground
 		this.controller0 = suica.renderer.xr.getController(0);
 		this.controller0.addEventListener( 'selectstart', function(){ playground.ray0.material.color.set(1,1,0); } );
 		this.controller0.addEventListener( 'selectend', function(){ playground.ray0.material.color.set(1,0.5,0); } );
+		this.controller0.addEventListener( 'select', function(){ playground.vrClick( playground.controller0 ); } );
 		
 		this.controller1 = suica.renderer.xr.getController(1);
 		this.controller1.addEventListener( 'selectstart', function(){ playground.ray1.material.color.set(1,1,0); } );
 		this.controller1.addEventListener( 'selectend', function(){ playground.ray1.material.color.set(1,0.5,0); } );
+		this.controller1.addEventListener( 'select', function(){ playground.vrClick( playground.controller1 ); } );
 
 		suica.scene.add( suica.vrCamera );
 		suica.vrCamera.add( this.controller0 );
@@ -766,6 +760,40 @@ class ScormPlayground
 	vrDrawTime( )
 	{
 		element('timer').innerHTML = `${hours}:${minutes}:${seconds}`;
+	}
+
+
+	vrIntersections( controller )
+	{
+		controller.getWorldDirection( playground._v );
+		playground.raycaster.ray.origin.setFromMatrixPosition( controller.matrixWorld );
+		playground.raycaster.ray.direction.set( -playground._v.x, -playground._v.y, -playground._v.z );
+
+		return playground.raycaster.intersectObjects( playground.intersectables );
+	}
+	
+	
+	
+	vrClick( controller )
+	{
+		var intersections = this.vrIntersections( controller );
+		
+		if( intersections.length )
+		{
+			var objects = [];
+			intersections.forEach( e => {
+				
+				var obj = e.object?.suicaObject;
+				if( obj ) {
+					while( obj.parent ) obj = obj.parent;
+					if( obj.onclick && objects.indexOf(obj)<0 ) objects.push( obj );
+				}
+				
+			} );
+
+			objects.forEach( e => e.onclick() );
+		}
+
 	}
 	
 	
