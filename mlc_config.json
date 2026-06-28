@@ -1,0 +1,32 @@
+{
+  "httpHeaders": [
+    {
+      "urls": ["https://scorm.com/", "https://www.deviantart.com/", "https://helpx.adobe.com/", "https://soundcloud.com/"],
+      "headers": {
+        "User-Agent": "Mozilla/5.0 (compatible; GitHub Markdown Link Check; +https://github.com/yourusername/yourrepo)"
+      }
+    },
+    {
+      "urls": ["https://github.com/"],
+      "headers": {
+        "Accept-Encoding": "zstd, br, gzip, deflate"
+      }
+    }
+  ],
+  "aliveStatusCodes": [200, 206, 429],
+  "retryOn429": true,
+  "ignorePatterns": [
+    {
+      "pattern": "^https?://(www\\.)?deviantart\\.com"
+    },
+    {
+      "pattern": "^https?://soundcloud\\.com"
+    }
+  ],
+  "replacementPatterns": [
+    {
+      "pattern": "^bin/",
+      "replacement": "./bin/"
+    }
+  ]
+}
