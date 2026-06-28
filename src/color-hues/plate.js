@@ -37,7 +37,7 @@ class Plate extends Suica.Group
 		this.basePlate = convex( this.hexagonalGeometry(0.93), [10/10,1/10] );
 			its.y = 0.5/10;
 			its.threejs.material = this.frameMaterial();
-			its.parent = this;
+			its.parent = this; // used for VR click
 	
 		this.colorPlate = convex( this.hexagonalGeometry(1), [7/10,0.9/10] );
 			its.image = 'images/hexagon.jpg';
@@ -45,7 +45,7 @@ class Plate extends Suica.Group
 			its.threejs.material.map.offset.set( 0.5, 0.5 );
 			its.y = 0.6/10;
 			its.threejs.material = new THREE.MeshBasicMaterial({map:its.threejs.material.map});
-			its.parent = this;
+			its.parent = this; // used for VR click
 	
 		this.addEventListener( 'click', this.onClick );
 		this.addEventListener( 'pointerenter', this.onMark );

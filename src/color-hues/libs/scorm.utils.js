@@ -330,13 +330,13 @@ class ScormPlayground
 		
 		// create controllers
 		this.controller0 = suica.renderer.xr.getController(0);
-		this.controller0.addEventListener( 'selectstart', function(){ playground.ray0.material.color.set(1,1,0); } );
-		this.controller0.addEventListener( 'selectend', function(){ playground.ray0.material.color.set(1,0.5,0); } );
+		this.controller0.addEventListener( 'selectstart', function(){ playground.ray0.material.color.set(1,0.5,0); } );
+		this.controller0.addEventListener( 'selectend', function(){ playground.ray0.material.color.set(1,1,1); } );
 		this.controller0.addEventListener( 'select', function(){ playground.vrClick( playground.controller0 ); } );
 		
 		this.controller1 = suica.renderer.xr.getController(1);
-		this.controller1.addEventListener( 'selectstart', function(){ playground.ray1.material.color.set(1,1,0); } );
-		this.controller1.addEventListener( 'selectend', function(){ playground.ray1.material.color.set(1,0.5,0); } );
+		this.controller1.addEventListener( 'selectstart', function(){ playground.ray1.material.color.set(1,0.5,0); } );
+		this.controller1.addEventListener( 'selectend', function(){ playground.ray1.material.color.set(1,1,1); } );
 		this.controller1.addEventListener( 'select', function(){ playground.vrClick( playground.controller1 ); } );
 
 		suica.scene.add( suica.vrCamera );
@@ -347,24 +347,24 @@ class ScormPlayground
 		this.ray0 = new THREE.Mesh(
 					new THREE.CylinderGeometry( 0.01, 0.001, 1 ).rotateX( Math.PI/2 ).translate( 0, 0, -0.5 ),
 					new THREE.MeshBasicMaterial( {
-						color: 'orange',
+						color: 'white',
 						transparent: true,
-						opacity: 0.5} )
+						opacity: 0.7} )
 				);
 		this.controller0.add( this.ray0 );
 
 		this.ray1 = new THREE.Mesh( this.ray0.geometry, this.ray0.material.clone() );
 		this.controller1.add( this.ray1 );
 
-		this.marker0 = suica.point( [0,0,0], 0.4, 'white' );
+		this.marker0 = suica.sphere( [0,0,0], 0.3, 'white' );
 		this.marker0.threejs.material.transparent = true;
-		this.marker0.threejs.material.opacity = 0.5;
+		this.marker0.threejs.material.opacity = 0.7;
 		this.marker0.threejs.material.depthTest = false;
 		this.marker0.threejs.material.renderOrder = 10;
 		
-		this.marker1 = suica.point( [0,0,0], 0.4, 'white' );
+		this.marker1 = suica.sphere( [0,0,0], 0.3, 'white' );
 		this.marker1.threejs.material.transparent = true;
-		this.marker1.threejs.material.opacity = 0.5;
+		this.marker1.threejs.material.opacity = 0.7;
 		this.marker1.threejs.material.depthTest = false;
 		this.marker1.threejs.material.renderOrder = 10;
 				
@@ -379,6 +379,13 @@ class ScormPlayground
 		its.spinH = 180;
 		its.spinV = -90;
 		its.image = drawing( 300, 130 );
+
+		// create dscore info panel
+		this.vrDScorePanel = suica.square( [0,1,0], [1,0.5], 'white' );
+		its.spinH = 180;
+		its.spinV = -90;
+		its.image = drawing( 600, 300 );
+		its.threejs.material.transparent = true;
 		
 		this.raycaster = new THREE.Raycaster( );
 		this._v = new THREE.Vector3( ); // dummy
@@ -539,7 +546,7 @@ class ScormPlayground
 		{
 			this.scoreHistory.shift();
 		}
-		
+
 		// the change of total score is animated
 		// from the center to the score corner
 		this.animateScore( oldScore );
@@ -567,20 +574,36 @@ class ScormPlayground
 		if( this.totalScore>99.9 ) pointsElem.innerHTML = '&#x22C6;';
 		
 
-		new TWEEN.Tween( {opacity:0, scale:4, x:suica.width/2, y:suica.height/2} )
-			.to( {opacity:1, scale:1, x:scoreElem.offsetLeft+30, y:scoreElem.offsetTop}, Playground.POINTS_SPEED )
+		if( this.inVR )
+		{
+			this.vrDScorePanel.image.clear( );
+			this.vrDScorePanel.image.fillText( 20, 20, pointsElem.innerHTML, 'black', 'bold 300px Arial' );
+			this.vrDScorePanel.visible = true;
+			this.vrDScorePanel.size = 0;
+		}
+		
+
+		new TWEEN.Tween( {opacity:0, scale:4, x:suica.width/2, y:suica.height/2, vrScale:0.01} )
+			.to( {opacity:1, scale:1, x:scoreElem.offsetLeft+30, y:scoreElem.offsetTop, vrScale:10}, Playground.POINTS_SPEED )
 			.easing( TWEEN.Easing.Cubic.InOut )
 			.onUpdate( (state) => {
 				pointsElem.style.opacity = 0.5-0.5*Math.cos(2*Math.PI*state.opacity);
 				pointsElem.style.transform = `scale(${1.3*state.scale},${state.scale})`;
 				pointsElem.style.right = Math.round(state.x)+'px';
 				pointsElem.style.bottom = Math.round(state.y)+'px';
+				playground.vrDScorePanel.size = [state.vrScale,state.vrScale/2,0];
+				playground.vrDScorePanel.threejs.material.opacity = pointsElem.style.opacity;
 			})
 			.onComplete( ()=> {
 				var sc = this.totalScore.toFixed(1);
 				scoreElem.innerHTML = sc;
 				scoreElem.style.right = 1+0.065*(sc.length-1)+'em';
 				
+				if( playground.inVR )
+				{
+					playground.vrDScorePanel.visible = false;
+				}
+
 				this.redrawScoreHistory( );
 			})
 			.start();
