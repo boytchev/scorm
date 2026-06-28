@@ -357,16 +357,20 @@ class ScormPlayground
 		this.controller1.add( this.ray1 );
 
 		this.marker0 = suica.sphere( [0,0,0], 0.3, 'white' );
-		this.marker0.threejs.material.transparent = true;
-		this.marker0.threejs.material.opacity = 0.7;
-		this.marker0.threejs.material.depthTest = false;
-		this.marker0.threejs.material.renderOrder = 10;
+		this.marker0.threejs.material = new THREE.MeshBasicMaterial({
+			color: 'white',
+			transparent: true,
+			opacity: 0.7,
+			depthTest: false );
+		this.marker0.threejs.renderOrder = -10;
 		
 		this.marker1 = suica.sphere( [0,0,0], 0.3, 'white' );
-		this.marker1.threejs.material.transparent = true;
-		this.marker1.threejs.material.opacity = 0.7;
-		this.marker1.threejs.material.depthTest = false;
-		this.marker1.threejs.material.renderOrder = 10;
+		this.marker1.threejs.material = new THREE.MeshBasicMaterial({
+			color: 'white',
+			transparent: true,
+			opacity: 0.7,
+			depthTest: false );
+		this.marker1.threejs.renderOrder = -10;
 				
 		// create time info panel
 		this.vrTimePanel = suica.square( [-3,0,3], [1.5,0.6], 'white' );
