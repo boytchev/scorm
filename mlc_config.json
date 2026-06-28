@@ -25,8 +25,12 @@
   ],
   "replacementPatterns": [
     {
-      "pattern": "^bin/",
-      "replacement": "./bin/"
+      "pattern": "^(./)?bin/",
+      "replacement": "https://boytchev.github.io/scorm/bin/"
+    },
+    {
+      "pattern": "^\\.\\./\\.\\./bin/",
+      "replacement": "https://boytchev.github.io/scorm/bin/"
     }
   ]
 }
