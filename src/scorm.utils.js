@@ -40,13 +40,36 @@ function setupLegacyXRForEmulator()
 
 function update( t, dT )
 {
-	if( playground?.gameStarted )
+	if( playground )
 	{
-		playground.totalTime += dT;
-	}
-	if( playground?.update )
-	{
-		playground.update( t, dT );
+		if( playground.gameStarted ) playground.totalTime += dT;
+		
+		if( playground.update ) playground.update( t, dT );
+		
+		if( playground.inVR )
+		{
+			playground.controller0.getWorldDirection( playground._v );
+			playground.raycaster.ray.origin.setFromMatrixPosition( playground.controller0.matrixWorld );
+			playground.raycaster.ray.direction.set( -playground._v.x, -playground._v.y, -playground._v.z );
+
+			var intersections0 = playground.raycaster.intersectObjects( playground.intersectables );
+			
+			if( intersections0.length )
+				playground.marker0.center = [...intersections0[0].point];
+			else
+				playground.marker0.center = [0,-1000,0];
+
+			playground.controller1.getWorldDirection( playground._v );
+			playground.raycaster.ray.origin.setFromMatrixPosition( playground.controller1.matrixWorld );
+			playground.raycaster.ray.direction.set( -playground._v.x, -playground._v.y, -playground._v.z );
+
+			var intersections1 = playground.raycaster.intersectObjects( playground.intersectables );
+			
+			if( intersections1.length )
+				playground.marker1.center = [...intersections1[0].point];
+			else
+				playground.marker1.center = [0,-1000,0];
+		}
 	}
 	TWEEN.update( 1000*t );
 }
@@ -170,50 +193,10 @@ class ScormPlayground
 			
 			
 		this.urlParams = new URLSearchParams( window.location.search );
-		this.vrMode = this.urlParams.has( 'vr' );
-		this.inVR = false;
-		if( this.vrMode ) {
-			setupLegacyXRForEmulator();
-			suica.vr( );
-			suica.renderer.xr.addEventListener('sessionstart', this.onEnterVR );
-			suica.renderer.xr.addEventListener('sessionend', this.onExitVR );
-			
-			this.controller0 = suica.renderer.xr.getController(0);
-			this.controller1 = suica.renderer.xr.getController(1);
-			
-			suica.vrCamera.children[0].near = 0.01;
-			suica.vrCamera.children[0].far = 30;
-			suica.vrCamera.children[0].updateProjectionMatrix();
-			
-			suica.scene.add( suica.vrCamera );
-			suica.vrCamera.add( this.controller0 );
-			suica.vrCamera.add( this.controller1 );
-console.log(suica)			
-			this.ray0 = new THREE.Mesh(
-						new THREE.CylinderGeometry( 0.01, 0.001, 1 ).rotateX( Math.PI/2 ).translate( 0, 0, -0.5 ),
-						new THREE.MeshBasicMaterial( {
-							color: 'orange',
-							transparent: true,
-							opacity: 0.5} )
-					);
-			this.controller0.add( this.ray0 );
-
-			this.ray1 = this.ray0.clone();
-			this.controller1.add( this.ray1 );
-
-
-			suica.square( [-3,0,3], [1.5,0.6], 'white' );
-			its.spinH = 180;
-			its.spinV = -90;
-			its.image = drawing( 300, 130 );
-			this.vrTimePanel = its.image;
-			
-			suica.square( [-3,0,-3], [1.5,0.6], 'white' );
-			its.spinH = 180;
-			its.spinV = -90;
-			its.image = drawing( 300, 130 );
-			this.vrScorePanel = its.image;
-			
+		this.inVRMode = this.urlParams.has( 'vr' ); // whether VR is or should be used
+		this.inVR = false; // whether in VR session right now
+		if( this.inVRMode ) {
+			this.vrInitialize( );
 		} else {
 			suica.fullScreen( );
 		}
@@ -247,22 +230,22 @@ console.log(suica)
 			
 			if( playground.inVR )
 			{
-				playground.vrTimePanel.clear( );
-				playground.vrTimePanel.moveTo(5,125,295,125,295,5);
-				playground.vrTimePanel.stroke('black',1);
-				playground.vrTimePanel.fillText( 18, 60, time, 'black', 'bold 66px Arial' );
-				playground.vrTimePanel.fillText( 154, 20, element('txt-time').innerHTML, 'black', '36px Arial' );
+				playground.vrTimePanel.image.clear( );
+				playground.vrTimePanel.image.moveTo(5,125,295,125,295,5);
+				playground.vrTimePanel.image.stroke('black',1);
+				playground.vrTimePanel.image.fillText( 18, 60, time, 'black', 'bold 66px Arial' );
+				playground.vrTimePanel.image.fillText( 154, 20, element('txt-time').innerHTML, 'black', '36px Arial' );
 
-				playground.vrScorePanel.clear( );
-				playground.vrScorePanel.moveTo(5,5,295,5,295,125);
-				playground.vrScorePanel.stroke('black',1);
+				playground.vrScorePanel.image.clear( );
+				playground.vrScorePanel.image.moveTo(5,5,295,5,295,125);
+				playground.vrScorePanel.image.stroke('black',1);
 				var xx = 0;
 				var txt = playground.totalScore.toFixed(1);
 				if( txt.length==3 ) xx = 185;
 				if( txt.length==4 ) xx = 150;
 				if( txt.length==5 ) xx = 110;
-				playground.vrScorePanel.fillText( xx, 20, txt, 'black', 'bold 66px Arial' );
-				playground.vrScorePanel.fillText( 100, 85, element('txt-score').innerHTML, 'black', '36px Arial' );
+				playground.vrScorePanel.image.fillText( xx, 20, txt, 'black', 'bold 66px Arial' );
+				playground.vrScorePanel.image.fillText( 100, 85, element('txt-score').innerHTML, 'black', '36px Arial' );
 			}
 		}
 		
@@ -338,6 +321,74 @@ console.log(suica)
 
 
 
+	vrInitialize( )
+	{
+		// fix local VR simulator
+		setupLegacyXRForEmulator();
+		
+		// track vr mode
+		suica.vr( );
+		suica.renderer.xr.addEventListener('sessionstart', this.onEnterVR );
+		suica.renderer.xr.addEventListener('sessionend', this.onExitVR );
+
+		// fix VR camera frustum
+		suica.vrCamera.children[0].near = 0.01;
+		suica.vrCamera.children[0].far = 30;
+		suica.vrCamera.children[0].updateProjectionMatrix();
+		
+		// create controllers
+		this.controller0 = suica.renderer.xr.getController(0);
+		this.controller1 = suica.renderer.xr.getController(1);
+
+		suica.scene.add( suica.vrCamera );
+		suica.vrCamera.add( this.controller0 );
+		suica.vrCamera.add( this.controller1 );
+	
+		// create controllers rays
+		this.ray0 = new THREE.Mesh(
+					new THREE.CylinderGeometry( 0.01, 0.001, 1 ).rotateX( Math.PI/2 ).translate( 0, 0, -0.5 ),
+					new THREE.MeshBasicMaterial( {
+						color: 'orange',
+						transparent: true,
+						opacity: 0.5} )
+				);
+		this.controller0.add( this.ray0 );
+
+		this.ray1 = new THREE.Mesh( this.ray0.geometry, this.ray0.material.clone() );
+		this.controller1.add( this.ray1 );
+
+		this.marker0 = suica.point( [0,0,0], 0.4, 'white' );
+		this.marker0.threejs.material.transparent = true;
+		this.marker0.threejs.material.opacity = 0.5;
+		this.marker0.threejs.material.depthTest = false;
+		this.marker0.threejs.material.renderOrder = 10;
+		
+		this.marker1 = suica.point( [0,0,0], 0.4, 'white' );
+		this.marker1.threejs.material.transparent = true;
+		this.marker1.threejs.material.opacity = 0.5;
+		this.marker1.threejs.material.depthTest = false;
+		this.marker1.threejs.material.renderOrder = 10;
+				
+		// create time info panel
+		this.vrTimePanel = suica.square( [-3,0,3], [1.5,0.6], 'white' );
+		its.spinH = 180;
+		its.spinV = -90;
+		its.image = drawing( 300, 130 );
+
+		// create score info panel
+		this.vrScorePanel = suica.square( [-3,0,-3], [1.5,0.6], 'white' );
+		its.spinH = 180;
+		its.spinV = -90;
+		its.image = drawing( 300, 130 );
+		
+		this.raycaster = new THREE.Raycaster( );
+		this._v = new THREE.Vector3( ); // dummy
+		this.intersectables = [];
+		
+	}
+	
+	
+	
 	// update the graph - a history of scores
 	redrawScoreHistory( )
 	{

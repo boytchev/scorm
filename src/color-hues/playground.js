@@ -20,13 +20,17 @@ class Playground extends ScormPlayground
 		// create plates
 		this.masterPlate = new Plate( [0,0,0], 0 );
 		this.masterPlate.isMasterPlate = true;
+		
+		if( this.inVRMode ) this.intersectables.push( this.masterPlate.threejs );
 
 		for( var spin=-30; spin<360-30; spin+=60 )
 		{
 			var x = 19/10 * Math.cos( radians(spin) ),
 				z = 19/10 * Math.sin( radians(spin) );
 		
-			this.plates.push( new Plate( [x,0,z], 90-spin ) );
+			var plate = new Plate( [x,0,z], 90-spin );
+			this.plates.push( plate );
+			if( this.inVRMode ) this.intersectables.push( plate.threejs );
 		}
 	
 		this.masterIndex = 0;
@@ -39,6 +43,9 @@ class Playground extends ScormPlayground
 				bg: 'Цветни оттенъци',
 				jp: '色相'},
 		] );
+		
+		this.vrTimePanel.center = [-2.5,0,2.5];
+		this.vrScorePanel.center = [-2.5,0,-2.5];
 		
 	} // Playground.constructor
 
@@ -165,6 +172,7 @@ class Playground extends ScormPlayground
 	
 	
 	
+	// move the view point to stay only above the master plate
 	update( t, dT )
 	{
 		if( this.inVR )
