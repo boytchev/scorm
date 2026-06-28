@@ -1,28 +1,23 @@
 {
   "httpHeaders": [
     {
-      "urls": ["https://scorm.com/", "https://www.deviantart.com/", "https://helpx.adobe.com/", "https://soundcloud.com/"],
+      "urls": [
+        "https://scorm.com/",
+        "https://www.deviantart.com/",
+        "https://helpx.adobe.com/",
+        "https://soundcloud.com/",
+        "https://www.fmi.uni-sofia.bg/",
+        "https://www.uni-sofia.bg/",
+        "https://roa-music.com/"
+      ],
       "headers": {
-        "User-Agent": "Mozilla/5.0 (compatible; GitHub Markdown Link Check; +https://github.com/yourusername/yourrepo)"
-      }
-    },
-    {
-      "urls": ["https://github.com/"],
-      "headers": {
-        "Accept-Encoding": "zstd, br, gzip, deflate"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
       }
     }
   ],
   "aliveStatusCodes": [200, 206, 429],
   "retryOn429": true,
-  "ignorePatterns": [
-    {
-      "pattern": "^https?://(www\\.)?deviantart\\.com"
-    },
-    {
-      "pattern": "^https?://soundcloud\\.com"
-    }
-  ],
+  "timeout": "15s",
   "replacementPatterns": [
     {
       "pattern": "^(./)?bin/",
@@ -31,6 +26,11 @@
     {
       "pattern": "^\\.\\./\\.\\./bin/",
       "replacement": "https://boytchev.github.io/scorm/bin/"
+    }
+  ],
+  "ignorePatterns": [
+    {
+      "pattern": "\\.zip$"
     }
   ]
 }
