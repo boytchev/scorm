@@ -4,15 +4,64 @@
 
 
 
+// smart legacy XR path enforcer - only for local development with emulator / AI
+function setupLegacyXRForEmulator()
+{
+
+    const isLocalhost = window.location.hostname === 'localhost' ||
+                        window.location.hostname === '127.0.0.1' ||
+                        window.location.hostname === '[::1]';
+
+    if( !isLocalhost ) return; // do nothing if not on localhost
+
+    console.log('Localhost detected - forcing legacy XR path for emulator compatibility');
+
+    if( typeof XRWebGLBinding === "undefined" ) return;
+
+    try {
+		
+        const proto = XRWebGLBinding.prototype;
+        
+        // remove createProjectionLayer to force legacy path
+        if (Object.getOwnPropertyDescriptor(proto, 'createProjectionLayer'))
+		{
+			
+            delete proto.createProjectionLayer;
+            console.log('Successfully forced legacy XR path');
+			
+        }
+		
+    } catch (e) {
+        console.warn('could not modify XRWebGLBinding:', e);
+    }
+}
+
+
+
 function update( t, dT )
 {
-	if( playground?.gameStarted )
+	if( playground )
 	{
-		playground.totalTime += dT;
-	}
-	if( playground?.update )
-	{
-		playground.update( t, dT );
+		if( playground.gameStarted ) playground.totalTime += dT;
+		
+		if( playground.update ) playground.update( t, dT );
+		
+		if( playground.inVR )
+		{
+			var intersections0 = playground.vrIntersections( playground.controller0 );
+			
+			if( intersections0.length )
+				playground.marker0.center = [...intersections0[0].point];
+			else
+				playground.marker0.center = [0,-1000,0];
+
+			var intersections1 = playground.vrIntersections( playground.controller1 );
+			
+			if( intersections1.length )
+				playground.marker1.center = [...intersections1[0].point];
+			else
+				playground.marker1.center = [0,-1000,0];
+		}
 	}
 	TWEEN.update( 1000*t );
 }
@@ -106,10 +155,13 @@ class ScormPlayground
 
 	constructor( )
 	{
+		lookAt( [0,0,200], [0,0,0], [0,1,0] );
+
 		this.gameStarted = false;
 		
 		this.gameTime = 0;
 		this.gameHits = 0;
+		this.gameNumber = 0;
 		
 		this.totalTime = 0;
 		
@@ -124,9 +176,23 @@ class ScormPlayground
 		
 		this.userInteracted = false; // used for audio play
 
-		this.vr = this.urlParams.has( 'vr' );
+		suica.light.intensity = 0;
 
-
+		this.light = new THREE.PointLight( 'white', 5 );
+		this.light.position.y = 1;
+		this.light.decay = 0;
+		suica.scene.add( this.light );
+			
+			
+		this.urlParams = new URLSearchParams( window.location.search );
+		this.inVRMode = this.urlParams.has( 'vr' ); // whether VR is or should be used
+		this.inVR = false; // whether in VR session right now
+		if( this.inVRMode ) {
+			this.vrInitialize( );
+		} else {
+			suica.fullScreen( );
+		}
+		
 		scorm.setValue( 'cmi.core.lesson_status', 'incomplete' );
 
 		element( 'sound-on-off' ).addEventListener( 'click', this.toggleSound );
@@ -151,21 +217,42 @@ class ScormPlayground
 			var seconds = Math.floor(t);
 			if( seconds<10 ) seconds = '0'+seconds;
 			
-			element('timer').innerHTML = `${hours}:${minutes}:${seconds}`;
+			var time = `${hours}:${minutes}:${seconds}`;
+			element('timer').innerHTML = time;
+			
+			if( playground.inVR )
+			{
+				playground.vrTimePanel.image.clear( );
+				playground.vrTimePanel.image.moveTo(5,125,295,125,295,5);
+				playground.vrTimePanel.image.stroke('black',1);
+				playground.vrTimePanel.image.fillText( 18, 60, time, 'black', 'bold 66px Arial' );
+				playground.vrTimePanel.image.fillText( 154, 20, element('txt-time').innerHTML, 'black', '36px Arial' );
+
+				playground.vrScorePanel.image.clear( );
+				playground.vrScorePanel.image.moveTo(5,5,295,5,295,125);
+				playground.vrScorePanel.image.stroke('black',1);
+				var xx = 0;
+				var txt = playground.totalScore.toFixed(1);
+				if( txt.length==3 ) xx = 185;
+				if( txt.length==4 ) xx = 150;
+				if( txt.length==5 ) xx = 110;
+				playground.vrScorePanel.image.fillText( xx, 20, txt, 'black', 'bold 66px Arial' );
+				playground.vrScorePanel.image.fillText( 100, 85, element('txt-score').innerHTML, 'black', '36px Arial' );
+			}
 		}
 		
 		this.translate( [
 			{id: 'txt-time',
-				en: 'Time',
-				bg: 'Време',
+				en: 'TIME',
+				bg: 'ВРЕМЕ',
 				jp: '時間'},
 			{id: 'txt-score',
-				en: 'Score',
-				bg: 'Резултат',
+				en: 'SCORE',
+				bg: 'РЕЗУЛТАТ',
 				jp: '時間'},
 			{id: 'txt-performance',
-				en: 'Performance',
-				bg: 'Изпълнение',
+				en: 'PERFORMANCE',
+				bg: 'ИЗПЪЛНЕНИЕ',
 				jp: '時間'},
 			{id: 'txt-user',
 				en: scorm.api
@@ -199,18 +286,119 @@ class ScormPlayground
 	}
 
 
+	// if user exits the game tab, end the game automatically	
 	onVisibilityChange( )
 	{
 		if( playground && playground.gameStarted )
-		{
-			var message = 'Lost focus';
-			scorm.setValue( 'cmi.comments', message );
-		
-			playground.endGame( );
-		}
+			playground.endGame( true );
 	}
 
 
+
+	// when user enters VR experience
+	onEnterVR( )
+	{
+		console.log('🔴 VR Session STARTED - User is now in VR');
+		playground.inVR = true;
+	}
+
+
+
+	// when user exits VR experience
+	onExitVR( )
+	{
+		console.log('🔵 VR Session ENDED - User exited VR');
+		playground.inVR = false;
+	}
+
+
+
+	vrInitialize( )
+	{
+		// fix local VR simulator
+		setupLegacyXRForEmulator();
+		
+		// track vr mode
+		suica.vr( );
+		suica.renderer.xr.addEventListener('sessionstart', this.onEnterVR );
+		suica.renderer.xr.addEventListener('sessionend', this.onExitVR );
+
+		// fix VR camera frustum
+		suica.vrCamera.children[0].near = 0.01;
+		suica.vrCamera.children[0].far = 30;
+		suica.vrCamera.children[0].updateProjectionMatrix();
+		
+		// create controllers
+		this.controller0 = suica.renderer.xr.getController(0);
+		this.controller0.addEventListener( 'selectstart', function(){ playground.ray0.material.color.set(1,0.5,0); } );
+		this.controller0.addEventListener( 'selectend', function(){ playground.ray0.material.color.set(1,1,1); } );
+		this.controller0.addEventListener( 'select', function(){ playground.vrClick( playground.controller0 ); } );
+		
+		this.controller1 = suica.renderer.xr.getController(1);
+		this.controller1.addEventListener( 'selectstart', function(){ playground.ray1.material.color.set(1,0.5,0); } );
+		this.controller1.addEventListener( 'selectend', function(){ playground.ray1.material.color.set(1,1,1); } );
+		this.controller1.addEventListener( 'select', function(){ playground.vrClick( playground.controller1 ); } );
+
+		suica.scene.add( suica.vrCamera );
+		suica.vrCamera.add( this.controller0 );
+		suica.vrCamera.add( this.controller1 );
+	
+		// create controllers rays
+		this.ray0 = new THREE.Mesh(
+					new THREE.CylinderGeometry( 0.01, 0.001, 1 ).rotateX( Math.PI/2 ).translate( 0, 0, -0.5 ),
+					new THREE.MeshBasicMaterial( {
+						color: 'white',
+						transparent: true,
+						opacity: 0.7} )
+				);
+		this.controller0.add( this.ray0 );
+
+		this.ray1 = new THREE.Mesh( this.ray0.geometry, this.ray0.material.clone() );
+		this.controller1.add( this.ray1 );
+
+		this.marker0 = suica.sphere( [0,0,0], 0.3, 'white' );
+		this.marker0.threejs.material = new THREE.MeshBasicMaterial({
+			color: 'white',
+			transparent: true,
+			opacity: 0.7,
+			depthTest: false );
+		this.marker0.threejs.renderOrder = -10;
+		
+		this.marker1 = suica.sphere( [0,0,0], 0.3, 'white' );
+		this.marker1.threejs.material = new THREE.MeshBasicMaterial({
+			color: 'white',
+			transparent: true,
+			opacity: 0.7,
+			depthTest: false );
+		this.marker1.threejs.renderOrder = -10;
+				
+		// create time info panel
+		this.vrTimePanel = suica.square( [-3,0,3], [1.5,0.6], 'white' );
+		its.spinH = 180;
+		its.spinV = -90;
+		its.image = drawing( 300, 130 );
+
+		// create score info panel
+		this.vrScorePanel = suica.square( [-3,0,-3], [1.5,0.6], 'white' );
+		its.spinH = 180;
+		its.spinV = -90;
+		its.image = drawing( 300, 130 );
+
+		// create dscore info panel
+		this.vrDScorePanel = suica.square( [0,1,0], [1,0.5], 'white' );
+		its.spinH = 180;
+		its.spinV = -90;
+		its.image = drawing( 600, 300 );
+		its.threejs.material.transparent = true;
+		
+		this.raycaster = new THREE.Raycaster( );
+		this._v = new THREE.Vector3( ); // dummy
+		this.intersectables = [];
+		
+	}
+	
+	
+	
 	// update the graph - a history of scores
 	redrawScoreHistory( )
 	{
@@ -246,30 +434,49 @@ class ScormPlayground
 	} // ScormPlayground.redrawPerformanceGraph
 	
 	
-	
 	// starts a new game
 	newGame( )
 	{
+		
+		this.gameNumber++;
+				
+		// if score is almost 100, keep it as it is (no penalty for early exit)
+		var score = this.totalScore * (this.totalScore > 99.9 ? 1 : Playground.TEMPORAL_AVERAGE_OLD);
+			score = score.toFixed( 1 )+'1'; // id for start of game
 
-		scorm.setValue( 'cmi.comments', 'New game' );
+		setTimeout( () => {
+			
+			if ( scorm.api && scorm.api.LMSInitialize( "" ) ) {
 
-		// initiate SCORM data when the first game starts,
-		// i.e. there is still no any score history
-		if( this.scoreHistory.length==0 )
-		{
-			scorm.setValue( 'cmi.core.lesson_status', 'completed' );
-			scorm.setValue( 'cmi.core.score.max', 100 );
-			scorm.setValue( 'cmi.core.score.min', 0 );
-		}
+				// initiate SCORM data when the first game starts,
+				// i.e. there is still no any score history
+				if( this.scoreHistory.length==0 )
+				{
+					//console.log( 'cmi.core.lesson_status', 'completed' );
+					//console.log( 'cmi.core.score.max', 100 );
+					//console.log( 'cmi.core.score.min', 0 );
 
-		// protect agains browser closure - assume that the user
-		// will gets 0 points, update the points when the game ends
-		scorm.score = (Playground.TEMPORAL_AVERAGE_OLD*this.totalScore).toFixed(1);
+					scorm.api.LMSSetValue( 'cmi.core.lesson_status', 'completed' );
+					scorm.api.LMSSetValue( 'cmi.core.score.max', 100 );
+					scorm.api.LMSSetValue( 'cmi.core.score.min', 0 );
+				}
 
+				//console.log( 'cmi.core.score.raw', score );
+				//console.log( 'cmi.comments', '['+score );
+
+				scorm.api.LMSSetValue( 'cmi.core.score.raw', score );
+				scorm.api.LMSSetValue( 'cmi.comments', '['+score );
+
+				scorm.api.LMSCommit( '' );
+				scorm.api.LMSFinish( '' );
+
+			}
+			
+		}, 0 );
+		
 		this.gameStarted = true;
 		this.gameTime = performance.now();
 		this.gameHits = 0;
-
 
 	} // ScormPlayground.newGame
 	
@@ -293,7 +500,7 @@ class ScormPlayground
 	
 	
 	// ends the current game - evaluate results, update data
-	endGame( )
+	endGame( forced = false )
 	{
 
 		// get the score
@@ -304,25 +511,46 @@ class ScormPlayground
 		this.totalScore = Playground.TEMPORAL_AVERAGE_OLD*this.totalScore + Playground.TEMPORAL_AVERAGE_NEW*score;
 		
 		// protect high scores
-		if( oldScore>99.99 )
+		if( oldScore>99.9 )
 			this.totalScore = Math.max( this.totalScore, oldScore );
 		
-		// ensure that an increment of the total score are at least 1 point
+		// ensure that an increment of the total score is at least 2 points
 		// this is important when the score reaches 100% - increments
 		// become too small
-		if( this.totalScore > oldScore && this.totalScore < oldScore+1 )
-			this.totalScore = THREE.MathUtils.clamp( oldScore+1, 0, 100 );
+		if( this.totalScore > oldScore && this.totalScore < oldScore+2 )
+			this.totalScore = THREE.MathUtils.clamp( this.totalScore+2, 0, 100 );
 
-		// send the score to LMS
-		scorm.score = this.totalScore.toFixed(1);
 
+		var lastScore = this.totalScore.toFixed(1);
+
+		var message = '-' + Math.round(10*Math.round( performance.now() - this.gameTime )/1000)
+						  + '.' + this.gameHits + (forced?'(!)':'') + '=' + lastScore + ']';
+		
+		setTimeout( () => {
+			
+			if ( scorm.api && scorm.api.LMSInitialize( "" ) ) {
+
+				//console.log( 'cmi.core.score.raw', lastScore );
+				//console.log( 'cmi.comments', message );
+
+				// send the score to LMS
+				scorm.api.LMSSetValue( 'cmi.core.score.raw', lastScore );
+				scorm.api.LMSSetValue( 'cmi.comments', message );
+				
+				scorm.api.LMSCommit( "" );
+				scorm.api.LMSFinish( "" );
+				
+			}
+			
+		}, 0 );
+		
 		// record the score in the history
 		this.scoreHistory.push( this.totalScore );
 		if( this.scoreHistory.length > 24 )
 		{
 			this.scoreHistory.shift();
 		}
-		
+
 		// the change of total score is animated
 		// from the center to the score corner
 		this.animateScore( oldScore );
@@ -333,13 +561,7 @@ class ScormPlayground
 		
 		this.gameStarted = false;
 
-		window.removeEventListener( 'pointerdown', this.countHits );
-		
-		this.gameTime = (performance.now()-this.gameTime)/1000;
-		
-		var message = 'End game time='+(this.gameTime.toFixed(1))+' hits='+this.gameHits+' score='+this.totalScore.toFixed(1);
-		scorm.setValue( 'cmi.comments', message );
-		
+						
 	} // ScormPlayground.endGame
 	
 	
@@ -353,23 +575,39 @@ class ScormPlayground
 			pointsValue = Math.round(10*(this.totalScore-oldScore))/10;
 			pointsElem.innerHTML = (pointsValue>0?'+':'')+pointsValue;
 			
-		if( this.totalScore>99.99 ) pointsElem.innerHTML = '&#x22C6;';
+		if( this.totalScore>99.9 ) pointsElem.innerHTML = '&#x22C6;';
 		
 
-		new TWEEN.Tween( {opacity:0, scale:4, x:suica.width/2, y:suica.height/2} )
-			.to( {opacity:1, scale:1, x:scoreElem.offsetLeft+30, y:scoreElem.offsetTop}, Playground.POINTS_SPEED )
+		if( this.inVR )
+		{
+			this.vrDScorePanel.image.clear( );
+			this.vrDScorePanel.image.fillText( 20, 20, pointsElem.innerHTML, 'black', 'bold 300px Arial' );
+			this.vrDScorePanel.visible = true;
+			this.vrDScorePanel.size = 0;
+		}
+		
+
+		new TWEEN.Tween( {opacity:0, scale:4, x:suica.width/2, y:suica.height/2, vrScale:0.01} )
+			.to( {opacity:1, scale:1, x:scoreElem.offsetLeft+30, y:scoreElem.offsetTop, vrScale:10}, Playground.POINTS_SPEED )
 			.easing( TWEEN.Easing.Cubic.InOut )
 			.onUpdate( (state) => {
 				pointsElem.style.opacity = 0.5-0.5*Math.cos(2*Math.PI*state.opacity);
 				pointsElem.style.transform = `scale(${1.3*state.scale},${state.scale})`;
 				pointsElem.style.right = Math.round(state.x)+'px';
 				pointsElem.style.bottom = Math.round(state.y)+'px';
+				playground.vrDScorePanel.size = [state.vrScale,state.vrScale/2,0];
+				playground.vrDScorePanel.threejs.material.opacity = pointsElem.style.opacity;
 			})
 			.onComplete( ()=> {
 				var sc = this.totalScore.toFixed(1);
 				scoreElem.innerHTML = sc;
 				scoreElem.style.right = 1+0.065*(sc.length-1)+'em';
 				
+				if( playground.inVR )
+				{
+					playground.vrDScorePanel.visible = false;
+				}
+
 				this.redrawScoreHistory( );
 			})
 			.start();
@@ -383,9 +621,8 @@ class ScormPlayground
 	{
 		// get language parameter from the URL,
 		// if omitted, use time zone of the OS
-		
 		if( this.urlParams.has('lang') )
-			return urlParams.get('lang');
+			return this.urlParams.get('lang');
 
 		// https://stackoverflow.com/a/70870895
 		var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -546,6 +783,46 @@ class ScormPlayground
 		return value;
 	} // Playground.maxPoints
 
+
+	vrDrawTime( )
+	{
+		element('timer').innerHTML = `${hours}:${minutes}:${seconds}`;
+	}
+
+
+	vrIntersections( controller )
+	{
+		controller.getWorldDirection( playground._v );
+		playground.raycaster.ray.origin.setFromMatrixPosition( controller.matrixWorld );
+		playground.raycaster.ray.direction.set( -playground._v.x, -playground._v.y, -playground._v.z );
+
+		return playground.raycaster.intersectObjects( playground.intersectables );
+	}
+	
+	
+	
+	vrClick( controller )
+	{
+		var intersections = this.vrIntersections( controller );
+		
+		if( intersections.length )
+		{
+			var objects = [];
+			intersections.forEach( e => {
+				
+				var obj = e.object?.suicaObject;
+				if( obj ) {
+					while( obj.parent ) obj = obj.parent;
+					if( obj.onclick && objects.indexOf(obj)<0 ) objects.push( obj );
+				}
+				
+			} );
+
+			objects.forEach( e => e.onclick() );
+		}
+
+	}
+	
 	
 } // class ScormPlayground
 	
