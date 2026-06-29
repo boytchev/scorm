@@ -48,11 +48,12 @@ function update( t, dT )
 		
 		if( playground.inVR )
 		{
-			if( playground.controller0?.sign<0 && playground.ray0.size[0]>0 )
-				playground.ray0.size[0] *= -1;
 			
-			if( playground.controller1?.sign<0 && playground.ray1.size[0]>0 )
-				playground.ray1.size[0] *= -1;
+			if( playground.sign0<0 && playground.ray0.size[0]>0 )
+				playground.ray0.width *= -1;
+			
+			if( playground.sign1<0 && playground.ray1.size[0]>0 )
+				playground.ray1.width *= -1;
 			
 			var intersections0 = playground.vrIntersections( playground.controller0 );
 			
@@ -334,13 +335,16 @@ class ScormPlayground
 		suica.vrCamera.children[0].far = 30;
 		suica.vrCamera.children[0].updateProjectionMatrix();
 		
+		this.sign0 = 1;
+		this.sign1 = 1;
+		
 		// create controllers
 		this.controller0 = suica.renderer.xr.getController(0);
 		this.controller0.addEventListener( 'selectstart', function(){ playground.ray0.material.color.set(1,0.5,0); } );
 		this.controller0.addEventListener( 'selectend', function(){ playground.ray0.material.color.set(1,1,1); } );
 		this.controller0.addEventListener( 'select', function(){ playground.vrClick( playground.controller0 ); } );
 		this.controller0.addEventListener( 'connected', function(event){
-			this.controller0.sign = event.data?.handedness == 'left' ? -1 : 1;
+			if( event.data?.handedness == 'left' ) playground.sign0 =  -1;
 		} );
 		
 		this.controller1 = suica.renderer.xr.getController(1);
@@ -348,7 +352,7 @@ class ScormPlayground
 		this.controller1.addEventListener( 'selectend', function(){ playground.ray1.material.color.set(1,1,1); } );
 		this.controller1.addEventListener( 'select', function(){ playground.vrClick( playground.controller1 ); } );
 		this.controller1.addEventListener( 'connected', function(event){
-			this.controller1.sign = event.data?.handedness == 'left' ? -1 : 1;
+			if( event.data?.handedness == 'left' ) playground.sign1 =  -1;
 		} );
 
 		suica.scene.add( suica.vrCamera );
@@ -370,7 +374,7 @@ class ScormPlayground
 
 		// this.ray1 = new THREE.Mesh( this.ray0.geometry, this.ray0.material.clone() );
 		this.ray1 = suica.model('models/hand.glb');
-		its.size = [-0.075,0.075,0.075];
+		its.size = [0.075,0.075,0.075];
 		this.ray1.onload = ()=>{
 			this.ray1.threejs.children[0].children[0].material = new THREE.MeshPhysicalMaterial({
 				color: 'ghostwhite',
