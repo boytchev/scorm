@@ -352,8 +352,9 @@ class ScormPlayground
 						// opacity: 0.7} )
 				// );
 		this.ray0 = suica.model('models/hand.glb');
-		its.size = 0.1;
-		//its.spinV = -90;
+		its.center = [0.015,-0.015,-0.3]
+		its.size = 0.05;
+		its.spinH = -10;
 		this.ray0.onload = ()=>{
 			this.ray0.threejs.children[0].children[0].material = new THREE.MeshPhysicalMaterial({
 				color: 'white',
@@ -365,8 +366,9 @@ class ScormPlayground
 
 		// this.ray1 = new THREE.Mesh( this.ray0.geometry, this.ray0.material.clone() );
 		this.ray1 = suica.model('models/hand.glb');
-		its.size = [-0.1,0.1,0.1];
-		//its.spinV = -90;
+		its.center = [-0.015,-0.015,-0.3]
+		its.size = [-0.05,0.05,0.05];
+		its.spinH = 10;
 		this.ray1.onload = ()=>{
 			this.ray1.threejs.children[0].children[0].material = new THREE.MeshPhysicalMaterial({
 				transmission: 1,
