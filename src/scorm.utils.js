@@ -344,24 +344,43 @@ class ScormPlayground
 		suica.vrCamera.add( this.controller1 );
 	
 		// create controllers rays
-		this.ray0 = new THREE.Mesh(
-					new THREE.CylinderGeometry( 0.01, 0.001, 1 ).rotateX( Math.PI/2 ).translate( 0, 0, -0.5 ),
-					new THREE.MeshBasicMaterial( {
-						color: 'white',
-						transparent: true,
-						opacity: 0.7} )
-				);
-		this.controller0.add( this.ray0 );
+		// this.ray0 = new THREE.Mesh(
+					// new THREE.CylinderGeometry( 0.01, 0.001, 1 ).rotateX( Math.PI/2 ).translate( 0, 0, -0.5 ),
+					// new THREE.MeshBasicMaterial( {
+						// color: 'white',
+						// transparent: true,
+						// opacity: 0.7} )
+				// );
+		this.ray0 = suica.model('models/hand.glb');
+		its.size = 0.1;
+		//its.spinV = -90;
+		this.ray0.onload = ()=>{
+			this.ray0.threejs.children[0].children[0].material = new THREE.MeshPhysicalMaterial({
+				color: 'white',
+				transmission: 1,
+				roughness: 0,
+			});
+		}
+		this.controller0.add( this.ray0.threejs );
 
-		this.ray1 = new THREE.Mesh( this.ray0.geometry, this.ray0.material.clone() );
-		this.controller1.add( this.ray1 );
+		// this.ray1 = new THREE.Mesh( this.ray0.geometry, this.ray0.material.clone() );
+		this.ray1 = suica.model('models/hand.glb');
+		its.size = [-0.1,0.1,0.1];
+		//its.spinV = -90;
+		this.ray1.onload = ()=>{
+			this.ray1.threejs.children[0].children[0].material = new THREE.MeshPhysicalMaterial({
+				transmission: 1,
+				roughness: 0,
+			});
+		}
+		this.controller1.add( this.ray1.threejs );
 
 		this.marker0 = suica.sphere( [0,0,0], 0.3, 'white' );
 		this.marker0.threejs.material = new THREE.MeshBasicMaterial({
 			color: 'white',
 			transparent: true,
 			opacity: 0.7,
-			depthTest: false );
+		depthTest: false} );
 		this.marker0.threejs.renderOrder = -10;
 		
 		this.marker1 = suica.sphere( [0,0,0], 0.3, 'white' );
@@ -369,7 +388,7 @@ class ScormPlayground
 			color: 'white',
 			transparent: true,
 			opacity: 0.7,
-			depthTest: false );
+		depthTest: false} );
 		this.marker1.threejs.renderOrder = -10;
 				
 		// create time info panel
