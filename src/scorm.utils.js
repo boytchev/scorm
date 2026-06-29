@@ -352,9 +352,9 @@ class ScormPlayground
 						// opacity: 0.7} )
 				// );
 		this.ray0 = suica.model('models/hand.glb');
-		its.center = [-0.015,-0.015,-0.15]
-		its.size = [-0.075,0.075,0.075];
-		its.spinH = -10;
+		//its.center = [0.015,-0.015,-0.15]
+		its.size = [0.075,0.075,0.075];
+		//its.spinH = -10;
 		this.ray0.onload = ()=>{
 			this.ray0.threejs.children[0].children[0].material = new THREE.MeshPhysicalMaterial({
 				color: 'ghostwhite',
@@ -363,13 +363,15 @@ class ScormPlayground
 				roughness: 0.45,
 			});
 		}
-		this.controller0.add( this.ray0.threejs );
+var a = new THREE.AxesHelper(11);
+a.scale.z = -1;		
+		this.controller0.add( this.ray0.threejs, a );
 
 		// this.ray1 = new THREE.Mesh( this.ray0.geometry, this.ray0.material.clone() );
 		this.ray1 = suica.model('models/hand.glb');
-		its.center = [0.015,-0.015,-0.15]
-		its.size = [0.075,0.075,0.075];
-		its.spinH = 10;
+		//its.center = [-0.015,-0.015,-0.15]
+		its.size = [-0.075,0.075,0.075];
+		//its.spinH = 10;
 		this.ray1.onload = ()=>{
 			this.ray1.threejs.children[0].children[0].material = new THREE.MeshPhysicalMaterial({
 				color: 'ghostwhite',
@@ -378,7 +380,9 @@ class ScormPlayground
 				roughness: 0.45,
 			});
 		}
-		this.controller1.add( this.ray1.threejs );
+var a = new THREE.AxesHelper(11);
+a.scale.z = -1;		
+		this.controller1.add( this.ray1.threejs, a );
 
 		this.marker0 = suica.sphere( [0,0,0], 0.3, 'white' );
 		this.marker0.threejs.material = new THREE.MeshBasicMaterial({
