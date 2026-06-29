@@ -48,6 +48,12 @@ function update( t, dT )
 		
 		if( playground.inVR )
 		{
+			if( playground.controller0?.sign<0 && playground.ray0.size[0]>0 )
+				playground.ray0.size[0] *= -1;
+			
+			if( playground.controller1?.sign<0 && playground.ray1.size[0]>0 )
+				playground.ray1.size[0] *= -1;
+			
 			var intersections0 = playground.vrIntersections( playground.controller0 );
 			
 			if( intersections0.length )
@@ -333,28 +339,25 @@ class ScormPlayground
 		this.controller0.addEventListener( 'selectstart', function(){ playground.ray0.material.color.set(1,0.5,0); } );
 		this.controller0.addEventListener( 'selectend', function(){ playground.ray0.material.color.set(1,1,1); } );
 		this.controller0.addEventListener( 'select', function(){ playground.vrClick( playground.controller0 ); } );
+		this.controller0.addEventListener( 'connected', function(event){
+			this.controller0.sign = event.data?.handedness == 'left' ? -1 : 1;
+		} );
 		
 		this.controller1 = suica.renderer.xr.getController(1);
 		this.controller1.addEventListener( 'selectstart', function(){ playground.ray1.material.color.set(1,0.5,0); } );
 		this.controller1.addEventListener( 'selectend', function(){ playground.ray1.material.color.set(1,1,1); } );
 		this.controller1.addEventListener( 'select', function(){ playground.vrClick( playground.controller1 ); } );
+		this.controller1.addEventListener( 'connected', function(event){
+			this.controller1.sign = event.data?.handedness == 'left' ? -1 : 1;
+		} );
 
 		suica.scene.add( suica.vrCamera );
 		suica.vrCamera.add( this.controller0 );
 		suica.vrCamera.add( this.controller1 );
 	
 		// create controllers rays
-		// this.ray0 = new THREE.Mesh(
-					// new THREE.CylinderGeometry( 0.01, 0.001, 1 ).rotateX( Math.PI/2 ).translate( 0, 0, -0.5 ),
-					// new THREE.MeshBasicMaterial( {
-						// color: 'white',
-						// transparent: true,
-						// opacity: 0.7} )
-				// );
 		this.ray0 = suica.model('models/hand.glb');
-		//its.center = [0.015,-0.015,-0.15]
 		its.size = [0.075,0.075,0.075];
-		//its.spinH = -10;
 		this.ray0.onload = ()=>{
 			this.ray0.threejs.children[0].children[0].material = new THREE.MeshPhysicalMaterial({
 				color: 'ghostwhite',
@@ -363,15 +366,11 @@ class ScormPlayground
 				roughness: 0.45,
 			});
 		}
-var a = new THREE.AxesHelper(11);
-a.scale.z = -1;		
-		this.controller0.add( this.ray0.threejs, a );
+		this.controller0.add( this.ray0.threejs );
 
 		// this.ray1 = new THREE.Mesh( this.ray0.geometry, this.ray0.material.clone() );
 		this.ray1 = suica.model('models/hand.glb');
-		//its.center = [-0.015,-0.015,-0.15]
 		its.size = [-0.075,0.075,0.075];
-		//its.spinH = 10;
 		this.ray1.onload = ()=>{
 			this.ray1.threejs.children[0].children[0].material = new THREE.MeshPhysicalMaterial({
 				color: 'ghostwhite',
@@ -380,9 +379,7 @@ a.scale.z = -1;
 				roughness: 0.45,
 			});
 		}
-var a = new THREE.AxesHelper(11);
-a.scale.z = -1;		
-		this.controller1.add( this.ray1.threejs, a );
+		this.controller1.add( this.ray1.threejs );
 
 		this.marker0 = suica.sphere( [0,0,0], 0.3, 'white' );
 		this.marker0.threejs.material = new THREE.MeshBasicMaterial({
