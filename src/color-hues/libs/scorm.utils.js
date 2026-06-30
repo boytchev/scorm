@@ -48,26 +48,21 @@ function update( t, dT )
 		
 		if( playground.inVR )
 		{
-			
-			if( playground.sign0<0 && playground.ray0.size[0]>0 )
-				playground.ray0.width *= -1;
-			
-			if( playground.sign1<0 && playground.ray1.size[0]>0 )
-				playground.ray1.width *= -1;
-			
-			var intersections0 = playground.vrIntersections( playground.controller0 );
-			
-			if( intersections0.length )
-				playground.marker0.center = [...intersections0[0].point];
-			else
-				playground.marker0.center = [0,-1000,0];
+			playground.controllers.forEach( e => {
 
-			var intersections1 = playground.vrIntersections( playground.controller1 );
+				// turn right controller to left if needed
+				if( e.sign<0 && e.ray.size[0]>0 ) e.ray.width *= -1;
+
+				// set marker position
+				var intersections = playground.vrIntersections( e );
+				
+				if( intersections.length )
+					e.marker.center = [...intersections[0].point];
+				else
+					e.marker.center = [0,-1000,0];
+
+			} );
 			
-			if( intersections1.length )
-				playground.marker1.center = [...intersections1[0].point];
-			else
-				playground.marker1.center = [0,-1000,0];
 		}
 	}
 	TWEEN.update( 1000*t );
@@ -76,14 +71,11 @@ function update( t, dT )
 
 
 class PlaygroundAudio
-{
-//	static audioListener;
-	
+{	
 	constructor( audioFile, volume, count=1, autoplay=false, loop=false )
 	{
 		this.audio = [];
 		this.index = 0;
-//		this.volume = volume;
 		
 		for( var i=0; i<count; i++ )
 		{
@@ -95,7 +87,6 @@ class PlaygroundAudio
 
 			this.audio[i].addEventListener( 'canplaythrough', this.onLoaded );
 			
-//			console.log( 'LOADING', audioFile.split('/').pop() );
 		}
 
 	}
@@ -103,32 +94,32 @@ class PlaygroundAudio
 
 	onLoaded( event )
 	{
-//		console.log( 'READY', event.path[0].src.split('/').pop() );
 		playground.setSound( );
 	}
-	
+
 	
 	mute( )
 	{
 		for( var audio of this.audio )
 			audio.muted = true;
 	}
+
 	
 	unmute( )
 	{
 		for( var audio of this.audio )
 			audio.muted = false;
 	}
+
 	
 	setVolume( volume )
 	{
-//		this.volume = volume;
 		this.audio[this.index].volume = volume;
 	}
+
 	
 	play( )
 	{
-//		console.log( 'ATTEMPT', this.audio[this.index].src.split('/').pop() );
 		if( playground.userInteracted == false ) return;
 		if( playground.getSound() == 'off' ) return;
 		
@@ -137,10 +128,10 @@ class PlaygroundAudio
 		// https://www.w3schools.com/jsref/prop_audio_readystate.asp
 		if( this.audio[this.index].readyState >= 4/*HAVE_ENOUGH_DATA*/ )
 		{
-//			console.log( 'PLAY', this.audio[this.index].src.split('/').pop() );
 			this.audio[this.index].play( );
 		}
 	}
+
 	
 	stop( )
 	{
@@ -148,6 +139,7 @@ class PlaygroundAudio
 			audio.pause( );
 	}
 }
+
 
 
 class ScormPlayground
@@ -281,7 +273,6 @@ class ScormPlayground
 	} // ScormPlayground.constructor
 
 
-
 	onGlobalClick( )
 	{
 		if( playground )
@@ -320,6 +311,64 @@ class ScormPlayground
 
 
 
+	vrCreateController( index )
+	{
+		var controller = suica.renderer.xr.getController( index );
+		if( !controller ) return;
+		
+		// create controller
+		this.controllers[index] = controller;
+		suica.vrCamera.add( controller );
+		
+		controller.sign = 1; // assume right (not left) controller
+		
+		controller.addEventListener( 'selectstart', function(){playground.vrFingerLength(controller,1500);} );
+		controller.addEventListener( 'selectend', function(){playground.vrFingerLength(controller,0);} );
+		controller.addEventListener( 'select', function(){ playground.vrClick( controller ); } );
+		controller.addEventListener( 'connected', function(event){
+			if( event.data?.handedness == 'left' ) controller.sign =  -1; // turn into left controller
+		} );
+		
+		// create controller's ray and hand
+		controller.ray = suica.model('models/hand.glb');
+		its.size = [0.075,0.075,0.075];
+		controller.ray.onload = ()=>{
+			controller.hand = controller.ray.threejs.children[0].children[0];
+			controller.hand.material = new THREE.MeshPhysicalMaterial({
+				color: 'ghostwhite',
+				transmission: 1.5,
+				reflectivity: 1,
+				roughness: 0.45,
+			});
+			var geo = controller.hand.geometry,
+				pos = geo.attributes.position;
+				
+			controller.indices = [];
+			controller.positions = [];
+			controller.pos = pos;
+
+			for( var i=0; i<pos.count; i++ )
+				if( pos.getZ(i)<-4.1 ) {
+					controller.indices.push( i );
+					controller.positions.push( pos.getZ(i) );
+				}
+			pos.needsUpdate = true;
+		}
+		controller.add( controller.ray.threejs );
+
+		// create controller's marker
+		controller.marker = suica.sphere( [0,0,0], 0.3, 'white' );
+		controller.marker.threejs.material = new THREE.MeshBasicMaterial({
+			color: 'white',
+			transparent: true,
+			opacity: 0.7,
+		depthTest: false} );
+		controller.marker.threejs.renderOrder = 10;
+		
+	}
+	
+	
+	
 	vrInitialize( )
 	{
 		// fix local VR simulator
@@ -332,75 +381,15 @@ class ScormPlayground
 
 		// fix VR camera frustum
 		suica.vrCamera.children[0].near = 0.01;
-		suica.vrCamera.children[0].far = 30;
+		suica.vrCamera.children[0].far = 100;
 		suica.vrCamera.children[0].updateProjectionMatrix();
-		
-		this.sign0 = 1;
-		this.sign1 = 1;
-		
-		// create controllers
-		this.controller0 = suica.renderer.xr.getController(0);
-		this.controller0.addEventListener( 'selectstart', function(){ playground.ray0.material.color.set(1,0.5,0); } );
-		this.controller0.addEventListener( 'selectend', function(){ playground.ray0.material.color.set(1,1,1); } );
-		this.controller0.addEventListener( 'select', function(){ playground.vrClick( playground.controller0 ); } );
-		this.controller0.addEventListener( 'connected', function(event){
-			if( event.data?.handedness == 'left' ) playground.sign0 =  -1;
-		} );
-		
-		this.controller1 = suica.renderer.xr.getController(1);
-		this.controller1.addEventListener( 'selectstart', function(){ playground.ray1.material.color.set(1,0.5,0); } );
-		this.controller1.addEventListener( 'selectend', function(){ playground.ray1.material.color.set(1,1,1); } );
-		this.controller1.addEventListener( 'select', function(){ playground.vrClick( playground.controller1 ); } );
-		this.controller1.addEventListener( 'connected', function(event){
-			if( event.data?.handedness == 'left' ) playground.sign1 =  -1;
-		} );
 
 		suica.scene.add( suica.vrCamera );
-		suica.vrCamera.add( this.controller0 );
-		suica.vrCamera.add( this.controller1 );
-	
-		// create controllers rays
-		this.ray0 = suica.model('models/hand.glb');
-		its.size = [0.075,0.075,0.075];
-		this.ray0.onload = ()=>{
-			this.ray0.threejs.children[0].children[0].material = new THREE.MeshPhysicalMaterial({
-				color: 'ghostwhite',
-				transmission: 1.5,
-				reflectivity: 1,
-				roughness: 0.45,
-			});
-		}
-		this.controller0.add( this.ray0.threejs );
-
-		// this.ray1 = new THREE.Mesh( this.ray0.geometry, this.ray0.material.clone() );
-		this.ray1 = suica.model('models/hand.glb');
-		its.size = [0.075,0.075,0.075];
-		this.ray1.onload = ()=>{
-			this.ray1.threejs.children[0].children[0].material = new THREE.MeshPhysicalMaterial({
-				color: 'ghostwhite',
-				transmission: 1.5,
-				reflectivity: 1,
-				roughness: 0.45,
-			});
-		}
-		this.controller1.add( this.ray1.threejs );
-
-		this.marker0 = suica.sphere( [0,0,0], 0.3, 'white' );
-		this.marker0.threejs.material = new THREE.MeshBasicMaterial({
-			color: 'white',
-			transparent: true,
-			opacity: 0.7,
-		depthTest: false} );
-		this.marker0.threejs.renderOrder = -10;
 		
-		this.marker1 = suica.sphere( [0,0,0], 0.3, 'white' );
-		this.marker1.threejs.material = new THREE.MeshBasicMaterial({
-			color: 'white',
-			transparent: true,
-			opacity: 0.7,
-		depthTest: false} );
-		this.marker1.threejs.renderOrder = -10;
-				
+		this.controllers = [];
+		this.vrCreateController( 0 );
+		this.vrCreateController( 1 );
+
 		// create time info panel
 		this.vrTimePanel = suica.square( [-3,0,3], [1.5,0.6], 'white' );
 		its.spinH = 180;
@@ -827,8 +816,7 @@ class ScormPlayground
 
 		return playground.raycaster.intersectObjects( playground.intersectables );
 	}
-	
-	
+		
 	
 	vrClick( controller )
 	{
@@ -849,6 +837,19 @@ class ScormPlayground
 
 			objects.forEach( e => e.onclick() );
 		}
+
+	}
+	
+
+	vrFingerLength ( controller, length )
+	{
+
+		for( var i=0; i<controller.indices.length; i++ ) {
+			var index = controller.indices[i];
+			controller.pos.setZ( index, controller.positions[i]-length );
+		}
+
+		controller.pos.needsUpdate = true;
 
 	}
 	
