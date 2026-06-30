@@ -184,8 +184,8 @@ class Plate extends Suica.Group
 
 		new TWEEN.Tween( this )
 				.to( {
-						height: this.selected? (playground.inVR?5:15):1,
-						angle: (this.selected && !this.isMasterPlate)? (playground.inVR?-25:-10) : 0
+						height: this.selected? (playground.inVR?15:15):1,
+						angle: (this.selected && !this.isMasterPlate)? (playground.inVR?-10:-10) : 0
 					}, Plate.TOGGLE_SPEED )
 				.easing( TWEEN.Easing.Cubic.InOut )
 				.start( );
@@ -233,7 +233,7 @@ class Plate extends Suica.Group
 	// marks a plate when the mouse pointer goes over it
 	onMark( )
 	{
-		this.basePlate.color = 'gray';
+		if( !playground.inVRMode ) this.basePlate.color = 'gray';
 	} // Plate.onMark
 	
 	
@@ -241,7 +241,7 @@ class Plate extends Suica.Group
 	// unmarks a plate when the mouse pointer goes out of it
 	onUnmark( )
 	{
-		this.basePlate.color = 'linen';
+		if( !playground.inVRMode ) this.basePlate.color = 'linen';
 	} // Plate.onUnmark
 	
 } // class Plate
