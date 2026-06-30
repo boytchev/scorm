@@ -353,7 +353,7 @@ class ScormPlayground
 
 			for( var i=0; i<pos.count; i++ )
 			{
-				var z = pos.getZ( i ) + 5;
+				var z = pos.getZ( i ) - 10;
 				if( pos.getZ(i) < -4.1 ) {
 					controller.indices.push( i );
 					controller.positions.push( z );
