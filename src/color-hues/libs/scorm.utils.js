@@ -335,10 +335,14 @@ class ScormPlayground
 		controller.ray.onload = ()=>{
 			controller.hand = controller.ray.threejs.children[0].children[0];
 			controller.hand.material = new THREE.MeshPhysicalMaterial({
-				color: 'ghostwhite',
-				transmission: 1.5,
-				reflectivity: 1,
-				roughness: 0.45,
+				color: 'white',
+				clearcoat: 1,
+				clearcoarRoughness: 0.3,
+				transmission: 1,
+				disperssion: 10,
+				iridescence: 10,
+				iridescenceIOR: 2,
+				roughness: 0,
 			});
 			var geo = controller.hand.geometry,
 				pos = geo.attributes.position;
@@ -348,10 +352,14 @@ class ScormPlayground
 			controller.pos = pos;
 
 			for( var i=0; i<pos.count; i++ )
-				if( pos.getZ(i)<-4.1 ) {
+			{
+				var z = pos.getZ( i ) + 5;
+				if( pos.getZ(i) < -4.1 ) {
 					controller.indices.push( i );
-					controller.positions.push( pos.getZ(i) );
+					controller.positions.push( z );
 				}
+				pos.setZ( i, z );
+			}
 			pos.needsUpdate = true;
 		}
 		controller.add( controller.ray.threejs );
