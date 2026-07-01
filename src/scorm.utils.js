@@ -232,6 +232,7 @@ class ScormPlayground
 				playground.vrScorePanel.image.stroke('black',1);
 				playground.vrScorePanel.image.fillText( 280, 20, playground.totalScore.toFixed(1), 'black', 'bold 66px Arial' );
 				playground.vrScorePanel.image.fillText( 280, 85, element('txt-score').innerHTML, 'black', '36px Arial' );
+
 			}
 		}
 		
@@ -293,6 +294,7 @@ class ScormPlayground
 	{
 		console.log('🔴 VR Session STARTED - User is now in VR');
 		playground.inVR = true;
+		playground.redrawScoreHistory();
 	}
 
 
@@ -394,16 +396,22 @@ class ScormPlayground
 		this.vrCreateController( 1 );
 
 		// create time info panel
-		this.vrTimePanel = suica.square( [0.5,0.4,-2], [0.5,0.2], 'white' );
+		this.vrTimePanel = suica.square( [0.5,0.5,-2], [0.5,0.2], 'white' );
 		its.image = drawing( 300, 130 );
 		its.image.context.textAlign = 'right';
 		suica.camera.add( this.vrTimePanel.threejs );
 
 		// create score info panel
-		this.vrScorePanel = suica.square( [0.5,-0.4,-2], [0.5,0.2], 'white' );
+		this.vrScorePanel = suica.square( [0.5,-0.5,-2], [0.5,0.2], 'white' );
 		its.image = drawing( 300, 130 );
 		its.image.context.textAlign = 'right';
 		suica.camera.add( this.vrScorePanel.threejs );
+
+		// create performance info panel
+		this.vrPerfPanel = suica.square( [-0.5,-0.4,-2], [0.5,0.4], 'white' );
+		its.image = drawing( 300, 260 );
+		its.image.context.textAlign = 'left';
+		suica.camera.add( this.vrPerfPanel.threejs );
 
 		// create dscore info panel
 		this.vrDScorePanel = suica.square( [0,0,-2], [1,0.5], 'white' );
@@ -451,7 +459,15 @@ class ScormPlayground
 		{
 			ctx.fillStyle = 'black';
 			ctx.fillRect( 10*i+2, Math.min(H-1,H-H*this.scoreHistory[i]/100), 7, H );
-		}	
+		}
+		
+		if( this.inVRMode ) {
+			this.vrPerfPanel.image.clear( );
+			this.vrPerfPanel.image.moveTo(5,125,5,5,295,5);
+			this.vrPerfPanel.image.stroke('black',1);
+			this.vrPerfPanel.image.fillText( 20, 85+40, element('txt-performance').innerHTML, 'black', '36px Arial' );
+			this.vrPerfPanel.image.context.drawImage(canvas, 20, 155);
+		}
 	} // ScormPlayground.redrawPerformanceGraph
 	
 	
@@ -609,7 +625,7 @@ class ScormPlayground
 		
 
 		new TWEEN.Tween( {opacity:0, scale:4, x:suica.width/2, y:suica.height/2, vrScale:0.01} )
-			.to( {opacity:1, scale:1, x:scoreElem.offsetLeft+30, y:scoreElem.offsetTop, vrScale:10}, Playground.POINTS_SPEED )
+			.to( {opacity:1, scale:1, x:scoreElem.offsetLeft+30, y:scoreElem.offsetTop, vrScale:10}, Playground.POINTS_SPEED*(playground.inVRMode?1.3:1) )
 			.easing( TWEEN.Easing.Cubic.InOut )
 			.onUpdate( (state) => {
 				pointsElem.style.opacity = 0.5-0.5*Math.cos(2*Math.PI*state.opacity);
@@ -617,7 +633,7 @@ class ScormPlayground
 				pointsElem.style.right = Math.round(state.x)+'px';
 				pointsElem.style.bottom = Math.round(state.y)+'px';
 				if( playground.inVRMode ) {
-					playground.vrDScorePanel.size = [state.vrScale,state.vrScale/2,0];
+					playground.vrDScorePanel.size = [state.vrScale/2,state.vrScale/4,0];
 					playground.vrDScorePanel.threejs.material.opacity = pointsElem.style.opacity;
 				}
 			})
