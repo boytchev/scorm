@@ -394,13 +394,13 @@ class ScormPlayground
 		this.vrCreateController( 1 );
 
 		// create time info panel
-		this.vrTimePanel = suica.square( [0.8,0.8,-2], [0.5,0.2], 'white' );
+		this.vrTimePanel = suica.square( [0.5,0.4,-2], [0.5,0.2], 'white' );
 		its.image = drawing( 300, 130 );
 		its.image.context.textAlign = 'right';
 		suica.camera.add( this.vrTimePanel.threejs );
 
 		// create score info panel
-		this.vrScorePanel = suica.square( [0.8,-0.8,-2], [0.5,0.2], 'white' );
+		this.vrScorePanel = suica.square( [0.5,-0.4,-2], [0.5,0.2], 'white' );
 		its.image = drawing( 300, 130 );
 		its.image.context.textAlign = 'right';
 		suica.camera.add( this.vrScorePanel.threejs );
@@ -608,7 +608,7 @@ class ScormPlayground
 		}
 		
 
-		new TWEEN.Tween( {opacity:0, scale:8, x:suica.width/2, y:suica.height/2, vrScale:0.01} )
+		new TWEEN.Tween( {opacity:0, scale:4, x:suica.width/2, y:suica.height/2, vrScale:0.01} )
 			.to( {opacity:1, scale:1, x:scoreElem.offsetLeft+30, y:scoreElem.offsetTop, vrScale:10}, Playground.POINTS_SPEED )
 			.easing( TWEEN.Easing.Cubic.InOut )
 			.onUpdate( (state) => {
