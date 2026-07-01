@@ -51,11 +51,6 @@ class Playground extends ScormPlayground
 				jp: '色相'},
 		] );
 		
-		if( this.inVRMode ) {
-			this.vrTimePanel.center = [-2.5,0,2.5];
-			this.vrScorePanel.center = [-2.5,0,-2.5];
-		}
-		
 	} // Playground.constructor
 
 	

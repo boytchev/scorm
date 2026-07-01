@@ -394,26 +394,23 @@ class ScormPlayground
 		this.vrCreateController( 1 );
 
 		// create time info panel
-		this.vrTimePanel = suica.square( [-3,0,3], [1.5,0.6], 'white' );
-		its.spinH = 180;
-		its.spinV = -90;
+		this.vrTimePanel = suica.square( [0.8,0.8,-2], [0.5,0.2], 'white' );
 		its.image = drawing( 300, 130 );
 		its.image.context.textAlign = 'right';
+		suica.camera.add( this.vrTimePanel.threejs );
 
 		// create score info panel
-		this.vrScorePanel = suica.square( [-3,0,-3], [1.5,0.6], 'white' );
-		its.spinH = 180;
-		its.spinV = -90;
+		this.vrScorePanel = suica.square( [0.8,-0.8,-2], [0.5,0.2], 'white' );
 		its.image = drawing( 300, 130 );
 		its.image.context.textAlign = 'right';
+		suica.camera.add( this.vrScorePanel.threejs );
 
 		// create dscore info panel
-		this.vrDScorePanel = suica.square( [0,1,0], [1,0.5], 'white' );
-		its.spinH = 180;
-		its.spinV = -90;
+		this.vrDScorePanel = suica.square( [0,0,-2], [1,0.5], 'white' );
 		its.image = drawing( 600, 300 );
 		its.image.context.textAlign = 'center';
 		its.threejs.material.transparent = true;
+		suica.camera.add( this.vrDScorePanel.threejs );
 		
 		this.raycaster = new THREE.Raycaster( );
 		this._v = new THREE.Vector3( ); // dummy
@@ -605,13 +602,13 @@ class ScormPlayground
 		if( this.inVR )
 		{
 			this.vrDScorePanel.image.clear( );
-			this.vrDScorePanel.image.fillText( 300, 20, pointsElem.innerHTML, 'black', 'bold 300px Arial' );
+			this.vrDScorePanel.image.fillText( 300, 20, pointsElem.innerHTML, 'black', 'bold 250px Arial' );
 			this.vrDScorePanel.visible = true;
 			this.vrDScorePanel.size = 0;
 		}
 		
 
-		new TWEEN.Tween( {opacity:0, scale:4, x:suica.width/2, y:suica.height/2, vrScale:0.01} )
+		new TWEEN.Tween( {opacity:0, scale:8, x:suica.width/2, y:suica.height/2, vrScale:0.01} )
 			.to( {opacity:1, scale:1, x:scoreElem.offsetLeft+30, y:scoreElem.offsetTop, vrScale:10}, Playground.POINTS_SPEED )
 			.easing( TWEEN.Easing.Cubic.InOut )
 			.onUpdate( (state) => {
