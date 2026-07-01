@@ -53,7 +53,6 @@ class Plate extends Suica.Group
 		
 		this.add( this.basePlate, this.colorPlate );
 		this.angle = 180;
-		this._hue = 0;
 		this.selected = false;
 		this.isMasterPlate = false;
 	} // Plate.constructor
@@ -125,28 +124,9 @@ class Plate extends Suica.Group
 	
 	
 	
-	// color hue of the plate
-	get hue( )
+	set color( color )
 	{
-		return this._hue;
-	} // Plate.hue
-
-	set hue( hue )
-	{
-		this._hue = hue;
-
-		var colorSpline = spline([[0],[360]], false, true);
-
-		function cos( base, x )
-		{
-			x = colorSpline( x/360 )[0];
-			return 255*1.25*(Math.cos(radians( x )-radians(base))/2+0.5);
-		}
-
-		this.colorPlate.color = rgb(
-				cos(0,hue),
-				cos(120,hue),
-				cos(240,hue) );
+		this.colorPlate.color = color;
 	} // Plate.hue
 	
 	
@@ -184,8 +164,8 @@ class Plate extends Suica.Group
 
 		new TWEEN.Tween( this )
 				.to( {
-						height: this.selected? (playground.inVR?15:15):1,
-						angle: (this.selected && !this.isMasterPlate)? (playground.inVR?-10:-10) : 0
+						height: this.selected? 15 : 1,
+						angle: (this.selected && !this.isMasterPlate)? -10 : 0
 					}, Plate.TOGGLE_SPEED )
 				.easing( TWEEN.Easing.Cubic.InOut )
 				.start( );

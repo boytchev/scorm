@@ -224,19 +224,14 @@ class ScormPlayground
 				playground.vrTimePanel.image.clear( );
 				playground.vrTimePanel.image.moveTo(5,125,295,125,295,5);
 				playground.vrTimePanel.image.stroke('black',1);
-				playground.vrTimePanel.image.fillText( 18, 60, time, 'black', 'bold 66px Arial' );
-				playground.vrTimePanel.image.fillText( 154, 20, element('txt-time').innerHTML, 'black', '36px Arial' );
+				playground.vrTimePanel.image.fillText( 280, 60, time, 'black', 'bold 66px Arial' );
+				playground.vrTimePanel.image.fillText( 280, 20, element('txt-time').innerHTML, 'black', '36px Arial' );
 
 				playground.vrScorePanel.image.clear( );
 				playground.vrScorePanel.image.moveTo(5,5,295,5,295,125);
 				playground.vrScorePanel.image.stroke('black',1);
-				var xx = 0;
-				var txt = playground.totalScore.toFixed(1);
-				if( txt.length==3 ) xx = 185;
-				if( txt.length==4 ) xx = 150;
-				if( txt.length==5 ) xx = 110;
-				playground.vrScorePanel.image.fillText( xx, 20, txt, 'black', 'bold 66px Arial' );
-				playground.vrScorePanel.image.fillText( 100, 85, element('txt-score').innerHTML, 'black', '36px Arial' );
+				playground.vrScorePanel.image.fillText( 280, 20, playground.totalScore.toFixed(1), 'black', 'bold 66px Arial' );
+				playground.vrScorePanel.image.fillText( 280, 85, element('txt-score').innerHTML, 'black', '36px Arial' );
 			}
 		}
 		
@@ -403,18 +398,21 @@ class ScormPlayground
 		its.spinH = 180;
 		its.spinV = -90;
 		its.image = drawing( 300, 130 );
+		its.image.context.textAlign = 'right';
 
 		// create score info panel
 		this.vrScorePanel = suica.square( [-3,0,-3], [1.5,0.6], 'white' );
 		its.spinH = 180;
 		its.spinV = -90;
 		its.image = drawing( 300, 130 );
+		its.image.context.textAlign = 'right';
 
 		// create dscore info panel
 		this.vrDScorePanel = suica.square( [0,1,0], [1,0.5], 'white' );
 		its.spinH = 180;
 		its.spinV = -90;
 		its.image = drawing( 600, 300 );
+		its.image.context.textAlign = 'center';
 		its.threejs.material.transparent = true;
 		
 		this.raycaster = new THREE.Raycaster( );
@@ -607,7 +605,7 @@ class ScormPlayground
 		if( this.inVR )
 		{
 			this.vrDScorePanel.image.clear( );
-			this.vrDScorePanel.image.fillText( 20, 20, pointsElem.innerHTML, 'black', 'bold 300px Arial' );
+			this.vrDScorePanel.image.fillText( 300, 20, pointsElem.innerHTML, 'black', 'bold 300px Arial' );
 			this.vrDScorePanel.visible = true;
 			this.vrDScorePanel.size = 0;
 		}
@@ -621,8 +619,10 @@ class ScormPlayground
 				pointsElem.style.transform = `scale(${1.3*state.scale},${state.scale})`;
 				pointsElem.style.right = Math.round(state.x)+'px';
 				pointsElem.style.bottom = Math.round(state.y)+'px';
-				playground.vrDScorePanel.size = [state.vrScale,state.vrScale/2,0];
-				playground.vrDScorePanel.threejs.material.opacity = pointsElem.style.opacity;
+				if( playground.inVRMode ) {
+					playground.vrDScorePanel.size = [state.vrScale,state.vrScale/2,0];
+					playground.vrDScorePanel.threejs.material.opacity = pointsElem.style.opacity;
+				}
 			})
 			.onComplete( ()=> {
 				var sc = this.totalScore.toFixed(1);

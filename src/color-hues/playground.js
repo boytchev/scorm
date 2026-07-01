@@ -3,6 +3,13 @@
 //
 
 	
+var hues = [0, 3, 6, 9, 12, 15, 18, 22, 25, 30, 35, 41, 46, 53, 59, 70, 82, 93, 103, 112, 120, 130, 143, 160, 176, 185, 190, 196, 202, 208, 213, 218, 223, 226, 229, 232, 235, 238, 242, 243, 247, 251, 256, 263, 271, 279, 288, 299, 321, 334, 344, 353];
+const HUES_SPAN = hues.length;
+const HUES = [
+	...hues,
+	...hues.map(e=>e+360),
+	...hues.map(e=>e+2*360),
+	...hues.map(e=>e+3*360)];
 
 class Playground extends ScormPlayground
 {
@@ -44,8 +51,10 @@ class Playground extends ScormPlayground
 				jp: '色相'},
 		] );
 		
-		this.vrTimePanel.center = [-2.5,0,2.5];
-		this.vrScorePanel.center = [-2.5,0,-2.5];
+		if( this.inVRMode ) {
+			this.vrTimePanel.center = [-2.5,0,2.5];
+			this.vrScorePanel.center = [-2.5,0,-2.5];
+		}
 		
 	} // Playground.constructor
 
@@ -55,14 +64,17 @@ class Playground extends ScormPlayground
 	newGame( )
 	{
 		super.newGame( );
+
+		var hueStart = Math.floor(random( 0, HUES_SPAN )),
+			hueStep = Math.round(this.configRange( 8, 1 ));
 		
-		// generate initial hue and hue step
-		var masterHue = random( 0, 359 ),
-			hueStep = this.configRange( 70, 7 );
-			
 		// setup master plate hue
-		this.masterPlate.index = random([0.5, 1.5, 2.5, 3.5, 4.5]);
-		this.masterPlate.hue = masterHue + this.masterPlate.index*hueStep;
+		var idx = random([0,1,2,3,4]),
+			c1 = hsl(HUES[hueStart + idx*hueStep],100,50),
+			c2 = hsl(HUES[hueStart + (idx+1)*hueStep],100,50);
+		this.masterPlate.index = idx+0.5;
+		this.masterPlate.color = [(c1.r+c2.r)/2,(c1.g+c2.g)/2,(c1.b+c2.b)/2];
+
 		this.masterPlate.flipIn( );
 		
 		// setup other plates hues
@@ -70,12 +82,11 @@ class Playground extends ScormPlayground
 		for( var i=0; i<6; i++ )
 		{
 			var plate = this.plates[ (i+offset)%6 ];
-			plate.hue = masterHue + i*hueStep;
+			plate.color = hsl(HUES[hueStart + i*hueStep], 100, 50);
 			plate.index = i;
 			
 			plate.flipIn( );
 		}
-
 	} // Playground.newGame
 
 
