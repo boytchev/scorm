@@ -3,7 +3,8 @@
 //
 
 	
-var hues = [0, 3, 6, 9, 12, 15, 18, 22, 25, 30, 35, 41, 46, 53, 59, 70, 82, 93, 103, 112, 120, 130, 143, 160, 176, 185, 190, 196, 202, 208, 213, 218, 223, 226, 229, 232, 235, 238, 242, 243, 247, 251, 256, 263, 271, 279, 288, 299, 321, 334, 344, 353];
+var hues = [0, 2, 4, 6, 8, 11, 14, 17, 20, 23, 26, 30, 34, 38, 42, 46, 53, 61, 71, 81, 89, 97, 105, 114, 122, 128, 133, 140, 148, 155, 160, 165, 171, 177, 181, 185, 191, 197, 202, 206, 210, 217, 225, 232, 236, 238, 243, 246, 249, 253, 257, 263, 270, 277, 283, 291, 322, 333, 344, 350, 356];
+
 const HUES_SPAN = hues.length;
 const HUES = [
 	...hues,
@@ -61,14 +62,14 @@ class Playground extends ScormPlayground
 		super.newGame( );
 
 		var hueStart = Math.floor(random( 0, HUES_SPAN )),
-			hueStep = Math.round(this.configRange( 8, 1 ));
-		
+			hueStep = Math.round(this.configRange( 10, 1 ));
+			
 		// setup master plate hue
 		var idx = random([0,1,2,3,4]),
-			c1 = hsl(HUES[hueStart + idx*hueStep],100,50),
-			c2 = hsl(HUES[hueStart + (idx+1)*hueStep],100,50);
+			c1 = HUES[hueStart + idx*hueStep],
+			c2 = HUES[hueStart + (idx+1)*hueStep];
 		this.masterPlate.index = idx+0.5;
-		this.masterPlate.color = [(c1.r+c2.r)/2,(c1.g+c2.g)/2,(c1.b+c2.b)/2];
+		this.masterPlate.color = hsl((c1+c2)/2, 100, 50);
 
 		this.masterPlate.flipIn( );
 		
