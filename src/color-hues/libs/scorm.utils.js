@@ -609,7 +609,7 @@ class ScormPlayground
 		
 
 		new TWEEN.Tween( {opacity:0, scale:4, x:suica.width/2, y:suica.height/2, vrScale:0.01} )
-			.to( {opacity:1, scale:1, x:scoreElem.offsetLeft+30, y:scoreElem.offsetTop, vrScale:10}, Playground.POINTS_SPEED )
+			.to( {opacity:1, scale:1, x:scoreElem.offsetLeft+30, y:scoreElem.offsetTop, vrScale:10}, Playground.POINTS_SPEED*(playground.inVRMode?2:1) )
 			.easing( TWEEN.Easing.Cubic.InOut )
 			.onUpdate( (state) => {
 				pointsElem.style.opacity = 0.5-0.5*Math.cos(2*Math.PI*state.opacity);
@@ -617,7 +617,7 @@ class ScormPlayground
 				pointsElem.style.right = Math.round(state.x)+'px';
 				pointsElem.style.bottom = Math.round(state.y)+'px';
 				if( playground.inVRMode ) {
-					playground.vrDScorePanel.size = [state.vrScale,state.vrScale/2,0];
+					playground.vrDScorePanel.size = [state.vrScale/2,state.vrScale/4,0];
 					playground.vrDScorePanel.threejs.material.opacity = pointsElem.style.opacity;
 				}
 			})
