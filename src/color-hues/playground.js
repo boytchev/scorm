@@ -62,8 +62,8 @@ class Playground extends ScormPlayground
 		super.newGame( );
 
 		var hueStart = Math.floor(random( 0, HUES_SPAN )),
-			hueStep = Math.round(this.configRange( 10, 1 ));
-			
+			hueStep = Math.round(this.configRange( 5, 1 ));
+
 		// setup master plate hue
 		var idx = random([0,1,2,3,4]),
 			c1 = HUES[hueStart + idx*hueStep],
