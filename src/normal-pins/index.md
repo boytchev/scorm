@@ -66,6 +66,9 @@ This application uses a background music from [SoundCloud](https://soundcloud.co
 <!--- "Might & Magic](https://soundcloud.com/serpentsoundstudios/might-magic)" by [Alexander Nakarada](https://soundcloud.com/serpentsoundstudios) ([www.serpentsoundstudios.com](https://www.serpentsoundstudios.com/)) licensed under [CC BY 4.0 License](https://creativecommons.org/licenses/by/4.0/),-->
 - "Might & Magic" by Alexander Nakarada licensed under [CC BY 4.0 License](https://creativecommons.org/licenses/by/4.0/),
 
+3D model (when VR mode is on):
+- "[hand_pose_ 留存](https://skfb.ly/oLvJD)" by TRNKL licensed under [Creative Commons Attribution](http://creativecommons.org/licenses/by/4.0/),
+
 and sound effects from [Mixkit](https://mixkit.co/):
 
 - "[Game quick warning notification](https://mixkit.co/free-sound-effects/click/)" licensed under [Mixkit Sound Effects Free License](https://mixkit.co/license/#sfxFree),

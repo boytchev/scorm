@@ -222,10 +222,10 @@ class ScormPlayground
 			if( playground.inVR )
 			{
 				playground.vrTimePanel.image.clear( );
-				playground.vrTimePanel.image.moveTo(5,125,295,125,295,5);
+				playground.vrTimePanel.image.moveTo(5,125,5,5,295,5);
 				playground.vrTimePanel.image.stroke('black',1);
-				playground.vrTimePanel.image.fillText( 280, 60, time, 'black', 'bold 66px Arial' );
-				playground.vrTimePanel.image.fillText( 280, 20, element('txt-time').innerHTML, 'black', '36px Arial' );
+				playground.vrTimePanel.image.fillText( 20, 20, time, 'black', 'bold 66px Arial' );
+				playground.vrTimePanel.image.fillText( 20, 85, element('txt-time').innerHTML, 'black', '36px Arial' );
 
 				playground.vrScorePanel.image.clear( );
 				playground.vrScorePanel.image.moveTo(5,5,295,5,295,125);
@@ -396,21 +396,24 @@ class ScormPlayground
 		this.vrCreateController( 1 );
 
 		// create time info panel
-		this.vrTimePanel = suica.square( [0.6,0.6,-2], [0.5*0.6,0.2*0.6], 'white' );
+		this.vrTimePanel = suica.square( [-0.65,-0.6,-2], [0.5*0.6,0.2*0.6], 'white' );
+		this.vrTimePanel.threejs.material.depthTest = false;
 		its.image = drawing( 300, 130 );
-		its.image.context.textAlign = 'right';
+		its.image.context.textAlign = 'left';
 		suica.camera.add( this.vrTimePanel.threejs );
 
 		// create score info panel
-		this.vrScorePanel = suica.square( [0.6,-0.6,-2], [0.5*0.6,0.2*0.6], 'white' );
+		this.vrScorePanel = suica.square( [0.65,-0.6,-2], [0.5*0.6,0.2*0.6], 'white' );
+		this.vrScorePanel.threejs.material.depthTest = false;
 		its.image = drawing( 300, 130 );
 		its.image.context.textAlign = 'right';
 		suica.camera.add( this.vrScorePanel.threejs );
 
 		// create performance info panel
-		this.vrPerfPanel = suica.square( [-0.6,-0.5,-2], [0.5*0.6,0.4*0.6], 'white' );
+		this.vrPerfPanel = suica.square( [0,-0.56,-2], [0.5*0.6,0.4*0.6], 'white' );
+		this.vrPerfPanel.threejs.material.depthTest = false;
 		its.image = drawing( 300, 260 );
-		its.image.context.textAlign = 'left';
+		its.image.context.textAlign = 'center';
 		suica.camera.add( this.vrPerfPanel.threejs );
 
 		// create dscore info panel
@@ -463,10 +466,8 @@ class ScormPlayground
 		
 		if( this.inVRMode ) {
 			this.vrPerfPanel.image.clear( );
-			this.vrPerfPanel.image.moveTo(5,125,5,5,295,5);
-			this.vrPerfPanel.image.stroke('black',1);
-			this.vrPerfPanel.image.fillText( 20, 85+40, element('txt-performance').innerHTML, 'black', '36px Arial' );
-			this.vrPerfPanel.image.context.drawImage(canvas, 20, 155);
+			this.vrPerfPanel.image.fillText( 150, 120, element('txt-performance').innerHTML, 'black', '36px Arial' );
+			this.vrPerfPanel.image.context.drawImage(canvas, 30, 155);
 		}
 	} // ScormPlayground.redrawPerformanceGraph
 	

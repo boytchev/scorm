@@ -13,7 +13,7 @@ Click on the image to start the application.
 
 [<img src="docs/snapshot.jpg">](color-hues.html)
 
-Alternatively, here are versions in [English](color-hues.html?lang=en), [Bulgarian](color-hues.html?lang=bg) and [Japanese](color-hues.html?lang=jp).
+Alternatively, here are versions in [English](color-hues.html?lang=en), [Bulgarian](color-hues.html?lang=bg), [Japanese](color-hues.html?lang=jp) and [Virtual Reality]([English](color-hues.html?lang=en&vr). 
 
 ### How to play
 
@@ -42,6 +42,7 @@ When run from a LMS, the application sends back these data:
 - `cmi.core.score.min` &ndash; 0
 - `cmi.core.score.max` &ndash; 100
 - `cmi.core.lesson_status` &ndash; `'completed'` or `'incomplete'`
+- `cmi.comments` &ndash; gameplay data with backups of scores
 
 ### Data policy
 
@@ -65,6 +66,9 @@ The perception of hue varies among people, but also, it varies within the same p
 This application uses a background music from [SoundCloud](https://soundcloud.com):
 
 - "[Meditatio](https://soundcloud.com/b4kfampug9gi/meditatio)" by Maks Letvinov licensed under [CC BY 3.0 License](https://creativecommons.org/licenses/by/3.0/),
+
+3D model (when VR mode is on):
+- "[hand_pose_ 留存](https://skfb.ly/oLvJD)" by TRNKL licensed under [CC BY 4.0 License](http://creativecommons.org/licenses/by/4.0/),
 
 and sound effects from [Mixkit](https://mixkit.co/):
 

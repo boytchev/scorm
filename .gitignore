@@ -8,3 +8,4 @@ src/lms-info/three.min.js
 *.bkp
 todo
 src/platonic-walk/sounds/desktop.ini
+REBUILD-@@@.bat

@@ -185,7 +185,7 @@ class Playground extends ScormPlayground
 		if( this.inVR )
 		{
 			var y = suica.renderer.xr.getCamera().position.y;
-			lookAt( [0,7,-y], [0,0,-y], [0,0,1] );
+			lookAt( [0,8,-y], [0,0,-y], [0,0,1] );
 			suica.vrCamera.updateMatrixWorld(true);
 		}
 	}
