@@ -398,21 +398,21 @@ class ScormPlayground
 		this.vrCreateController( 1 );
 
 		// create time info panel
-		this.vrTimePanel = suica.square( [-0.45,-0.5,-2], [0.5*0.75,0.2*0.75], 'white' );
+		this.vrTimePanel = suica.square( [-0.5,-0.55,-2], [0.5*0.75,0.2*0.75], 'white' );
 		this.vrTimePanel.threejs.material.depthTest = false;
 		its.image = drawing( 300, 130 );
 		its.image.context.textAlign = 'left';
 		suica.camera.add( this.vrTimePanel.threejs );
 
 		// create score info panel
-		this.vrScorePanel = suica.square( [0.45,-0.5,-2], [0.5*0.75,0.2*0.75], 'white' );
+		this.vrScorePanel = suica.square( [0.5,-0.55,-2], [0.5*0.75,0.2*0.75], 'white' );
 		this.vrScorePanel.threejs.material.depthTest = false;
 		its.image = drawing( 300, 130 );
 		its.image.context.textAlign = 'right';
 		suica.camera.add( this.vrScorePanel.threejs );
 
 		// create performance info panel
-		this.vrPerfPanel = suica.square( [0,-0.45,-2], [0.5*0.75,0.4*0.75], 'white' );
+		this.vrPerfPanel = suica.square( [0,-0.5,-2], [0.5*0.75,0.4*0.75], 'white' );
 		this.vrPerfPanel.threejs.material.depthTest = false;
 		its.image = drawing( 300, 260 );
 		its.image.context.textAlign = 'center';
