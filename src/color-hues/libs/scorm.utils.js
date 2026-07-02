@@ -226,14 +226,14 @@ class ScormPlayground
 				playground.vrTimePanel.image.clear( );
 				playground.vrTimePanel.image.moveTo(5,125,5,5,295,5);
 				playground.vrTimePanel.image.stroke('black',1);
-				playground.vrTimePanel.image.fillText( 20, 20, time, 'black', 'bold 66px Arial' );
-				playground.vrTimePanel.image.fillText( 20, 85, element('txt-time').innerHTML, 'black', '36px Arial' );
+				playground.vrTimePanel.image.fillText( 25, 25, time, 'black', 'bold 66px Arial' );
+				playground.vrTimePanel.image.fillText( 25, 97, element('txt-time').innerHTML, 'black', '36px Arial' );
 
 				playground.vrScorePanel.image.clear( );
 				playground.vrScorePanel.image.moveTo(5,5,295,5,295,125);
 				playground.vrScorePanel.image.stroke('black',1);
-				playground.vrScorePanel.image.fillText( 280, 20, playground.totalScore.toFixed(1), 'black', 'bold 66px Arial' );
-				playground.vrScorePanel.image.fillText( 280, 85, element('txt-score').innerHTML, 'black', '36px Arial' );
+				playground.vrScorePanel.image.fillText( 275, 25, playground.totalScore.toFixed(1), 'black', 'bold 66px Arial' );
+				playground.vrScorePanel.image.fillText( 275, 97, element('txt-score').innerHTML, 'black', '36px Arial' );
 
 			}
 		}
@@ -398,21 +398,21 @@ class ScormPlayground
 		this.vrCreateController( 1 );
 
 		// create time info panel
-		this.vrTimePanel = suica.square( [-0.65,-0.6,-2], [0.5*0.6,0.2*0.6], 'white' );
+		this.vrTimePanel = suica.square( [-0.45,-0.5,-2], [0.5*0.75,0.2*0.75], 'white' );
 		this.vrTimePanel.threejs.material.depthTest = false;
 		its.image = drawing( 300, 130 );
 		its.image.context.textAlign = 'left';
 		suica.camera.add( this.vrTimePanel.threejs );
 
 		// create score info panel
-		this.vrScorePanel = suica.square( [0.65,-0.6,-2], [0.5*0.6,0.2*0.6], 'white' );
+		this.vrScorePanel = suica.square( [0.45,-0.5,-2], [0.5*0.75,0.2*0.75], 'white' );
 		this.vrScorePanel.threejs.material.depthTest = false;
 		its.image = drawing( 300, 130 );
 		its.image.context.textAlign = 'right';
 		suica.camera.add( this.vrScorePanel.threejs );
 
 		// create performance info panel
-		this.vrPerfPanel = suica.square( [0,-0.56,-2], [0.5*0.6,0.4*0.6], 'white' );
+		this.vrPerfPanel = suica.square( [0,-0.45,-2], [0.5*0.75,0.4*0.75], 'white' );
 		this.vrPerfPanel.threejs.material.depthTest = false;
 		its.image = drawing( 300, 260 );
 		its.image.context.textAlign = 'center';
