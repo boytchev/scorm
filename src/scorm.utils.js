@@ -3,6 +3,8 @@
 //
 
 
+var playground = null;
+
 
 // smart legacy XR path enforcer - only for local development with emulator / AI
 function setupLegacyXRForEmulator()
