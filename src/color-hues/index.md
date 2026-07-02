@@ -13,7 +13,7 @@ Click on the image to start the application.
 
 [<img src="docs/snapshot.jpg">](color-hues.html)
 
-Alternatively, here are versions in [English](color-hues.html?lang=en), [Bulgarian](color-hues.html?lang=bg), [Japanese](color-hues.html?lang=jp) and [Virtual Reality]([English](color-hues.html?lang=en&vr). 
+Alternatively, here are versions in [English](color-hues.html?lang=en), [Bulgarian](color-hues.html?lang=bg), [Japanese](color-hues.html?lang=jp) and [Virtual Reality](color-hues.html?lang=en&vr). 
 
 ### How to play
 
