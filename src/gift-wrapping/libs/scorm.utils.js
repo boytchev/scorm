@@ -3,6 +3,8 @@
 //
 
 
+var playground = null;
+
 
 // smart legacy XR path enforcer - only for local development with emulator / AI
 function setupLegacyXRForEmulator()
@@ -48,19 +50,21 @@ function update( t, dT )
 		
 		if( playground.inVR )
 		{
-			var intersections0 = playground.vrIntersections( playground.controller0 );
-			
-			if( intersections0.length )
-				playground.marker0.center = [...intersections0[0].point];
-			else
-				playground.marker0.center = [0,-1000,0];
+			playground.controllers.forEach( e => {
 
-			var intersections1 = playground.vrIntersections( playground.controller1 );
+				// turn right controller to left if needed
+				if( e.sign<0 && e.ray.size[0]>0 ) e.ray.width *= -1;
+
+				// set marker position
+				var intersections = playground.vrIntersections( e );
+				
+				if( intersections.length )
+					e.marker.center = [...intersections[0].point];
+				else
+					e.marker.center = [0,-1000,0];
+
+			} );
 			
-			if( intersections1.length )
-				playground.marker1.center = [...intersections1[0].point];
-			else
-				playground.marker1.center = [0,-1000,0];
 		}
 	}
 	TWEEN.update( 1000*t );
@@ -69,14 +73,11 @@ function update( t, dT )
 
 
 class PlaygroundAudio
-{
-//	static audioListener;
-	
+{	
 	constructor( audioFile, volume, count=1, autoplay=false, loop=false )
 	{
 		this.audio = [];
 		this.index = 0;
-//		this.volume = volume;
 		
 		for( var i=0; i<count; i++ )
 		{
@@ -88,7 +89,6 @@ class PlaygroundAudio
 
 			this.audio[i].addEventListener( 'canplaythrough', this.onLoaded );
 			
-//			console.log( 'LOADING', audioFile.split('/').pop() );
 		}
 
 	}
@@ -96,32 +96,32 @@ class PlaygroundAudio
 
 	onLoaded( event )
 	{
-//		console.log( 'READY', event.path[0].src.split('/').pop() );
 		playground.setSound( );
 	}
-	
+
 	
 	mute( )
 	{
 		for( var audio of this.audio )
 			audio.muted = true;
 	}
+
 	
 	unmute( )
 	{
 		for( var audio of this.audio )
 			audio.muted = false;
 	}
+
 	
 	setVolume( volume )
 	{
-//		this.volume = volume;
 		this.audio[this.index].volume = volume;
 	}
+
 	
 	play( )
 	{
-//		console.log( 'ATTEMPT', this.audio[this.index].src.split('/').pop() );
 		if( playground.userInteracted == false ) return;
 		if( playground.getSound() == 'off' ) return;
 		
@@ -130,10 +130,10 @@ class PlaygroundAudio
 		// https://www.w3schools.com/jsref/prop_audio_readystate.asp
 		if( this.audio[this.index].readyState >= 4/*HAVE_ENOUGH_DATA*/ )
 		{
-//			console.log( 'PLAY', this.audio[this.index].src.split('/').pop() );
 			this.audio[this.index].play( );
 		}
 	}
+
 	
 	stop( )
 	{
@@ -141,6 +141,7 @@ class PlaygroundAudio
 			audio.pause( );
 	}
 }
+
 
 
 class ScormPlayground
@@ -223,21 +224,17 @@ class ScormPlayground
 			if( playground.inVR )
 			{
 				playground.vrTimePanel.image.clear( );
-				playground.vrTimePanel.image.moveTo(5,125,295,125,295,5);
+				playground.vrTimePanel.image.moveTo(5,125,5,5,295,5);
 				playground.vrTimePanel.image.stroke('black',1);
-				playground.vrTimePanel.image.fillText( 18, 60, time, 'black', 'bold 66px Arial' );
-				playground.vrTimePanel.image.fillText( 154, 20, element('txt-time').innerHTML, 'black', '36px Arial' );
+				playground.vrTimePanel.image.fillText( 25, 25, time, 'black', 'bold 66px Arial' );
+				playground.vrTimePanel.image.fillText( 25, 97, element('txt-time').innerHTML, 'black', '36px Arial' );
 
 				playground.vrScorePanel.image.clear( );
 				playground.vrScorePanel.image.moveTo(5,5,295,5,295,125);
 				playground.vrScorePanel.image.stroke('black',1);
-				var xx = 0;
-				var txt = playground.totalScore.toFixed(1);
-				if( txt.length==3 ) xx = 185;
-				if( txt.length==4 ) xx = 150;
-				if( txt.length==5 ) xx = 110;
-				playground.vrScorePanel.image.fillText( xx, 20, txt, 'black', 'bold 66px Arial' );
-				playground.vrScorePanel.image.fillText( 100, 85, element('txt-score').innerHTML, 'black', '36px Arial' );
+				playground.vrScorePanel.image.fillText( 275, 25, playground.totalScore.toFixed(1), 'black', 'bold 66px Arial' );
+				playground.vrScorePanel.image.fillText( 275, 97, element('txt-score').innerHTML, 'black', '36px Arial' );
+
 			}
 		}
 		
@@ -274,7 +271,6 @@ class ScormPlayground
 	} // ScormPlayground.constructor
 
 
-
 	onGlobalClick( )
 	{
 		if( playground )
@@ -300,6 +296,7 @@ class ScormPlayground
 	{
 		console.log('🔴 VR Session STARTED - User is now in VR');
 		playground.inVR = true;
+		playground.redrawScoreHistory();
 	}
 
 
@@ -313,6 +310,72 @@ class ScormPlayground
 
 
 
+	vrCreateController( index )
+	{
+		var controller = suica.renderer.xr.getController( index );
+		if( !controller ) return;
+		
+		// create controller
+		this.controllers[index] = controller;
+		suica.vrCamera.add( controller );
+		
+		controller.sign = 1; // assume right (not left) controller
+		
+		controller.addEventListener( 'selectstart', function(){playground.vrFingerLength(controller,1500);} );
+		controller.addEventListener( 'selectend', function(){playground.vrFingerLength(controller,0);} );
+		controller.addEventListener( 'select', function(){ playground.vrClick( controller ); } );
+		controller.addEventListener( 'connected', function(event){
+			if( event.data?.handedness == 'left' ) controller.sign =  -1; // turn into left controller
+		} );
+		
+		// create controller's ray and hand
+		controller.ray = suica.model('models/hand.glb');
+		its.size = [0.075,0.075,0.075];
+		controller.ray.onload = ()=>{
+			controller.hand = controller.ray.threejs.children[0].children[0];
+			controller.hand.material = new THREE.MeshPhysicalMaterial({
+				color: 'white',
+				clearcoat: 1,
+				clearcoarRoughness: 0.3,
+				transmission: 1,
+				disperssion: 10,
+				iridescence: 10,
+				iridescenceIOR: 2,
+				roughness: 0,
+			});
+			var geo = controller.hand.geometry,
+				pos = geo.attributes.position;
+				
+			controller.indices = [];
+			controller.positions = [];
+			controller.pos = pos;
+
+			for( var i=0; i<pos.count; i++ )
+			{
+				var z = pos.getZ( i ) - 3;
+				if( pos.getZ(i) < -4.1 ) {
+					controller.indices.push( i );
+					controller.positions.push( z );
+				}
+				pos.setZ( i, z );
+			}
+			pos.needsUpdate = true;
+		}
+		controller.add( controller.ray.threejs );
+
+		// create controller's marker
+		controller.marker = suica.sphere( [0,0,0], 0.3, 'white' );
+		controller.marker.threejs.material = new THREE.MeshBasicMaterial({
+			color: 'white',
+			transparent: true,
+			opacity: 0.7,
+		depthTest: false} );
+		controller.marker.threejs.renderOrder = 10;
+		
+	}
+	
+	
+	
 	vrInitialize( )
 	{
 		// fix local VR simulator
@@ -325,71 +388,42 @@ class ScormPlayground
 
 		// fix VR camera frustum
 		suica.vrCamera.children[0].near = 0.01;
-		suica.vrCamera.children[0].far = 30;
+		suica.vrCamera.children[0].far = 100;
 		suica.vrCamera.children[0].updateProjectionMatrix();
-		
-		// create controllers
-		this.controller0 = suica.renderer.xr.getController(0);
-		this.controller0.addEventListener( 'selectstart', function(){ playground.ray0.material.color.set(1,0.5,0); } );
-		this.controller0.addEventListener( 'selectend', function(){ playground.ray0.material.color.set(1,1,1); } );
-		this.controller0.addEventListener( 'select', function(){ playground.vrClick( playground.controller0 ); } );
-		
-		this.controller1 = suica.renderer.xr.getController(1);
-		this.controller1.addEventListener( 'selectstart', function(){ playground.ray1.material.color.set(1,0.5,0); } );
-		this.controller1.addEventListener( 'selectend', function(){ playground.ray1.material.color.set(1,1,1); } );
-		this.controller1.addEventListener( 'select', function(){ playground.vrClick( playground.controller1 ); } );
 
 		suica.scene.add( suica.vrCamera );
-		suica.vrCamera.add( this.controller0 );
-		suica.vrCamera.add( this.controller1 );
-	
-		// create controllers rays
-		this.ray0 = new THREE.Mesh(
-					new THREE.CylinderGeometry( 0.01, 0.001, 1 ).rotateX( Math.PI/2 ).translate( 0, 0, -0.5 ),
-					new THREE.MeshBasicMaterial( {
-						color: 'white',
-						transparent: true,
-						opacity: 0.7} )
-				);
-		this.controller0.add( this.ray0 );
-
-		this.ray1 = new THREE.Mesh( this.ray0.geometry, this.ray0.material.clone() );
-		this.controller1.add( this.ray1 );
-
-		this.marker0 = suica.sphere( [0,0,0], 0.3, 'white' );
-		this.marker0.threejs.material = new THREE.MeshBasicMaterial({
-			color: 'white',
-			transparent: true,
-			opacity: 0.7,
-			depthTest: false );
-		this.marker0.threejs.renderOrder = -10;
 		
-		this.marker1 = suica.sphere( [0,0,0], 0.3, 'white' );
-		this.marker1.threejs.material = new THREE.MeshBasicMaterial({
-			color: 'white',
-			transparent: true,
-			opacity: 0.7,
-			depthTest: false );
-		this.marker1.threejs.renderOrder = -10;
-				
+		this.controllers = [];
+		this.vrCreateController( 0 );
+		this.vrCreateController( 1 );
+
 		// create time info panel
-		this.vrTimePanel = suica.square( [-3,0,3], [1.5,0.6], 'white' );
-		its.spinH = 180;
-		its.spinV = -90;
+		this.vrTimePanel = suica.square( [-0.5,-0.55,-2], [0.5*0.75,0.2*0.75], 'white' );
+		this.vrTimePanel.threejs.material.depthTest = false;
 		its.image = drawing( 300, 130 );
+		its.image.context.textAlign = 'left';
+		suica.camera.add( this.vrTimePanel.threejs );
 
 		// create score info panel
-		this.vrScorePanel = suica.square( [-3,0,-3], [1.5,0.6], 'white' );
-		its.spinH = 180;
-		its.spinV = -90;
+		this.vrScorePanel = suica.square( [0.5,-0.55,-2], [0.5*0.75,0.2*0.75], 'white' );
+		this.vrScorePanel.threejs.material.depthTest = false;
 		its.image = drawing( 300, 130 );
+		its.image.context.textAlign = 'right';
+		suica.camera.add( this.vrScorePanel.threejs );
+
+		// create performance info panel
+		this.vrPerfPanel = suica.square( [0,-0.5,-2], [0.5*0.75,0.4*0.75], 'white' );
+		this.vrPerfPanel.threejs.material.depthTest = false;
+		its.image = drawing( 300, 260 );
+		its.image.context.textAlign = 'center';
+		suica.camera.add( this.vrPerfPanel.threejs );
 
 		// create dscore info panel
-		this.vrDScorePanel = suica.square( [0,1,0], [1,0.5], 'white' );
-		its.spinH = 180;
-		its.spinV = -90;
+		this.vrDScorePanel = suica.square( [0,0,-2], [1,0.5], 'white' );
 		its.image = drawing( 600, 300 );
+		its.image.context.textAlign = 'center';
 		its.threejs.material.transparent = true;
+		suica.camera.add( this.vrDScorePanel.threejs );
 		
 		this.raycaster = new THREE.Raycaster( );
 		this._v = new THREE.Vector3( ); // dummy
@@ -430,7 +464,13 @@ class ScormPlayground
 		{
 			ctx.fillStyle = 'black';
 			ctx.fillRect( 10*i+2, Math.min(H-1,H-H*this.scoreHistory[i]/100), 7, H );
-		}	
+		}
+		
+		if( this.inVRMode ) {
+			this.vrPerfPanel.image.clear( );
+			this.vrPerfPanel.image.fillText( 150, 120, element('txt-performance').innerHTML, 'black', '36px Arial' );
+			this.vrPerfPanel.image.context.drawImage(canvas, 30, 155);
+		}
 	} // ScormPlayground.redrawPerformanceGraph
 	
 	
@@ -581,22 +621,24 @@ class ScormPlayground
 		if( this.inVR )
 		{
 			this.vrDScorePanel.image.clear( );
-			this.vrDScorePanel.image.fillText( 20, 20, pointsElem.innerHTML, 'black', 'bold 300px Arial' );
+			this.vrDScorePanel.image.fillText( 300, 20, pointsElem.innerHTML, 'black', 'bold 250px Arial' );
 			this.vrDScorePanel.visible = true;
 			this.vrDScorePanel.size = 0;
 		}
 		
 
 		new TWEEN.Tween( {opacity:0, scale:4, x:suica.width/2, y:suica.height/2, vrScale:0.01} )
-			.to( {opacity:1, scale:1, x:scoreElem.offsetLeft+30, y:scoreElem.offsetTop, vrScale:10}, Playground.POINTS_SPEED )
+			.to( {opacity:1, scale:1, x:scoreElem.offsetLeft+30, y:scoreElem.offsetTop, vrScale:10}, Playground.POINTS_SPEED*(playground.inVRMode?1.3:1) )
 			.easing( TWEEN.Easing.Cubic.InOut )
 			.onUpdate( (state) => {
 				pointsElem.style.opacity = 0.5-0.5*Math.cos(2*Math.PI*state.opacity);
 				pointsElem.style.transform = `scale(${1.3*state.scale},${state.scale})`;
 				pointsElem.style.right = Math.round(state.x)+'px';
 				pointsElem.style.bottom = Math.round(state.y)+'px';
-				playground.vrDScorePanel.size = [state.vrScale,state.vrScale/2,0];
-				playground.vrDScorePanel.threejs.material.opacity = pointsElem.style.opacity;
+				if( playground.inVRMode ) {
+					playground.vrDScorePanel.size = [state.vrScale/2,state.vrScale/4,0];
+					playground.vrDScorePanel.threejs.material.opacity = pointsElem.style.opacity;
+				}
 			})
 			.onComplete( ()=> {
 				var sc = this.totalScore.toFixed(1);
@@ -798,8 +840,7 @@ class ScormPlayground
 
 		return playground.raycaster.intersectObjects( playground.intersectables );
 	}
-	
-	
+		
 	
 	vrClick( controller )
 	{
@@ -820,6 +861,19 @@ class ScormPlayground
 
 			objects.forEach( e => e.onclick() );
 		}
+
+	}
+	
+
+	vrFingerLength ( controller, length )
+	{
+
+		for( var i=0; i<controller.indices.length; i++ ) {
+			var index = controller.indices[i];
+			controller.pos.setZ( index, controller.positions[i]-length );
+		}
+
+		controller.pos.needsUpdate = true;
 
 	}
 	
