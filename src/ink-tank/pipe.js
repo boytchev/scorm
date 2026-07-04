@@ -2,19 +2,20 @@
 //	class Pipe( )
 //
 
-	
+var SC = 5;
+
 class Pipe extends Suica.Group
 {
 	
-	static VALVE_LENGTH = 0.8;
-	static VALVE_RADIUS = 0.8;
-	static VALVE_WIDTH = 0.1;
+	static VALVE_LENGTH = 0.8/SC;
+	static VALVE_RADIUS = 0.8/SC;
+	static VALVE_WIDTH = 0.1/SC;
 
-	static RADIUS = 0.5;	
-	static LENGTH = 3.5;
-	static EXTRUDE = 0.15;
+	static RADIUS = 0.5/SC;	
+	static LENGTH = 3.5/SC;
+	static EXTRUDE = 0.15/SC;
 
-	static OPEN_SPEED = 500;
+	static OPEN_SPEED = 1200;
 	static OPEN_ANGLE = 270;
 	
 	constructor( color )
@@ -22,16 +23,22 @@ class Pipe extends Suica.Group
 		super( suica );
 
 		this._aperture = 0;
-		this._color = color;
+		this._color = new THREE.Color( color );
 		
 		this.y = Tank.VERTICAL_OFFSET;
 		
 		this.valveTween = new TWEEN.Tween( this );
 		
-		// wrapper
-		var wrapper = cube( [0,Tank.BASE_HEIGHT/2,Tank.WIDTH/2+Pipe.LENGTH/2+Pipe.RADIUS], [4*Pipe.RADIUS,Tank.BASE_HEIGHT,Pipe.LENGTH+Pipe.RADIUS] );
-		wrapper.threejs.material.transparent = true;
-		wrapper.threejs.material.opacity = 0;
+		// wrappers
+		this.wrapperPipe = prism( 6,[0,Tank.BASE_HEIGHT/2,Tank.WIDTH/2], [4*Pipe.RADIUS,Pipe.LENGTH+Pipe.RADIUS,Tank.BASE_HEIGHT,3*Pipe.RADIUS] );
+		its.spinV = 90;
+		its.spinT = 360/6/2-90;
+		its.threejs.material.transparent = true;
+		its.threejs.material.opacity = 0.2;
+
+		this.wrapperValve = prism( 6,[0,Tank.BASE_HEIGHT,Tank.WIDTH/2 + Pipe.LENGTH - 2*Pipe.RADIUS], [4*Pipe.VALVE_RADIUS,Pipe.VALVE_LENGTH] );
+		its.threejs.material.transparent = true;
+		its.threejs.material.opacity = 0.2;
 
 		// floor connector
 		var floorConnector = new Connector( [0,0,Tank.WIDTH/2 + Pipe.LENGTH] );
@@ -42,10 +49,10 @@ class Pipe extends Suica.Group
 			its.spinV = 90;
 			its.threejs.material = new THREE.MeshStandardMaterial( {
 						color: 'dimgray',
-						metalness: 0.8,
-						roughness: 0.3,
+						metalness: 1,
+						roughness: 0.4,
 						normalMap: ScormUtils.image( 'metal_plate_normal.jpg', 1, 1/2 ),
-						normalScale: new THREE.Vector2( 0.25, 0.25 ),
+						normalScale: new THREE.Vector2( 0.5, 0.5 ),
 					} );
 		
 		// pipe
@@ -59,15 +66,15 @@ class Pipe extends Suica.Group
 			 Pipe.RADIUS, [50,20], 1
 		);
 		this.pipe.threejs.material = new THREE.MeshPhysicalMaterial( {
-					color: new THREE.Color(1.2,1.2,1.2),
-					metalness: 0.5,
-					roughness: 0.2,
-					normalMap: ScormUtils.image( 'metal_pipe_normal.jpg', 10, 1, 0.5 ),
-					sheenRoughness: 0.5,
-					sheenColor: color,
-					sheen: 0,
-					emissive: color,
-					emissiveIntensity: 0,
+					color: new THREE.Color( 1, 1, 1 ),
+					transmission: 1,
+					ior: 1.2,
+					thickness: 0.1,
+					roughness: 0.3,
+					normalMap: ScormUtils.image( 'metal_pipe_normal.jpg', 15, 0.5, 0.5 ),
+					sheen: 1,
+					sheenColor: new THREE.Color('white'),
+					sheenRoughness: 0.4,
 				} );
 		
 		// valve
@@ -99,7 +106,7 @@ class Pipe extends Suica.Group
 		}
 		this.valve.center = [0,Tank.BASE_HEIGHT/2,Tank.WIDTH/2 + Pipe.LENGTH - 2*Pipe.RADIUS];
 		
-		this.add( floorConnector, wallConnector, this.pipe, pipeConnector, this.valve, wrapper/*, this.indicator*/ );
+		this.add( floorConnector, wallConnector, this.pipe, pipeConnector, this.valve, this.wrapperPipe, this.wrapperValve/*, this.indicator*/ );
 		
 		this.addEventListener( 'pointerdown', this.onPointerDown );
 	} // Pipe.constructor
@@ -116,8 +123,10 @@ class Pipe extends Suica.Group
 		this._aperture = aperture;
 		this.valve.y = Tank.BASE_HEIGHT/2 + aperture*Pipe.VALVE_LENGTH/2;
 		this.valve.spinH = Pipe.OPEN_ANGLE*aperture;
-		this.pipe.threejs.material.sheen = aperture;
-		this.pipe.threejs.material.emissiveIntensity = 0.3*aperture;
+		this.pipe.threejs.material.transmission = 1-aperture;
+		this.pipe.threejs.material.emissiveIntensity = 0.25*aperture;
+		this.pipe.threejs.material.color.set( 'white' );
+		this.pipe.threejs.material.color.lerp( this._color, aperture );
 	}
 	
 	
@@ -140,7 +149,7 @@ class Pipe extends Suica.Group
 
 		this.valveTween = new TWEEN.Tween( this )
 			.to( {aperture:1}, speed )
-			.easing( TWEEN.Easing.Linear.None )
+			.easing( TWEEN.Easing.Cubic.InOut )
 			.start( );
 	}
 	
@@ -149,7 +158,7 @@ class Pipe extends Suica.Group
 	{
 		this.valveTween.stop();
 		
-		var speed = Pipe.OPEN_SPEED*this.aperture;
+		var speed = Pipe.OPEN_SPEED/4*this.aperture;
 		
 		this.valveTween = new TWEEN.Tween( this )
 			.to( {aperture:0}, speed )

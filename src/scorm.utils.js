@@ -903,6 +903,15 @@ class ScormUtils
 			map.repeat.set( uCount, vCount );
 			map.offset.set( uOffset, vOffset );
 			
+		if( fileName.indexOf('_normal')>0 )
+			map.colorSpace = THREE.NoColorSpace;
+			
+		if( fileName.indexOf('_ao')>0 )
+			map.colorSpace = THREE.NoColorSpace;
+			
+		if( fileName.indexOf('_alpha')>0 )
+			map.colorSpace = THREE.NoColorSpace;
+		
 		return map;
 	} // ScormUtils.image
 

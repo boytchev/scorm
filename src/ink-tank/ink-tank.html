@@ -14,9 +14,14 @@
 	
 	<link rel="stylesheet" href="styles.css">
 
+	<script type="module">
+		import { SimplexNoise } from './libs/SimplexNoise.js';
+		window.simplex = new SimplexNoise( );
+	</script>
+
 	<script src="libs/tween.umd.js"></script>
 	<script src="libs/suica.js"></script>
-	<script src="libs/scorm.utils.js"></script>
+	<script src="../scorm.utils.js"></script>
 	<script src="connector.js"></script>
 	<script src="pipe.js"></script>
 	<script src="water.js"></script>
@@ -25,8 +30,8 @@
 </head>
 
 <body>
-	<suica fullwindow fullscreen background="linen" ontime="update" onpointermove="onPointerMove" onpointerup="onPointerUp">
-		<orbit id="orb" distance="20" altitude="15" maxPolarAngle="1.6">
+	<suica fullwindow background="linen" ontime="update" onpointermove="onPointerMove" onpointerup="onPointerUp">
+		<orbit id="orb" distance="5" altitude="2" maxPolarAngle="1.6">
 		<div class="hud corner top left"></div>
 		<div class="hud corner top right"></div>
 		<div class="hud corner bottom left"></div>
@@ -58,8 +63,8 @@
 
 	
 	<script>
-		orb.minDistance = 15;
-		orb.maxDistance = 50;
+		orb.minDistance = 2;
+		orb.maxDistance = 5;
 		orb.maxPolarAngle = 1.5; // approx 86°
 		
 		var playground = new Playground;
