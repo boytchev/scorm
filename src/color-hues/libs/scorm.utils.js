@@ -321,8 +321,8 @@ class ScormPlayground
 		
 		controller.sign = 1; // assume right (not left) controller
 		
-		controller.addEventListener( 'selectstart', function(){playground.vrFingerLength(controller,1500);} );
-		controller.addEventListener( 'selectend', function(){playground.vrFingerLength(controller,0);} );
+		controller.addEventListener( 'selectstart', function(){playground.vrPointerDown( controller );} );
+		controller.addEventListener( 'selectend', function(){playground.vrPointerUp( controller );} );
 		controller.addEventListener( 'select', function(){ playground.vrClick( controller ); } );
 		controller.addEventListener( 'connected', function(event){
 			if( event.data?.handedness == 'left' ) controller.sign =  -1; // turn into left controller
@@ -863,6 +863,58 @@ class ScormPlayground
 		}
 
 	}
+		
+	
+	vrPointerDown( controller )
+	{
+		this.vrFingerLength ( controller, 1500 );
+		
+		var intersections = this.vrIntersections( controller );
+		
+		if( intersections.length )
+		{
+			var objects = [];
+			intersections.forEach( e => {
+				
+				var obj = e.object?.suicaObject;
+				if( obj ) {
+					while( obj.parent ) obj = obj.parent;
+					if( obj.onpointerdown && objects.indexOf(obj)<0 ) objects.push( obj );
+				}
+				
+			} );
+
+			objects.forEach( e => e.onpointerdown() );
+		}
+
+	}
+		
+	
+	vrPointerUp( controller )
+	{
+		window.onPointerUp( ); // global event in *.html
+		
+		this.vrFingerLength ( controller, 0 );
+		
+		var intersections = this.vrIntersections( controller );
+		
+		if( intersections.length )
+		{
+			var objects = [];
+			intersections.forEach( e => {
+				
+				var obj = e.object?.suicaObject;
+				if( obj ) {
+					while( obj.parent ) obj = obj.parent;
+					if( obj.onpointerup && objects.indexOf(obj)<0 ) objects.push( obj );
+				}
+				
+			} );
+
+			objects.forEach( e => e.onpointerup() );
+		}
+
+	}
 	
 
 	vrFingerLength ( controller, length )
@@ -903,6 +955,15 @@ class ScormUtils
 			map.repeat.set( uCount, vCount );
 			map.offset.set( uOffset, vOffset );
 			
+		if( fileName.indexOf('_normal')>0 )
+			map.colorSpace = THREE.NoColorSpace;
+			
+		if( fileName.indexOf('_ao')>0 )
+			map.colorSpace = THREE.NoColorSpace;
+			
+		if( fileName.indexOf('_alpha')>0 )
+			map.colorSpace = THREE.NoColorSpace;
+		
 		return map;
 	} // ScormUtils.image
 

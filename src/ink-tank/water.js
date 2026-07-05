@@ -82,6 +82,7 @@ class Water extends Suica.Group
 			this.plateColor,
 			plateFrame
 		);
+		this.plateColor.parent = this.plate; // for VR clicks
 		
 		this.plate.addEventListener( 'onPointerDown', this.clickOnPlate );
 		

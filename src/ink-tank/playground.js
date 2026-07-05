@@ -29,15 +29,25 @@ class Playground extends ScormPlayground
 				bg: 'Мастилен резервоар',
 				jp: 'インクタンク'},
 		] );
-		
-		if( this.inVRMode ) this.intersectables.push(
-			this.tank.cyanPipe.wrapperPipe.threejs,
-			this.tank.cyanPipe.wrapperValve.threejs,
-			this.tank.magentaPipe.wrapperPipe.threejs,
-			this.tank.magentaPipe.wrapperValve.threejs,
-			this.tank.yellowPipe.wrapperPipe.threejs,
-			this.tank.yellowPipe.wrapperValve.threejs,
-		);
+
+		if( this.inVRMode )
+		{
+			orb.enabled = false;
+			
+			lookAt( [0,0,-Tank.WIDTH], [0,0,0], [0,1,0] );
+			suica.vrCamera.updateMatrixWorld(true);
+
+			this.intersectables.push(
+				this.tank.water.plate.threejs,
+				this.tank.cyanPipe.wrapperPipe.threejs,
+				this.tank.cyanPipe.wrapperValve.threejs,
+				this.tank.magentaPipe.wrapperPipe.threejs,
+				this.tank.magentaPipe.wrapperValve.threejs,
+				this.tank.yellowPipe.wrapperPipe.threejs,
+				this.tank.yellowPipe.wrapperValve.threejs,
+			);
+
+		}
 		
 		// create possible variations of inks
 		this.inkVariations = [];
