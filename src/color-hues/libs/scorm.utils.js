@@ -64,7 +64,7 @@ function update( t, dT )
 					e.marker.center = [0,-1000,0];
 
 			} );
-			
+	
 		}
 	}
 	TWEEN.update( 1000*t );
@@ -203,7 +203,7 @@ class ScormPlayground
 
 		setInterval( update4PerSecond, 1000 );
 		
-		function update4PerSecond( )
+	function update4PerSecond( )
 		{
 			var t = playground.totalTime;
 			
@@ -333,16 +333,10 @@ class ScormPlayground
 		its.size = [0.075,0.075,0.075];
 		controller.ray.onload = ()=>{
 			controller.hand = controller.ray.threejs.children[0].children[0];
-			controller.hand.material = new THREE.MeshPhysicalMaterial({
-				color: 'white',
-				clearcoat: 1,
-				clearcoarRoughness: 0.3,
-				transmission: 1,
-				disperssion: 10,
-				iridescence: 10,
-				iridescenceIOR: 2,
-				roughness: 0,
+			controller.hand.material = new THREE.MeshBasicMaterial({
+				color: new THREE.Color(0,0,0),
 			});
+			
 			var geo = controller.hand.geometry,
 				pos = geo.attributes.position;
 				
@@ -370,7 +364,7 @@ class ScormPlayground
 			transparent: true,
 			opacity: 0.7,
 		depthTest: false} );
-		controller.marker.threejs.renderOrder = 10;
+		controller.marker.threejs.renderOrder = -10;
 		
 	}
 	
@@ -385,6 +379,7 @@ class ScormPlayground
 		suica.vr( );
 		suica.renderer.xr.addEventListener('sessionstart', this.onEnterVR );
 		suica.renderer.xr.addEventListener('sessionend', this.onExitVR );
+//		suica.aftertime = this.vrRenderControllers;
 
 		// fix VR camera frustum
 		suica.vrCamera.children[0].near = 0.01;
@@ -431,6 +426,29 @@ class ScormPlayground
 		
 	}
 	
+	
+	/*
+	vrRenderControllers( t, dT )
+	{
+		//@@
+//		suica.renderer.render( this.controllers[1], suica.vrCamera.children[0] );
+		suica.renderer.autoClear = false;
+		suica.renderer.clearDepth( true );
+if( playground.controllers[0].hand )
+{
+		playground.controllers[0].visible = true;
+		suica.renderer.render( playground.controllers[0], suica.vrCamera.children[0] );
+		playground.controllers[0].visible = false;
+}
+if( playground.controllers[1].hand )
+{
+		playground.controllers[1].visible = true;
+		suica.renderer.render( playground.controllers[1], suica.vrCamera.children[0] );
+		playground.controllers[1].visible = false;
+}
+		suica.renderer.autoClear = true;
+	}
+	*/
 	
 	
 	// update the graph - a history of scores

@@ -333,29 +333,9 @@ class ScormPlayground
 		its.size = [0.075,0.075,0.075];
 		controller.ray.onload = ()=>{
 			controller.hand = controller.ray.threejs.children[0].children[0];
-			controller.hand.material = new THREE.MeshPhysicalMaterial({
-				color: 0x0000F0,
-//				clearcoat: 1,
-//				clearcoarRoughness: 0.3,
-				transmission: 1,
-				iridescence: 10,
-				iridescenceIOR: 2,
-				thickness: 1,
-				roughness: 0,
-				metalness: 0,
-//				sheen: 10,
-//				sheenColor: new THREE.Color('red'),
-//				sheenRoughness: 3,
-				//transparent: true,
-				//opacity: 0.5,
-				depthWrite: false,
-//side: THREE.FrontSide,
-//				premultipliedAlpha: true,
-				blending: THREE.AdditiveBlending,
-//				transparent: true,
-				
+			controller.hand.material = new THREE.MeshBasicMaterial({
+				color: new THREE.Color(0,0,0),
 			});
-//			controller.hand.visible = false;
 			
 			var geo = controller.hand.geometry,
 				pos = geo.attributes.position;
@@ -399,7 +379,7 @@ class ScormPlayground
 		suica.vr( );
 		suica.renderer.xr.addEventListener('sessionstart', this.onEnterVR );
 		suica.renderer.xr.addEventListener('sessionend', this.onExitVR );
-		suica.aftertime = this.vrRenderControllers;
+//		suica.aftertime = this.vrRenderControllers;
 
 		// fix VR camera frustum
 		suica.vrCamera.children[0].near = 0.01;
@@ -447,7 +427,7 @@ class ScormPlayground
 	}
 	
 	
-	
+	/*
 	vrRenderControllers( t, dT )
 	{
 		//@@
@@ -468,7 +448,7 @@ if( playground.controllers[1].hand )
 }
 		suica.renderer.autoClear = true;
 	}
-	
+	*/
 	
 	
 	// update the graph - a history of scores

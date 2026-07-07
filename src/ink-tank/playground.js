@@ -222,8 +222,17 @@ console.log('granularity',granularity,'-> error',error)
 			}
 		}
 		else
+		{
 			this.tank.water.colorize( t );
 
+			if( this.inVRMode )
+			{
+				this.controllers.forEach( e => {
+					e.marker.threejs.scale.setScalar(0.1);
+				});
+			}
+		}
+		
 		this.tank.water.waves( t );
 			
 	}
