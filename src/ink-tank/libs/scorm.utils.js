@@ -63,6 +63,21 @@ function update( t, dT )
 				else
 					e.marker.center = [0,-1000,0];
 
+				if( e.squeeze )
+				{
+					var v = new THREE.Vector3();
+					
+					e.updateMatrixWorld(true);
+					var matrix = e.matrixWorld.elements;
+					
+					v.set( matrix[8], matrix[9], matrix[10] );
+
+					suica.vrCamera.position.addScaledVector( playground._v, -5*dT );
+					lookAt( suica.vrCamera.position, v, [0,1,0] );
+					suica.vrCamera.updateMatrixWorld(true);
+
+				}
+				
 			} );
 	
 		}
@@ -320,10 +335,13 @@ class ScormPlayground
 		suica.vrCamera.add( controller );
 		
 		controller.sign = 1; // assume right (not left) controller
+		controller.squeeze = false; // indicate whether squeeze button is pressed
 		
 		controller.addEventListener( 'selectstart', function(){playground.vrPointerDown( controller );} );
 		controller.addEventListener( 'selectend', function(){playground.vrPointerUp( controller );} );
 		controller.addEventListener( 'select', function(){ playground.vrClick( controller ); } );
+		controller.addEventListener( 'squeezestart', function(){playground.vrSqueezeStart( controller );} );
+		controller.addEventListener( 'squeezeend', function(){playground.vrSqueezeEnd( controller );} );
 		controller.addEventListener( 'connected', function(event){
 			if( event.data?.handedness == 'left' ) controller.sign =  -1; // turn into left controller
 		} );
@@ -933,6 +951,18 @@ if( playground.controllers[1].hand )
 			objects.forEach( e => e.onpointerup() );
 		}
 
+	}
+	
+
+	vrSqueezeStart( controller )
+	{
+		controller.squeeze = true;
+	}
+		
+	
+	vrSqueezeEnd( controller )
+	{
+		controller.squeeze = false;
 	}
 	
 
