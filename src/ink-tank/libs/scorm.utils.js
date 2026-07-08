@@ -415,6 +415,7 @@ class ScormPlayground
 
 		// create dscore info panel
 		this.vrDScorePanel = suica.square( [0,0,-2], [1,0.5], 'white' );
+		this.vrDScorePanel.threejs.renderOrder = 100;
 		its.image = drawing( 600, 300 );
 		its.image.context.textAlign = 'center';
 		its.threejs.material.transparent = true;

@@ -34,7 +34,7 @@ class Playground extends ScormPlayground
 		{
 			orb.enabled = false;
 			
-			lookAt( [0,0,-Tank.WIDTH], [0,0,0], [0,1,0] );
+			lookAt( [0,0,-2*Tank.WIDTH], [0,0,0], [0,1,0] );
 			suica.vrCamera.updateMatrixWorld(true);
 
 			this.intersectables.push(

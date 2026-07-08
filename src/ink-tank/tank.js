@@ -174,7 +174,7 @@ class Tank extends Suica.Group
 			
 		var glass2 = cylinder(
 						[0, Tank.BASE_HEIGHT+Tank.GLASS_HEIGHT/2, 0],
-						[Tank.WIDTH-0.2/SC, Tank.GLASS_HEIGHT],
+						[Tank.WIDTH-0.1/SC, Tank.GLASS_HEIGHT],
 					);
 			glass2.spinH = -30;
 			glass2.threejs.geometry = new THREE.CylinderGeometry(1/2,1/2,1,100,1,true);
@@ -184,7 +184,7 @@ class Tank extends Suica.Group
 				side: THREE.BackSide,
 				transparent: true,
 			})
-			glass2.threejs.renderOrder = -21;
+			glass2.threejs.renderOrder = -2;
 
 		this.add( glass, glass2);
 		
