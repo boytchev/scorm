@@ -202,7 +202,11 @@ console.log('granularity',granularity,'-> error',error)
 	// floating plate
 	update( t, dT )
 	{
-		this.light.position.copy( suica.camera.position );
+		
+		if( this.inVRMode )
+			this.light.position.copy( suica.renderer.xr.getCamera().position );
+		else
+			this.light.position.copy( suica.camera.position );
 		
 		if( playground.gameStarted )
 		{
