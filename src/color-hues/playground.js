@@ -15,11 +15,12 @@ const HUES = [
 class Playground extends ScormPlayground
 {
 	static POINTS_SPEED = 2000;
+	static MARKER_SIZE = 0.3;
 	
 	constructor( )
 	{
 		
-		super( );
+		super( Playground.MARKER_SIZE );
 
 		this.light.position.y = 20/10;
 
@@ -188,6 +189,8 @@ class Playground extends ScormPlayground
 			lookAt( [0,8,-y], [0,0,-y], [0,0,1] );
 			suica.vrCamera.updateMatrixWorld(true);
 		}
+		
+		this.updateCameraLight();
 	}
 	
 	

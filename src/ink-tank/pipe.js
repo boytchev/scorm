@@ -34,12 +34,12 @@ class Pipe extends Suica.Group
 		its.spinV = 90;
 		its.spinT = 360/6/2-90;
 		its.threejs.material.transparent = true;
-		its.threejs.material.opacity = 0.2;
+		its.threejs.material.opacity = 0;
 		its.parent = this; // used for VR click
 
 		this.wrapperValve = prism( 6,[0,Tank.BASE_HEIGHT,Tank.WIDTH/2 + Pipe.LENGTH - 2*Pipe.RADIUS], [4*Pipe.VALVE_RADIUS,Pipe.VALVE_LENGTH] );
 		its.threejs.material.transparent = true;
-		its.threejs.material.opacity = 0.2;
+		its.threejs.material.opacity = 0;
 		its.parent = this; // used for VR click
 
 		// floor connector

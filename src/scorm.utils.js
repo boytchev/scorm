@@ -154,7 +154,7 @@ class ScormPlayground
 	static ICON_SOUND_OFF = 'images/sound-off.png';
 
 
-	constructor( )
+	constructor( vrMarkerSize = 1 )
 	{
 		lookAt( [0,0,200], [0,0,0], [0,1,0] );
 
@@ -189,7 +189,7 @@ class ScormPlayground
 		this.inVRMode = this.urlParams.has( 'vr' ); // whether VR is or should be used
 		this.inVR = false; // whether in VR session right now
 		if( this.inVRMode ) {
-			this.vrInitialize( );
+			this.vrInitialize( vrMarkerSize );
 		} else {
 			suica.fullScreen( );
 		}
@@ -224,16 +224,16 @@ class ScormPlayground
 			if( playground.inVR )
 			{
 				playground.vrTimePanel.image.clear( );
-				playground.vrTimePanel.image.moveTo(5,125,5,5,295,5);
+				playground.vrTimePanel.image.moveTo(5,5,5,125,295,125);
 				playground.vrTimePanel.image.stroke('black',1);
-				playground.vrTimePanel.image.fillText( 25, 25, time, 'black', 'bold 66px Arial' );
-				playground.vrTimePanel.image.fillText( 25, 97, element('txt-time').innerHTML, 'black', '36px Arial' );
+				playground.vrTimePanel.image.fillText( 25, 10, time, 'black', 'bold 66px Arial' );
+				playground.vrTimePanel.image.fillText( 25, 80, element('txt-time').innerHTML, 'black', '36px Arial' );
 
 				playground.vrScorePanel.image.clear( );
-				playground.vrScorePanel.image.moveTo(5,5,295,5,295,125);
+				playground.vrScorePanel.image.moveTo(5,125,295,125,295,5);
 				playground.vrScorePanel.image.stroke('black',1);
-				playground.vrScorePanel.image.fillText( 275, 25, playground.totalScore.toFixed(1), 'black', 'bold 66px Arial' );
-				playground.vrScorePanel.image.fillText( 275, 97, element('txt-score').innerHTML, 'black', '36px Arial' );
+				playground.vrScorePanel.image.fillText( 275, 10, playground.totalScore.toFixed(1), 'black', 'bold 66px Arial' );
+				playground.vrScorePanel.image.fillText( 275, 80, element('txt-score').innerHTML, 'black', '36px Arial' );
 
 			}
 		}
@@ -310,7 +310,7 @@ class ScormPlayground
 
 
 
-	vrCreateController( index )
+	vrCreateController( index, vrMarkerSize )
 	{
 		var controller = suica.renderer.xr.getController( index );
 		if( !controller ) return;
@@ -358,7 +358,7 @@ class ScormPlayground
 		controller.add( controller.ray.threejs );
 
 		// create controller's marker
-		controller.marker = suica.sphere( [0,0,0], 0.3, 'white' );
+		controller.marker = suica.sphere( [0,0,0], vrMarkerSize, 'white' );
 		controller.marker.threejs.material = new THREE.MeshBasicMaterial({
 			color: 'white',
 			transparent: true,
@@ -370,7 +370,7 @@ class ScormPlayground
 	
 	
 	
-	vrInitialize( )
+	vrInitialize( vrMarkerSize )
 	{
 		// fix local VR simulator
 		setupLegacyXRForEmulator();
@@ -389,25 +389,25 @@ class ScormPlayground
 		suica.scene.add( suica.vrCamera );
 		
 		this.controllers = [];
-		this.vrCreateController( 0 );
-		this.vrCreateController( 1 );
+		this.vrCreateController( 0, vrMarkerSize );
+		this.vrCreateController( 1, vrMarkerSize );
 
 		// create time info panel
-		this.vrTimePanel = suica.square( [-0.5,-0.55,-2], [0.5*0.75,0.2*0.75], 'white' );
+		this.vrTimePanel = suica.square( [-0.5,0.55,-2], [0.5*0.75,0.2*0.75], 'white' );
 		this.vrTimePanel.threejs.material.depthTest = false;
 		its.image = drawing( 300, 130 );
 		its.image.context.textAlign = 'left';
 		suica.camera.add( this.vrTimePanel.threejs );
 
 		// create score info panel
-		this.vrScorePanel = suica.square( [0.5,-0.55,-2], [0.5*0.75,0.2*0.75], 'white' );
+		this.vrScorePanel = suica.square( [0.5,0.55,-2], [0.5*0.75,0.2*0.75], 'white' );
 		this.vrScorePanel.threejs.material.depthTest = false;
 		its.image = drawing( 300, 130 );
 		its.image.context.textAlign = 'right';
 		suica.camera.add( this.vrScorePanel.threejs );
 
 		// create performance info panel
-		this.vrPerfPanel = suica.square( [0,-0.5,-2], [0.5*0.75,0.4*0.75], 'white' );
+		this.vrPerfPanel = suica.square( [0,0.6,-2], [0.5*0.75,0.4*0.75], 'white' );
 		this.vrPerfPanel.threejs.material.depthTest = false;
 		its.image = drawing( 300, 260 );
 		its.image.context.textAlign = 'center';
@@ -946,6 +946,19 @@ if( playground.controllers[1].hand )
 
 		controller.pos.needsUpdate = true;
 
+	}
+	
+
+	updateCameraLight ( )
+	{
+		var pos;
+		
+		if( this.inVRMode )
+			pos = suica.renderer.xr.getCamera().position;
+		else
+			pos = suica.camera.position;
+		
+		this.light.position.copy( pos );
 	}
 	
 	

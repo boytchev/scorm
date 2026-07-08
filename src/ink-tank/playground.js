@@ -14,9 +14,11 @@ class Playground extends ScormPlayground
 	static PLATE_HIT_SPEED = 100;
 	static PLATE_FALL_SPEED = 900;
 	
+	static MARKER_SIZE = 0.05;
+	
 	constructor( )
 	{
-		super( );
+		super( Playground.MARKER_SIZE );
 		
 		this.resize( );
 
@@ -202,11 +204,7 @@ console.log('granularity',granularity,'-> error',error)
 	// floating plate
 	update( t, dT )
 	{
-		
-		if( this.inVRMode )
-			this.light.position.copy( suica.renderer.xr.getCamera().position );
-		else
-			this.light.position.copy( suica.camera.position );
+		this.updateCameraLight();
 		
 		if( playground.gameStarted )
 		{
@@ -228,13 +226,6 @@ console.log('granularity',granularity,'-> error',error)
 		else
 		{
 			this.tank.water.colorize( t );
-
-			if( this.inVRMode )
-			{
-				this.controllers.forEach( e => {
-					e.marker.threejs.scale.setScalar(0.1);
-				});
-			}
 		}
 		
 		this.tank.water.waves( t );
