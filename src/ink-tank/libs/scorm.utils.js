@@ -66,14 +66,17 @@ function update( t, dT )
 				if( e.squeeze )
 				{
 					var v = new THREE.Vector3();
+					var u = new THREE.Vector3();
 					
 					e.updateMatrixWorld(true);
 					var matrix = e.matrixWorld.elements;
 					
 					v.set( matrix[8], matrix[9], matrix[10] );
 
-					suica.vrCamera.position.addScaledVector( playground._v, -5*dT );
-					lookAt( suica.vrCamera.position, v, [0,1,0] );
+					suica.vrCamera.position.addScaledVector( v, -5*dT );
+					u.subVectors( suica.vrCamera.position, v );
+					
+					lookAt( suica.vrCamera.position, u, [0,1,0] );
 					suica.vrCamera.updateMatrixWorld(true);
 
 				}
