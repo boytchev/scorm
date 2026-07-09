@@ -39,6 +39,8 @@ function setupLegacyXRForEmulator()
 }
 
 
+var a1 = new THREE.Mesh( new THREE.SphereGeometry(0.01),new THREE.MeshBasicMaterial({color:'crimson'}));
+var a2 = new THREE.Mesh( new THREE.SphereGeometry(0.01),new THREE.MeshBasicMaterial({color:'royalblue'}));
 
 function update( t, dT )
 {
@@ -65,19 +67,50 @@ function update( t, dT )
 
 				if( e.squeeze )
 				{
-					var v = new THREE.Vector3();
-					var u = new THREE.Vector3();
 					
-					e.updateMatrixWorld(true);
-					var matrix = e.matrixWorld.elements;
-					
-					v.set( matrix[8], matrix[9], matrix[10] );
+suica.scene.add( a1, a2 );
 
-					suica.vrCamera.position.addScaledVector( v, -5*dT );
-					u.subVectors( suica.vrCamera.position, v );
+					var v = new THREE.Vector3(0,0,0);
+					e.hand.localToWorld( v );
+					a1.position.copy( v );
+
+					var u = new THREE.Vector3(0,0,-10);
+					e.hand.localToWorld( u );
+					a2.position.copy( u );
+/*					
+					var vu = new THREE.Vector3().subVectors(u,v);
 					
-					lookAt( suica.vrCamera.position, u, [0,1,0] );
+					var p = suica.vrCamera.position.clone();
+					p.addScaledVector( vu, 0.1*dT );
+//console.log(dT)
+					var q = p.clone();
+					q.addScaledVector( vu, dT );
+										
+					lookAt( p, q, [0,1,0] );
+					console.log( dT );
+					console.log( 'p',[...p].map(e=>e.toFixed(2)).join(',') )
+					console.log( 'q',[...q].map(e=>e.toFixed(2)).join(',') )
 					suica.vrCamera.updateMatrixWorld(true);
+*/
+
+// suica.viewPoint.from = [ 10, y, 0 ];
+var dx = dT*(a2.position.x-a1.position.x),
+	dy = dT*(a2.position.y-a1.position.y),
+	dz = dT*(a2.position.z-a1.position.z);
+	
+suica.viewPoint.from[0] += dx;
+suica.viewPoint.from[1] += dy;
+suica.viewPoint.from[2] += dz;
+
+suica.viewPoint.to[0] += dx;
+suica.viewPoint.to[1] += dy;
+suica.viewPoint.to[2] += dz;
+
+//console.log('---');	
+//console.log('delta',[ dx, dy, dz ]);
+//console.log('from',[x,y,z],'to',[ x+dx*dT, y+dy*dT, z+dz*dT ]);
+//suica.viewPoint.to = [ x+2*dx*dT, y+2*dy*dT, z+2*dz*dT ];
+// suica.viewPoint.up = [ 0, 1, 0 ];
 
 				}
 				
@@ -375,8 +408,13 @@ class ScormPlayground
 				pos.setZ( i, z );
 			}
 			pos.needsUpdate = true;
+			
+			// var a = new THREE.AxesHelper(1);
+			// a.position.
+			// controller.hand.add( a );
 		}
 		controller.add( controller.ray.threejs );
+		
 
 		// create controller's marker
 		controller.marker = suica.sphere( [0,0,0], vrMarkerSize, 'white' );
