@@ -42,6 +42,8 @@ function setupLegacyXRForEmulator()
 var a1 = new THREE.Mesh( new THREE.SphereGeometry(0.01),new THREE.MeshBasicMaterial({color:'crimson'}));
 var a2 = new THREE.Mesh( new THREE.SphereGeometry(0.01),new THREE.MeshBasicMaterial({color:'royalblue'}));
 
+var firstVRFrame = true;
+
 function update( t, dT )
 {
 	if( playground )
@@ -52,7 +54,10 @@ function update( t, dT )
 		
 		if( playground.inVR )
 		{
-
+			if( firstVRFrame ) {
+				suica.viewPoint.from[1] -= suica.renderer.xr.getCamera().position.y;
+				firstVRFrame = false;
+			}
 
 			playground.controllers.forEach( e => {
 
@@ -71,6 +76,8 @@ function update( t, dT )
 				if( e.squeeze )
 				{
 
+	//				var baseY = suica.renderer.xr.getCamera().position.y;
+
 					var v = new THREE.Vector3( 0, 0, -1 );
 					v.applyEuler(e.rotation);
 
@@ -79,10 +86,10 @@ function update( t, dT )
 					// else orbit 
 
 					var from = suica.viewPoint.from;
-					var to = suica.viewPoint.to;
 					
 					dT = THREE.MathUtils.clamp( dT, 1/120, 1/30 );
 					
+	//				from[1] -= baseY;
 					if( v.z > 0 )
 					{ // zoom out
 						from[0] *= 1+dT;
@@ -104,6 +111,7 @@ function update( t, dT )
 						from[1] = v.y;
 						from[2] = v.z;
 					}
+//					from[1] += baseY;
 				
 /*					
 suica.scene.add( a1, a2 );
@@ -246,7 +254,9 @@ class ScormPlayground
 		this.userInteracted = false; // used for audio play
 
 		suica.light.intensity = 0;
-
+		
+		this.baseRefSpace = null;
+		
 		this.light = new THREE.PointLight( 'white', 5 );
 		this.light.position.y = 1;
 		this.light.decay = 0;
@@ -365,6 +375,7 @@ class ScormPlayground
 		console.log('🔴 VR Session STARTED - User is now in VR');
 		playground.inVR = true;
 		playground.redrawScoreHistory();
+
 	}
 
 
@@ -1047,7 +1058,7 @@ if( playground.controllers[1].hand )
 		
 	}
 	
-	
+
 } // class ScormPlayground
 	
 	
@@ -1086,5 +1097,7 @@ class ScormUtils
 	} // ScormUtils.image
 
 
+	
+	
 } // class ScormUtils
 

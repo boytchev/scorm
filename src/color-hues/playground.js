@@ -192,6 +192,5 @@ class Playground extends ScormPlayground
 		
 		this.updateCameraLight();
 	}
-	
-	
+
 } // class Playground
