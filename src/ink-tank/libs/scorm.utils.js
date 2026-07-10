@@ -52,7 +52,10 @@ function update( t, dT )
 		
 		if( playground.inVR )
 		{
+
+
 			playground.controllers.forEach( e => {
+
 
 				// turn right controller to left if needed
 				if( e.sign<0 && e.ray.size[0]>0 ) e.ray.width *= -1;
@@ -67,7 +70,42 @@ function update( t, dT )
 
 				if( e.squeeze )
 				{
+
+					var v = new THREE.Vector3( 0, 0, -1 );
+					v.applyEuler(e.rotation);
+
+					// zoom if |x|,|y|<0.2 && z<0
+					// unzoom is z>0
+					// else orbit 
+
+					var from = suica.viewPoint.from;
+					var to = suica.viewPoint.to;
 					
+					dT = THREE.MathUtils.clamp( dT, 1/120, 1/30 );
+					
+					if( v.z > 0 )
+					{ // zoom out
+						from[0] *= 1+dT;
+						from[1] *= 1+dT;
+						from[2] *= 1+dT;
+					}
+					else if ( Math.abs(v.x)<0.2 && Math.abs(v.y)<0.2 )
+					{ // zoom in
+						from[0] *= 1-dT;
+						from[1] *= 1-dT;
+						from[2] *= 1-dT;
+					}
+					else
+					{ // orbiting
+						var vx = v.x;
+						v.set( ...from );
+						v.applyEuler( new THREE.Euler(0,2*vx*dT,0) );
+						from[0] = v.x;
+						from[1] = v.y;
+						from[2] = v.z;
+					}
+				
+/*					
 suica.scene.add( a1, a2 );
 
 					var v = new THREE.Vector3(0,0,0);
@@ -77,21 +115,7 @@ suica.scene.add( a1, a2 );
 					var u = new THREE.Vector3(0,0,-10);
 					e.hand.localToWorld( u );
 					a2.position.copy( u );
-/*					
-					var vu = new THREE.Vector3().subVectors(u,v);
-					
-					var p = suica.vrCamera.position.clone();
-					p.addScaledVector( vu, 0.1*dT );
-//console.log(dT)
-					var q = p.clone();
-					q.addScaledVector( vu, dT );
-										
-					lookAt( p, q, [0,1,0] );
-					console.log( dT );
-					console.log( 'p',[...p].map(e=>e.toFixed(2)).join(',') )
-					console.log( 'q',[...q].map(e=>e.toFixed(2)).join(',') )
-					suica.vrCamera.updateMatrixWorld(true);
-*/
+
 
 // suica.viewPoint.from = [ 10, y, 0 ];
 var dx = dT*(a2.position.x-a1.position.x),
@@ -104,17 +128,7 @@ suica.viewPoint.from[2] += dz;
 
 suica.viewPoint.to = [0,0,0];
 suica.viewPoint.up = [0,1,0];
-
-// suica.viewPoint.to[0] += dx;
-// suica.viewPoint.to[1] += dy;
-// suica.viewPoint.to[2] += dz;
-
-//console.log('---');	
-//console.log('delta',[ dx, dy, dz ]);
-//console.log('from',[x,y,z],'to',[ x+dx*dT, y+dy*dT, z+dz*dT ]);
-//suica.viewPoint.to = [ x+2*dx*dT, y+2*dy*dT, z+2*dz*dT ];
-// suica.viewPoint.up = [ 0, 1, 0 ];
-
+*/
 				}
 				
 			} );
@@ -1025,14 +1039,12 @@ if( playground.controllers[1].hand )
 
 	updateCameraLight ( )
 	{
-		var pos;
-		
+
 		if( this.inVRMode )
-			pos = suica.renderer.xr.getCamera().position;
+			this.light.position.set( ...suica.viewPoint.from );
 		else
-			pos = suica.camera.position;
+			this.light.position.copy( suica.camera.position );
 		
-		this.light.position.copy( pos );
 	}
 	
 	

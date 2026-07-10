@@ -176,7 +176,7 @@ class Water extends Suica.Group
 	
 	waves( t )
 	{
-		var amplitude = 0.08*this.level;
+		var amplitude = 0.2*this.level;
 		if( window.simplex ) 
 		this.plate.threejs.rotation.set(
 			amplitude*window.simplex.noise(t/3,0)/2,
