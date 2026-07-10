@@ -55,7 +55,7 @@ function update( t, dT )
 		if( playground.inVR )
 		{
 			if( firstVRFrame ) {
-				suica.viewPoint.from[1] -= suica.renderer.xr.getCamera().position.y;
+				playground.vrVerticalOffset = suica.renderer.xr.getCamera().position.y;
 				firstVRFrame = false;
 			}
 
@@ -75,6 +75,11 @@ function update( t, dT )
 
 				if( e.squeeze )
 				{
+// console.log('vo',playground.vrVerticalOffset)
+// console.log('from',suica.viewPoint.from)
+// console.log('to',suica.viewPoint.to)
+
+suica.viewPoint.to[1] = playground.vrVerticalOffset;
 
 	//				var baseY = suica.renderer.xr.getCamera().position.y;
 
@@ -89,7 +94,6 @@ function update( t, dT )
 					
 					dT = THREE.MathUtils.clamp( dT, 1/120, 1/30 );
 					
-	//				from[1] -= baseY;
 					if( v.z > 0 )
 					{ // zoom out
 						from[0] *= 1+dT;
@@ -105,12 +109,20 @@ function update( t, dT )
 					else
 					{ // orbiting
 						var vx = v.x;
+						var vy = v.y;
 						v.set( ...from );
+						
+						// horizontal
 						v.applyEuler( new THREE.Euler(0,2*vx*dT,0) );
+						// vertical
+						var axis = new THREE.Vector3( -v.z, 0, v.x ).normalize();
+						v.applyAxisAngle( axis, 2*vy*dT );
+
 						from[0] = v.x;
 						from[1] = v.y;
 						from[2] = v.z;
 					}
+
 //					from[1] += baseY;
 				
 /*					
@@ -255,7 +267,7 @@ class ScormPlayground
 
 		suica.light.intensity = 0;
 		
-		this.baseRefSpace = null;
+		this.vrVerticalOffset = 0;
 		
 		this.light = new THREE.PointLight( 'white', 5 );
 		this.light.position.y = 1;
