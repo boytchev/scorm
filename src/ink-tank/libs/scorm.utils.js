@@ -102,9 +102,12 @@ suica.viewPoint.from[0] += dx;
 suica.viewPoint.from[1] += dy;
 suica.viewPoint.from[2] += dz;
 
-suica.viewPoint.to[0] += dx;
-suica.viewPoint.to[1] += dy;
-suica.viewPoint.to[2] += dz;
+suica.viewPoint.to = [0,0,0];
+suica.viewPoint.up = [0,1,0];
+
+// suica.viewPoint.to[0] += dx;
+// suica.viewPoint.to[1] += dy;
+// suica.viewPoint.to[2] += dz;
 
 //console.log('---');	
 //console.log('delta',[ dx, dy, dz ]);
