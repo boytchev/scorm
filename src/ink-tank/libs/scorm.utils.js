@@ -39,9 +39,6 @@ function setupLegacyXRForEmulator()
 }
 
 
-var a1 = new THREE.Mesh( new THREE.SphereGeometry(0.01),new THREE.MeshBasicMaterial({color:'crimson'}));
-var a2 = new THREE.Mesh( new THREE.SphereGeometry(0.01),new THREE.MeshBasicMaterial({color:'royalblue'}));
-
 var firstVRFrame = true;
 
 function update( t, dT )
@@ -79,18 +76,22 @@ function update( t, dT )
 					var v = new THREE.Vector3( 0, 0, -1 );
 					v.applyEuler(e.rotation);
 
-					playground.vrAlpha += dT*v.x;
-					playground.vrBeta -= dT*v.y;
+					playground.vrAlpha += 2*dT*v.x;
+					playground.vrBeta -= 2*dT*v.y;
 
-					console.log( playground.vrDist, playground.vrBeta, playground.vrAlpha );
+					playground.vrBeta = THREE.MathUtils.clamp(
+						playground.vrBeta,
+						Math.PI/2-orb.maxPolarAngle,
+						Math.PI/2-orb.minPolarAngle );
+
+					console.log(
+						Math.PI/2-orb.maxPolarAngle,
+						Math.PI/2-orb.minPolarAngle );
+					
 					v.setFromSphericalCoords( playground.vrDist, playground.vrBeta, playground.vrAlpha );
 					suica.viewPoint.from = [...v];
-					suica.viewPoint.to = [0,0,0];
-					suica.viewPoint.up = [0,1,0];
-//suica.viewPoint.from = [v.x,Math.random(),5+3*Math.random()];
-					console.log(...v);
-					
-//					suica.vrCamera.children[0].updateProjectionMatrix();
+//					suica.viewPoint.to = [0,0,0];
+//					suica.viewPoint.up = [0,1,0];
 
 				}
 

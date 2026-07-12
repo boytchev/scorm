@@ -24,7 +24,7 @@ class Playground extends ScormPlayground
 
 		this.tank = new Tank( );
 		this.light.intensity = 3;
-
+		
 		this.translate( [
 			{id: 'txt-caption',
 				en: 'Ink tank',
@@ -39,6 +39,8 @@ class Playground extends ScormPlayground
 		if( this.inVRMode )
 		{
 			orb.enabled = false;
+			orb.minPolarAngle = -0.5;
+			orb.maxPolarAngle = 1.3;
 			
 			this.vrDist = 2*Tank.WIDTH;
 			

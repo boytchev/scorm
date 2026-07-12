@@ -21,53 +21,37 @@ class Water extends Suica.Group
 		this.yellow = 0;
 
 		var r = 0.5*(Tank.WIDTH-2*Tank.FRAME_WIDTH/3);
-		//this.water = prism( 100, [0,0,0], [Tank.WIDTH-2*Tank.FRAME_WIDTH/3,0] );
 		this.water = prism( 100, [0,0,0], 1 );
 		this.water.threejs.geometry = new THREE.CylinderGeometry( r, r, 1, 100, 1, true ).translate(0,0.5,0);
 		this.water.threejs.material = new THREE.MeshStandardMaterial({
+				color: new THREE.Color('black'),
+				emissiveIntensity: 1,
+				emissive: new THREE.Color('black'),
 				roughness: 0.2,
 				metalness: 0,
 				transparent: true,
 				side: THREE.DoubleSide,
 		});
-//		this.water.threejs.renderOrder = -10;
 		
-		//this.waterBorder = polygon( 100, [0,0,0], Tank.WIDTH-2*Tank.FRAME_WIDTH/3, 'black' );
 		this.waterBorder = polygon( 100, [0,0,0], 1, 'black' );
 		this.waterBorder.threejs.geometry = new THREE.RingGeometry( Tank.PLATE_SIZE/8, r, 100, 10 ).rotateX(Math.PI/2).rotateY(-Math.PI/2/100);
 		this.waterBorder.threejs.material = new THREE.MeshPhysicalMaterial({
+				color: new THREE.Color('black'),
+				emissiveIntensity: 1,
+				emissive: new THREE.Color('black'),
 				roughness: 0,
 				metalness: 0,
 				transparent: true,
 				side: THREE.BackSide,
 		});
 		this.waterBorder.threejs.renderOrder = -5;
-//			its.wireframe = true;
-//			its.spinV = -90;
-//			its.spinH = 60;
-//			its.threejs.material.transparent = true;
-//			its.threejs.material.opacity = 0.3;
-//			its.threejs.material.wireframe = true;
-//			its.threejs.renderOrder = -1;
-	
-
-
-//=============
-
-//=============================
-
-
-
-
-
-
-
-
-
 
 	
 		this.plateColor = sphere( [0,0.05/SC,0], [Tank.PLATE_SIZE, Tank.PLATE_HEIGHT] );
-			its.threejs.material.map = ScormUtils.image( 'plate_border.jpg', 24, 0.85 );
+//			its.threejs.material.map = ScormUtils.image( 'plate_border.jpg', 24, 0.85 );
+		this.plateColor.threejs.material = new THREE.MeshBasicMaterial({
+				map: ScormUtils.image( 'plate_border.jpg', 24, 0.85 )
+			});
 			
 		var plateFrame = sphere( [0,0,0], [Tank.PLATE_SIZE*1.1, Tank.PLATE_HEIGHT], 'black' ); 
 		its.threejs.material = new THREE.MeshStandardMaterial( {
@@ -135,6 +119,7 @@ class Water extends Suica.Group
 		}
 		
 		var max = Math.max( this.cyan, this.magenta, this.yellow );
+		if( max == 0 ) max = 1;
 		var color = rgb( 255-255*this.cyan/max, 255-255*this.magenta/max, 255-255*this.yellow/max );
 		
 		var height = level*Tank.WATER_HEIGHT;
@@ -142,13 +127,17 @@ class Water extends Suica.Group
 		this.water.y = Tank.BASE_HEIGHT + Tank.VERTICAL_OFFSET;
 		this.water.height = height;
 		this.water.threejs.material.opacity = THREE.MathUtils.smoothstep(level,0,1/2);
-		this.water.threejs.material.color = color;
+
+//		this.water.threejs.material.color = color;
+		this.water.threejs.material.emissive.copy( color );
 		this.waterBorder.threejs.material.opacity = THREE.MathUtils.smoothstep(level,0,1/2);
-		this.waterBorder.threejs.material.color = color;
+//		this.waterBorder.threejs.material.color = color;
+		this.waterBorder.threejs.material.emissive.copy( color );
 		
 		this.waterBorder.y = height + Tank.BASE_HEIGHT + Tank.VERTICAL_OFFSET;
 
 		this.plate.y = Math.max(height,Tank.PLATE_HEIGHT/2) + Tank.BASE_HEIGHT + Tank.VERTICAL_OFFSET;
+		this.plate.baseY = this.plate.y;
 
 	} // Water.adjustWater
 
@@ -176,14 +165,18 @@ class Water extends Suica.Group
 	
 	waves( t )
 	{
-		var amplitude = 0.2*this.level;
+		var amplitude = 0.2*this.level**2;
 		if( window.simplex ) 
-		this.plate.threejs.rotation.set(
-			amplitude*window.simplex.noise(t/3,0)/2,
-			amplitude*window.simplex.noise(t/3,t/3)/2,
-			amplitude*window.simplex.noise(0,t/3)/2,
-			'ZYX'
-		);
+		{
+			this.plate.y = this.plate.baseY - 0.03*amplitude**window.simplex.noise(0,-t/3)**2;
+			
+			this.plate.threejs.rotation.set(
+				amplitude*window.simplex.noise(t/3,0)/2,
+				amplitude*window.simplex.noise(t/3,t/3)/2,
+				amplitude*window.simplex.noise(0,t/3)/2,
+				'ZYX'
+			);
+		}
 		
 
 
@@ -244,7 +237,6 @@ class Water extends Suica.Group
 	
 	colorize( t )
 	{
-		//this.plateColor.color = hsl( (200*t + 100*Math.sin(t))%360, 100, 50 );
 		this.plateColor.color = hsl( 0, 0, 50+10*Math.sin(10*t)+10*Math.sin(5*t) );
 	}
 } // class Water
