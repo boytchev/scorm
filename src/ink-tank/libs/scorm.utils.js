@@ -75,82 +75,26 @@ function update( t, dT )
 
 				if( e.squeeze )
 				{
-// console.log('vo',playground.vrVerticalOffset)
-// console.log('from',suica.viewPoint.from)
-// console.log('to',suica.viewPoint.to)
-
-suica.viewPoint.to[1] = playground.vrVerticalOffset;
-
-	//				var baseY = suica.renderer.xr.getCamera().position.y;
-
+					
 					var v = new THREE.Vector3( 0, 0, -1 );
 					v.applyEuler(e.rotation);
 
-					// zoom if |x|,|y|<0.2 && z<0
-					// unzoom is z>0
-					// else orbit 
+					playground.vrAlpha += dT;
+//					playground.vrBeta += dT*v.y;
 
-					var from = suica.viewPoint.from;
+					v.setFromSphericalCoords( playground.vrDist, playground.vrBeta, playground.vrAlpha );
+					suica.viewPoint.from = [...v];
+					suica.viewPoint.to = [0,0,0];
+					suica.viewPoint.up = [0,1,0];
+suica.viewPoint.from = [v.x,Math.random(),5+3*Math.random()];
+					console.log(...v);
 					
-					dT = THREE.MathUtils.clamp( dT, 1/120, 1/30 );
-					
-					if( v.z > 0 )
-					{ // zoom out
-						from[0] *= 1+dT;
-						from[1] *= 1+dT;
-						from[2] *= 1+dT;
-					}
-					else if ( Math.abs(v.x)<0.2 && Math.abs(v.y)<0.2 )
-					{ // zoom in
-						from[0] *= 1-dT;
-						from[1] *= 1-dT;
-						from[2] *= 1-dT;
-					}
-					else
-					{ // orbiting
-						var vx = v.x;
-						var vy = v.y;
-						v.set( ...from );
-						
-						// horizontal
-						v.applyEuler( new THREE.Euler(0,2*vx*dT,0) );
-						// vertical
-						var axis = new THREE.Vector3( -v.z, 0, v.x ).normalize();
-						v.applyAxisAngle( axis, 2*vy*dT );
+					suica.vrCamera.children[0].updateProjectionMatrix();
 
-						from[0] = v.x;
-						from[1] = v.y;
-						from[2] = v.z;
-					}
-
-//					from[1] += baseY;
-				
-/*					
-suica.scene.add( a1, a2 );
-
-					var v = new THREE.Vector3(0,0,0);
-					e.hand.localToWorld( v );
-					a1.position.copy( v );
-
-					var u = new THREE.Vector3(0,0,-10);
-					e.hand.localToWorld( u );
-					a2.position.copy( u );
-
-
-// suica.viewPoint.from = [ 10, y, 0 ];
-var dx = dT*(a2.position.x-a1.position.x),
-	dy = dT*(a2.position.y-a1.position.y),
-	dz = dT*(a2.position.z-a1.position.z);
-	
-suica.viewPoint.from[0] += dx;
-suica.viewPoint.from[1] += dy;
-suica.viewPoint.from[2] += dz;
-
-suica.viewPoint.to = [0,0,0];
-suica.viewPoint.up = [0,1,0];
-*/
 				}
-				
+
+
+		
 			} );
 	
 		}
@@ -245,8 +189,12 @@ class ScormPlayground
 	constructor( vrMarkerSize = 1 )
 	{
 		lookAt( [0,0,200], [0,0,0], [0,1,0] );
-
+		
 		this.gameStarted = false;
+		
+		this.vrDist = 200;
+		this.vrAlpha = 0;
+		this.vrBeta = Math.PI/2;
 		
 		this.gameTime = 0;
 		this.gameHits = 0;
@@ -471,6 +419,8 @@ class ScormPlayground
 	
 	vrInitialize( vrMarkerSize )
 	{
+		suica.controls.enable = false;
+		
 		// fix local VR simulator
 		setupLegacyXRForEmulator();
 		
