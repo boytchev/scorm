@@ -32,9 +32,14 @@ class Playground extends ScormPlayground
 				jp: 'インクタンク'},
 		] );
 
+		lookAt( [0,0,-2*Tank.WIDTH], [0,0,0], [0,1,0] );
+		
+		suica.controls.update();
+		
 		if( this.inVRMode )
 		{
-			//lookAt( [0,0,-2*Tank.WIDTH], [0,0,0], [0,1,0] );
+			orb.enabled = false;
+			
 			this.vrDist = 2*Tank.WIDTH;
 			
 			suica.vrCamera.updateMatrixWorld(true);
@@ -205,7 +210,7 @@ console.log('granularity',granularity,'-> error',error)
 	update( t, dT )
 	{
 		this.updateCameraLight();
-		
+
 		if( playground.gameStarted )
 		{
 			var aperture = Math.max( this.tank.cyanPipe.aperture, this.tank.magentaPipe.aperture, this.tank.yellowPipe.aperture );

@@ -79,17 +79,18 @@ function update( t, dT )
 					var v = new THREE.Vector3( 0, 0, -1 );
 					v.applyEuler(e.rotation);
 
-					playground.vrAlpha += dT;
-//					playground.vrBeta += dT*v.y;
+					playground.vrAlpha += dT*v.x;
+					playground.vrBeta -= dT*v.y;
 
+					console.log( playground.vrDist, playground.vrBeta, playground.vrAlpha );
 					v.setFromSphericalCoords( playground.vrDist, playground.vrBeta, playground.vrAlpha );
 					suica.viewPoint.from = [...v];
 					suica.viewPoint.to = [0,0,0];
 					suica.viewPoint.up = [0,1,0];
-suica.viewPoint.from = [v.x,Math.random(),5+3*Math.random()];
+//suica.viewPoint.from = [v.x,Math.random(),5+3*Math.random()];
 					console.log(...v);
 					
-					suica.vrCamera.children[0].updateProjectionMatrix();
+//					suica.vrCamera.children[0].updateProjectionMatrix();
 
 				}
 
