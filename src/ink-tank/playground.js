@@ -57,17 +57,18 @@ class Playground extends ScormPlayground
 			);
 
 		}
-/*		
+		
 		// create possible variations of inks
 		this.inkVariations = [];
-		for( var i=0; i<=10; i++ )
+		for( var i=0; i<=6; i++ )
 			this.inkVariations[i] = [];
 		
-		for( var cyan = 0; cyan < 8; cyan++ )
-		for( var magenta = 0; magenta < 8; magenta++ )
-		for( var yellow = 0; yellow < 8; yellow++ )
-			if( magenta>cyan && magenta>yellow )
+		for( var cyan = 0; cyan < 6; cyan++ )
+		for( var magenta = 0; magenta < 6; magenta++ )
+		for( var yellow = 0; yellow < 6; yellow++ )
+//			if( magenta>cyan && magenta>yellow )
 		{
+			if( cyan==magenta && magenta==yellow ) continue;
 			if( (cyan%2)+(magenta%2)+(yellow%2) == 0 ) continue;
 			if( (cyan%3)+(magenta%3)+(yellow%3) == 0 ) continue;
 			if( (cyan%5)+(magenta%5)+(yellow%5) == 0 ) continue;
@@ -75,7 +76,6 @@ class Playground extends ScormPlayground
 
 			var max = Math.max( cyan, magenta, yellow );
 			var level = max-2;
-			
 			if( cyan > 0 ) level++;
 			if( magenta > 0 ) level++;
 			if( yellow > 0 ) level++;
@@ -83,14 +83,12 @@ class Playground extends ScormPlayground
 			var color = [cyan/max, magenta/max, yellow/max];
 			this.inkVariations[level].push( color );
 			
-			if( level == 0 ) this.inkVariations[1].push( color );
-			if( level == 8 ) this.inkVariations[9].push( color );
-			if( level == 8 ) this.inkVariations[10].push( color );
+//			if( level == 0 ) this.inkVariations[1].push( color );
+//			if( level == 8 ) this.inkVariations[9].push( color );
+//			if( level == 8 ) this.inkVariations[10].push( color );
 		}
 
 		this.lastcCmy = null;
-console.log(this.inkVariations);
-*/
 
 	} // Playground.constructor
 
@@ -104,18 +102,20 @@ console.log(this.inkVariations);
 		super.newGame( );
 
 		this.tank.water.clearWater( );
-/*
-		var level = THREE.MathUtils.clamp(Math.round(this.difficulty/10),0,10),
+
+		var level = Math.round(THREE.MathUtils.mapLinear(this.difficulty,10,100,0,6)),
 			cmy = random( this.inkVariations[level] );
-		
+
 		if( cmy==this.lastCmy ) cmy = random( this.inkVariations[level] );
 		if( cmy==this.lastCmy ) cmy = random( this.inkVariations[level] );
 
 		this.lastcCmy = cmy;
-*/		
-		var c = Math.random(),
-			m = Math.random(),
-			y = Math.random(),
+		
+console.log('level',level,'cmy',cmy)		
+
+		var c = cmy[0],
+			m = cmy[1],
+			y = cmy[2],
 			max = Math.max( c, m, y );
 
 		new TWEEN.Tween( this.tank.water.plate )
@@ -148,7 +148,7 @@ console.log(this.inkVariations);
 	evaluateGame( )
 	{
 		var points = this.configRange( 30, 100, 1/2 );
-		var granularity  = Math.round(this.configRange( 4, 8 ));
+		var granularity  = Math.round(this.configRange( 3, 8 ));
 		
 		var water = this.tank.water,
 			max = Math.max( water.cyan, water.magenta, water.yellow );
@@ -166,7 +166,7 @@ console.log(this.inkVariations);
 
 		var score = THREE.MathUtils.mapLinear( error, 1, 2, 1, 0 );
 			score = THREE.MathUtils.clamp( score, 0, 1 );
-console.log('--------------------')
+console.log('--------------------',points)
 console.log('user',userC,userM,userY)
 console.log('goal',goalC,goalM,goalY)
 console.log('granularity',granularity,'-> error',error)
@@ -223,7 +223,7 @@ console.log('granularity',granularity,'-> error',error)
 		{
 			var aperture = Math.max( this.tank.cyanPipe.aperture, this.tank.magentaPipe.aperture, this.tank.yellowPipe.aperture );
 			if( aperture > 0 )
-			{
+			{				
 				if( this.bubblesSound )
 				{
 					this.bubblesSound.setVolume( 0.3*aperture );
@@ -235,6 +235,10 @@ console.log('granularity',granularity,'-> error',error)
 				this.tank.water.addInk( 'magenta', k*Math.pow(this.tank.magentaPipe.aperture,1)*dT*Playground.FILL_SPEED );
 				this.tank.water.addInk( 'yellow', k*Math.pow(this.tank.yellowPipe.aperture,1)*dT*Playground.FILL_SPEED );
 			}
+
+orb.enableRotate = aperture==0;
+orb.enableZoom = aperture==0;
+orb.enablePan = aperture==0;
 		}
 		else
 		{

@@ -134,6 +134,7 @@ class Pipe extends Suica.Group
 	
 	onPointerDown( event )
 	{
+
 		// if a game is not started, then start a game
 		if( !playground.gameStarted )
 		{

@@ -169,13 +169,13 @@ class Water extends Suica.Group
 		if( window.simplex ) 
 		{
 			this.plate.x = 0.5*amplitude*window.simplex.noise(t/6,-t/7);
-			this.plate.y = this.plate.baseY - 0.06*amplitude*window.simplex.noise(0,-t/3)**2;
+			this.plate.y = this.plate.baseY - 0.1*amplitude*window.simplex.noise(0,-t/3)**2;
 			this.plate.z = 0.5*amplitude*window.simplex.noise(-t/5,t/8);
 			
 			this.plate.threejs.rotation.set(
-				amplitude*window.simplex.noise(t/3,0)/1.5,
-				amplitude*window.simplex.noise(t/3,t/3)/1.5,
-				amplitude*window.simplex.noise(0,t/3)/1.5,
+				amplitude*window.simplex.noise(t/3,0),
+				amplitude*window.simplex.noise(t/3,t/3),
+				amplitude*window.simplex.noise(0,t/3),
 				'ZYX'
 			);
 		}
