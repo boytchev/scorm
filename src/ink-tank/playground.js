@@ -57,7 +57,7 @@ class Playground extends ScormPlayground
 			);
 
 		}
-		
+/*		
 		// create possible variations of inks
 		this.inkVariations = [];
 		for( var i=0; i<=10; i++ )
@@ -66,6 +66,7 @@ class Playground extends ScormPlayground
 		for( var cyan = 0; cyan < 8; cyan++ )
 		for( var magenta = 0; magenta < 8; magenta++ )
 		for( var yellow = 0; yellow < 8; yellow++ )
+			if( magenta>cyan && magenta>yellow )
 		{
 			if( (cyan%2)+(magenta%2)+(yellow%2) == 0 ) continue;
 			if( (cyan%3)+(magenta%3)+(yellow%3) == 0 ) continue;
@@ -88,6 +89,8 @@ class Playground extends ScormPlayground
 		}
 
 		this.lastcCmy = null;
+console.log(this.inkVariations);
+*/
 
 	} // Playground.constructor
 
@@ -101,16 +104,19 @@ class Playground extends ScormPlayground
 		super.newGame( );
 
 		this.tank.water.clearWater( );
-
+/*
 		var level = THREE.MathUtils.clamp(Math.round(this.difficulty/10),0,10),
 			cmy = random( this.inkVariations[level] );
 		
 		if( cmy==this.lastCmy ) cmy = random( this.inkVariations[level] );
 		if( cmy==this.lastCmy ) cmy = random( this.inkVariations[level] );
-		
+
 		this.lastcCmy = cmy;
-		
-		var	max = Math.max( cmy[0], cmy[1], cmy[2] );
+*/		
+		var c = Math.random(),
+			m = Math.random(),
+			y = Math.random(),
+			max = Math.max( c, m, y );
 
 		new TWEEN.Tween( this.tank.water.plate )
 			.to( {y:this.tank.water.plate.y+2/SC}, Playground.PLATE_HIT_SPEED )
@@ -123,9 +129,9 @@ class Playground extends ScormPlayground
 		
 		var colorA = rgb( ...playground.tank.water.plateColor.color );
 		var colorB = rgb(
-							255 - 255*cmy[0]/max,
-							255 - 255*cmy[1]/max,
-							255 - 255*cmy[2]/max
+							255 - 255*c/max,
+							255 - 255*m/max,
+							255 - 255*y/max
 						);
 		var target = playground.tank.water.plateColor;
 		new TWEEN.Tween( colorA )
