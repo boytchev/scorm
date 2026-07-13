@@ -30,7 +30,15 @@ class Playground extends ScormPlayground
 		this.masterPlate = new Plate( [0,0,0], 0 );
 		this.masterPlate.isMasterPlate = true;
 
-		if( this.inVRMode ) this.intersectables.push( this.masterPlate.threejs );
+		if( this.inVRMode )
+		{
+		
+			this.vrDist = 8;
+			
+			suica.vrCamera.updateMatrixWorld(true);
+			
+			this.intersectables.push( this.masterPlate.threejs );
+		}
 
 		for( var spin=-30; spin<360-30; spin+=60 )
 		{
@@ -185,9 +193,9 @@ class Playground extends ScormPlayground
 	{
 		if( this.inVR )
 		{
-			var y = suica.renderer.xr.getCamera().position.y;
-			lookAt( [0,8,-y], [0,0,-y], [0,0,1] );
-			suica.vrCamera.updateMatrixWorld(true);
+//			var y = suica.renderer.xr.getCamera().position.y;
+//			lookAt( [0,8,-y], [0,0,-y], [0,0,1] );
+//			suica.vrCamera.updateMatrixWorld(true);
 		}
 		
 		this.updateCameraLight();

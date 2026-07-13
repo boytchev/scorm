@@ -90,8 +90,6 @@ function update( t, dT )
 					
 					v.setFromSphericalCoords( playground.vrDist, playground.vrBeta, playground.vrAlpha );
 					suica.viewPoint.from = [...v];
-//					suica.viewPoint.to = [0,0,0];
-//					suica.viewPoint.up = [0,1,0];
 
 				}
 
@@ -421,7 +419,7 @@ class ScormPlayground
 	
 	vrInitialize( vrMarkerSize )
 	{
-		suica.controls.enable = false;
+		if( suica.controls ) suica.controls.enable = false;
 		
 		// fix local VR simulator
 		setupLegacyXRForEmulator();
@@ -989,7 +987,7 @@ if( playground.controllers[1].hand )
 
 	vrSqueezeStart( controller )
 	{
-		controller.squeeze = true;
+		if( suica.controls ) controller.squeeze = true;
 	}
 		
 	

@@ -14,7 +14,7 @@ class Playground extends ScormPlayground
 	static PLATE_HIT_SPEED = 100;
 	static PLATE_FALL_SPEED = 900;
 	
-	static MARKER_SIZE = 0.05;
+	static MARKER_SIZE = 0.1;
 	
 	constructor( )
 	{
@@ -236,9 +236,6 @@ console.log('granularity',granularity,'-> error',error)
 				this.tank.water.addInk( 'yellow', k*Math.pow(this.tank.yellowPipe.aperture,1)*dT*Playground.FILL_SPEED );
 			}
 
-orb.enableRotate = aperture==0;
-orb.enableZoom = aperture==0;
-orb.enablePan = aperture==0;
 		}
 		else
 		{
