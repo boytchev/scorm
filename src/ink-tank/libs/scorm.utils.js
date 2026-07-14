@@ -83,14 +83,9 @@ function update( t, dT )
 						playground.vrBeta,
 						Math.PI/2-orb.maxPolarAngle,
 						Math.PI/2-orb.minPolarAngle );
-
-					console.log(
-						Math.PI/2-orb.maxPolarAngle,
-						Math.PI/2-orb.minPolarAngle );
-					
+				
 					v.setFromSphericalCoords( playground.vrDist, playground.vrBeta, playground.vrAlpha );
 					suica.viewPoint.from = [...v];
-
 				}
 
 
@@ -441,22 +436,24 @@ class ScormPlayground
 		this.vrCreateController( 0, vrMarkerSize );
 		this.vrCreateController( 1, vrMarkerSize );
 
+		const PANEL_SIZE = 0.9;
+
 		// create time info panel
-		this.vrTimePanel = suica.square( [-0.5,0.55,-2], [0.5*0.75,0.2*0.75], 'white' );
+		this.vrTimePanel = suica.square( [-0.7*PANEL_SIZE,0.55,-2], [0.5*PANEL_SIZE,0.2*PANEL_SIZE], 'white' );
 		this.vrTimePanel.threejs.material.depthTest = false;
 		its.image = drawing( 300, 130 );
 		its.image.context.textAlign = 'left';
 		suica.camera.add( this.vrTimePanel.threejs );
 
 		// create score info panel
-		this.vrScorePanel = suica.square( [0.5,0.55,-2], [0.5*0.75,0.2*0.75], 'white' );
+		this.vrScorePanel = suica.square( [0.7*PANEL_SIZE,0.55,-2], [0.5*PANEL_SIZE,0.2*PANEL_SIZE], 'white' );
 		this.vrScorePanel.threejs.material.depthTest = false;
 		its.image = drawing( 300, 130 );
 		its.image.context.textAlign = 'right';
 		suica.camera.add( this.vrScorePanel.threejs );
 
 		// create performance info panel
-		this.vrPerfPanel = suica.square( [0,0.6,-2], [0.5*0.75,0.4*0.75], 'white' );
+		this.vrPerfPanel = suica.square( [0,0.6,-2], [0.5*PANEL_SIZE,0.4*PANEL_SIZE], 'white' );
 		this.vrPerfPanel.threejs.material.depthTest = false;
 		its.image = drawing( 300, 260 );
 		its.image.context.textAlign = 'center';

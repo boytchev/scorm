@@ -32,7 +32,7 @@ class Playground extends ScormPlayground
 				jp: 'インクタンク'},
 		] );
 
-		lookAt( [0,0,-2*Tank.WIDTH], [0,0,0], [0,1,0] );
+		lookAt( [0,0,2*Tank.WIDTH], [0,0,0], [0,1,0] );
 		
 		suica.controls.update();
 		
