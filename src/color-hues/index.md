@@ -23,6 +23,8 @@ Selection of hues is done by clicking on outer plates. If needed, a second click
 
 The next image shows two cases with arrows pointing to the plates with closest hues to the central plate. If the hues are lined up, the central hue fits just between the two selected hues. As the score progresses, the challenge becomes harder &ndash; generated hues get closer to each other.
 
+In VR mode use the triggers to click on plates and flip them.
+
 <img src="docs/example.jpg">
 
 ### Integration with LMS

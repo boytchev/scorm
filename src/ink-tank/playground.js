@@ -38,10 +38,6 @@ class Playground extends ScormPlayground
 		
 		if( this.inVRMode )
 		{
-			orb.enabled = false;
-			orb.minPolarAngle = -0.5;
-			orb.maxPolarAngle = 1.3;
-			
 			this.vrDist = 2*Tank.WIDTH;
 			
 			suica.vrCamera.updateMatrixWorld(true);
@@ -217,6 +213,10 @@ console.log('granularity',granularity,'-> error',error)
 	// floating plate
 	update( t, dT )
 	{
+		orb.enabled = playground.inVR == false;
+		orb.minPolarAngle = -0.5;
+		orb.maxPolarAngle = 1.3;
+			
 		this.updateCameraLight();
 
 		if( playground.gameStarted )

@@ -15,7 +15,7 @@ Click on the image to start the application.
 
 [<img src="docs/snapshot.jpg">](ink-tank.html)
 
-Alternatively, here are versions in [English](ink-tank.html?lang=en), [Bulgarian](ink-tank.html?lang=bg) and [Japanese](ink-tank.html?lang=jp).
+Alternatively, here are versions in [English](ink-tank.html?lang=en), [Bulgarian](ink-tank.html?lang=bg), [Japanese](ink-tank.html?lang=jp) and [Virtual Reality](ink-tank.html?lang=en&vr). 
 
 ### How to play
 
@@ -26,6 +26,8 @@ When the application is started it shows an empty tank and three tubes. Inside t
 - **Ending**: Click on the plate to end the challenge.
 
 Here are a few hints: The tubes can be activated as many times as it is needed. Some complex colors are difficult to create at once. A challenge can be ended only when the tank is full to the top, otherwise clicking on the plate has no effect. Higher difficulties use more complex colors and require higher precision of color matching. Sometimes it is easier to spot the difference between two colors by looking from the side or from the top. In the next image, for example, the side view reveals better the difference (the ink is slightly bluish compared to the plate).
+
+In VR mode use the triggers to turn on valves, or the squeezers to orbit around the tank.
 
 <img src="docs/hint1.jpg">
 
@@ -46,6 +48,7 @@ When run from a LMS, the application sends back these data:
 - `cmi.core.score.min` &ndash; 0
 - `cmi.core.score.max` &ndash; 100
 - `cmi.core.lesson_status` &ndash; `'completed'` or `'incomplete'`
+- `cmi.comments` &ndash; gameplay data with backups of scores
 
 ### Data policy
 

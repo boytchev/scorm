@@ -73,11 +73,11 @@ function update( t, dT )
 				if( e.squeeze )
 				{
 					
-					var v = new THREE.Vector3( 0, 0, -1 );
+					var v = new THREE.Vector3( 0, 0, -4 ); // speed 4
 					v.applyEuler(e.rotation);
 
-					playground.vrAlpha += 2*dT*v.x;
-					playground.vrBeta -= 2*dT*v.y;
+					playground.vrAlpha += dT*v.x;
+					playground.vrBeta -= dT*v.y;
 
 					playground.vrBeta = THREE.MathUtils.clamp(
 						playground.vrBeta,
