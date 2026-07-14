@@ -39,6 +39,7 @@ function setupLegacyXRForEmulator()
 }
 
 
+var firstVRFrame = true;
 
 function update( t, dT )
 {
@@ -50,7 +51,13 @@ function update( t, dT )
 		
 		if( playground.inVR )
 		{
+			if( firstVRFrame ) {
+				playground.vrVerticalOffset = suica.renderer.xr.getCamera().position.y;
+				firstVRFrame = false;
+			}
+
 			playground.controllers.forEach( e => {
+
 
 				// turn right controller to left if needed
 				if( e.sign<0 && e.ray.size[0]>0 ) e.ray.width *= -1;
@@ -63,6 +70,26 @@ function update( t, dT )
 				else
 					e.marker.center = [0,-1000,0];
 
+				if( e.squeeze )
+				{
+					
+					var v = new THREE.Vector3( 0, 0, -4 ); // speed 4
+					v.applyEuler(e.rotation);
+
+					playground.vrAlpha += dT*v.x;
+					playground.vrBeta -= dT*v.y;
+
+					playground.vrBeta = THREE.MathUtils.clamp(
+						playground.vrBeta,
+						Math.PI/2-orb.maxPolarAngle,
+						Math.PI/2-orb.minPolarAngle );
+				
+					v.setFromSphericalCoords( playground.vrDist, playground.vrBeta, playground.vrAlpha );
+					suica.viewPoint.from = [...v];
+				}
+
+
+		
 			} );
 	
 		}
@@ -157,8 +184,12 @@ class ScormPlayground
 	constructor( vrMarkerSize = 1 )
 	{
 		lookAt( [0,0,200], [0,0,0], [0,1,0] );
-
+		
 		this.gameStarted = false;
+		
+		this.vrDist = 200;
+		this.vrAlpha = 0;
+		this.vrBeta = Math.PI/2;
 		
 		this.gameTime = 0;
 		this.gameHits = 0;
@@ -178,7 +209,9 @@ class ScormPlayground
 		this.userInteracted = false; // used for audio play
 
 		suica.light.intensity = 0;
-
+		
+		this.vrVerticalOffset = 0;
+		
 		this.light = new THREE.PointLight( 'white', 5 );
 		this.light.position.y = 1;
 		this.light.decay = 0;
@@ -297,6 +330,7 @@ class ScormPlayground
 		console.log('🔴 VR Session STARTED - User is now in VR');
 		playground.inVR = true;
 		playground.redrawScoreHistory();
+
 	}
 
 
@@ -320,10 +354,13 @@ class ScormPlayground
 		suica.vrCamera.add( controller );
 		
 		controller.sign = 1; // assume right (not left) controller
+		controller.squeeze = false; // indicate whether squeeze button is pressed
 		
 		controller.addEventListener( 'selectstart', function(){playground.vrPointerDown( controller );} );
 		controller.addEventListener( 'selectend', function(){playground.vrPointerUp( controller );} );
 		controller.addEventListener( 'select', function(){ playground.vrClick( controller ); } );
+		controller.addEventListener( 'squeezestart', function(){playground.vrSqueezeStart( controller );} );
+		controller.addEventListener( 'squeezeend', function(){playground.vrSqueezeEnd( controller );} );
 		controller.addEventListener( 'connected', function(event){
 			if( event.data?.handedness == 'left' ) controller.sign =  -1; // turn into left controller
 		} );
@@ -354,8 +391,13 @@ class ScormPlayground
 				pos.setZ( i, z );
 			}
 			pos.needsUpdate = true;
+			
+			// var a = new THREE.AxesHelper(1);
+			// a.position.
+			// controller.hand.add( a );
 		}
 		controller.add( controller.ray.threejs );
+		
 
 		// create controller's marker
 		controller.marker = suica.sphere( [0,0,0], vrMarkerSize, 'white' );
@@ -372,6 +414,8 @@ class ScormPlayground
 	
 	vrInitialize( vrMarkerSize )
 	{
+		if( suica.controls ) suica.controls.enable = false;
+		
 		// fix local VR simulator
 		setupLegacyXRForEmulator();
 		
@@ -392,22 +436,24 @@ class ScormPlayground
 		this.vrCreateController( 0, vrMarkerSize );
 		this.vrCreateController( 1, vrMarkerSize );
 
+		const PANEL_SIZE = 0.9;
+
 		// create time info panel
-		this.vrTimePanel = suica.square( [-0.5,0.55,-2], [0.5*0.75,0.2*0.75], 'white' );
+		this.vrTimePanel = suica.square( [-0.7*PANEL_SIZE,0.55,-2], [0.5*PANEL_SIZE,0.2*PANEL_SIZE], 'white' );
 		this.vrTimePanel.threejs.material.depthTest = false;
 		its.image = drawing( 300, 130 );
 		its.image.context.textAlign = 'left';
 		suica.camera.add( this.vrTimePanel.threejs );
 
 		// create score info panel
-		this.vrScorePanel = suica.square( [0.5,0.55,-2], [0.5*0.75,0.2*0.75], 'white' );
+		this.vrScorePanel = suica.square( [0.7*PANEL_SIZE,0.55,-2], [0.5*PANEL_SIZE,0.2*PANEL_SIZE], 'white' );
 		this.vrScorePanel.threejs.material.depthTest = false;
 		its.image = drawing( 300, 130 );
 		its.image.context.textAlign = 'right';
 		suica.camera.add( this.vrScorePanel.threejs );
 
 		// create performance info panel
-		this.vrPerfPanel = suica.square( [0,0.6,-2], [0.5*0.75,0.4*0.75], 'white' );
+		this.vrPerfPanel = suica.square( [0,0.6,-2], [0.5*PANEL_SIZE,0.4*PANEL_SIZE], 'white' );
 		this.vrPerfPanel.threejs.material.depthTest = false;
 		its.image = drawing( 300, 260 );
 		its.image.context.textAlign = 'center';
@@ -936,6 +982,18 @@ if( playground.controllers[1].hand )
 	}
 	
 
+	vrSqueezeStart( controller )
+	{
+		if( suica.controls ) controller.squeeze = true;
+	}
+		
+	
+	vrSqueezeEnd( controller )
+	{
+		controller.squeeze = false;
+	}
+	
+
 	vrFingerLength ( controller, length )
 	{
 
@@ -951,17 +1009,15 @@ if( playground.controllers[1].hand )
 
 	updateCameraLight ( )
 	{
-		var pos;
-		
+
 		if( this.inVRMode )
-			pos = suica.renderer.xr.getCamera().position;
+			this.light.position.set( ...suica.viewPoint.from );
 		else
-			pos = suica.camera.position;
+			this.light.position.copy( suica.camera.position );
 		
-		this.light.position.copy( pos );
 	}
 	
-	
+
 } // class ScormPlayground
 	
 	
@@ -1000,5 +1056,7 @@ class ScormUtils
 	} // ScormUtils.image
 
 
+	
+	
 } // class ScormUtils
 
