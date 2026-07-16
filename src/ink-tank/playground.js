@@ -1,7 +1,6 @@
 //
 //	class Playground( )
 //
-
 	
 var SC = 5;
 
@@ -23,7 +22,7 @@ class Playground extends ScormPlayground
 		this.resize( );
 
 		this.tank = new Tank( );
-		this.light.intensity = 3;
+		this.light.intensity = 6;
 		
 		this.translate( [
 			{id: 'txt-caption',
@@ -62,7 +61,6 @@ class Playground extends ScormPlayground
 		for( var cyan = 0; cyan < 6; cyan++ )
 		for( var magenta = 0; magenta < 6; magenta++ )
 		for( var yellow = 0; yellow < 6; yellow++ )
-//			if( magenta>cyan && magenta>yellow )
 		{
 			if( cyan==magenta && magenta==yellow ) continue;
 			if( (cyan%2)+(magenta%2)+(yellow%2) == 0 ) continue;
@@ -79,9 +77,6 @@ class Playground extends ScormPlayground
 			var color = [cyan/max, magenta/max, yellow/max];
 			this.inkVariations[level].push( color );
 			
-//			if( level == 0 ) this.inkVariations[1].push( color );
-//			if( level == 8 ) this.inkVariations[9].push( color );
-//			if( level == 8 ) this.inkVariations[10].push( color );
 		}
 
 		this.lastcCmy = null;
@@ -107,8 +102,6 @@ class Playground extends ScormPlayground
 
 		this.lastcCmy = cmy;
 		
-console.log('level',level,'cmy',cmy)		
-
 		var c = cmy[0],
 			m = cmy[1],
 			y = cmy[2],
@@ -132,7 +125,7 @@ console.log('level',level,'cmy',cmy)
 		var target = playground.tank.water.plateColor;
 		new TWEEN.Tween( colorA )
 			.to( colorB, Playground.PLATE_FALL_SPEED )
-			.onUpdate( color => target.color = color )
+			.onUpdate( color => target.threejs.material.emissive.copy( color ) )
 			.delay( Playground.PLATE_HIT_SPEED )
 			.start( );
 		
@@ -162,10 +155,11 @@ console.log('level',level,'cmy',cmy)
 
 		var score = THREE.MathUtils.mapLinear( error, 1, 2, 1, 0 );
 			score = THREE.MathUtils.clamp( score, 0, 1 );
-console.log('--------------------',points)
-console.log('user',userC,userM,userY)
-console.log('goal',goalC,goalM,goalY)
-console.log('granularity',granularity,'-> error',error)
+// console.log('--------------------------')		
+// console.log('points',points,'->',score * points)
+// console.log('user',userC,userM,userY)
+// console.log('goal',goalC,goalM,goalY)
+// console.log('granularity',granularity,'-> error',error)
 		
 		return score * points;
 

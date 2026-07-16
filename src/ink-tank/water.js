@@ -34,12 +34,14 @@ class Water extends Suica.Group
 		});
 		
 		this.waterBorder = polygon( 100, [0,0,0], 1, 'black' );
-		this.waterBorder.threejs.geometry = new THREE.RingGeometry( Tank.PLATE_SIZE/8, r, 100, 10 ).rotateX(Math.PI/2).rotateY(-Math.PI/2/100);
+		this.waterBorder.threejs.geometry = new THREE.RingGeometry( Tank.PLATE_SIZE/8, r, 100, 20 ).rotateX(Math.PI/2).rotateY(-Math.PI/2/100);
 		this.waterBorder.threejs.material = new THREE.MeshPhysicalMaterial({
+				clearcoat: 2,
+				clearcoatRoughness: 0.1,
 				color: new THREE.Color('black'),
 				emissiveIntensity: 1,
 				emissive: new THREE.Color('black'),
-				roughness: 0,
+				roughness: 1,
 				metalness: 0,
 				transparent: true,
 				side: THREE.BackSide,
@@ -48,9 +50,16 @@ class Water extends Suica.Group
 
 	
 		this.plateColor = sphere( [0,0.05/SC,0], [Tank.PLATE_SIZE, Tank.PLATE_HEIGHT] );
-//			its.threejs.material.map = ScormUtils.image( 'plate_border.jpg', 24, 0.85 );
-		this.plateColor.threejs.material = new THREE.MeshBasicMaterial({
-				map: ScormUtils.image( 'plate_border.jpg', 24, 0.85 )
+//		this.plateColor.threejs.material = new THREE.MeshBasicMaterial({
+		this.plateColor.threejs.material = new THREE.MeshPhysicalMaterial({
+			clearcoat: 2,
+			clearcoatRoughness: 0.1,
+			color: new THREE.Color('black'),
+			emissiveIntensity: 1,
+			emissive: new THREE.Color('black'),
+			roughness: 1,
+			metalness: 0,
+			emissiveMap: ScormUtils.image( 'plate_border.jpg', 24, 0.85 ),
 			});
 			
 		var plateFrame = sphere( [0,0,0], [Tank.PLATE_SIZE*1.1, Tank.PLATE_HEIGHT], 'black' ); 
@@ -97,7 +106,7 @@ class Water extends Suica.Group
 	
 	set level( level )
 	{
-		var scale = level/this.level;
+		var scale = this.level>0 && level>0 ? level/this.level : 1;
 		
 		this.cyan *= scale;
 		this.magenta *= scale;
@@ -115,7 +124,7 @@ class Water extends Suica.Group
 			this.cyan    = this.cyan/level;
 			this.magenta = this.magenta/level;
 			this.yellow  = this.yellow/level;
-			level = this.level;
+			level = 1//this.level;
 		}
 		
 		var max = Math.max( this.cyan, this.magenta, this.yellow );
@@ -146,7 +155,7 @@ class Water extends Suica.Group
 	drainAll( )
 	{
 		setTimeout( ()=> playground.boomSound.play(), Water.BOOM_TIMEOUT );
-		
+
 		new TWEEN.Tween( this )
 			.to( {level:0}, this.level*Water.DRAIN_ALL_SPEED )
 			.easing( TWEEN.Easing.Quartic.In )
@@ -168,19 +177,18 @@ class Water extends Suica.Group
 		var amplitude = 0.2*this.level**2;
 		if( window.simplex ) 
 		{
+			var rx = amplitude*window.simplex.noise(t/3,0),
+				ry = amplitude*window.simplex.noise(t/3,t/3),
+				rz = amplitude*window.simplex.noise(0,t/3),
+				max = Math.max(rx**2, ry**2, rz**2);
+			
 			this.plate.x = 0.5*amplitude*window.simplex.noise(t/6,-t/7);
-			this.plate.y = this.plate.baseY - 0.1*amplitude*window.simplex.noise(0,-t/3)**2;
+			this.plate.y = this.plate.baseY - 4*max*window.simplex.noise(0,-t/3);
 			this.plate.z = 0.5*amplitude*window.simplex.noise(-t/5,t/8);
 			
-			this.plate.threejs.rotation.set(
-				amplitude*window.simplex.noise(t/3,0),
-				amplitude*window.simplex.noise(t/3,t/3),
-				amplitude*window.simplex.noise(0,t/3),
-				'ZYX'
-			);
+			this.plate.threejs.rotation.set( rx, ry, rz, 'ZYX' );
 		}
 		
-
 
 		var geo = this.water.threejs.geometry,
 			pos = geo.attributes.position;
@@ -191,7 +199,6 @@ class Water extends Suica.Group
 				{
 					var noise = window.simplex.noise3d(2*pos.getX(i),2*pos.getZ(i),t/2 );
 					pos.setY(i, 1+0.025*this.level*noise );
-//					console.log( pos.getX(i), pos.getZ(i), noise );
 				}
 //			geo.computeVertexNormals();
 			pos.needsUpdate = true;
@@ -199,16 +206,24 @@ class Water extends Suica.Group
 		
 		geo = this.waterBorder.threejs.geometry;
 		pos = geo.attributes.position;
+		var nor = geo.attributes.normal;
 
 		if( window.simplex ) {
 			for( var i=0; i<pos.count; i++ )
 			{
 					var noise = window.simplex.noise3d(2*pos.getX(i),2*pos.getZ(i),t/2 );
+					var noiseX = window.simplex.noise3d(2*pos.getX(i),2*pos.getZ(i),t/2 );
+					var noiseY = window.simplex.noise3d(2*pos.getX(i),2*pos.getZ(i),t/2 );
 					pos.setY(i, 0.025*this.level*noise*this.water.height );
-//					console.log( pos.getZ(i), pos.getX(i), noise );
+					nor.setXYZ(i,
+						0.15*this.level*noiseX*this.water.height,
+						-1,
+						0.15*this.level*noiseY*this.water.height,						
+					);
 			}
-			geo.computeVertexNormals();
+			//geo.computeVertexNormals();
 			pos.needsUpdate = true;
+			nor.needsUpdate = true;
 		}
 		
 	} // Water.waves
@@ -239,7 +254,7 @@ class Water extends Suica.Group
 	
 	colorize( t )
 	{
-		this.plateColor.color = hsl( 0, 0, 50+10*Math.sin(10*t)+10*Math.sin(5*t) );
+		this.plateColor.threejs.material.emissive.copy( hsl( 0, 0, 50+10*Math.sin(10*t)+10*Math.sin(5*t) ) );
 	}
 } // class Water
 
