@@ -147,9 +147,9 @@ class Playground extends ScormPlayground
 			userM = /*Math.round*/(granularity*water.magenta/max),
 			userY = /*Math.round*/(granularity*water.yellow/max);
 		
-		var goalC = /*Math.round*/(granularity*(1-water.plateColor.color[0])),
-			goalM = /*Math.round*/(granularity*(1-water.plateColor.color[1])),
-			goalY = /*Math.round*/(granularity*(1-water.plateColor.color[2]));
+		var goalC = /*Math.round*/(granularity*(1-water.plateColor.threejs.material.emissive.r)),
+			goalM = /*Math.round*/(granularity*(1-water.plateColor.threejs.material.emissive.g)),
+			goalY = /*Math.round*/(granularity*(1-water.plateColor.threejs.material.emissive.b));
 		
 		var error = Math.hypot( userC-goalC, userM-goalM, userY-goalY );
 
