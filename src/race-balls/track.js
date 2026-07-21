@@ -8,7 +8,7 @@ class Track extends Suica.Group
 	static RADIUS = 2;
 	static DEPTH = 2;
 	static RIFF = 0.7;
-	static BALL_SIZE = 3;
+	static BALL_SIZE = 3.3;
 	static BALL_Y = 1.3;
 	
 	constructor( radius )
@@ -21,19 +21,27 @@ class Track extends Suica.Group
 		this.selected = false;
 
 		// create track
-		this.track = tube( [0,0,0], spline(this.trajectory,radius,0), Track.RADIUS, [100,15] );
+		this.track = tube( [0,0,0], spline(this.trajectory,radius,0), Track.RADIUS+0.01, [100,16] );
+
 		this.reshapeTrack();
+		
+		var uScale = 5*Math.round(Math.max(1,radius**0.65)),
+			vScale = 5,
+			uShift = Math.random(),
+			vShift = 0;
+		
 		this.track.threejs.material = new THREE.MeshStandardMaterial( {
-						color: 'lightgray',
-						metalness: 0,
+						color: 'white',
+						//color: new THREE.Color( Math.round(100000*radius) ),
+						metalness: 0.2,
 						roughness: 0.5,
-						map: ScormUtils.image( 'metal_plate.jpg', 10*Math.round(Math.max(1,radius/5)), 4, 0.25 ),
-						normalMap: ScormUtils.image( 'metal_plate_normal.jpg', 10*Math.round(Math.max(1,radius/5)), 4, 0.25 ),
+						map: ScormUtils.image( 'metal_plate.jpg', uScale, vScale, uShift, vShift ),
+						normalMap: ScormUtils.image( 'metal_plate_normal.jpg', uScale, vScale, uShift, vShift ),
 						normalScale: new THREE.Vector2( 1/2, 1/2 ),
 					} );
 
-		this.ballLight = new THREE.SpotLight( 'white', -3, 3*Track.BALL_SIZE, 1.2, 1 );
-		this.ballLight.position.y = 0.1;
+		this.ballLight = new THREE.SpotLight( 'lightgray', -20, 3*Track.BALL_SIZE, 1.5, 1 );
+		this.ballLight.position.y = 1;
 		
 		// create ball
 		var target = new THREE.Object3D();
@@ -42,8 +50,8 @@ class Track extends Suica.Group
 		
 		this.subball = sphere( [0,0,0], Track.BALL_SIZE );
 		this.subball.threejs.material = new THREE.MeshStandardMaterial( {
-						color: 'white',
-						metalness: 0.1,
+						color: 'lightgray',
+						metalness: 0,
 						roughness: 0,
 						map: ScormUtils.image( 'marble.jpg', 1, 1 ),
 						emissive: 'orange',
@@ -131,7 +139,7 @@ class Track extends Suica.Group
 				{
 					y = 0.3*y+0.7;
 					nx = 0;
-					ny = 1;
+					ny = 2;
 					nz = 0;
 				}
 			}
@@ -177,21 +185,25 @@ class Track extends Suica.Group
 		
 		if( this.selected )
 		{
-			this.track.threejs.material.color.setRGB( 0.2, 0.2, 0.2 );
+			this.track.threejs.material.color.set( 'black' );
+			
 			this.subball.color = 'orange';
-			this.subball.threejs.material.emissiveIntensity = 0.6;
+			this.subball.threejs.material.emissiveIntensity = 0.3;
+			
 			this.ballLight.color.set( 'orange' );
-			this.ballLight.intensity = 100;
-			this.ballLight.position.y = 4;
+			this.ballLight.intensity = 200;
+			this.ballLight.position.y = 1;
 		}
 		else
 		{
-			this.track.color = 'lightgray';
-			this.subball.color = 'white';
+			this.track.threejs.material.color.set( 'white' );
+			
+			this.subball.color = 'lightgray';
 			this.subball.threejs.material.emissiveIntensity = 0;
-			this.ballLight.color.set( 'white' );
-			this.ballLight.intensity = -3;
-			this.ballLight.position.y = 0.1;
+			
+			this.ballLight.color.set( 'lightgray' );
+			this.ballLight.intensity = -20;
+			this.ballLight.position.y = 1;
 		}
 	} // Track.onMark
 

@@ -2,7 +2,7 @@
 //	class Switcher( )
 //
 
-	
+
 class Switcher extends Suica.Group
 {
 	static SIZE = 10;
@@ -14,8 +14,8 @@ class Switcher extends Suica.Group
 	
 		this.ball = sphere( [0,0,0], Switcher.SIZE+0.1 );
 		this.ball.threejs.material = new THREE.MeshStandardMaterial( {
-						color: 0x303030,
-						metalness: 0.5,
+						color: 0x202020,
+						metalness: 0.8,
 						roughness: 0.3,
 					} );
 					

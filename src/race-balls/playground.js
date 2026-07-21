@@ -2,20 +2,21 @@
 //	class Playground( )
 //
 
-	
-
 class Playground extends ScormPlayground
 {
 	static POINTS_SPEED = 2000;
-	static FLIP_SPEED = 6000;
+	static FLIP_SPEED = 4000;
 	static BALL_SHOW_SPEED = 500;
 	static N = 6;
 	static POINTER_MOVEMENT = 5;
 	
+	static MARKER_SIZE = 0.1;
+	
 	constructor( )
 	{
-		super( );
-		
+		super( Playground.MARKER_SIZE );
+
+		this.light.intensity = 4;
 		this.resize( );
 
 		this.translate( [
@@ -38,6 +39,19 @@ class Playground extends ScormPlayground
 		
 		this.switcher = new Switcher;
 
+		lookAt( [0,0,16], [0,0,0], [0,1,0] );
+
+		if( this.inVRMode )
+		{
+			this.vrDist = 16;
+			
+			suica.vrCamera.updateMatrixWorld(true);
+
+			this.allTracks.forEach( e => this.intersectables.push( e.threejs ) );
+			this.intersectables.push( this.switcher.threejs );
+
+		}
+				
 	} // Playground.constructor
 
 	
@@ -53,11 +67,12 @@ class Playground extends ScormPlayground
 		// number of tracks
 		var n;
 		if( this.difficulty < 70 )
-			n = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 0, 70, 3, Playground.N ));
+			n = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 0, 70, 2, Playground.N ));
 		else
-			n = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 70, 100, Playground.N-1, 4 ));
+			n = Math.round( THREE.MathUtils.mapLinear( this.difficulty, 70, 100, Playground.N, 4 ));
+		n = THREE.MathUtils.clamp( n, 3, Playground.N );
 
-		// prepare this.tracks to contain only vactuve tracks
+		// prepare this.tracks to contain only active tracks
 		this.tracks = [];
 		for( let i=0; i<Playground.N; i++ )
 			if( i < n )
@@ -73,8 +88,8 @@ class Playground extends ScormPlayground
 			}
 		
 		// pick speeds based on difficulty
-		var speedGap = this.configRange( 1, 0.15 )/Math.pow(n,1.25),
-			speed = this.configRange( 0.1, 0.5 );
+		var speedGap = this.configRange( 0.2, 0.1/n ),
+			speed = this.configRange( 0.1, 0.7 );
 
 		// generate shuffled array of speeds
 		var speeds = [];
@@ -92,18 +107,18 @@ class Playground extends ScormPlayground
 			track.speed = speeds.pop();
 			track.pos = random( 0, 360 );
 
-			track.ballLight.position.y = 0.1;
+			track.ballLight.position.y = 0.2;
 
 			var verticalAngle = 0;
 			
-			if( this.difficulty > 90 )
-				verticalAngle = random( [-90, -45, 0, 45, 90] );
+			if( this.difficulty > 95 )
+				verticalAngle = random( -90, 90 );//[-90, -45, 0, 45, 90] );
 			else
-			if( this.difficulty > 80 )
-				verticalAngle = random( [-40, -20, 0, 20, 40] );
+			if( this.difficulty > 85 )
+				verticalAngle = random( -40, 40 );//[-40, -20, 0, 20, 40] );
 			else
 			if( this.difficulty > 70 )
-				verticalAngle = random( [-20, -10, 0, 10, 20] );
+				verticalAngle = random( -20, 20 );//[-20, -10, 0, 10, 20] );
 				
 			new TWEEN.Tween( track )
 				.to( {	spinV: verticalAngle,
@@ -216,8 +231,17 @@ class Playground extends ScormPlayground
 	
 	update( t, dT )
 	{
+
+		orb.enabled = playground.inVR == false;
+		orb.minPolarAngle = -1.57;
+		orb.maxPolarAngle = 1.57;
+			
+		this.updateCameraLight();
+		
 		for( var track of this.tracks )
+		{
 			track.moveBall( this.direction*dT );
+		}
 	}
 	
 } // class Playground
