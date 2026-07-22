@@ -2,7 +2,6 @@
 //	class Track( )
 //
 
-	
 class Track extends Suica.Group
 {
 	static RADIUS = 2;
@@ -40,14 +39,17 @@ class Track extends Suica.Group
 						normalScale: new THREE.Vector2( 1/2, 1/2 ),
 					} );
 
-		this.ballLight = new THREE.SpotLight( 'lightgray', -20, 3*Track.BALL_SIZE, 1.5, 1 );
-		this.ballLight.position.y = 1;
+		this.ballLight = new THREE.SpotLight( 'lightgray', -0.2 );
+		this.ballLight.penumbra = 1;
+		this.ballLight.angle = 2;
+		this.ballLight.decay = 1;
+		this.ballLight.distance = Track.BALL_SIZE/1;
 		
 		// create ball
 		var target = new THREE.Object3D();
-			target.position.set( 0, -2, 0 );
+			target.position.set( 0, -1, 0 );
 		this.ballLight.target = target;
-		
+
 		this.subball = sphere( [0,0,0], Track.BALL_SIZE );
 		this.subball.threejs.material = new THREE.MeshStandardMaterial( {
 						color: 'lightgray',
@@ -56,24 +58,32 @@ class Track extends Suica.Group
 						map: ScormUtils.image( 'marble.jpg', 1, 1 ),
 						emissive: 'orange',
 						emissiveIntensity: 0,
+						//wireframe: true,
 					} );
-		this.subball.spinV = random( 0, 90 );
+		this.subball.spinT = random( 0, 360 );
+		this.subball.spinS = random( 0, 360 );
+		this.subball.spinV = random( 0, 360 );
 		this.subball.spinH = random( 0, 360 );
 
 		this.trueball = group( this.subball );
 		this.ball = group( this.trueball );
 		this.ball.threejs.add( this.ballLight, target );
 		this.ball.size = 0;
-
+		
 		this.pos = random(0,1);
 
 		this.spinV = 180;
 		this.spinH = 0;
 		
 		this.add( this.track, this.ball );
+		this.track.parent = this;
+		this.ball.parent = this;
 		
-		this.addEventListener( 'click', this.onClick );
+//		this.addEventListener( 'click', this.onClick );
+		this.addEventListener( 'pointerdown', this.onClick );
 
+		this.toggle();
+		this.toggle();
 	} // Track.constructor
 	
 	
@@ -159,10 +169,16 @@ class Track extends Suica.Group
 	
 	
 	// handles clicks on a track
+	onPointerDown( )
+	{
+		this.onClick();
+	}
+	
+	
 	onClick( )
 	{
 		// avoid fake onClicks -- this is when the pointer is dragged
-		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+		if( (!playground.inVR) && playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 			
 		// if game is not started, click on any plate will start it
 		if( playground.gameStarted )
@@ -191,8 +207,10 @@ class Track extends Suica.Group
 			this.subball.threejs.material.emissiveIntensity = 0.3;
 			
 			this.ballLight.color.set( 'orange' );
-			this.ballLight.intensity = 200;
+			this.ballLight.intensity = 30;
 			this.ballLight.position.y = 1;
+			this.ballLight.angle = 1.2;
+			this.ballLight.distance = 1.4;
 		}
 		else
 		{
@@ -202,9 +220,12 @@ class Track extends Suica.Group
 			this.subball.threejs.material.emissiveIntensity = 0;
 			
 			this.ballLight.color.set( 'lightgray' );
-			this.ballLight.intensity = -20;
+			this.ballLight.intensity = -1;
 			this.ballLight.position.y = 1;
+			this.ballLight.angle = 1.5;
+			this.ballLight.distance = 2;
 		}
+			
 	} // Track.onMark
 
 	

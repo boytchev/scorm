@@ -2,6 +2,8 @@
 //	class Playground( )
 //
 
+var SC = 10;
+
 class Playground extends ScormPlayground
 {
 	static POINTS_SPEED = 2000;
@@ -10,7 +12,7 @@ class Playground extends ScormPlayground
 	static N = 6;
 	static POINTER_MOVEMENT = 5;
 	
-	static MARKER_SIZE = 0.1;
+	static MARKER_SIZE = 0.2;
 	
 	constructor( )
 	{
@@ -30,8 +32,9 @@ class Playground extends ScormPlayground
 		this.allTracks = [];
 		for( var i=0; i<Playground.N; i++ )
 		{
-			this.allTracks.push( new Track( Switcher.SIZE/2+Track.RADIUS+(2*Track.RADIUS-0.1)*i ) );
+			this.allTracks.push( new Track( 5*Switcher.SIZE+Track.RADIUS+(2*Track.RADIUS-0.1)*i ) );
 			this.allTracks[i].threejs.visible = i<3;
+			this.allTracks[i].size = 1/SC;
 		}
 		
 		this.pointerMovement = 0;
@@ -39,11 +42,14 @@ class Playground extends ScormPlayground
 		
 		this.switcher = new Switcher;
 
-		lookAt( [0,0,16], [0,0,0], [0,1,0] );
-
+		orb.enabled = false;
+		suica.lookAt( [0,6,0.01] );
+		suica.controls.update();
+//		orb.enabled = true;
+		
 		if( this.inVRMode )
 		{
-			this.vrDist = 16;
+			this.vrDist = 6;
 			
 			suica.vrCamera.updateMatrixWorld(true);
 
@@ -79,7 +85,7 @@ class Playground extends ScormPlayground
 			{
 				this.allTracks[i].threejs.visible = true;
 				this.tracks.push( this.allTracks[i] );
-				this.allTracks[i].size = 1;
+				this.allTracks[i].size = 1/SC;
 			}
 			else
 			{

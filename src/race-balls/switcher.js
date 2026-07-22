@@ -2,10 +2,10 @@
 //	class Switcher( )
 //
 
-
+	
 class Switcher extends Suica.Group
 {
-	static SIZE = 10;
+	static SIZE = 1;
 	static YOYO_SPEED = 150;
 	
 	constructor( )
@@ -18,6 +18,7 @@ class Switcher extends Suica.Group
 						metalness: 0.8,
 						roughness: 0.3,
 					} );
+		its.parent = this; // used for VR click
 					
 		this.add( this.ball );
 
@@ -31,7 +32,7 @@ class Switcher extends Suica.Group
 	onClick( )
 	{
 		// avoid fake onClicks -- this is when the pointer is dragged
-		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+		if( (!playground.inVR) && playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 			
 		new TWEEN.Tween( this.ball )
 				.to( {size:Switcher.SIZE*0.8}, Switcher.YOYO_SPEED )

@@ -940,7 +940,6 @@ if( playground.controllers[1].hand )
 		{
 			var objects = [];
 			intersections.forEach( e => {
-				
 				var obj = e.object?.suicaObject;
 				if( obj ) {
 					while( obj.parent ) obj = obj.parent;

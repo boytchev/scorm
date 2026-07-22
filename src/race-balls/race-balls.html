@@ -24,7 +24,7 @@
 
 <body>
 	<suica fullwindow background="linen" ontime="update" onpointermove="onPointerMove" onpointerdown="onPointerDown">
-		<orbit id="orb" distance="1" altitude="70" maxPolarAngle="1.57" maxDistance="150" minDistance="25">
+		<orbit id="orb" distance="6" altitude="0" maxPolarAngle="1.57" minPolarAngle="-1.57" maxDistance="30" minDistance="3">
 		
 		<div class="hud corner top left"></div>
 		<div class="hud corner top right"></div>
@@ -74,6 +74,10 @@
 		function onPointerDown( event )
 		{
 			if( playground ) playground.pointerMovement = 0;
+		}
+		
+		function onPointerUp( event )
+		{
 		}
 		
 	</script>
