@@ -924,7 +924,9 @@ if( playground.controllers[1].hand )
 				
 			} );
 
-			objects.forEach( e => e.onclick() );
+			//objects.forEach( e => e.onclick() ); // not all
+			
+			if( objects ) objects[0].onclick(); // only first, which is also closest
 		}
 
 	}
@@ -940,7 +942,6 @@ if( playground.controllers[1].hand )
 		{
 			var objects = [];
 			intersections.forEach( e => {
-				
 				var obj = e.object?.suicaObject;
 				if( obj ) {
 					while( obj.parent ) obj = obj.parent;
@@ -949,7 +950,9 @@ if( playground.controllers[1].hand )
 				
 			} );
 
-			objects.forEach( e => e.onpointerdown() );
+			//objects.forEach( e => e.onpointerdown() ); // not all
+			
+			if( objects ) objects[0].onpointerdown(); // only first, which is also closest
 		}
 
 	}
@@ -976,7 +979,9 @@ if( playground.controllers[1].hand )
 				
 			} );
 
-			objects.forEach( e => e.onpointerup() );
+			//objects.forEach( e => e.onpointerup() ); // not all
+			
+			if( objects ) objects[0].onpointerup(); // only first, which is also closest
 		}
 
 	}

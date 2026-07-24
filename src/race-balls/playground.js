@@ -13,7 +13,7 @@ class Playground extends ScormPlayground
 	//static POINTER_MOVEMENT = 30;
 	static POINTER_TIME = 250; // milliseconds
 	
-	static MARKER_SIZE = 0.25;
+	static MARKER_SIZE = 0.2;
 	
 	constructor( )
 	{

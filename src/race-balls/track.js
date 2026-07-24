@@ -177,7 +177,6 @@ class Track extends Suica.Group
 	
 	onpointerdown( event )
 	{
-		console.log('down')
 		if( playground ) playground.pointerDownTime = Date.now();
 	}
 	
@@ -185,9 +184,6 @@ class Track extends Suica.Group
 	{
 		if( !playground ) return;
 		
-		console.log('up')
-		
-		console.log( !playground.inVR, Date.now()-playground.pointerDownTime,Playground.POINTER_TIME )
 		if( !playground.inVR && (Date.now()-playground.pointerDownTime > Playground.POINTER_TIME) ) return;
 		
 		// if game is not started, click on any plate will start it
@@ -201,10 +197,7 @@ class Track extends Suica.Group
 
 	onclick( ) { }
 	
-	onClick( )
-	{
-		console.log('Click')
-	}
+	onClick( ) { }
 	
 	
 	
