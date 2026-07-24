@@ -32,7 +32,7 @@ class Switcher extends Suica.Group
 	onClick( )
 	{
 		// avoid fake onClicks -- this is when the pointer is dragged
-		if( (!playground.inVR) && playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+		if( (!playground.inVRMode) && playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 			
 		new TWEEN.Tween( this.ball )
 				.to( {size:Switcher.SIZE*0.8}, Switcher.YOYO_SPEED )

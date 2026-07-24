@@ -9,10 +9,10 @@ class Playground extends ScormPlayground
 	static POINTS_SPEED = 2000;
 	static FLIP_SPEED = 4000;
 	static BALL_SHOW_SPEED = 500;
-	static N = 6;
+	static N = 5;
 	static POINTER_MOVEMENT = 5;
 	
-	static MARKER_SIZE = 0.2;
+	static MARKER_SIZE = 0.3;
 	
 	constructor( )
 	{
@@ -94,8 +94,8 @@ class Playground extends ScormPlayground
 			}
 		
 		// pick speeds based on difficulty
-		var speedGap = this.configRange( 0.2, 0.1/n ),
-			speed = this.configRange( 0.1, 0.7 );
+		var speedGap = this.configRange( 0.25, 0.2/n ),
+			speed = this.configRange( 0.1, 0.5 );
 
 		// generate shuffled array of speeds
 		var speeds = [];
@@ -112,6 +112,8 @@ class Playground extends ScormPlayground
 		{
 			track.speed = speeds.pop();
 			track.pos = random( 0, 360 );
+			
+			track.direction = 1;
 
 			track.ballLight.position.y = 0.2;
 
@@ -139,6 +141,9 @@ class Playground extends ScormPlayground
 				.easing( TWEEN.Easing.Quadratic.InOut )
 				.start( );
 		}
+
+		if( (this.difficulty>20 && this.difficulty<30) random(this.tracks).direction = -1;
+		if( (this.difficulty>50 && this.difficulty<60) random(this.tracks).direction = -1;
 
 	} // Playground.newGame
 
@@ -246,7 +251,7 @@ class Playground extends ScormPlayground
 		
 		for( var track of this.tracks )
 		{
-			track.moveBall( this.direction*dT );
+			track.moveBall( this.direction*track.direction*dT );
 		}
 	}
 	

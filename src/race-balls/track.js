@@ -79,8 +79,8 @@ class Track extends Suica.Group
 		this.track.parent = this;
 		this.ball.parent = this;
 		
-//		this.addEventListener( 'click', this.onClick );
-		this.addEventListener( 'pointerdown', this.onClick );
+		this.addEventListener( 'click', this.onClick );
+		this.addEventListener( 'select', this.onClick );
 
 		this.toggle();
 		this.toggle();
@@ -178,7 +178,7 @@ class Track extends Suica.Group
 	onClick( )
 	{
 		// avoid fake onClicks -- this is when the pointer is dragged
-		if( (!playground.inVR) && playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+		if( (!playground.inVRMode) && playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 			
 		// if game is not started, click on any plate will start it
 		if( playground.gameStarted )
@@ -201,7 +201,7 @@ class Track extends Suica.Group
 		
 		if( this.selected )
 		{
-			this.track.threejs.material.color.set( 'black' );
+			this.track.threejs.material.color.set( 'gray' );
 			
 			this.subball.color = 'orange';
 			this.subball.threejs.material.emissiveIntensity = 0.3;
