@@ -79,7 +79,7 @@ class Track extends Suica.Group
 		this.track.parent = this;
 		this.ball.parent = this;
 		
-		this.addEventListener( 'click', this.onClick );
+		//this.addEventListener( 'click', this.onClick );
 		this.addEventListener( 'select', this.onClick );
 
 		this.toggle();
@@ -175,28 +175,36 @@ class Track extends Suica.Group
 //	}
 	
 	
-	onclick( ) { this.onClick(); } // lowercase forward
-	
-	onClick( )
+	onpointerdown( event )
 	{
-		// avoid fake onClicks -- this is when the pointer is dragged
-		//if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
-
-		var timeLimit = playground.inVRMode ? Playground.POINTER_TIME_VR : Playground.POINTER_TIME;
+		console.log('down')
+		if( playground ) playground.pointerDownTime = Date.now();
+	}
+	
+	onpointerup( event )
+	{
+		if( !playground ) return;
 		
-		if( Date.now()-playground.pointerDownTime > timeLimit ) return;
-			
+		console.log('up')
+		
+		console.log( !playground.inVR, Date.now()-playground.pointerDownTime,Playground.POINTER_TIME )
+		if( !playground.inVR && (Date.now()-playground.pointerDownTime > Playground.POINTER_TIME) ) return;
+		
 		// if game is not started, click on any plate will start it
 		if( playground.gameStarted )
-		{
 			this.toggle( );
-		}
 		else
 			playground.newGame( );
 		
 		playground.clickSound?.play();
-		
-	} // Track.onClick
+	}
+
+	onclick( ) { }
+	
+	onClick( )
+	{
+		console.log('Click')
+	}
 	
 	
 	
