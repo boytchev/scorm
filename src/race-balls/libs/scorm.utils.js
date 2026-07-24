@@ -924,7 +924,9 @@ if( playground.controllers[1].hand )
 				
 			} );
 
-			objects.forEach( e => e.onclick() );
+			//objects.forEach( e => e.onclick() ); // not all
+			
+			if( objects ) objects[0].onclick(); // only first, which is also closest
 		}
 
 	}

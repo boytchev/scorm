@@ -177,6 +177,8 @@ class Track extends Suica.Group
 	
 	onClick( )
 	{
+		document.getElementsByTagName('div')[0].innerHTML = playground.pointerMovement;
+		
 		// avoid fake onClicks -- this is when the pointer is dragged
 		if( (!playground.inVRMode) && playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
 			

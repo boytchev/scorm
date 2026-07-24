@@ -12,7 +12,7 @@ class Playground extends ScormPlayground
 	static N = 5;
 	static POINTER_MOVEMENT = 5;
 	
-	static MARKER_SIZE = 0.3;
+	static MARKER_SIZE = 0.25;
 	
 	constructor( )
 	{
@@ -142,7 +142,7 @@ class Playground extends ScormPlayground
 				.start( );
 		}
 
-		if( this.difficulty>20 && this.difficulty<30 ) random(this.tracks).direction = -1;
+		if( this.difficulty>25 && this.difficulty<35 ) random(this.tracks).direction = -1;
 		if( this.difficulty>50 && this.difficulty<60 ) random(this.tracks).direction = -1;
 
 	} // Playground.newGame
