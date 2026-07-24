@@ -169,18 +169,22 @@ class Track extends Suica.Group
 	
 	
 	// handles clicks on a track
-	onPointerDown( )
-	{
-		this.onClick();
-	}
+//	onPointerDown( )
+//	{
+//		this.onClick();
+//	}
 	
+	
+	onclick( ) { this.onClick(); } // lowercase forward
 	
 	onClick( )
 	{
-		document.getElementsByTagName('div')[0].innerHTML = playground.pointerMovement;
-		
 		// avoid fake onClicks -- this is when the pointer is dragged
-		if( (!playground.inVRMode) && playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+		//if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+
+		var timeLimit = playground.inVRMode ? Playground.POINTER_TIME_VR : Playground.POINTER_TIME;
+		
+		if( Date.now()-playground.pointerDownTime > timeLimit ) return;
 			
 		// if game is not started, click on any plate will start it
 		if( playground.gameStarted )

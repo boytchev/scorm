@@ -10,7 +10,9 @@ class Playground extends ScormPlayground
 	static FLIP_SPEED = 4000;
 	static BALL_SHOW_SPEED = 500;
 	static N = 5;
-	static POINTER_MOVEMENT = 5;
+	//static POINTER_MOVEMENT = 30;
+	static POINTER_TIME = 250; // milliseconds
+	static POINTER_TIME_VR = 450; // milliseconds
 	
 	static MARKER_SIZE = 0.25;
 	
@@ -37,7 +39,8 @@ class Playground extends ScormPlayground
 			this.allTracks[i].size = 1/SC;
 		}
 		
-		this.pointerMovement = 0;
+//		this.pointerMovement = 0;
+		this.pointerDownTime = Date.now();
 		this.direction = 0;
 		
 		this.switcher = new Switcher;

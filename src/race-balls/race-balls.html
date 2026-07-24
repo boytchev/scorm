@@ -73,7 +73,8 @@
 		
 		function onPointerDown( event )
 		{
-			if( playground ) playground.pointerMovement = 0;
+			//if( playground ) playground.pointerMovement = 0;
+			if( playground ) playground.pointerDownTime = Date.now();
 		}
 		
 		function onPointerUp( event )
