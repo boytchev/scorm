@@ -142,8 +142,8 @@ class Playground extends ScormPlayground
 				.start( );
 		}
 
-		if( (this.difficulty>20 && this.difficulty<30) random(this.tracks).direction = -1;
-		if( (this.difficulty>50 && this.difficulty<60) random(this.tracks).direction = -1;
+		if( this.difficulty>20 && this.difficulty<30 ) random(this.tracks).direction = -1;
+		if( this.difficulty>50 && this.difficulty<60 ) random(this.tracks).direction = -1;
 
 	} // Playground.newGame
 
