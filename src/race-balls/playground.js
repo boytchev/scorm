@@ -51,7 +51,10 @@ class Playground extends ScormPlayground
 		
 		if( this.inVRMode )
 		{
+			console.log(this.vrDist,this.vrAlpha,this.vrBeta)
 			this.vrDist = 6;
+			this.vrBeta = 0;
+			console.log(this.vrDist,this.vrAlpha,this.vrBeta)
 			
 			suica.vrCamera.updateMatrixWorld(true);
 
@@ -244,9 +247,8 @@ class Playground extends ScormPlayground
 	
 	update( t, dT )
 	{
-
 		orb.enabled = playground.inVR == false;
-		orb.minPolarAngle = -1.57;
+		orb.minPolarAngle = -0.2;
 		orb.maxPolarAngle = 1.57;
 			
 		this.updateCameraLight();
