@@ -36,9 +36,8 @@ Note: this game is now under update.
 
 Note: this game is now under update.
 
-<!--
 [ [More info](src/race-balls/index.html) ] [ [Run online](src/race-balls/race-balls.html) ] [ [Download](bin/race-balls.zip) ]
--->
+
 
 ## Euler grill
 

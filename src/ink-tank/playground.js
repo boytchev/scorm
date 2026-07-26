@@ -208,7 +208,7 @@ class Playground extends ScormPlayground
 	update( t, dT )
 	{
 		orb.enabled = playground.inVR == false;
-		orb.minPolarAngle = -0.5;
+		orb.minPolarAngle = -0.2;
 		orb.maxPolarAngle = 1.3;
 			
 		this.updateCameraLight();

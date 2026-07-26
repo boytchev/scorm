@@ -15,7 +15,7 @@ Click on the image to start the application.
 
 [<img src="docs/snapshot.jpg">](race-balls.html)
 
-Alternatively, here are versions in [English](race-balls.html?lang=en), [Bulgarian](race-balls.html?lang=bg) and [Japanese](race-balls.html?lang=jp).
+Alternatively, here are versions in [English](race-balls.html?lang=en), [Bulgarian](race-balls.html?lang=bg), [Japanese](race-balls.html?lang=jp) and [Virtual Reality](race-balls.html?lang=en&vr).
 
 ### How to play
 
@@ -51,6 +51,7 @@ When run from a LMS, the application sends back these data:
 - `cmi.core.score.min` &ndash; 0
 - `cmi.core.score.max` &ndash; 100
 - `cmi.core.lesson_status` &ndash; `'completed'` or `'incomplete'`
+- `cmi.comments` &ndash; gameplay data with backups of scores
 
 ### Data policy
 

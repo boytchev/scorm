@@ -209,7 +209,7 @@ class ScormPlayground
 		this.userInteracted = false; // used for audio play
 
 		suica.light.intensity = 0;
-		
+
 		this.vrVerticalOffset = 0;
 		
 		this.light = new THREE.PointLight( 'white', 5 );
@@ -370,9 +370,31 @@ class ScormPlayground
 		its.size = [0.075,0.075,0.075];
 		controller.ray.onload = ()=>{
 			controller.hand = controller.ray.threejs.children[0].children[0];
-			controller.hand.material = new THREE.MeshBasicMaterial({
-				color: new THREE.Color(0,0,0),
-			});
+			controller.hand.material = new THREE.MeshPhongMaterial({color:'orange',transparent:true,depthTest:false,side:THREE.DoubleSide,emissive:new THREE.Color('orange'),emissiveIntensoty:1});
+
+controller.hand.material.onBeforeCompile = (shader) => {
+    shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <colorspace_fragment>',
+        `
+        #include <colorspace_fragment>
+        
+        vec3 normalVec = normalize(vNormal);
+        vec3 toCameraVec = vec3(1.0, 0.0, 0.0);
+        float dotProd = abs(dot(normalVec, toCameraVec));
+        float customAlpha = dotProd;
+        gl_FragColor.a = pow(customAlpha,3.0)+0.1;
+        `
+    );
+};
+controller.hand.material.needsUpdate = true;
+
+			// var subhand = new THREE.Mesh( controller.hand.geometry,
+							// new THREE.MeshBasicMaterial({color: 'white'})
+						// );
+			// subhand.scale.setScalar(0.9,0.9,0.95);
+			// subhand.position.z = -0.5;
+			
+			// controller.hand.add( subhand );
 			
 			var geo = controller.hand.geometry,
 				pos = geo.attributes.position;
@@ -924,7 +946,9 @@ if( playground.controllers[1].hand )
 				
 			} );
 
-			objects.forEach( e => e.onclick() );
+			//objects.forEach( e => e.onclick() ); // not all
+			
+			if( objects ) objects[0].onclick(); // only first, which is also closest
 		}
 
 	}
@@ -940,7 +964,6 @@ if( playground.controllers[1].hand )
 		{
 			var objects = [];
 			intersections.forEach( e => {
-				
 				var obj = e.object?.suicaObject;
 				if( obj ) {
 					while( obj.parent ) obj = obj.parent;
@@ -949,7 +972,9 @@ if( playground.controllers[1].hand )
 				
 			} );
 
-			objects.forEach( e => e.onpointerdown() );
+			//objects.forEach( e => e.onpointerdown() ); // not all
+			
+			if( objects ) objects[0].onpointerdown(); // only first, which is also closest
 		}
 
 	}
@@ -976,7 +1001,9 @@ if( playground.controllers[1].hand )
 				
 			} );
 
-			objects.forEach( e => e.onpointerup() );
+			//objects.forEach( e => e.onpointerup() ); // not all
+			
+			if( objects ) objects[0].onpointerup(); // only first, which is also closest
 		}
 
 	}
