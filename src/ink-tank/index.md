@@ -66,9 +66,12 @@ This application uses a texture from [DeviantArt](https://www.deviantart.com):
 
 - "[Dirty Window Texture](https://www.deviantart.com/galaxiesanddust/art/Dirty-Window-Texture-311006931)" by [galaxiesanddust](https://www.deviantart.com/galaxiesanddust),
 
-and a background music from [SoundCloud](https://soundcloud.com):
+a background music from [SoundCloud](https://soundcloud.com):
 
 - "[Calmness](https://soundcloud.com/ashamaluevmusic/calmness)" by Aleksandr Shamaluev / AShamaluevMusic, [https://www.ashamaluevmusic.com](https://www.ashamaluevmusic.com),
+
+3D model (when VR mode is on):
+- "[hand_pose_ 留存](https://skfb.ly/oLvJD)" by TRNKL licensed under [CC BY 4.0 License](http://creativecommons.org/licenses/by/4.0/),
 
 and sound effects from [Freesound](https://freesound.org/) and [Mixkit](https://mixkit.co/):
 

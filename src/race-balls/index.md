@@ -69,6 +69,9 @@ This application uses a background music from [SoundCloud](https://soundcloud.co
 
 - "[Sunlight](https://soundcloud.com/roa_music1031/sunlight)" by [Roa](https://soundcloud.com/roa_music1031) ([Roa Music](https://roa-music.com/)) licensed under [CC BY 3.0 License](https://creativecommons.org/licenses/by/3.0/),
 
+3D model (when VR mode is on):
+- "[hand_pose_ 留存](https://skfb.ly/oLvJD)" by TRNKL licensed under [CC BY 4.0 License](http://creativecommons.org/licenses/by/4.0/),
+
 and sound effects from [Mixkit](https://mixkit.co/):
 
 - "[Game quick warning notification](https://mixkit.co/free-sound-effects/click/)" licensed under [Mixkit Sound Effects Free License](https://mixkit.co/license/#sfxFree),
