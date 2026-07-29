@@ -3,20 +3,25 @@
 //
 
 	
+var SC = 5;
+
+
 class Slider extends Suica.Group
 {
 	static SIZE = [5,2,2];
-	static SHADOW_SIZE = [9,4.2];
+	static SHADOW_SIZE = [8.6,4.5];
 	static OFFSET = 10;
 	static PARK_SPEED = 200;
 	static MARKER_Y = 0.3;
 	static MARKER_SIZE = [0.2,1,3.5];
-	static Y = -Base.PILLAR_SIZE[1]+Base.POS_Y;
+	static Y = -Base.PILLAR_SIZE[1]+SC*Base.POS_Y;
 	
 	constructor( )
 	{
 		super( suica );
 
+		this.size = 1/SC;
+		
 		this.inDrag = false;
 		this.dragOffset = 0;
 
@@ -60,9 +65,9 @@ class Slider extends Suica.Group
 
 		// slider material
 		var material = new THREE.MeshStandardMaterial( {
-			color: 'Linen',
+			color: 'bisque',
 			metalness: 0,
-			roughness: 0.42,
+			roughness: 1,
 		} );	
 			
 		// front slider
@@ -73,7 +78,7 @@ class Slider extends Suica.Group
 		var frontShadow = square( [0,Slider.Y+0.01,Slider.OFFSET], Slider.SHADOW_SIZE, 'black' );
 			its.spinV = 90;
 			its.threejs.material.transparent = true;
-			its.threejs.material.opacity = 0.5;
+			its.threejs.material.opacity = 1;
 			its.threejs.material.alphaMap = ScormUtils.image( 'slider_ao.jpg' );
 
 		this.backSlider = cube( [0,Slider.Y,-Slider.OFFSET], Slider.SIZE, 'linen' );
@@ -129,7 +134,7 @@ class Slider extends Suica.Group
 		x = x - this.dragOffset;
 		
 		// restrict slider to groove
-		var limit = Base.GROOVE_SIZE[0]/2;
+		var limit = Base.GROOVE_SIZE[0]/2/SC;
 		x = THREE.MathUtils.clamp( x, -limit, limit );
 		
 		// find closest park slot
@@ -153,7 +158,7 @@ class Slider extends Suica.Group
 		playground.slideOffSound.play( );
 		
 		// restrict slider to groove
-		var limit = Base.GROOVE_SIZE[0]/2;
+		var limit = Base.GROOVE_SIZE[0]/2/SC;
 		
 		// find closest park slot
 		var step = 2*limit / 6,

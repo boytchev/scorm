@@ -2,10 +2,12 @@
 //	class Base( )
 //
 
+
+var SC = 5;
 	
 class Base extends Suica.Group
 {
-	static POS_Y = 6;
+	static POS_Y = 6/SC;
 	static SIZE = [48,1,28];
 	static PILLAR_SIZE = [2,20,12];
 	static PILLAR_POS = Spinner.ROTOR_POS+1.05;
@@ -17,6 +19,8 @@ class Base extends Suica.Group
 	{
 		super( suica );
 
+		this.size = 1/SC;
+		
 		this.constructPillars( );
 		this.constructBase( );
 		this.constructScale( );
@@ -52,14 +56,14 @@ class Base extends Suica.Group
 			normalMap = ScormUtils.image( 'metal_plate_normal.jpg', Base.SIZE[0]/4, Base.SIZE[2]/4 ),
 			lightMap = ScormUtils.image( 'base_antilight.jpg', 1, 1 );
 		var material = new THREE.MeshStandardMaterial( {
-			color: 'white',
+			color: 'lightgray',
 			metalness: 0,
-			roughness: 0.42,
+			roughness: 0.5,
 			map: map,
 			normalMap: normalMap,
 			normalScale: new THREE.Vector2( 0.5, 0.5 ),
 			lightMap: lightMap,
-			lightMapIntensity: -0.7,
+			lightMapIntensity: -2,
 		} );	
 
 		var base = cube( [0,-Base.PILLAR_SIZE[1]-Base.SIZE[1]/2,0], Base.SIZE );
@@ -123,7 +127,7 @@ class Base extends Suica.Group
 			normalMap = ScormUtils.image( 'metal_plate_normal.jpg',Base.PILLAR_SIZE[2]/4, Base.PILLAR_SIZE[1]/4 ),
 			lightMap = ScormUtils.image( 'pillar_antilight.jpg', 1, 15/20, 0, 0 );
 		var material = new THREE.MeshStandardMaterial( {
-			color: 'white',
+			color: 'lightgray',
 			metalness: 0,
 			roughness: 0.42,
 			side: THREE.FrontSide,
@@ -131,7 +135,7 @@ class Base extends Suica.Group
 			normalMap: normalMap,
 			normalScale: new THREE.Vector2( 0.5, 0.5 ),
 			lightMap: lightMap,
-			lightMapIntensity: -1,
+			lightMapIntensity: -0.5,
 		} );	
 			
 		// right pillar

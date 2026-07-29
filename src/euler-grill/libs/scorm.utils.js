@@ -370,7 +370,7 @@ class ScormPlayground
 		its.size = [0.075,0.075,0.075];
 		controller.ray.onload = ()=>{
 			controller.hand = controller.ray.threejs.children[0].children[0];
-			controller.hand.material = new THREE.MeshPhongMaterial({color:'orange',transparent:true,depthTest:false,side:THREE.DoubleSide,emissive:new THREE.Color('orange'),emissiveIntensoty:1});
+			controller.hand.material = new THREE.MeshPhongMaterial({color:'orange',transparent:true,depthTest:false,side:THREE.DoubleSide,emissive:new THREE.Color('orange'),emissiveIntensity:1});
 
 controller.hand.material.onBeforeCompile = (shader) => {
     shader.fragmentShader = shader.fragmentShader.replace(
@@ -948,7 +948,7 @@ if( playground.controllers[1].hand )
 
 			//objects.forEach( e => e.onclick() ); // not all
 			
-			if( objects ) objects[0].onclick(); // only first, which is also closest
+			if( objects.length ) objects[0].onclick(); // only first, which is also closest
 		}
 
 	}
@@ -974,7 +974,7 @@ if( playground.controllers[1].hand )
 
 			//objects.forEach( e => e.onpointerdown() ); // not all
 			
-			if( objects ) objects[0].onpointerdown(); // only first, which is also closest
+			if( objects.length ) objects[0].onpointerdown(); // only first, which is also closest
 		}
 
 	}
@@ -1003,7 +1003,7 @@ if( playground.controllers[1].hand )
 
 			//objects.forEach( e => e.onpointerup() ); // not all
 			
-			if( objects ) objects[0].onpointerup(); // only first, which is also closest
+			if( objects.length ) objects[0].onpointerup(); // only first, which is also closest
 		}
 
 	}

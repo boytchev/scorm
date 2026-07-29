@@ -26,8 +26,8 @@
 </head>
 
 <body>
-	<suica fullwindow fullscreen background="linen" ontime="update" onpointermove="onPointerMove" onpointerdown="onPointerDown" onpointerup="onPointerUp"> 
-		<orbit id="orb" distance="70" altitude="0" maxPolarAngle="1.57" maxDistance="150" minDistance="25" enablePan="true">
+	<suica fullwindow background="linen" ontime="update" onpointermove="onPointerMove" onpointerdown="onPointerDown" onpointerup="onPointerUp"> 
+		<orbit id="orb" distance="15" altitude="0" maxPolarAngle="1.57" maxDistance="25" minDistance="5" enablePan="true">
 		<div class="hud corner top left"></div>
 		<div class="hud corner top right"></div>
 		<div class="hud corner bottom left"></div>
@@ -66,7 +66,7 @@
 				
 		function onPointerMove( event )
 		{
-			playground.pointerMovement += Math.abs( event.movementX ) + Math.abs( event.movementY );
+			//playground.pointerMovement += Math.abs( event.movementX ) + Math.abs( event.movementY );
 			
 			if( playground.slider.inDrag )
 			{
@@ -85,10 +85,11 @@
 		
 		function onPointerDown( event )
 		{
-			if( playground )
+			/*if( playground )
 			{
 				playground.pointerMovement = 0;
-			}
+			}*/
+			if( playground ) playground.pointerDownTime = Date.now();
 		}		
 		
 		function onPointerUp( )

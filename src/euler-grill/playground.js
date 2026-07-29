@@ -2,6 +2,7 @@
 //	class Playground( )
 //
 
+var SC = 5;
 	
 
 class Playground extends ScormPlayground
@@ -9,12 +10,15 @@ class Playground extends ScormPlayground
 	static POINTS_SPEED = 2000;
 	static START_SPEED = 800;
 	static END_SPEED = 500;
-	static POINTER_MOVEMENT = 5;
+	//static POINTER_MOVEMENT = 5;
+	static POINTER_TIME = 250; // milliseconds
+	
+	static MARKER_SIZE = 0.4;
 	
 	constructor( )
 	{
-		super( );
-		
+		super( Playground.MARKER_SIZE );
+
 		this.resize( );
 
 		this.translate( [
@@ -24,20 +28,41 @@ class Playground extends ScormPlayground
 				jp: 'オイラーグリル'},
 		] );
 		
+		this.light.intensity = 3;
+		
 		this.spinner = new Spinner;
 		this.slider = new Slider;
 		this.base = new Base;
 		this.button = new Button;
 
 		this.dragPlane = new THREE.Mesh(
-			new THREE.PlaneGeometry( 1000, 1000 ).rotateX( -Math.PI/2 ),
+			new THREE.PlaneGeometry( 3*Base.SIZE[0]/SC, 3*Base.SIZE[2]/SC ).rotateX( -Math.PI/2 ),
 			new THREE.MeshBasicMaterial({ color: 'Crimson', transparent: true, opacity: 0.3 })
 		);
-		this.dragPlane.position.y = -14;
+		this.dragPlane.position.y = -14/SC;
 		this.dragPlane.visible = false;
 		suica.scene.add( this.dragPlane );
 		
-		this.pointerMovement = 0;
+		orb.enabled = false;
+		suica.lookAt( [0,4,16] );
+		suica.controls.update();
+//		orb.enabled = true;
+
+		if( this.inVRMode )
+		{
+			this.vrDist = 16;
+			this.vrBeta = 0;
+			
+			suica.vrCamera.updateMatrixWorld(true);
+
+			//this.allTracks.forEach( e => this.intersectables.push( e.threejs ) );
+			this.intersectables.push( this.slider.threejs );
+			this.intersectables.push( this.button.threejs );
+
+		}
+
+//		this.pointerMovement = 0;
+		this.pointerDownTime = Date.now();
 		
 	} // Playground.constructor
 
@@ -121,7 +146,12 @@ class Playground extends ScormPlayground
 			.to( {state:0}, Playground.END_SPEED )
 			.easing( myElasticOut )
 			.start( );
-
+			
+		new TWEEN.Tween( this.slider )
+			.to( {x:0}, Slider.PARK_SPEED )
+			.easing( TWEEN.Easing.Sinusoidal.InOut )
+			.start( );
+			
 	} // Playground.endGame
 	
 
@@ -152,6 +182,13 @@ class Playground extends ScormPlayground
 	update( t, dT )
 	{
 		this.spinner.update( t, dT );
+
+		orb.enabled = playground.inVR == false;
+		orb.minPolarAngle = -0.2;
+		orb.maxPolarAngle = 1.57;
+			
+		this.updateCameraLight();
+		
 	}
 	
 	

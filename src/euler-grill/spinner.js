@@ -2,7 +2,8 @@
 //	class Spinner( )
 //
 
-	
+var SC = 5;
+
 class Spinner extends Suica.Group
 {
 	static SPEED = 10;
@@ -15,6 +16,8 @@ class Spinner extends Suica.Group
 	{
 		super( suica );
 
+		this.size = 1/SC;
+		
 		this.box = new Box( );
 		this.speed = Spinner.MAX_SPEED;
 		this._state = 0;
