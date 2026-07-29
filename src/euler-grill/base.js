@@ -66,15 +66,20 @@ class Base extends Suica.Group
 			lightMapIntensity: -2,
 		} );	
 
-		var base = cube( [0,-Base.PILLAR_SIZE[1]-Base.SIZE[1]/2,0], Base.SIZE );
+		var base = square( [0,-Base.PILLAR_SIZE[1]-0*Base.SIZE[1]/2,0], [Base.SIZE[0],Base.SIZE[2]] );
+			its.spinV = -90;
 			its.threejs.material = material;
 		ScormUtils.addUV2( base );
 			
 		// black border of the base
 		var border = cube( [0,-Base.PILLAR_SIZE[1]-Base.SIZE[1]/2-0.01,0], [Base.SIZE[0]+0.02,Base.SIZE[1],Base.SIZE[2]+0.02], 'black' );
-		var groove1 = square( [0,-Base.PILLAR_SIZE[1]+0.01,Slider.OFFSET], Base.GROOVE_SIZE, 'black' );
+			its.threejs.material.polygonOffset = true;
+			its.threejs.material.polygonOffsetFactor = 1;
+			its.threejs.material.polygonOffsetUnits = 1;
+			
+		var groove1 = square( [0,-Base.PILLAR_SIZE[1]+0.02,Slider.OFFSET], Base.GROOVE_SIZE, 'black' );
 			its.spinV = 90;
-		var groove2 = square( [0,-Base.PILLAR_SIZE[1]+0.01,-Slider.OFFSET], Base.GROOVE_SIZE, 'black' );
+		var groove2 = square( [0,-Base.PILLAR_SIZE[1]+0.02,-Slider.OFFSET], Base.GROOVE_SIZE, 'black' );
 			its.spinV = 90;
 		
 		// shadow under the base

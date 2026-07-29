@@ -50,11 +50,15 @@ class Playground extends ScormPlayground
 
 		if( this.inVRMode )
 		{
-			this.vrDist = 16;
-			this.vrBeta = 0;
+			this.vrDist = 12;
+			this.vrBeta = 1.4;
 			
 			suica.vrCamera.updateMatrixWorld(true);
 
+			var v = new THREE.Vector3();
+			v.setFromSphericalCoords( this.vrDist, this.vrBeta, this.vrAlpha );
+			suica.viewPoint.from = [...v];
+					
 			//this.allTracks.forEach( e => this.intersectables.push( e.threejs ) );
 			this.intersectables.push( this.slider.threejs );
 			this.intersectables.push( this.button.threejs );
@@ -182,6 +186,11 @@ class Playground extends ScormPlayground
 	update( t, dT )
 	{
 		this.spinner.update( t, dT );
+
+		// this.vrBeta = 0.7+0.7*Math.sin(t);
+			// var v = new THREE.Vector3();
+			// v.setFromSphericalCoords( this.vrDist, this.vrBeta, this.vrAlpha );
+			// suica.viewPoint.from = [...v];
 
 		orb.enabled = playground.inVR == false;
 		orb.minPolarAngle = -0.2;
