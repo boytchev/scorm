@@ -36,7 +36,9 @@ class Spinner extends Suica.Group
 		
 		this.add( leftRotor, rightRotor, this.leftHandle, this.rightHandle, this.box );
 
-		this.addEventListener( 'click', this.onClick );
+//		this.addEventListener( 'click', this.onClick );
+		this.addEventListener( 'pointerup', this.onpointerup );
+		this.addEventListener( 'pointerdown', this.onpointerdown );	
 		
 		this.y = Base.POS_Y;
 
@@ -50,20 +52,22 @@ class Spinner extends Suica.Group
 	// events to the slider and the button)
 	activate( )
 	{
-		this.addEventListener( 'click', this.onClick );
+		this.addEventListener( 'pointerdown', this.onpointerdown );
 	} // Spinner.activate
 	
 	deactivate( )
 	{
-		this.removeEventListener( 'click' );
+		this.removeEventListener( 'pointerdown' );
 	} // Spinner.deactivate
 	
 	
 	// handles clicks on the box
-	onClick( event )
+	pointerup( event )
 	{
 		// avoid fake onClicks
-		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+		//if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+		if( !playground.inVR && (Date.now()-playground.pointerDownTime > Playground.POINTER_TIME) ) return;
+
 			
 		// if game is not started, click on the spinner will start it
 		if( !playground.gameStarted )
@@ -71,6 +75,11 @@ class Spinner extends Suica.Group
 		
 	} // Spinner.onClick
 
+	
+	onpointerdown( event )
+	{
+		if( playground ) playground.pointerDownTime = Date.now();
+	} // Slider.onPointerDown
 	
 	
 	// generate box handle

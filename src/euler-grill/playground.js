@@ -62,6 +62,7 @@ class Playground extends ScormPlayground
 			//this.allTracks.forEach( e => this.intersectables.push( e.threejs ) );
 			this.intersectables.push( this.slider.threejs );
 			this.intersectables.push( this.button.threejs );
+			this.intersectables.push( this.dragPlane );
 
 		}
 
@@ -207,6 +208,15 @@ class Playground extends ScormPlayground
 	// intersection finds the new position of the slider
 	dragX( event )
 	{		
+			if( playground.inVR ) {
+//				console.log('a>',event.controller.marker.threejs.position.x)
+				if( event?.controller?.marker )
+					return event.controller.marker.threejs.position.x;
+				else
+					return 0;
+			}
+
+//				console.log('bb-nonVR')
 		// sets this.raycastPointer
 		suica.findPosition( event );
 
@@ -216,9 +226,15 @@ class Playground extends ScormPlayground
 		var intersects = suica.raycaster.intersectObject( this.dragPlane );
 
 		if( intersects.length )
+		{
+//			console.log( intersects[0].point.x );
 			return intersects[0].point.x;
+		}
 		else
+		{
+	//		console.log( 0 );
 			return 0;
+		}
 	}
 	
 	

@@ -65,7 +65,7 @@ class Slider extends Suica.Group
 
 		// slider material
 		var material = new THREE.MeshStandardMaterial( {
-			color: 'bisque',
+			color: 'linen',
 			metalness: 0,
 			roughness: 1,
 		} );	
@@ -93,18 +93,32 @@ class Slider extends Suica.Group
 
 		this.add( this.frontSlider, this.backSlider, frontShadow, backShadow, frontMarker, backMarker );
 
-		this.addEventListener( 'click', this.onClick );
-		this.addEventListener( 'pointerdown', this.onPointerDown );
+		this.frontSlider.parent = this;
+		this.backSlider.parent = this;
+		frontShadow.parent = this;
+		backShadow.parent = this;
+		frontMarker.parent = this;
+		backMarker.parent = this;
+
+		//this.addEventListener( 'click', this.onClick );
+		this.addEventListener( 'pointerup', this.onpointerup );
+		this.addEventListener( 'pointerdown', this.onpointerdown );
 
 	} // Slider.constructor
 
 
-
+	onclick() {
+//		console.log('click')
+	}
+	
+	
 	// handles clicks on the box
-	onClick( )
+	onpointerup( )
 	{
+//console.log('pointerup')
 		// avoid fake onClicks
-		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+//		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+		if( !playground.inVR && (Date.now()-playground.pointerDownTime > Playground.POINTER_TIME) ) return;
 			
 		// if game is not started, click on the slider will start it
 		if( !playground.gameStarted )
@@ -114,8 +128,11 @@ class Slider extends Suica.Group
 
 
 
-	onPointerDown( event )
+	onpointerdown( event )
 	{
+//console.log('pointerdown')
+		if( playground ) playground.pointerDownTime = Date.now();
+
 		if( playground.gameStarted )
 		{
 			this.inDrag = true;

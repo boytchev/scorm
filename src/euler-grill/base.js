@@ -27,17 +27,19 @@ class Base extends Suica.Group
 		
 		this.y = Base.POS_Y;
 		
-		this.addEventListener( 'click', this.onClick );
+		this.addEventListener( 'pointerup', this.onpointerup );
+		this.addEventListener( 'pointerdown', this.onpointerdown );
 
 	} // Base.constructor
 
 
 
 	// handles clicks on the base
-	onClick( )
+	onpointerup( )
 	{
 		// avoid fake onClicks
-		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+//		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+		if( !playground.inVR && (Date.now()-playground.pointerDownTime > Playground.POINTER_TIME) ) return;
 			
 		// if game is not started, click on the base will start it
 		if( !playground.gameStarted )
@@ -46,6 +48,11 @@ class Base extends Suica.Group
 		}
 	} // Base.onClick
 	
+	
+	onpointerdown( event )
+	{
+		if( playground ) playground.pointerDownTime = Date.now();
+	}
 	
 	
 	// construct the base
