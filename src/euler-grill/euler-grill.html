@@ -185,31 +185,26 @@ function debugLog(...args) {
   // text
   ctx.font = '26px monospace';
   ctx.textBaseline = 'top';
+  ctx.fillStyle = 'crimson';
 
+DEBUG.lines.reverse();
   DEBUG.lines.forEach((line, i) => {
-    if (/error|NaN|undefined|null/i.test(line)) {
-      ctx.fillStyle = '#ff5555';
-    } else if (/warn/i.test(line)) {
-      ctx.fillStyle = '#ffaa00';
-    } else {
-      ctx.fillStyle = '#00ff66';
-    }
     ctx.fillText(line, 14, 12 + i * 28);
   });
+DEBUG.lines.reverse();
 
   DEBUG.texture.needsUpdate = true;
 }
 
 // ---------- usage ----------
-console.log(suica)
 createDebugConsole(suica.camera,{worldWidth:10,worldHeight:5});          // call once after scene is ready
 
-debugLog('Debug console ready');
-debugLog('Three revision:', THREE.REVISION);
+//debugLog('Debug console ready');
+//debugLog('Three revision:', THREE.REVISION);
 
 // later, inside your click / select handler:
-debugLog('select', 123);
-debugLog('model pos', 'abc');
+//debugLog('select', 123);
+//debugLog('model pos', 'abc');
 </script>
 
 
