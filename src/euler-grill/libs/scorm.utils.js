@@ -88,7 +88,16 @@ function update( t, dT )
 					suica.viewPoint.from = [...v];
 				}
 
-
+				if( e.select )
+				{
+					if( typeof window.onPointerMove != 'undefined' )
+					{
+//debugLog('vrPointerMove', Math.random());
+//						console.log( e.selectEvent );
+						window.onPointerMove( e.selectEvent ); // global event in *.html
+//						console.log( e.selectEvent );
+					}
+				}
 		
 			} );
 	
@@ -355,12 +364,14 @@ class ScormPlayground
 		
 		controller.sign = 1; // assume right (not left) controller
 		controller.squeeze = false; // indicate whether squeeze button is pressed
+		controller.select = false; // indicate whether select button is pressed
+		controller.selectEvent = null; // indicate whether select button is pressed
 		
-		controller.addEventListener( 'selectstart', function(){playground.vrPointerDown( controller );} );
-		controller.addEventListener( 'selectend', function(){playground.vrPointerUp( controller );} );
-		controller.addEventListener( 'select', function(){ playground.vrClick( controller ); } );
-		controller.addEventListener( 'squeezestart', function(){playground.vrSqueezeStart( controller );} );
-		controller.addEventListener( 'squeezeend', function(){playground.vrSqueezeEnd( controller );} );
+		controller.addEventListener( 'selectstart', function(e){playground.vrPointerDown( e, controller );} );
+		controller.addEventListener( 'selectend', function(e){playground.vrPointerUp( e, controller );} );
+		controller.addEventListener( 'select', function(e){ playground.vrClick( e, controller ); } );
+		controller.addEventListener( 'squeezestart', function(e){playground.vrSqueezeStart( e, controller );} );
+		controller.addEventListener( 'squeezeend', function(e){playground.vrSqueezeEnd( e, controller );} );
 		controller.addEventListener( 'connected', function(event){
 			if( event.data?.handedness == 'left' ) controller.sign =  -1; // turn into left controller
 		} );
@@ -929,7 +940,7 @@ if( playground.controllers[1].hand )
 	}
 		
 	
-	vrClick( controller )
+	vrClick( event, controller )
 	{
 		var intersections = this.vrIntersections( controller );
 		
@@ -948,14 +959,20 @@ if( playground.controllers[1].hand )
 
 			//objects.forEach( e => e.onclick() ); // not all
 			
-			if( objects.length ) objects[0].onclick(); // only first, which is also closest
+			event.controller = controller;
+			if( objects.length ) objects[0].onclick( event ); // only first, which is also closest
+//debugLog('vrClick', objects.length);
 		}
 
 	}
 		
 	
-	vrPointerDown( controller )
+	vrPointerDown( event, controller )
 	{
+		
+		controller.select = true;
+		controller.selectEvent = event;
+		
 		this.vrFingerLength ( controller, 1500 );
 		
 		var intersections = this.vrIntersections( controller );
@@ -974,15 +991,19 @@ if( playground.controllers[1].hand )
 
 			//objects.forEach( e => e.onpointerdown() ); // not all
 			
-			if( objects.length ) objects[0].onpointerdown(); // only first, which is also closest
+			event.controller = controller;
+			if( objects.length ) objects[0].onpointerdown( event ); // only first, which is also closest
+//debugLog('vrPointerDown', objects.length);
 		}
 
 	}
 		
 	
-	vrPointerUp( controller )
+	vrPointerUp( event, controller )
 	{
-		window.onPointerUp( ); // global event in *.html
+		controller.select = false;
+		controller.selectEvent = event;
+		window.onPointerUp( event ); // global event in *.html
 		
 		this.vrFingerLength ( controller, 0 );
 		
@@ -1003,19 +1024,20 @@ if( playground.controllers[1].hand )
 
 			//objects.forEach( e => e.onpointerup() ); // not all
 			
-			if( objects.length ) objects[0].onpointerup(); // only first, which is also closest
+			if( objects.length ) objects[0].onpointerup( event ); // only first, which is also closest
+//debugLog('vrPointerUp', objects.length);
 		}
 
 	}
 	
 
-	vrSqueezeStart( controller )
+	vrSqueezeStart( event, controller )
 	{
 		if( suica.controls ) controller.squeeze = true;
 	}
 		
 	
-	vrSqueezeEnd( controller )
+	vrSqueezeEnd( event, controller )
 	{
 		controller.squeeze = false;
 	}

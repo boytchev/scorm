@@ -92,7 +92,7 @@ function update( t, dT )
 				{
 					if( typeof window.onPointerMove != 'undefined' )
 					{
-debugLog('vrPointerMove', Math.random());
+//debugLog('vrPointerMove', Math.random());
 //						console.log( e.selectEvent );
 						window.onPointerMove( e.selectEvent ); // global event in *.html
 //						console.log( e.selectEvent );
@@ -961,7 +961,7 @@ if( playground.controllers[1].hand )
 			
 			event.controller = controller;
 			if( objects.length ) objects[0].onclick( event ); // only first, which is also closest
-debugLog('vrClick', objects.length);
+//debugLog('vrClick', objects.length);
 		}
 
 	}
@@ -993,7 +993,7 @@ debugLog('vrClick', objects.length);
 			
 			event.controller = controller;
 			if( objects.length ) objects[0].onpointerdown( event ); // only first, which is also closest
-debugLog('vrPointerDown', objects.length);
+//debugLog('vrPointerDown', objects.length);
 		}
 
 	}
@@ -1025,7 +1025,7 @@ debugLog('vrPointerDown', objects.length);
 			//objects.forEach( e => e.onpointerup() ); // not all
 			
 			if( objects.length ) objects[0].onpointerup( event ); // only first, which is also closest
-debugLog('vrPointerUp', objects.length);
+//debugLog('vrPointerUp', objects.length);
 		}
 
 	}
