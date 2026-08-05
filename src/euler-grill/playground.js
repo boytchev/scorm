@@ -120,7 +120,7 @@ class Playground extends ScormPlayground
 			
 		var box = playground.spinner.box,
 			error = Math.abs( THREE.MathUtils.clamp( box.F-box.E+box.V, -6, 6 ) - playground.slider.euler);
-		
+
 		var score = THREE.MathUtils.mapLinear( error, 0, maxError, 1, 0 );
 			score = THREE.MathUtils.clamp( score, 0, 1 );
 
@@ -156,6 +156,8 @@ class Playground extends ScormPlayground
 			.to( {x:0}, Slider.PARK_SPEED )
 			.easing( TWEEN.Easing.Sinusoidal.InOut )
 			.start( );
+			
+		this.slider.euler = 0; 
 			
 	} // Playground.endGame
 	

@@ -45,9 +45,8 @@ Note: this game is now under update.
 
 Note: this game is now under update.
 
-<!--
 [ [More info](src/euler-grill/index.html) ] [ [Run online](src/euler-grill/euler-grill.html) ] [ [Download](bin/euler-grill.zip) ]
--->
+
 
 ## Matrix carousel
 

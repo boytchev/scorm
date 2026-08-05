@@ -51,10 +51,8 @@ class Playground extends ScormPlayground
 		
 		if( this.inVRMode )
 		{
-			console.log(this.vrDist,this.vrAlpha,this.vrBeta)
 			this.vrDist = 6;
 			this.vrBeta = 0;
-			console.log(this.vrDist,this.vrAlpha,this.vrBeta)
 			
 			suica.vrCamera.updateMatrixWorld(true);
 

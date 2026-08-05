@@ -53,6 +53,7 @@ When run from a LMS, the application sends back these data:
 - `cmi.core.score.min` &ndash; 0
 - `cmi.core.score.max` &ndash; 100
 - `cmi.core.lesson_status` &ndash; `'completed'` or `'incomplete'`
+- `cmi.comments` &ndash; gameplay data with backups of scores
 
 ### Data policy
 
@@ -67,6 +68,9 @@ The application shows constantly spinning object that is the attraction focus. T
 ### Credits
 
 This application uses a background music from [SoundCloud](https://soundcloud.com):
+
+3D model (when VR mode is on):
+- "[hand_pose_ 留存](https://skfb.ly/oLvJD)" by TRNKL licensed under [CC BY 4.0 License](http://creativecommons.org/licenses/by/4.0/),
 
 - "[Epic Adventures Electronic Upbeat](https://soundcloud.com/alexproductionsmusic/epic-adventures-electronic-upbeat-by-alex-productions-no-copyright-music-free-download-trail)" by [Alex-Productions](https://www.youtube.com/channel/UCx0_M61F81Nfb-BRXE-SeVA) licensed under [CC BY 3.0 License](https://creativecommons.org/licenses/by/3.0/),
 

@@ -182,7 +182,7 @@ class Slider extends Suica.Group
 			xPark = Math.round((this.x+limit)/step)*step - limit;
 			
 		this.euler = Math.round( 2*xPark/step );
-
+console.log('!!!! euler =',this.euler)
 		new TWEEN.Tween( this )
 			.to( {x:xPark}, Slider.PARK_SPEED )
 			.easing( TWEEN.Easing.Sinusoidal.InOut )

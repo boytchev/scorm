@@ -106,7 +106,7 @@ class Box extends Suica.Group
 			that.calculateEuler( );
 		}
 		
-		// is it too easy? try another regenaration, several times times
+		// is it too easy? try another regenaration, several times
 		regenerate( );
 		if( this.complexity-playground?.difficulty<-30 ) regenerate( );
 		if( this.complexity-playground?.difficulty<-30 ) regenerate( );
@@ -302,6 +302,19 @@ class Box extends Suica.Group
 		for( var y=-1; y<this.N; y++ )
 		for( var z=-1; z<this.N; z++ )
 			{
+				//
+				//		    +----+----+
+				//		   /|   /|   /|
+				//		  +----+----+ |
+				//		 /| +-/--+-/|-+
+				//		+----+----+ |/|
+				//		| +--|-+--|-+ |
+				//		|/| +|-|-+|/|-+
+				//		+----+----+ |/
+				//		| +--|-+--|-+
+				//		|/   |/   |/
+				//		+----+----+
+				//
 				// a box of 2x2x2 cubes around each vertex
 				// if 0 cubes - no vertex (external vertex)
 				// if 8 cubes - no vertex (internal vertex)
@@ -327,13 +340,8 @@ class Box extends Suica.Group
 				count += this.space[x][y][z+1]+this.space[x][y+1][z+1];
 				if (0<count && count<4 ) this.E++;
 			}		
-		
-		// console.log('F =',this.F);
-		// console.log('E =',this.E);
-		// console.log('V =',this.V);
-		// console.log('F-E+V =',this.F-this.E+this.V);
 
-		// calculate complecity
+		// calculate complexity
 		this.complexity = 0;
 		for( var x=-1; x<this.N; x++ )
 		for( var y=-1; y<this.N; y++ )
