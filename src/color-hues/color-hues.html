@@ -60,10 +60,13 @@
 				
 		function onPointerMove( event )
 		{
-			if( findObject( event ) )
-				event.target.style.cursor = 'pointer';
-			else
-				event.target.style.cursor = 'default';
+			if( !playground.inVR )
+			{
+				if( findObject( event ) )
+					event.target.style.cursor = 'pointer';
+				else
+					event.target.style.cursor = 'default';
+			}
 		}
 		
 		function onPointerUp( )

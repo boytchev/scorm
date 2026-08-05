@@ -65,10 +65,13 @@
 		function onPointerMove( event )
 		{
 			//playground.pointerMovement += Math.abs( event.movementX ) + Math.abs( event.movementY );
-			if( findObject( event ) )
-				event.target.style.cursor = 'pointer';
-			else
-				event.target.style.cursor = 'default';
+			if( !playground.inVR )
+			{
+				if( findObject( event ) )
+					event.target.style.cursor = 'pointer';
+				else
+					event.target.style.cursor = 'default';
+			}
 		}
 		
 		function onPointerDown( event )

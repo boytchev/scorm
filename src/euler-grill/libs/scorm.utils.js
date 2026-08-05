@@ -959,6 +959,7 @@ if( playground.controllers[1].hand )
 
 			//objects.forEach( e => e.onclick() ); // not all
 			
+			console.log('click',objects)
 			event.controller = controller;
 			if( objects.length ) objects[0].onclick( event ); // only first, which is also closest
 //debugLog('vrClick', objects.length);
@@ -991,6 +992,7 @@ if( playground.controllers[1].hand )
 
 			//objects.forEach( e => e.onpointerdown() ); // not all
 			
+			console.log('down',objects)
 			event.controller = controller;
 			if( objects.length ) objects[0].onpointerdown( event ); // only first, which is also closest
 //debugLog('vrPointerDown', objects.length);
@@ -1024,6 +1026,7 @@ if( playground.controllers[1].hand )
 
 			//objects.forEach( e => e.onpointerup() ); // not all
 			
+			console.log('up',objects)
 			if( objects.length ) objects[0].onpointerup( event ); // only first, which is also closest
 //debugLog('vrPointerUp', objects.length);
 		}
