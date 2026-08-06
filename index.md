@@ -18,7 +18,7 @@ This SCO is used for experiments with SCORM 1.2-complient LMS. It shows the list
 
 <a href="src/color-hues/color-hues.html"><img src="src/color-hues/docs/snapshot.jpg" width="200" style="float:right; border-radius: 0.5em; border-bottom: 0.3em BurlyWood solid;"></a> This is the first (in the world) SCO that uses [Suica](https://boytchev.github.io/suica/) and [Three.js](https://threejs.org/). The challenge is to find which two of six colors have hues closest to the hue of a randomly generated color.
 
-[ [More info](src/color-hues/index.html) ] [ [Run online](src/color-hues/color-hues.html) ] [ [Download](bin/color-hues.zip) ]
+[ [More info](src/color-hues/index.html) ] [ [Run online](src/color-hues/color-hues.html) ]  [ [Run in VR](src/color-hues/color-hues.html?vr) ] [ [Download](bin/color-hues.zip) ]
 
 
 ## Ink tank
@@ -27,7 +27,7 @@ This SCO is used for experiments with SCORM 1.2-complient LMS. It shows the list
 
 Note: this game is now under update.
 
-[ [More info](src/ink-tank/index.html) ] [ [Run online](src/ink-tank/ink-tank.html) ] [ [Download](bin/ink-tank.zip) ]
+[ [More info](src/ink-tank/index.html) ] [ [Run online](src/ink-tank/ink-tank.html) ] [ [Run in VR](src/ink-tank/ink-tank.html?vr) ] [ [Download](bin/ink-tank.zip) ]
 
 
 ## Race balls
@@ -36,7 +36,7 @@ Note: this game is now under update.
 
 Note: this game is now under update.
 
-[ [More info](src/race-balls/index.html) ] [ [Run online](src/race-balls/race-balls.html) ] [ [Download](bin/race-balls.zip) ]
+[ [More info](src/race-balls/index.html) ] [ [Run online](src/race-balls/race-balls.html) ] [ [Run in VR](src/race-balls/race-balls.html?vr) ] [ [Download](bin/race-balls.zip) ]
 
 
 ## Euler grill
@@ -45,7 +45,7 @@ Note: this game is now under update.
 
 Note: this game is now under update.
 
-[ [More info](src/euler-grill/index.html) ] [ [Run online](src/euler-grill/euler-grill.html) ] [ [Download](bin/euler-grill.zip) ]
+[ [More info](src/euler-grill/index.html) ] [ [Run online](src/euler-grill/euler-grill.html) ] [ [Run in VR](src/euler-grill/euler-grill.html?vr) ] [ [Download](bin/euler-grill.zip) ]
 
 
 ## Matrix carousel

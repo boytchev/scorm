@@ -13,7 +13,7 @@ Click on the image to start the application.
 
 [<img src="docs/snapshot.jpg">](euler-grill.html)
 
-Alternatively, here are versions in [English](euler-grill.html?lang=en), [Bulgarian](euler-grill.html?lang=bg) and [Japanese](euler-grill.html?lang=jp).
+Alternatively, here are versions in [English](euler-grill.html?lang=en), [Bulgarian](euler-grill.html?lang=bg) and [Japanese](euler-grill.html?lang=jp) and [Virtual Reality](euler-grill.html?lang=en&vr).
 
 ### How to play
 
