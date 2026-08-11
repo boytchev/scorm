@@ -69,10 +69,12 @@ The application shows constantly spinning object that is the attraction focus. T
 
 This application uses a background music from [SoundCloud](https://soundcloud.com):
 
-3D model (when VR mode is on):
-- "[hand_pose_ 留存](https://skfb.ly/oLvJD)" by TRNKL licensed under [CC BY 4.0 License](http://creativecommons.org/licenses/by/4.0/),
-
 - "[Epic Adventures Electronic Upbeat](https://soundcloud.com/alexproductionsmusic/epic-adventures-electronic-upbeat-by-alex-productions-no-copyright-music-free-download-trail)" by [Alex-Productions](https://www.youtube.com/channel/UCx0_M61F81Nfb-BRXE-SeVA) licensed under [CC BY 3.0 License](https://creativecommons.org/licenses/by/3.0/),
+
+
+3D model (when VR mode is on):
+
+- "[hand_pose_ 留存](https://skfb.ly/oLvJD)" by TRNKL licensed under [CC BY 4.0 License](http://creativecommons.org/licenses/by/4.0/),
 
 and sound effects from [Mixkit](https://mixkit.co/):
 
