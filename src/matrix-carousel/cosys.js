@@ -3,13 +3,15 @@
 //
 
 	
+var SC = 5;
+
 class CoSys extends Suica.Group
 {
-	static ROPE_SIZE = [0.3, 13];
-	static AXIS_SIZE = [0.1, 10];
-	static ARROW_SIZE = [0.4, 1];
-	static LABEL_SIZE = 2;
-	static CUBE_SIZE = 4;
+	static ROPE_SIZE = [0.3/SC, 13/SC];
+	static AXIS_SIZE = [0.1/SC, 10/SC];
+	static ARROW_SIZE = [0.4/SC, 1/SC];
+	static LABEL_SIZE = 2/SC;
+	static CUBE_SIZE = 4/SC;
 	static CUBE_SPEED = 0.3;
 	
 	constructor( idx )
@@ -31,7 +33,8 @@ class CoSys extends Suica.Group
 		this.add( this.ropeGroup );
 
 		this.size = 0;
-		this.addEventListener( 'pointerdown', this.onPointerDown );
+		this.addEventListener( 'pointerup', this.onpointerup );
+		this.addEventListener( 'pointerdown', this.onpointerdown );
 	} // CoSys.constructor
 
 
@@ -98,17 +101,17 @@ class CoSys extends Suica.Group
 		// construct labels
 		this.labels = [];
 
-		this.labels.push( point( [pos+1.5,0,0], 0*CoSys.LABEL_SIZE, 'white') );
+		this.labels.push( point( [pos+1.5/SC,0,0], 0*CoSys.LABEL_SIZE, 'white') );
 			its.image = drawing( 15 );
 			its.image.fillText( 0, 0, 'X', 'Tomato', 'bold 20px Arial' );
 		cosys.add( its );
 		
-		this.labels.push( point( [0,pos+1.5,0], 0*CoSys.LABEL_SIZE, 'white') );
+		this.labels.push( point( [0,pos+1.5/SC,0], 0*CoSys.LABEL_SIZE, 'white') );
 			its.image = drawing( 15 );
 			its.image.fillText( 0, 0, 'Y', 'Tomato', 'bold 20px Arial' );
 		cosys.add( its );
 		
-		this.labels.push( point( [0,0,pos+1.5], 0*CoSys.LABEL_SIZE, 'white') );
+		this.labels.push( point( [0,0,pos+1.5/SC], 0*CoSys.LABEL_SIZE, 'white') );
 			its.image = drawing( 15 );
 			its.image.fillText( 0, 0, 'Z', 'Tomato', 'bold 20px Arial' );
 		cosys.add( its );
@@ -175,7 +178,13 @@ class CoSys extends Suica.Group
 
 
 
-	onPointerDown( )
+	onpointerdown( event )
+	{
+		if( playground ) playground.pointerDownTime = Date.now();
+	}
+
+
+	onpointerdown( )
 	{
 		if( playground.gameStarted )
 		{

@@ -3,13 +3,15 @@
 //
 
 	
+var SC = 5;
+
 class Base extends Suica.Group
 {
-	static POS_Y = -10;
-	static FLOOR_SIZE = 40;
-	static SHADOW_SIZE = 49.5;
-	static BASE_SIZE = 30;
-	static BASE_HEIGHT = 4;
+	static POS_Y = -10/SC;
+	static FLOOR_SIZE = 40/SC;
+	static SHADOW_SIZE = 49.5/SC;
+	static BASE_SIZE = 30/SC;
+	static BASE_HEIGHT = 4/SC;
 	
 	constructor( playground )
 	{
@@ -20,7 +22,9 @@ class Base extends Suica.Group
 		this.constructBase();
 		this.constructArenas();
 		
-		this.addEventListener( 'click', this.onClick );
+//		this.addEventListener( 'click', this.onClick );
+		this.addEventListener( 'pointerup', this.onpointerup );
+		this.addEventListener( 'pointerdown', this.onpointerdown );
 
 		this.y = Base.POS_Y;
 		
@@ -84,7 +88,7 @@ class Base extends Suica.Group
 		base.threejs.geometry.computeVertexNormals()		
 		
 		// top surface
-		var top = polygon( 240, [0,Base.BASE_HEIGHT,0], Base.BASE_SIZE, 'black' );
+		var top = polygon( 240, [0,Base.BASE_HEIGHT,0], Base.BASE_SIZE, [-1,-1,-1] );
 			its.spinV = 90;
 			its.threejs.material.polygonOffset = true;
 			its.threejs.material.polygonOffsetFactor = -2;
@@ -132,12 +136,19 @@ class Base extends Suica.Group
 	}
 
 
+	onpointerdown( event )
+	{
+		if( playground ) playground.pointerDownTime = Date.now();
+	}
+
+
 	// handles clicks on the base
-	onClick( )
+	onpointerdown( )
 	{
 		// avoid fake onClicks
-		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
-
+		//if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+		if( !playground.inVR && (Date.now()-playground.pointerDownTime > Playground.POINTER_TIME) ) return;
+		
 		if( !playground.gameStarted )
 		{
 			playground.newGame( );

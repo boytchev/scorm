@@ -2,15 +2,16 @@
 //	class Carousel( )
 //
 
-	
+var SC = 5;
+
 class Carousel extends Suica.Group
 {
-	static PILLAR_HEIGHT = 20;
-	static PILLAR_RADIUS = 7;
-	static TOP_SIZE = [10,2,10];
-	static BRANCH_SIZE = [2, Arena.DISTANCE+0.25, 6];
+	static PILLAR_HEIGHT = 20/SC;
+	static PILLAR_RADIUS = 7/SC;
+	static TOP_SIZE = [10/SC,2/SC,10/SC];
+	static BRANCH_SIZE = [2/SC, Arena.DISTANCE+0.25/SC, 6/SC];
 	static BRANCH_POS = [0,Carousel.PILLAR_HEIGHT,0];
-	static END_SIZE = [2.5, 0.8];
+	static END_SIZE = [2.5/SC, 0.8/SC];
 	static SPEED = 300;
 	static ACCELERATION_TIME = 1500;
 	static OUTWARD_ANGLE = 70;
@@ -35,7 +36,6 @@ class Carousel extends Suica.Group
 		this.speed = 0;
 		this.vibroTime = 0;
 		this.vibroSize = 0;
-
 		this.spinTween = null;
 		this.vibroTween = null;
 		this.phase = Carousel.STOPPED;
@@ -43,7 +43,9 @@ class Carousel extends Suica.Group
 		this.constructPillar( );
 		this.constructCoSys( );
 		
-		this.addEventListener( 'click', this.onClick );
+		//this.addEventListener( 'click', this.onClick );
+		this.addEventListener( 'pointerup', this.onpointerup );
+		this.addEventListener( 'pointerdown', this.onpointerdown );
 
 	} // Carousel.constructor
 
@@ -74,7 +76,7 @@ class Carousel extends Suica.Group
 			its.threejs.material = material;
 		
 		
-		var top = sphere( [0,Carousel.PILLAR_HEIGHT+0.4,0], Carousel.TOP_SIZE )
+		var top = sphere( [0,Carousel.PILLAR_HEIGHT+0.4/SC,0], Carousel.TOP_SIZE )
 			its.threejs.material = material.clone();
 			its.threejs.material.color.set( 'black' );
 		
@@ -250,11 +252,18 @@ class Carousel extends Suica.Group
 
 
 
+	onpointerdown( event )
+	{
+		if( playground ) playground.pointerDownTime = Date.now();
+	}
+
+
 	// handles clicks on the carousel
-	onClick( )
+	onpointerdown( )
 	{
 		// avoid fake onClicks
-		if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+		//if( playground.pointerMovement > Playground.POINTER_MOVEMENT ) return;
+		if( !playground.inVR && (Date.now()-playground.pointerDownTime > Playground.POINTER_TIME) ) return;
 
 		if( !playground.gameStarted )
 		{

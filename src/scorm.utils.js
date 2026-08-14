@@ -288,11 +288,11 @@ class ScormPlayground
 			{id: 'txt-score',
 				en: 'SCORE',
 				bg: 'РЕЗУЛТАТ',
-				jp: '時間'},
+				jp: '得点'},
 			{id: 'txt-performance',
 				en: 'PERFORMANCE',
 				bg: 'ИЗПЪЛНЕНИЕ',
-				jp: '時間'},
+				jp: '業績'},
 			{id: 'txt-user',
 				en: scorm.api
 						? `<b>${scorm.studentName}</b>`

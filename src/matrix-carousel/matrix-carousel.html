@@ -27,8 +27,8 @@
 </head>
 
 <body>
-	<suica fullwindow fullscreen background="linen" ontime="update" onPointerUp="onPointerUp" onpointermove="onPointerMove" onpointerdown="onPointerDown" >
-		<orbit id="orb" distance="70" altitude="0" maxPolarAngle="1.55" maxDistance="100" minDistance="15" enablePan="false">
+	<suica fullwindow background="linen" ontime="update" onPointerUp="onPointerUp" onpointermove="onPointerMove" onpointerdown="onPointerDown" >
+		<orbit id="orb" distance="15" altitude="0" maxPolarAngle="1.55" maxDistance="25" minDistance="5" enablePan="false">
 		
 		<div class="hud corner top left"></div>
 		<div class="hud corner top right"></div>
@@ -62,12 +62,14 @@
 	
 	<script>
 		var playground = new Playground;
+		//playground.carousel.startSpinning( );
+		
 
 		window.addEventListener( 'resize', playground.resize );
 				
 		function onPointerUp( event )
 		{
-			playground?.carousel.stopSpinning( );
+			if( playground?.gameStarted ) playground?.carousel.stopSpinning( );
 		}
 		
 		
@@ -96,29 +98,35 @@
 		function onPointerMove( event )
 		{		
 
-			playground.pointerMovement += Math.abs( event.movementX ) + Math.abs( event.movementY );
+			//playground.pointerMovement += Math.abs( event.movementX ) + Math.abs( event.movementY );
 			
 			var obj;
 			
 			if( playground.gameStarted )
 			{	
 
-				if( findCube( event ) )
-					event.target.style.cursor = 'ew-resize';
-				else
+				if( !playground.inVR )
 				{
-					if( findObject( event, [playground.button] ) )
-						event.target.style.cursor = 'pointer';
+					if( findCube( event ) )
+						event.target.style.cursor = 'ew-resize';
 					else
-						event.target.style.cursor = 'default';
+					{
+						if( findObject( event, [playground.button] ) )
+							event.target.style.cursor = 'pointer';
+						else
+							event.target.style.cursor = 'default';
+					}
 				}
 			}
 			else
 			{
-				if( findObject( event ) )
-					event.target.style.cursor = 'pointer';
-				else
-					event.target.style.cursor = 'default';
+				if( !playground.inVR )
+				{
+					if( findObject( event ) )
+						event.target.style.cursor = 'pointer';
+					else
+						event.target.style.cursor = 'default';
+				}
 			}
 		}
 
@@ -128,17 +136,21 @@
 		{
 			if( playground )
 			{
-				playground.pointerMovement = 0;
+				//playground.pointerMovement = 0;
+				if( playground ) playground.pointerDownTime = Date.now();
 				
 				if( playground.gameStarted )
 				{
 					// if the game is started, click on cosys cube will spin it
 
-					var obj = findCube( event );
-					if( obj )
-					{
-						obj.mark( );
-						playground.carousel.startSpinning( );
+					var obj = findObject( event, [playground.button] );
+					if( !obj ) {
+						obj = findCube( event );
+						if( obj )
+						{
+							obj.mark( );
+							playground.carousel.startSpinning( );
+						}
 					}
 				}
 			}

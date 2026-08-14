@@ -3,6 +3,8 @@
 //
 
 	
+var SC = 5;
+
 class Matrix
 {
 	static allMatrixData;
@@ -27,7 +29,7 @@ class Matrix
 		//				spin:	 0   0   0   0   0   1   2   3
 
 		
-		var T = 3, 						// translation value
+		var T = 3/SC, 					// translation value
 			S = 2.3,					// scale value
 			C = 4, 						// orthogonal projection value
 			P = 1/2, 					// perspective projection value

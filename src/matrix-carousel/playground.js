@@ -7,25 +7,32 @@
 class Playground extends ScormPlayground
 {
 	static POINTS_SPEED = 2000;
-	static POINTER_MOVEMENT = 5;
+	//static POINTER_MOVEMENT = 5;
+	static POINTER_TIME = 250; // milliseconds
 	static POINTER_USED = false; // true when the pointer is used by orbit controls
 	
 	static CAROUSEL_VOLUME = 0.07;
 	static SWING_VOLUME = 0.04;
-	
+
+	static MAX_DROP_TIME_SPIN = 2000; // milliseconds
+	static MARKER_SIZE = 0.4;
+
 	constructor( )
 	{
-		super( );
+		super( Playground.MARKER_SIZE );
 
 		this.loadSounds( );
 		
+		this.light.position.y = Carousel.PILLAR_HEIGHT + 10*Button.SIZE;
+
 		this.carousel = new Carousel( );
 		this.base = new Base( this );
 		this.button = new Button( );
 		
 		this.resize( );
 
-		this.pointerMovement = 0;
+		//this.pointerMovement = 0;
+		this.pointerDownTime = Date.now();
 		
 		orb.addEventListener( 'start', () => {Playground.POINTER_USED=true} );
 		orb.addEventListener( 'end', () => {Playground.POINTER_USED=false} );
@@ -37,6 +44,28 @@ class Playground extends ScormPlayground
 				jp: 'マトリックス回転ブランコ'},
 		] );
 		
+		orb.enabled = false;
+		suica.lookAt( [0,4,16] );
+		suica.controls.update();
+//		orb.enabled = true;
+
+		if( this.inVRMode )
+		{
+			this.vrDist = 12;
+			this.vrBeta = 1.4;
+			
+			suica.vrCamera.updateMatrixWorld(true);
+
+			var v = new THREE.Vector3();
+			v.setFromSphericalCoords( this.vrDist, this.vrBeta, this.vrAlpha );
+			suica.viewPoint.from = [...v];
+					
+			this.intersectables.push( this.carousel.threejs );
+			this.intersectables.push( this.button.threejs );
+			this.intersectables.push( this.base.threejs );
+
+		}
+		
 	} // Playground.constructor
 
 	
@@ -46,6 +75,8 @@ class Playground extends ScormPlayground
 	{
 		this.clickSound?.play( );
 		super.newGame( );
+
+		this.carousel.stopSpinning();
 
 		var n; // difficulty case
 		
@@ -212,6 +243,7 @@ class Playground extends ScormPlayground
 		super.endGame( );
 		
 		this.carousel.hideCoSys( );
+		this.carousel.startSpinning( );
 		
 	} // Playground.endGame
 	
@@ -244,6 +276,13 @@ class Playground extends ScormPlayground
 	update( t, dT )
 	{
 		this.carousel.update( t, dT );
+		
+		orb.enabled = playground.inVR == false;
+		orb.minPolarAngle = -0.2;
+		orb.maxPolarAngle = 1.57;
+			
+//no		this.updateCameraLight();
+		
 	} // Playground.update
 
 } // class Playground

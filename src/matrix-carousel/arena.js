@@ -2,11 +2,12 @@
 //	class Arena( )
 //
 
+var SC = 5;
 	
 class Arena extends Suica.Group
 {
-	static SIZE = 8;
-	static DISTANCE = 11.5;
+	static SIZE = 8/SC;
+	static DISTANCE = 11.5/SC;
 	static S = 128; // canvas size in pixels
 	static H = 1.25; // horizontal scale
 	
@@ -23,7 +24,7 @@ class Arena extends Suica.Group
 			x = Arena.DISTANCE * Math.cos( angle ),
 			z = Arena.DISTANCE * Math.sin( angle );
 		
-		this.arena = circle( [x,Base.POS_Y+Base.BASE_HEIGHT+0.01,z], Arena.SIZE, 'white' );
+		this.arena = circle( [x,Base.POS_Y+Base.BASE_HEIGHT+0.01,z], Arena.SIZE, 'lightgray' );
 			its.image = this.matrixImage;
 			its.spinV = -90;
 			its.spinH = 90-index*60;
@@ -74,7 +75,7 @@ class Arena extends Suica.Group
 				if( value == 0.5 )
 				{	// 1/2
 					color = 'crimson';
-					font = 'bold 24px Arial';
+					font = 'bold 20px Arial';
 					value = '½';
 					y -= 2;
 				}
@@ -90,7 +91,7 @@ class Arena extends Suica.Group
 				}
 				else
 				{	// zero
-					color = 'lightgray';
+					color = 'gray';
 					font = 'normal 15px Arial';
 				}
 				
