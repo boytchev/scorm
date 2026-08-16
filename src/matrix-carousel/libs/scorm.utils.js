@@ -88,7 +88,16 @@ function update( t, dT )
 					suica.viewPoint.from = [...v];
 				}
 
-
+				if( e.select )
+				{
+					if( typeof window.onPointerMove != 'undefined' )
+					{
+//debugLog('vrPointerMove', Math.random());
+//						console.log( e.selectEvent );
+						window.onPointerMove( e.selectEvent ); // global event in *.html
+//						console.log( e.selectEvent );
+					}
+				}
 		
 			} );
 	
@@ -279,11 +288,11 @@ class ScormPlayground
 			{id: 'txt-score',
 				en: 'SCORE',
 				bg: 'РЕЗУЛТАТ',
-				jp: '時間'},
+				jp: '得点'},
 			{id: 'txt-performance',
 				en: 'PERFORMANCE',
 				bg: 'ИЗПЪЛНЕНИЕ',
-				jp: '時間'},
+				jp: '業績'},
 			{id: 'txt-user',
 				en: scorm.api
 						? `<b>${scorm.studentName}</b>`
@@ -355,12 +364,14 @@ class ScormPlayground
 		
 		controller.sign = 1; // assume right (not left) controller
 		controller.squeeze = false; // indicate whether squeeze button is pressed
+		controller.select = false; // indicate whether select button is pressed
+		controller.selectEvent = null; // indicate whether select button is pressed
 		
-		controller.addEventListener( 'selectstart', function(){playground.vrPointerDown( controller );} );
-		controller.addEventListener( 'selectend', function(){playground.vrPointerUp( controller );} );
-		controller.addEventListener( 'select', function(){ playground.vrClick( controller ); } );
-		controller.addEventListener( 'squeezestart', function(){playground.vrSqueezeStart( controller );} );
-		controller.addEventListener( 'squeezeend', function(){playground.vrSqueezeEnd( controller );} );
+		controller.addEventListener( 'selectstart', function(e){playground.vrPointerDown( e, controller );} );
+		controller.addEventListener( 'selectend', function(e){playground.vrPointerUp( e, controller );} );
+		controller.addEventListener( 'select', function(e){ playground.vrClick( e, controller ); } );
+		controller.addEventListener( 'squeezestart', function(e){playground.vrSqueezeStart( e, controller );} );
+		controller.addEventListener( 'squeezeend', function(e){playground.vrSqueezeEnd( e, controller );} );
 		controller.addEventListener( 'connected', function(event){
 			if( event.data?.handedness == 'left' ) controller.sign =  -1; // turn into left controller
 		} );
@@ -370,7 +381,7 @@ class ScormPlayground
 		its.size = [0.075,0.075,0.075];
 		controller.ray.onload = ()=>{
 			controller.hand = controller.ray.threejs.children[0].children[0];
-			controller.hand.material = new THREE.MeshPhongMaterial({color:'orange',transparent:true,depthTest:false,side:THREE.DoubleSide,emissive:new THREE.Color('orange'),emissiveIntensoty:1});
+			controller.hand.material = new THREE.MeshPhongMaterial({color:'orange',transparent:true,depthTest:false,side:THREE.DoubleSide,emissive:new THREE.Color('orange'),emissiveIntensity:1});
 
 controller.hand.material.onBeforeCompile = (shader) => {
     shader.fragmentShader = shader.fragmentShader.replace(
@@ -929,7 +940,7 @@ if( playground.controllers[1].hand )
 	}
 		
 	
-	vrClick( controller )
+	vrClick( event, controller )
 	{
 		var intersections = this.vrIntersections( controller );
 		
@@ -948,14 +959,23 @@ if( playground.controllers[1].hand )
 
 			//objects.forEach( e => e.onclick() ); // not all
 			
-			if( objects ) objects[0].onclick(); // only first, which is also closest
+			console.log('click',objects)
+			event.controller = controller;
+			if( objects.length ) 
+				if( objects[0].onclick )
+					objects[0].onclick( event ); // only first, which is also closest
+//debugLog('vrClick', objects.length);
 		}
 
 	}
 		
 	
-	vrPointerDown( controller )
+	vrPointerDown( event, controller )
 	{
+		
+		controller.select = true;
+		controller.selectEvent = event;
+		
 		this.vrFingerLength ( controller, 1500 );
 		
 		var intersections = this.vrIntersections( controller );
@@ -974,15 +994,22 @@ if( playground.controllers[1].hand )
 
 			//objects.forEach( e => e.onpointerdown() ); // not all
 			
-			if( objects ) objects[0].onpointerdown(); // only first, which is also closest
+			console.log('down',objects)
+			event.controller = controller;
+			if( objects.length )
+				if( objects[0].onpointerdown )
+					objects[0].onpointerdown( event ); // only first, which is also closest
+//debugLog('vrPointerDown', objects.length);
 		}
 
 	}
 		
 	
-	vrPointerUp( controller )
+	vrPointerUp( event, controller )
 	{
-		window.onPointerUp( ); // global event in *.html
+		controller.select = false;
+		controller.selectEvent = event;
+		window.onPointerUp( event ); // global event in *.html
 		
 		this.vrFingerLength ( controller, 0 );
 		
@@ -1003,19 +1030,23 @@ if( playground.controllers[1].hand )
 
 			//objects.forEach( e => e.onpointerup() ); // not all
 			
-			if( objects ) objects[0].onpointerup(); // only first, which is also closest
+			console.log('up',objects)
+			if( objects.length )
+				if( objects[0].onpointerup )
+					objects[0].onpointerup( event ); // only first, which is also closest
+//debugLog('vrPointerUp', objects.length);
 		}
 
 	}
 	
 
-	vrSqueezeStart( controller )
+	vrSqueezeStart( event, controller )
 	{
 		if( suica.controls ) controller.squeeze = true;
 	}
 		
 	
-	vrSqueezeEnd( controller )
+	vrSqueezeEnd( event, controller )
 	{
 		controller.squeeze = false;
 	}
@@ -1087,3 +1118,89 @@ class ScormUtils
 	
 } // class ScormUtils
 
+
+	
+/*
+const DEBUG = {
+  canvas: null,
+  ctx: null,
+  texture: null,
+  mesh: null,
+  lines: [],
+  maxLines: 18
+};
+
+function createDebugConsole(scene, options = {}) {
+  const width = options.width || 1024;
+  const height = options.height || 512;
+  const worldWidth = options.worldWidth || 1.6;
+  const worldHeight = options.worldHeight || 0.8;
+
+  DEBUG.canvas = document.createElement('canvas');
+  DEBUG.canvas.width = width;
+  DEBUG.canvas.height = height;
+  DEBUG.ctx = DEBUG.canvas.getContext('2d');
+
+  DEBUG.texture = new THREE.CanvasTexture(DEBUG.canvas);
+  DEBUG.texture.colorSpace = THREE.SRGBColorSpace;
+
+  const material = new THREE.MeshBasicMaterial({
+    map: DEBUG.texture,
+    transparent: true,
+    depthTest: false,
+    side: THREE.DoubleSide
+  });
+
+  DEBUG.mesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(worldWidth, worldHeight),
+    material
+  );
+
+  // place it in front of the user (adjust as needed)
+  DEBUG.mesh.position.set(0, 1.4, -1.3);
+  suica.scene.add(DEBUG.mesh);
+
+  return DEBUG.mesh;
+}
+
+function debugLog(...args) {
+  if (!DEBUG.ctx) return;
+
+  const msg = args.map(a => {
+    if (a === null) return 'null';
+    if (a === undefined) return 'undefined';
+    if (typeof a === 'object') {
+      try { return JSON.stringify(a); } catch { return '[object]'; }
+    }
+    return String(a);
+  }).join(' ');
+
+  DEBUG.lines.push(msg);
+  if (DEBUG.lines.length > DEBUG.maxLines) DEBUG.lines.shift();
+
+  const ctx = DEBUG.ctx;
+  const w = DEBUG.canvas.width;
+  const h = DEBUG.canvas.height;
+
+  ctx.clearRect(0, 0, w, h);
+
+  ctx.font = '26px monospace';
+  ctx.textBaseline = 'top';
+  ctx.fillStyle = 'crimson';
+
+DEBUG.lines.reverse();
+  DEBUG.lines.forEach((line, i) => {
+    ctx.fillText(line, 14, 12 + i * 28);
+  });
+DEBUG.lines.reverse();
+
+  DEBUG.texture.needsUpdate = true;
+}
+
+// ---------- usage ----------
+createDebugConsole(suica.camera,{worldWidth:10,worldHeight:5});
+
+//debugLog('Debug console ready');
+//debugLog('select', 123);
+//debugLog('model pos', 'abc');
+*/

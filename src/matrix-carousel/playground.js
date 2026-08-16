@@ -63,7 +63,15 @@ class Playground extends ScormPlayground
 			this.intersectables.push( this.carousel.threejs );
 			this.intersectables.push( this.button.threejs );
 			this.intersectables.push( this.base.threejs );
+			
+			for( var cosys of this.carousel.cosys) {
+				this.intersectables.push( cosys.threejs );
+			}
+console.log('intersectables',this.intersectables)
 
+			this.raycaster.params.Line.threshold = 0;
+			this.raycaster.params.Points.threshold = 0;
+			
 		}
 		
 	} // Playground.constructor

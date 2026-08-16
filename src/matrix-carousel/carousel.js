@@ -224,7 +224,7 @@ class Carousel extends Suica.Group
 						.to( {size:1}, Carousel.NEW_GAME_TIME )
 						.easing( TWEEN.Easing.Bounce.Out )
 						.onUpdate( (obj)=>{
-							for( var label of obj.labels ) label.size = CoSys.LABEL_SIZE*obj.size;
+							for( var label of obj.labels ) label.size = CoSys.LABEL_SIZE*obj.size*(playground.inVRMode?0.5:1);
 							for( var arena of playground.base.arenas ) arena.regenerateTexture( obj.size );
 						} )
 				)
@@ -243,7 +243,7 @@ class Carousel extends Suica.Group
 				.delay( random(0, CoSys.GAME_DELAY_TIME ) )
 				.easing( TWEEN.Easing.Quadratic.In )
 				.onUpdate( (obj)=>{
-					for( var label of obj.labels ) label.size = CoSys.LABEL_SIZE*obj.size;
+					for( var label of obj.labels ) label.size = CoSys.LABEL_SIZE*obj.size*(playground.inVRMode?0.5:1);
 					for( var arena of playground.base.arenas ) arena.regenerateTexture( obj.size );
 				} )
 				.start( );

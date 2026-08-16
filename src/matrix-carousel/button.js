@@ -7,16 +7,19 @@ var SC = 5;
 
 class Button extends Suica.Group
 {
-	static SIZE = 6/SC;
+	static SIZE = 6.5/SC;
 	static YOYO_SPEED = 150; // in ms
 	
 	constructor( )
 	{
 		super( suica );
 
-		var y = Base.POS_Y + Base.BASE_HEIGHT + Carousel.PILLAR_HEIGHT + Button.SIZE/2/* + 0.8/SC*/;
+		var y = Base.POS_Y + Base.BASE_HEIGHT + Carousel.PILLAR_HEIGHT/* + 0.8/SC*/;
 		
 		this.colorPlate = sphere( [0,y,0], [Button.SIZE/*,2/SC*/], 'goldenrod' );
+		
+		this.colorPlate.threejs.geometry = new THREE.SphereGeometry( Button.SIZE/2, 32, 16, 0, 2*Math.PI, 0, Math.PI/2 ); 
+				
 		this.colorPlate.threejs.material.emissive = this.colorPlate.threejs.material.color;
 		this.colorPlate.threejs.material.emissiveIntensity = 0.5;
 		

@@ -32,6 +32,11 @@ class CoSys extends Suica.Group
 
 		this.add( this.ropeGroup );
 
+		//rope.parent = this;
+		//this.cosys.parent = this;
+		this.cube.parent = this;
+		//this.ropeGroup.parent = this;
+		
 		this.size = 0;
 		this.addEventListener( 'pointerup', this.onpointerup );
 		this.addEventListener( 'pointerdown', this.onpointerdown );
@@ -144,6 +149,7 @@ class CoSys extends Suica.Group
 		var edges = cube( [0,0,0], CoSys.CUBE_SIZE, 'brown' );
 			its.wireframe = true;
 		
+		box.parent = this;
 		cubeGroup.add( box, edges );
 			
 		this.cosys.add( cubeGroup );
