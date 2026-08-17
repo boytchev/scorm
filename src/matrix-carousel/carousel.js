@@ -17,6 +17,7 @@ class Carousel extends Suica.Group
 	static OUTWARD_ANGLE = 70;
 	static VIBRO_ANGLE = Carousel.SPEED/40;
 	static VIBRO_TIME_ANGLE = 15;
+	static VIBRO_TIME = 3000;
 	static NEW_GAME_TIME = 1000;
 	static END_GAME_TIME = 300;
 	static GAME_DELAY_TIME = 200;
@@ -174,7 +175,7 @@ class Carousel extends Suica.Group
 
 
 	// stop carousel spinning
-	stopSpinning( )
+	stopSpinning( prolongStopping = 1 )
 	{
 		if( this.phase == Carousel.STOPPED ) return;
 		
@@ -184,7 +185,7 @@ class Carousel extends Suica.Group
 			this.spinTween.stop( );
 		
 		// calculate actual stopping position
-		var finalH = 60*Math.ceil( this.spinH/60 ) + 60*( Math.round(this.speed/200) );
+		var finalH = 60*Math.ceil( this.spinH/60 ) + 60*( Math.round(this.speed/200) ) * prolongStopping;
 		
 		var time = 10*(finalH-this.spinH);
 		
@@ -202,8 +203,9 @@ class Carousel extends Suica.Group
 			.start( );
 
 		this.vibroTween = new TWEEN.Tween( this )
-			.to( {vibroSize:0, vibroTime: Carousel.VIBRO_TIME_ANGLE*random(0.8,1.2)}, 3*time )
-			.easing( TWEEN.Easing.Quadratic.InOut )
+			.to( {vibroSize:0, vibroTime: Carousel.VIBRO_TIME_ANGLE*random(0.8,1.2)}, Carousel.VIBRO_TIME )
+			.easing( TWEEN.Easing.Quadratic.Out )
+			.delay( time-1500 )
 			.start( );
 
 		playground.swingSound?.stop( );

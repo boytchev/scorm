@@ -13,7 +13,7 @@ Click on the image to start the application.
 
 [<img src="docs/snapshot.jpg">](matrix-carousel.html)
 
-Alternatively, here are versions in [English](matrix-carousel.html?lang=en), [Bulgarian](matrix-carousel.html?lang=bg) and [Japanese](matrix-carousel.html?lang=jp).
+Alternatively, here are versions in [English](matrix-carousel.html?lang=en), [Bulgarian](matrix-carousel.html?lang=bg), [Japanese](matrix-carousel.html?lang=jp) and [Virtual Reality](matrix-carousel.html?lang=en&vr).
 
 Examples of transformation matrices:
 
@@ -61,6 +61,7 @@ When run from a LMS, the application sends back these data:
 - `cmi.core.score.min` &ndash; 0
 - `cmi.core.score.max` &ndash; 100
 - `cmi.core.lesson_status` &ndash; `'completed'` or `'incomplete'`
+- `cmi.comments` &ndash; gameplay data with backups of scores
 
 ### Data policy
 
@@ -77,6 +78,11 @@ The matrices represented in the application do not correspond literally to the a
 This application uses a background soundscape from [FreeSound](https://freesound.org):
 
 - "[Fairground Ambience](https://freesound.org/people/HECKFRICKER/sounds/635159/)" by [HECKFRICKER](https://freesound.org/people/HECKFRICKER/) licensed under [CC 0 License](http://creativecommons.org/publicdomain/zero/1.0/),
+
+3D model (when VR mode is on):
+
+- "[hand_pose_ 留存](https://skfb.ly/oLvJD)" by TRNKL licensed under [CC BY 4.0 License](http://creativecommons.org/licenses/by/4.0/),
+
 
 sound effects from [FreeSound](https://freesound.org):
 

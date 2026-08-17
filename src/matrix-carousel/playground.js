@@ -45,14 +45,14 @@ class Playground extends ScormPlayground
 		] );
 		
 		orb.enabled = false;
-		suica.lookAt( [0,4,16] );
+		suica.lookAt( [0,3.5,14] );
 		suica.controls.update();
 //		orb.enabled = true;
 
 		if( this.inVRMode )
 		{
-			this.vrDist = 12;
-			this.vrBeta = 1.4;
+			this.vrDist = 10;
+			this.vrBeta = 1.2;
 			
 			suica.vrCamera.updateMatrixWorld(true);
 
@@ -67,7 +67,6 @@ class Playground extends ScormPlayground
 			for( var cosys of this.carousel.cosys) {
 				this.intersectables.push( cosys.threejs );
 			}
-console.log('intersectables',this.intersectables)
 
 			this.raycaster.params.Line.threshold = 0;
 			this.raycaster.params.Points.threshold = 0;
@@ -84,7 +83,12 @@ console.log('intersectables',this.intersectables)
 		this.clickSound?.play( );
 		super.newGame( );
 
-		this.carousel.stopSpinning();
+		this.gameStarted = false;
+		this.carousel.startSpinning( );
+		setTimeout( ()=>{
+			this.carousel.stopSpinning(1.5);
+			this.gameStarted = true;
+		}, 2000 );
 
 		var n; // difficulty case
 		
@@ -251,7 +255,6 @@ console.log('intersectables',this.intersectables)
 		super.endGame( );
 		
 		this.carousel.hideCoSys( );
-		this.carousel.startSpinning( );
 		
 	} // Playground.endGame
 	

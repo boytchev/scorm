@@ -54,9 +54,8 @@ Note: this game is now under update.
 
 Note: this game is now under update.
 
-<!--
-[ [More info](src/matrix-carousel/index.html) ] [ [Run online](src/matrix-carousel/matrix-carousel.html) ] [ [Download](bin/matrix-carousel.zip) ]
--->
+[ [More info](src/matrix-carousel/index.html) ] [ [Run online](src/matrix-carousel/matrix-carousel.html) ] [ [Run in VR](src/matrix-carousel/matrix-carousel.html?vr) ] [ [Download](bin/matrix-carousel.zip) ]
+
 
 ## Normal pins
 
