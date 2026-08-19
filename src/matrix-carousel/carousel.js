@@ -223,11 +223,13 @@ class Carousel extends Suica.Group
 				.to( {}, random(0, Carousel.GAME_DELAY_TIME ) )
 				.chain(
 					new TWEEN.Tween( cosys )
-						.to( {size:1}, Carousel.NEW_GAME_TIME )
+						.to( {k:1}, Carousel.NEW_GAME_TIME )
 						.easing( TWEEN.Easing.Bounce.Out )
 						.onUpdate( (obj)=>{
-							for( var label of obj.labels ) label.size = CoSys.LABEL_SIZE*obj.size*(playground.inVRMode?0.5:1);
-							for( var arena of playground.base.arenas ) arena.regenerateTexture( obj.size );
+							for( var label of obj.labels ) label.size = CoSys.LABEL_SIZE*obj.k*(playground.inVRMode?0.5:1);
+							for( var arena of playground.base.arenas ) arena.regenerateTexture( obj.k );
+							obj.size = Math.max(obj.size,obj.k);
+							//obj.cube.groupElements.forEach( e=>e.size = obj.k );
 						} )
 				)
 				.start();
@@ -241,12 +243,14 @@ class Carousel extends Suica.Group
 		for( var cosys of this.cosys )
 		{	
 			new TWEEN.Tween( cosys )
-				.to( {size:0}, Carousel.END_GAME_TIME )
+				.to( {k:0}, Carousel.END_GAME_TIME )
 				.delay( random(0, CoSys.GAME_DELAY_TIME ) )
 				.easing( TWEEN.Easing.Quadratic.In )
 				.onUpdate( (obj)=>{
-					for( var label of obj.labels ) label.size = CoSys.LABEL_SIZE*obj.size*(playground.inVRMode?0.5:1);
-					for( var arena of playground.base.arenas ) arena.regenerateTexture( obj.size );
+					for( var label of obj.labels ) label.size = CoSys.LABEL_SIZE*obj.k*(playground.inVRMode?0.5:1);
+					for( var arena of playground.base.arenas ) arena.regenerateTexture( obj.k );
+					//obj.cosys.size = obj.k;
+					//obj.cosys.groupElements.forEach( e=>{if(e.threejs.isGroup)e.size = obj.k} );
 				} )
 				.start( );
 		}

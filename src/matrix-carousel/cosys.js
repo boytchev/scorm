@@ -37,6 +37,7 @@ class CoSys extends Suica.Group
 		this.cube.parent = this;
 		//this.ropeGroup.parent = this;
 		
+		this.k = 0;
 		this.size = 0;
 		this.addEventListener( 'pointerup', this.onpointerup );
 		this.addEventListener( 'pointerdown', this.onpointerdown );
@@ -178,6 +179,8 @@ class CoSys extends Suica.Group
 	{
 		var k = 2*( (CoSys.CUBE_SPEED*t + Math.sin(this.idx))%1)-0.5; // -0.5 .. +1.5
 			k = THREE.MathUtils.clamp( k, 0, 1 );
+		
+		if( !playground.gameStarted ) k = this.k;
 		
 		Matrix.lerp( this.cube, this.idx, k );
 	} // CoSys.update

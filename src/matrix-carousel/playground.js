@@ -83,18 +83,14 @@ class Playground extends ScormPlayground
 		this.clickSound?.play( );
 		super.newGame( );
 
-		this.gameStarted = false;
-		this.carousel.startSpinning( );
-		setTimeout( ()=>{
-			this.carousel.stopSpinning(1.5);
-			this.gameStarted = true;
-		}, 2000 );
+		this.gameStarted = true;
+		this.carousel.stopSpinning(1.5);
 
 		var n; // difficulty case
 		
 		const PERCENTS 		= [ 10, 35, 50, 65, 80, 95, 97, 200 ]; // compared against this.difficulty
-		const MIN_GROUPS 	= [  0,  1,  2,  3,  8,  3,  3,   3 ]; // minimal group of matrices to use
-		const MAX_GROUPS 	= [  0,  1,  2,  3,  9,  9,  9,   9 ]; // maximal grou of matrices to use
+		const MIN_GROUPS 	= [  0,  1,  2,  3,  8,  6,  7,   7 ]; // minimal group of matrices to use
+		const MAX_GROUPS 	= [  0,  1,  2,  3,  9,  9,  9,   9 ]; // maximal group of matrices to use
 		const COUNTS		= [  2,  3,  6,  6,  6,  6,  6,   6 ]; // number of cosys to display
 		const FAKES			= [  4,  0,  0,  0,  0,  0,  1,   2 ]; // number of wrong matrices
 		const SPINS			= [  0,  0,  0,  0,  0,  1,  2,   3 ]; // cmplexity of spin orientation
@@ -148,8 +144,7 @@ class Playground extends ScormPlayground
 				fakeCount--;
 			}
 		}
-		
-
+			
 		// rotate the carousel integer number of swings
 		this.carousel.spinH = 60 * random( [0,1,2,3,4,5] );
 		
@@ -255,6 +250,7 @@ class Playground extends ScormPlayground
 		super.endGame( );
 		
 		this.carousel.hideCoSys( );
+		this.carousel.startSpinning( );
 		
 	} // Playground.endGame
 	
