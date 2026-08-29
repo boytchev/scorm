@@ -3,13 +3,15 @@
 //
 
 	
+var SC = 10;
+
 class Pin extends Suica.Group
 {
-	static LENGTH = 10;
-	static SMALL_HEAD_SIZE = 2;
-	static BIG_HEAD_SIZE = 3;
-	static WIDTH = 0.15;
-	static TIP_WIDTH = 0.05;
+	static LENGTH = 10/SC;
+	static SMALL_HEAD_SIZE = 2/SC;
+	static BIG_HEAD_SIZE = 3/SC;
+	static WIDTH = 0.15/SC;
+	static TIP_WIDTH = 0.05/SC;
 	
 	
 	constructor( )

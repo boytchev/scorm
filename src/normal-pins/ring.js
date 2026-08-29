@@ -2,12 +2,13 @@
 //	class Ring( )
 //
 
+var SC = 10;
 	
 class Ring extends Suica.Group
 {
-	static SIZE = 20;
-	static CLAMP_SIZE = 19.7;
-	static WIDTH = 2;
+	static SIZE = 20/SC;
+	static CLAMP_SIZE = 19.7/SC;
+	static WIDTH = 2/SC;
 	static POINTER_USED = false;
 	
 	constructor( )
@@ -39,14 +40,14 @@ class Ring extends Suica.Group
 		{
 			if( playground.canEndGame() )
 			{
-				this.ring.color = 'orange';
-				this.ring.threejs.material.emissiveIntensity = 0.5;
+				this.ring.color = [6,3,0];
+///				this.ring.threejs.material.emissiveIntensity = 0.5;
 				playground.endGame( );
 				
 				var that = this;
 				setTimeout( function(){
 					that.ring.color = 'white';
-					that.ring.threejs.material.emissiveIntensity = 0;
+///					that.ring.threejs.material.emissiveIntensity = 0;
 				}, 50 );
 			}
 		}
@@ -64,8 +65,8 @@ class Ring extends Suica.Group
 		if( Ring.POINTER_USED ) return;
 		if( playground.dragPin ) return;
 			
-		this.ring.color = 'orange';
-		this.ring.threejs.material.emissiveIntensity = 0.5;
+		this.ring.color = [6,3,0];
+///		this.ring.threejs.material.emissiveIntensity = 0.5;
 		
 		event.target.style.cursor = 'pointer';
 	} // Ring.onPointerEnter
@@ -79,7 +80,7 @@ class Ring extends Suica.Group
 		if( playground.dragPin ) return;
 			
 		this.ring.color = 'white';
-		this.ring.threejs.material.emissiveIntensity = 0;
+///		this.ring.threejs.material.emissiveIntensity = 0;
 
 		event.target.style.cursor = 'default';
 	} // Ring.onPointerLeave
@@ -104,12 +105,12 @@ class Ring extends Suica.Group
 		var material = new THREE.MeshStandardMaterial( {
 			color: 'white',
 			metalness: 0.1,
-			roughness: 0.42,
+			roughness: 0.4,
 			map: map,
 			normalMap: normalMap,
 			normalScale: new THREE.Vector2( 0.5, 0.5 ),
-			emissive: 'orange',
-			emissiveIntensity: 0,
+///			emissive: 'orange',
+///			emissiveIntensity: 0,
 		} );	
 
 		var ring = tube( [0,0,0], ringCurve, Ring.WIDTH, [121,20] );

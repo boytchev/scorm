@@ -2,7 +2,9 @@
 //	class Membrane( )
 //
 
-	
+var SC = 10;
+
+
 class Membrane extends Suica.Group
 {
 	
@@ -88,12 +90,13 @@ class Membrane extends Suica.Group
 				roughness: 1,
 				metalness: 0,
 				bumpMap: image('images/tile.png'),
-				bumpScale: 5*0.8,
+				bumpScale: 10*0.8,
 				sheen: 0,
 				sheenColor: 'white',
 				sheenRoughness: 0.15,
 				side: THREE.DoubleSide,
 		});
+		its.threejs.material.bumpMap.repeat.set( SC, SC );
 		its.threejs.receiveShadow = true;
 
 
@@ -121,7 +124,7 @@ class Membrane extends Suica.Group
 			if( random(0,1) > threshold )
 				this.points[i][j][2] = 0;
 			else
-				this.points[i][j][2] = scale * Membrane.BUMP_HEIGHT * random(-1,1);
+				this.points[i][j][2] = scale * Membrane.BUMP_HEIGHT * random(-1,1) / SC;
 		}
 
 		// make the surface flat
@@ -186,17 +189,14 @@ class Membrane extends Suica.Group
 			mat = this.surface.threejs.material; // current material
 
 		// animate surface color
-		var color = hsl(0, 20, 100);
-		new TWEEN.Tween( mat.color )
-			.to( color, Membrane.SHOW_SPEED/2 )
-			.easing( TWEEN.Easing.Linear.None )
-			.start( );
+		var color;
 
 		// target properties
 		var k;
-		if( random(0,1)**0.5 > playground.difficulty/100 )
+		if( !true)//random(0,1)**0.5 > playground.difficulty/100 )
 		{	
-			k = random( 0, 0.1 );
+			k = 0;
+			color = hsl(0, 0, 90);
 			playground.shadowLightA.castShadow = true;
 			playground.shadowLightB.castShadow = true;
 			for( let pin of playground.pins )
@@ -204,15 +204,21 @@ class Membrane extends Suica.Group
 		}
 		else
 		{
-			k = random( 0.7, 0.85 );
+			k = 1;
+			color = hsl(0, 0, 10);
 			playground.shadowLightA.castShadow = false;
 			playground.shadowLightB.castShadow = false;
 			for( let pin of playground.pins )
 				pin.body.threejs.material.metalness = 0.2;
 		}
 			
+		new TWEEN.Tween( mat.color )
+			.to( color, Membrane.SHOW_SPEED/2 )
+			.easing( TWEEN.Easing.Linear.None )
+			.start( );
+
 		new TWEEN.Tween( mat )
-			.to( {sheen:0.5*k, metalness:0.85*k, roughness:1-0.85*k, bumpScale:5*(0.8-0.75*k) }, Membrane.SHOW_SPEED/2 )
+			.to( {sheen:0.5*k, metalness:0.7*k, roughness:1-0.7*k, bumpScale:10*(0.8-0.75*k) }, Membrane.SHOW_SPEED/2 )
 			.easing( TWEEN.Easing.Linear.None )
 			.start( );
 
